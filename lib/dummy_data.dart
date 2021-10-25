@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+import './models/employee.dart';
+
+const indiEmployee = const [
+  Employee(
+      name: 'Manut',
+      id: '1',
+      date: '1-2-2001',
+      skill: 'mobile app developer',
+      salary: 123,
+      workRate: 'normal',
+      contact: 011265895,
+      background: '3 months experience'),
+  Employee(
+      name: 'Song',
+      id: '2',
+      date: '1-2-2001',
+      skill: 'mobile app developer',
+      salary: 321,
+      workRate: 'normal',
+      contact: 012345678,
+      background: '3 months experience'),
+  Employee(
+      name: 'Sunny',
+      id: '3',
+      date: '1-2-2001',
+      skill: 'mobile app developer',
+      salary: 123,
+      workRate: 'normal',
+      contact: 011265895,
+      background: '3 months experience'),
+  Employee(
+      name: 'Song',
+      id: '4',
+      date: '1-2-2001',
+      skill: 'mobile app developer',
+      salary: 321,
+      workRate: 'normal',
+      contact: 012345678,
+      background: '3 months experience'),
+  Employee(
+      name: 'Manut',
+      id: '5',
+      date: '1-2-2001',
+      skill: 'mobile app developer',
+      salary: 123,
+      workRate: 'normal',
+      contact: 011265895,
+      background: '3 months experience'),
+  Employee(
+      name: 'Song',
+      id: '6',
+      date: '1-2-2001',
+      skill: 'mobile app developer',
+      salary: 321,
+      workRate: 'normal',
+      contact: 012345678,
+      background: '3 months experience'),
+  Employee(
+      name: 'Manut',
+      id: '7',
+      date: '1-2-2001',
+      skill: 'mobile app developer',
+      salary: 123,
+      workRate: 'normal',
+      contact: 011265895,
+      background: '3 months experience'),
+  Employee(
+      name: 'Song',
+      id: '8',
+      date: '1-2-2001',
+      skill: 'mobile app developer',
+      salary: 321,
+      workRate: 'normal',
+      contact: 012345678,
+      background: '3 months experience'),
+];

@@ -1,3 +1,4 @@
+import 'package:ems/widgets/employee_info.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -9,6 +10,14 @@ class EmployeeList extends StatelessWidget {
   EmployeeList(this.employees);
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3B9AAD);
+  void selectEmployee(BuildContext context, id) {
+    var empId = employees.where((employee) => employee.id == id).toList();
+    Navigator.of(context).pushNamed(EmployeeInfo.routeName, arguments: {
+      'id': empId[0].id,
+      'name': empId[0].name,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return employees.isEmpty
@@ -68,21 +77,25 @@ class EmployeeList extends StatelessWidget {
                         children: [
                           Expanded(
                             flex: 4,
-                            child: Container(
-                              margin: EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 15,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: color,
-                                  width: 2,
+                            child: InkWell(
+                              onTap: () =>
+                                  selectEmployee(context, employees[index].id),
+                              child: Container(
+                                margin: EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 15,
                                 ),
-                                borderRadius: BorderRadius.circular(40),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: color,
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(40),
+                                ),
+                                padding: EdgeInsets.all(8),
+                                child: (Image.asset(
+                                    'assets/images/profile-icon-png-910.png')),
                               ),
-                              padding: EdgeInsets.all(8),
-                              child: (Image.asset(
-                                  'assets/images/profile-icon-png-910.png')),
                             ),
                           ),
                           Expanded(

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:ems/widgets/employee_info.dart';
 import 'package:flutter/material.dart';
 
 import './models/employee.dart';
@@ -28,6 +29,9 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(),
+      routes: {
+        EmployeeInfo.routeName: (ctx) => EmployeeInfo(),
+      },
     );
   }
 }
@@ -39,11 +43,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final color = const Color(0xff05445E);
-  final List<Employee> _employeeList = [
+  final List<Employee> employeeList = [
     Employee(
         name: 'Manut',
         id: '1',
-        date: DateTime.now(),
+        date: '1-2-2001',
         skill: 'mobile app developer',
         salary: 123,
         workRate: 'normal',
@@ -52,7 +56,25 @@ class _MyHomePageState extends State<MyHomePage> {
     Employee(
         name: 'Song',
         id: '2',
-        date: DateTime.now(),
+        date: '1-2-2001',
+        skill: 'mobile app developer',
+        salary: 321,
+        workRate: 'normal',
+        contact: 012345678,
+        background: '3 months experience'),
+    Employee(
+        name: 'Sunny',
+        id: '3',
+        date: '1-2-2001',
+        skill: 'mobile app developer',
+        salary: 123,
+        workRate: 'normal',
+        contact: 011265895,
+        background: '3 months experience'),
+    Employee(
+        name: 'Song',
+        id: '4',
+        date: '1-2-2001',
         skill: 'mobile app developer',
         salary: 321,
         workRate: 'normal',
@@ -60,8 +82,8 @@ class _MyHomePageState extends State<MyHomePage> {
         background: '3 months experience'),
     Employee(
         name: 'Manut',
-        id: '1',
-        date: DateTime.now(),
+        id: '5',
+        date: '1-2-2001',
         skill: 'mobile app developer',
         salary: 123,
         workRate: 'normal',
@@ -69,8 +91,8 @@ class _MyHomePageState extends State<MyHomePage> {
         background: '3 months experience'),
     Employee(
         name: 'Song',
-        id: '2',
-        date: DateTime.now(),
+        id: '6',
+        date: '1-2-2001',
         skill: 'mobile app developer',
         salary: 321,
         workRate: 'normal',
@@ -78,8 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
         background: '3 months experience'),
     Employee(
         name: 'Manut',
-        id: '1',
-        date: DateTime.now(),
+        id: '7',
+        date: '1-2-2001',
         skill: 'mobile app developer',
         salary: 123,
         workRate: 'normal',
@@ -87,26 +109,8 @@ class _MyHomePageState extends State<MyHomePage> {
         background: '3 months experience'),
     Employee(
         name: 'Song',
-        id: '2',
-        date: DateTime.now(),
-        skill: 'mobile app developer',
-        salary: 321,
-        workRate: 'normal',
-        contact: 012345678,
-        background: '3 months experience'),
-    Employee(
-        name: 'Manut',
-        id: '1',
-        date: DateTime.now(),
-        skill: 'mobile app developer',
-        salary: 123,
-        workRate: 'normal',
-        contact: 011265895,
-        background: '3 months experience'),
-    Employee(
-        name: 'Song',
-        id: '2',
-        date: DateTime.now(),
+        id: '8',
+        date: '1-2-2001',
         skill: 'mobile app developer',
         salary: 321,
         workRate: 'normal',
@@ -117,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _addNewEmployee(
     String eName,
     String eId,
-    DateTime eDate,
+    String eDate,
     String eSkill,
     double eSalary,
     String eworkRate,
@@ -135,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
       background: eBackground,
     );
     setState(() {
-      _employeeList.add(newEm);
+      employeeList.add(newEm);
     });
   }
 
@@ -166,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Stack(
           children: [
             Container(child: animationSearchBar()),
-            EmployeeList(_employeeList)
+            EmployeeList(employeeList)
           ],
         ));
   }

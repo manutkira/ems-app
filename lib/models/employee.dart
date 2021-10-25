@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class Employee {
   final String name;
   final String id;
-  final DateTime date;
+  final String date;
   final String skill;
   final double salary;
   final String workRate;
   final int contact;
   final String background;
 
-  Employee({
+  const Employee({
     required this.name,
     required this.id,
     required this.date,
