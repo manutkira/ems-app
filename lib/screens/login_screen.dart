@@ -1,6 +1,7 @@
 import 'package:ems/widgets/inputfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants.dart';
 
@@ -29,9 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 padding: kPadding,
                 width: MediaQuery.of(context).size.width,
-                child: Image.asset(
-                  'assets/images/graph.png',
-                  fit: BoxFit.fill,
+                child: SvgPicture.asset(
+                  'assets/images/graph.svg',
+                  semanticsLabel: "graph illustration",
                 ),
               ),
               const SizedBox(
@@ -51,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     InputField(
                       getValue: (value) {
                         setState(() {
-                          print(value);
                           email = value;
                         });
                       },
@@ -102,12 +102,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Text('Login'),
-                    SizedBox(
+                  children: [
+                    Text(
+                      'Login',
+                      style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
                       width: 10,
                     ),
-                    Icon(
+                    const Icon(
                       Icons.arrow_forward_ios,
                       size: 16,
                     ),
