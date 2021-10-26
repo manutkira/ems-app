@@ -1,3 +1,4 @@
+import 'package:ems/screens/home_screen.dart';
 import 'package:ems/widgets/inputfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,13 @@ class _LoginScreenState extends State<LoginScreen> {
   String password = "";
   String email = "";
 
+  void goToHomeScreen(BuildContext context) {
+    //
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kBlue,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
@@ -99,6 +103,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (email.isEmpty | password.isEmpty) return;
 
                   print("email $email\npassword $password");
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => HomeScreen()));
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

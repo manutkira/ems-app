@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 
 // COLORS
 const kBlue = Color(0xFF05445E);
-const kDarkestBlue = Color.fromRGBO(4, 51, 71, 1);
+const kDarkestBlue = Color(0xff043347);
 const kLightBlue = Color(0xffd4f1f4);
 const kWhite = Color(0xffffffff);
+const kBlack = Color(0xff000000);
 const kRedText = Color(0xffa03e3e);
 const kRedBackground = Color(0xffffcbce);
 const kGreenText = Color(0xff334732);
@@ -27,6 +28,8 @@ const kParagraph =
     TextStyle(fontSize: 16, color: kWhite, fontWeight: FontWeight.w400);
 const kSubtitle =
     TextStyle(fontSize: 14, color: kWhite, fontWeight: FontWeight.w400);
+var kSubtitleTwo = TextStyle(
+    fontSize: 12, color: kWhite.withOpacity(0.5), fontWeight: FontWeight.w400);
 
 // Spacing
 const kPadding = EdgeInsets.symmetric(horizontal: 20);
