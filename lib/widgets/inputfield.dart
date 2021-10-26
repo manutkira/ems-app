@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../constants.dart';
 
@@ -9,7 +10,6 @@ class InputField extends StatefulWidget {
   final Icon prefixIcon;
   final Function getValue;
   final bool isPassword;
-  String value = "";
 
   InputField(
       {Key? key,
@@ -25,6 +25,7 @@ class InputField extends StatefulWidget {
 }
 
 class _InputFieldState extends State<InputField> {
+  bool showPassword = false;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -42,7 +43,7 @@ class _InputFieldState extends State<InputField> {
           onChanged: (value) {
             widget.getValue(value);
           },
-          obscureText: widget.isPassword,
+          obscureText: widget.isPassword & !showPassword,
           cursorColor: kWhite,
           style: kSubtitle,
           decoration: InputDecoration(
@@ -50,6 +51,26 @@ class _InputFieldState extends State<InputField> {
                 kSubtitle.copyWith(color: kSubtitle.color!.withOpacity(0.5)),
             hintText: widget.textHint,
             prefixIcon: widget.prefixIcon,
+            suffixIcon: widget.isPassword
+                ? GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        showPassword = !showPassword;
+                      });
+                    },
+                    child: Container(
+                      child: showPassword
+                          ? Icon(
+                              MdiIcons.eyeOff,
+                              color: kWhite,
+                            )
+                          : Icon(
+                              MdiIcons.eye,
+                              color: kWhite,
+                            ),
+                    ),
+                  )
+                : null,
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
             filled: true,
