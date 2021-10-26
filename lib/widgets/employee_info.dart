@@ -22,6 +22,7 @@ class EmployeeInfo extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: bColor,
         title: Text('Employee'),
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.edit))],
       ),
       body: Container(
         color: color,

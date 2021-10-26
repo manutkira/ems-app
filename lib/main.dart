@@ -12,14 +12,7 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  final color = const Color(0xff05445E);
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,7 +36,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final color = const Color(0xff05445E);
-  final List<Employee> employeeList = [
+  final List<Employee> _employeeList = [
     Employee(
         name: 'Manut',
         id: '1',
@@ -53,69 +46,69 @@ class _MyHomePageState extends State<MyHomePage> {
         workRate: 'normal',
         contact: 011265895,
         background: '3 months experience'),
-    Employee(
-        name: 'Song',
-        id: '2',
-        date: '1-2-2001',
-        skill: 'mobile app developer',
-        salary: 321,
-        workRate: 'normal',
-        contact: 012345678,
-        background: '3 months experience'),
-    Employee(
-        name: 'Sunny',
-        id: '3',
-        date: '1-2-2001',
-        skill: 'mobile app developer',
-        salary: 123,
-        workRate: 'normal',
-        contact: 011265895,
-        background: '3 months experience'),
-    Employee(
-        name: 'Song',
-        id: '4',
-        date: '1-2-2001',
-        skill: 'mobile app developer',
-        salary: 321,
-        workRate: 'normal',
-        contact: 012345678,
-        background: '3 months experience'),
-    Employee(
-        name: 'Manut',
-        id: '5',
-        date: '1-2-2001',
-        skill: 'mobile app developer',
-        salary: 123,
-        workRate: 'normal',
-        contact: 011265895,
-        background: '3 months experience'),
-    Employee(
-        name: 'Song',
-        id: '6',
-        date: '1-2-2001',
-        skill: 'mobile app developer',
-        salary: 321,
-        workRate: 'normal',
-        contact: 012345678,
-        background: '3 months experience'),
-    Employee(
-        name: 'Manut',
-        id: '7',
-        date: '1-2-2001',
-        skill: 'mobile app developer',
-        salary: 123,
-        workRate: 'normal',
-        contact: 011265895,
-        background: '3 months experience'),
-    Employee(
-        name: 'Song',
-        id: '8',
-        date: '1-2-2001',
-        skill: 'mobile app developer',
-        salary: 321,
-        workRate: 'normal',
-        contact: 012345678,
-        background: '3 months experience'),
+    // Employee(
+    //     name: 'Song',
+    //     id: '2',
+    //     date: '1-2-2001',
+    //     skill: 'mobile app developer',
+    //     salary: 321,
+    //     workRate: 'normal',
+    //     contact: 012345678,
+    //     background: '3 months experience'),
+    // Employee(
+    //     name: 'Sunny',
+    //     id: '3',
+    //     date: '1-2-2001',
+    //     skill: 'mobile app developer',
+    //     salary: 123,
+    //     workRate: 'normal',
+    //     contact: 011265895,
+    //     background: '3 months experience'),
+    // Employee(
+    //     name: 'Song',
+    //     id: '4',
+    //     date: '1-2-2001',
+    //     skill: 'mobile app developer',
+    //     salary: 321,
+    //     workRate: 'normal',
+    //     contact: 012345678,
+    //     background: '3 months experience'),
+    // Employee(
+    //     name: 'Manut',
+    //     id: '5',
+    //     date: '1-2-2001',
+    //     skill: 'mobile app developer',
+    //     salary: 123,
+    //     workRate: 'normal',
+    //     contact: 011265895,
+    //     background: '3 months experience'),
+    // Employee(
+    //     name: 'Song',
+    //     id: '6',
+    //     date: '1-2-2001',
+    //     skill: 'mobile app developer',
+    //     salary: 321,
+    //     workRate: 'normal',
+    //     contact: 012345678,
+    //     background: '3 months experience'),
+    // Employee(
+    //     name: 'Manut',
+    //     id: '7',
+    //     date: '1-2-2001',
+    //     skill: 'mobile app developer',
+    //     salary: 123,
+    //     workRate: 'normal',
+    //     contact: 011265895,
+    //     background: '3 months experience'),
+    // Employee(
+    //     name: 'Song',
+    //     id: '8',
+    //     date: '1-2-2001',
+    //     skill: 'mobile app developer',
+    //     salary: 321,
+    //     workRate: 'normal',
+    //     contact: 012345678,
+    // background: '3 months experience'),
   ];
 
   void _addNewEmployee(
@@ -139,17 +132,18 @@ class _MyHomePageState extends State<MyHomePage> {
       background: eBackground,
     );
     setState(() {
-      employeeList.add(newEm);
+      _employeeList.add(newEm);
     });
   }
 
-  void _startAddNewEmployee(BuildContext context) {
+  void _startAddNewEmployee(BuildContext ctx) {
     showModalBottomSheet(
-        context: context,
+        context: ctx,
         backgroundColor: Colors.transparent,
         builder: (_) {
           return GestureDetector(
             child: NewEmployee(_addNewEmployee),
+            onTap: () {},
           );
         });
   }
@@ -170,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Stack(
           children: [
             Container(child: animationSearchBar()),
-            EmployeeList(employeeList)
+            EmployeeList(_employeeList)
           ],
         ));
   }

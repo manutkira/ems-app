@@ -1,7 +1,8 @@
+import 'package:ems/widgets/inputfield.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '';
+import '../constants.dart';
 
 class NewEmployee extends StatefulWidget {
   final Function addEmployee;
@@ -9,7 +10,7 @@ class NewEmployee extends StatefulWidget {
   NewEmployee(this.addEmployee);
 
   @override
-  _NewEmployeeState createState() => _NewEmployeeState();
+  State<NewEmployee> createState() => _NewEmployeeState();
 }
 
 class _NewEmployeeState extends State<NewEmployee> {
@@ -40,23 +41,21 @@ class _NewEmployeeState extends State<NewEmployee> {
         enteredId.isEmpty ||
         enteredDate.isEmpty ||
         enteredSkill.isEmpty ||
-        enteredSalary <= 0 ||
         enteredWorkRate.isEmpty ||
-        enteredContact <= 0 ||
-        _selectDate == null) {
+        enteredBackground.isEmpty) {
       return;
     }
 
     widget.addEmployee(
-        enteredName,
-        enteredId,
-        enteredDate,
-        enteredSkill,
-        enteredSalary,
-        enteredSalary,
-        enteredWorkRate,
-        enteredContact,
-        _selectDate);
+      enteredName,
+      enteredId,
+      enteredDate,
+      enteredSkill,
+      enteredSalary,
+      enteredWorkRate,
+      enteredContact,
+      enteredBackground,
+    );
 
     Navigator.of(context).pop();
   }
@@ -119,102 +118,340 @@ class _NewEmployeeState extends State<NewEmployee> {
                     'Add Employee',
                     style: TextStyle(fontSize: 30),
                   ),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Enter Name',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Name: '),
+                      Flexible(
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          height: 40,
+                          width: 177,
+                          child: TextField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                filled: true,
+                                fillColor: Colors.black,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  borderSide:
+                                      BorderSide(color: Colors.black, width: 2),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: const Color(0xFF8A3324),
+                                        width: 2)),
+                                hintText: 'Enter Name',
+                                hintStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: kWhite,
+                                    fontWeight: FontWeight.w200)),
+                            controller: _nameController,
+                          ),
+                        ),
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                    ),
-                    controller: _nameController,
+                    ],
                   ),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Enter ID',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('ID: '),
+                      Flexible(
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          height: 40,
+                          width: 177,
+                          child: TextField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                filled: true,
+                                fillColor: Colors.black,
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 2)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: const Color(0xFF8A3324),
+                                        width: 2)),
+                                hintText: 'Enter ID',
+                                hintStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: kWhite,
+                                    fontWeight: FontWeight.w200)),
+                            controller: _idController,
+                          ),
+                        ),
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                    ),
-                    controller: _idController,
+                    ],
                   ),
-                  Container(
-                    height: 80,
-                    child: Row(
-                      children: [
-                        Text(_selectDate == null
-                            ? 'Date of Birth'
-                            : 'Date: ${DateFormat.yMd().format(_selectDate as DateTime)}'),
-                        FlatButton(
-                            onPressed: () => _dobDatePicker(),
-                            child: Text('Choose Date'))
-                      ],
-                    ),
+                  // Container(
+                  //   height: 80,
+                  //   child: Row(
+                  //     children: [
+                  //       Text(_selectDate == null
+                  //           ? 'Date of Birth'
+                  //           : 'Date: ${DateFormat.yMd().format(_selectDate as DateTime)}'),
+                  //       FlatButton(
+                  //           onPressed: () => _dobDatePicker(),
+                  //           child: Text('Choose Date'))
+                  //     ],
+                  //   ),
+                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Date of Birth: '),
+                      Flexible(
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          height: 40,
+                          width: 177,
+                          child: TextField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                filled: true,
+                                fillColor: Colors.black,
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 2)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: const Color(0xFF8A3324),
+                                        width: 2)),
+                                hintText: 'Enter Date',
+                                hintStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: kWhite,
+                                    fontWeight: FontWeight.w200)),
+                            controller: _dateController,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Employee skill',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Skill: '),
+                      Flexible(
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          height: 40,
+                          width: 177,
+                          child: TextField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                filled: true,
+                                fillColor: Colors.black,
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 2)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: const Color(0xFF8A3324),
+                                        width: 2)),
+                                hintText: 'Enter Skill',
+                                hintStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: kWhite,
+                                    fontWeight: FontWeight.w200)),
+                            controller: _skillController,
+                          ),
+                        ),
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                    ),
-                    controller: _skillController,
+                    ],
                   ),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Employee salary',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Salary: '),
+                      Flexible(
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          height: 40,
+                          width: 177,
+                          child: TextField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                filled: true,
+                                fillColor: Colors.black,
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 2)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: const Color(0xFF8A3324),
+                                        width: 2)),
+                                hintText: 'Enter Salary',
+                                hintStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: kWhite,
+                                    fontWeight: FontWeight.w200)),
+                            controller: _salaryController,
+                          ),
+                        ),
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                    ),
-                    controller: _salaryController,
+                    ],
                   ),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'EMployee WorkRate',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Work-Rate: '),
+                      Flexible(
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          height: 40,
+                          width: 177,
+                          child: TextField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                filled: true,
+                                fillColor: Colors.black,
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 2)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: const Color(0xFF8A3324),
+                                        width: 2)),
+                                hintText: 'Enter Work-Rate',
+                                hintStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: kWhite,
+                                    fontWeight: FontWeight.w200)),
+                            controller: _workRateController,
+                          ),
+                        ),
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                    ),
-                    controller: _idController,
+                    ],
                   ),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Employee Contact',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Contact: '),
+                      Flexible(
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          height: 40,
+                          width: 177,
+                          child: TextField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                filled: true,
+                                fillColor: Colors.black,
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 2)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: const Color(0xFF8A3324),
+                                        width: 2)),
+                                hintText: 'Enter Contact',
+                                hintStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: kWhite,
+                                    fontWeight: FontWeight.w200)),
+                            controller: _contactController,
+                          ),
+                        ),
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                    ),
-                    controller: _contactController,
+                    ],
                   ),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Employee Background',
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Background: '),
+                      Flexible(
+                        child: Container(
+                          margin: EdgeInsets.all(10),
+                          height: 40,
+                          width: 177,
+                          child: TextField(
+                            cursorColor: Colors.white,
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                filled: true,
+                                fillColor: Colors.black,
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 2)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    borderSide: BorderSide(
+                                        color: const Color(0xFF8A3324),
+                                        width: 2)),
+                                hintText: 'Enter Background',
+                                hintStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: kWhite,
+                                    fontWeight: FontWeight.w200)),
+                            controller: _backgroundController,
+                          ),
+                        ),
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(10),
+                        child: RaisedButton(
+                          onPressed: _submitData,
+                          color: kDarkestBlue,
+                          child: Text(
+                            'Confirm',
+                            style: kHeadingThree,
+                          ),
+                        ),
                       ),
-                    ),
-                    controller: _backgroundController,
+                      RaisedButton(
+                        onPressed: () {},
+                        color: Colors.red,
+                        child: Text(
+                          'Cancel',
+                          style: kHeadingThree,
+                        ),
+                      )
+                    ],
                   ),
                 ],
               ),
