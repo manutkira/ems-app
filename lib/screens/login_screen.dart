@@ -19,15 +19,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBlue,
-      // appBar: AppBar(
-      //   backgroundColor: kBlue,
-      //   actions: [
-      //     IconButton(
-      //         onPressed: () => _startAddNewEmployee(context),
-      //         icon: Icon(Icons.add_circle_outline))
-      //   ],
-      //   title: Text('Employee'),
-      // ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
@@ -48,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               Text(
                 "Internal EMS",
-                style: kHeadingOne.copyWith(fontSize: 32),
+                style: kHeadingOne.copyWith(fontSize: 42),
               ),
               const SizedBox(
                 height: 50,
@@ -70,6 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         Icons.email,
                         color: kWhite,
                       ),
+                    ),
+                    const SizedBox(
+                      height: 20.0,
                     ),
                     InputField(
                       getValue: (value) {
