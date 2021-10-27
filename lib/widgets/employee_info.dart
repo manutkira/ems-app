@@ -1,3 +1,4 @@
+import 'package:ems/screens/edit_employee.dart';
 import 'package:ems/widgets/employee_list.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,6 @@ class EmployeeInfo extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: bColor,
         title: Text('Employee'),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.edit))],
       ),
       body: Container(
         color: color,

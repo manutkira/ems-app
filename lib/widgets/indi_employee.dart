@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../dummy_data.dart';
 import '../models/employee.dart';
 import '../constants.dart';
+import '../screens/edit_employee.dart';
 
 class IndiEmployee extends StatelessWidget {
   final color = const Color(0xff05445E);
@@ -24,12 +25,24 @@ class IndiEmployee extends StatelessWidget {
     required this.contact,
     required this.background,
   });
+
+  void editEmployee(BuildContext context) {
+    Navigator.of(context).pushNamed(
+      EditEmployeeScreen.routeName,
+      arguments: id,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        IconButton(
+            color: Colors.white,
+            onPressed: () => editEmployee(context),
+            icon: Icon(Icons.edit)),
         Container(
-          margin: EdgeInsets.only(top: 40, left: 20, right: 20),
+          margin: EdgeInsets.only(top: 10, left: 20, right: 20),
           height: 139,
           width: double.infinity,
           child: Card(
