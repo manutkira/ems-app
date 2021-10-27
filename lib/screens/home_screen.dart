@@ -1,4 +1,5 @@
 import 'package:ems/constants.dart';
+import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,21 +7,27 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({Key? key}) : super(key: key);
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        leading: Container(
-          padding: kPaddingAll,
-          child: SvgPicture.asset(
-            'assets/images/menuburger.svg',
-            semanticsLabel: "menu",
+        leading: GestureDetector(
+          onTap: () => _scaffoldKey.currentState!.openDrawer(),
+          child: Container(
+            padding: kPaddingAll,
+            child: SvgPicture.asset(
+              'assets/images/menuburger.svg',
+              semanticsLabel: "menu",
+            ),
           ),
         ),
         title: Text('Internal EMS'),
       ),
+      drawer: const MenuDrawer(),
       body: SafeArea(
         bottom: false,
         child: Container(
