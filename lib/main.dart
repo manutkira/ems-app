@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:ems/screens/edit_employee.dart';
+import 'package:ems/screens/login_screen.dart';
 import 'package:ems/widgets/employee_info.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData.dark().copyWith(
+        dialogBackgroundColor: Colors.pink,
         colorScheme: ColorScheme(
           primary: kBlue,
           primaryVariant: kDarkestBlue,
@@ -52,7 +54,7 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      home: MyHomePage(),
+      home: LoginScreen(),
       routes: {
         EmployeeInfo.routeName: (ctx) => EmployeeInfo(),
         EditEmployeeScreen.routeName: (ctx) => EditEmployeeScreen(),

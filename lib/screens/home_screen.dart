@@ -1,4 +1,5 @@
 import 'package:ems/constants.dart';
+import 'package:ems/screens/attendance_screen.dart';
 import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -167,33 +168,41 @@ class HomeScreen extends StatelessWidget {
                       onTap: () {
                         print("attendance history tapped");
                       },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 175,
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Container(
-                            width: double.infinity,
-                            decoration: const BoxDecoration(
-                                color: kLightBlue,
-                                borderRadius: BorderRadius.all(kBorderRadius)),
-                            padding: kPaddingAll,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/images/chart.svg',
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  "Attendance History",
-                                  style: kSubtitle.copyWith(
-                                      color: kBlack,
-                                      fontWeight: FontWeight.w700),
-                                  textAlign: TextAlign.center,
-                                )
-                              ],
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => AttendanceScreen(),
+                          ));
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 175,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Container(
+                              width: double.infinity,
+                              decoration: const BoxDecoration(
+                                  color: kLightBlue,
+                                  borderRadius:
+                                      BorderRadius.all(kBorderRadius)),
+                              padding: kPaddingAll,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/images/chart.svg',
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    "Attendance History",
+                                    style: kSubtitle.copyWith(
+                                        color: kBlack,
+                                        fontWeight: FontWeight.w700),
+                                    textAlign: TextAlign.center,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
