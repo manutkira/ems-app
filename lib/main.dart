@@ -8,6 +8,7 @@ import './models/employee.dart';
 import './widgets/employee_list.dart';
 import './widgets/search.dart';
 import './widgets/new_employee.dart';
+import './constants.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,8 +20,37 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      theme: ThemeData.dark().copyWith(
+        colorScheme: ColorScheme(
+          primary: kBlue,
+          primaryVariant: kDarkestBlue,
+          secondary: kBlue,
+          secondaryVariant: kLightBlue,
+          surface: kBlue,
+          background: kBlue,
+          error: kRedText,
+          onPrimary: kWhite,
+          onSecondary: kWhite,
+          onSurface: kWhite,
+          onBackground: kWhite,
+          onError: kWhite,
+          brightness: Brightness.dark,
+        ),
+        textTheme: const TextTheme(
+          headline1: kHeadingOne,
+          headline2: kHeadingTwo,
+          headline3: kHeadingThree,
+          headline4: kHeadingFour,
+          caption: kParagraph,
+          bodyText1: kParagraph,
+          subtitle1: kSubtitle,
+        ),
+        scaffoldBackgroundColor: kBlue,
+        appBarTheme: AppBarTheme(
+          backgroundColor: kBlue,
+          titleTextStyle: kHeadingTwo,
+          elevation: 0,
+        ),
       ),
       home: MyHomePage(),
       routes: {
@@ -155,7 +185,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         backgroundColor: color,
         appBar: AppBar(
-          backgroundColor: color,
           actions: [
             IconButton(
                 onPressed: () => _startAddNewEmployee(context),
