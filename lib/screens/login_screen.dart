@@ -103,8 +103,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (email.isEmpty | password.isEmpty) return;
 
                   print("email $email\npassword $password");
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => HomeScreen()));
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => HomeScreen()));
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
