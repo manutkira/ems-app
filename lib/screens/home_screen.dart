@@ -106,100 +106,100 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 15,
-              ),
-              Expanded(
-                child: Container(
-                  padding: kPaddingAll,
-                  width: double.infinity,
-                  // height: double.infinity,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30)),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [kDarkestBlue, kDarkestBlue, kBlue],
-                    ),
+              Spacer(),
+              Container(
+                padding: kPaddingAll,
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * .57,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      kDarkestBlue,
+                      kDarkestBlue,
+                      kBlue,
+                    ],
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: MenuItem(
-                              onTap: () {
-                                print('check in tapped');
-                                //
-                              },
-                              illustration:
-                                  SvgPicture.asset("assets/images/tick.svg"),
-                              label: "Check In",
-                            ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: MenuItem(
+                            onTap: () {
+                              print('check in tapped');
+                              //
+                            },
+                            illustration:
+                                SvgPicture.asset("assets/images/tick.svg"),
+                            label: "Check In",
                           ),
-                          SizedBox(
-                            width: 15,
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: MenuItem(
+                            onTap: () {
+                              print('check out tapped');
+                              //
+                            },
+                            illustration:
+                                SvgPicture.asset("assets/images/close.svg"),
+                            label: "Check out",
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: MenuItem(
-                              onTap: () {
-                                print('check out tapped');
-                                //
-                              },
-                              illustration:
-                                  SvgPicture.asset("assets/images/close.svg"),
-                              label: "Check out",
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          print("attendance history tapped");
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 175,
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: Container(
-                              width: double.infinity,
-                              decoration: const BoxDecoration(
-                                  color: kLightBlue,
-                                  borderRadius:
-                                      BorderRadius.all(kBorderRadius)),
-                              padding: kPaddingAll,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/images/chart.svg',
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "Attendance History",
-                                    style: kSubtitle.copyWith(
-                                        color: kBlack,
-                                        fontWeight: FontWeight.w700),
-                                    textAlign: TextAlign.center,
-                                  )
-                                ],
-                              ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        print("attendance history tapped");
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 175,
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: Container(
+                            width: double.infinity,
+                            decoration: const BoxDecoration(
+                                color: kLightBlue,
+                                borderRadius: BorderRadius.all(kBorderRadius)),
+                            padding: kPaddingAll,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/images/chart.svg',
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  "Attendance History",
+                                  style: kSubtitle.copyWith(
+                                      color: kBlack,
+                                      fontWeight: FontWeight.w700),
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
