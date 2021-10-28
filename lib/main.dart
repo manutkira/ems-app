@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:ems/screens/attendance/individual_attendance.dart';
 import 'package:ems/screens/edit_employee.dart';
 import 'package:ems/screens/login_screen.dart';
 import 'package:ems/widgets/employee_info.dart';
@@ -58,6 +59,8 @@ class MyApp extends StatelessWidget {
       routes: {
         EmployeeInfo.routeName: (ctx) => EmployeeInfo(),
         EditEmployeeScreen.routeName: (ctx) => EditEmployeeScreen(),
+        IndividualAttendanceScreen.routeName: (ctx) =>
+            IndividualAttendanceScreen(),
       },
     );
   }
