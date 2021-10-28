@@ -1,4 +1,5 @@
 import 'package:ems/constants.dart';
+import 'package:ems/screens/your%20profile/your_profile_edit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,14 @@ class YourProfileViewScreen extends StatelessWidget {
           "Your Profile",
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.edit_outlined))
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) => YourProfileEditScreen(),),);
+              },
+              icon: Icon(Icons.edit_outlined))
         ],
       ),
       body: SingleChildScrollView(
