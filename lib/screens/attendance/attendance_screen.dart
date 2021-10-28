@@ -1,11 +1,10 @@
 import 'package:intl/intl.dart';
 
-import 'package:ems/widgets/attendance_item.dart';
 import 'package:flutter/material.dart';
 
-import '../dummy_data.dart';
-import '../widgets/attendance_list.dart';
-import '../constants.dart';
+import '../../dummy_data.dart';
+import '../../widgets/attendance_list.dart';
+import '../../constants.dart';
 
 class AttendanceScreen extends StatefulWidget {
   @override

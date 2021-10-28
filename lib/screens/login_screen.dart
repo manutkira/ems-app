@@ -102,7 +102,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () {
                   if (email.isEmpty | password.isEmpty) return;
 
-                  print("email $email\npassword $password");
                   Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (_) => HomeScreen()));
                 },

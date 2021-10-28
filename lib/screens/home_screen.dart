@@ -1,5 +1,5 @@
 import 'package:ems/constants.dart';
-import 'package:ems/screens/attendance_screen.dart';
+import 'package:ems/screens/attendance/attendance_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';

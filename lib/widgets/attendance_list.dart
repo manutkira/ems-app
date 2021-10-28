@@ -1,4 +1,3 @@
-import 'package:ems/widgets/attendance_item.dart';
 import 'package:flutter/material.dart';
 
 import '../dummy_data.dart';
@@ -60,8 +59,7 @@ class AttendanceList extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       color: attendanceHistory[index].bgColor),
                   alignment: Alignment.center,
-                  width: 98,
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Text(
                     attendanceHistory[index].status,
                     style: TextStyle(
