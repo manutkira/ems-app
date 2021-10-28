@@ -1,4 +1,5 @@
 import 'package:ems/models/attendance.dart';
+import 'package:ems/models/individual_attendance.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import './models/employee.dart';
@@ -121,4 +122,37 @@ const attendanceHistory = const [
       status: 'Permission',
       textColor: Color(0xff313B3F),
       bgColor: Color(0xff77B1C9)),
+];
+
+final individualAttendance = [
+  IndividualAttendance(
+    name: 'Kira Manut',
+    id: '1',
+    totalPresent: '10',
+    totalAbsent: '5',
+    totalPermission: '2',
+    totalLate: '2',
+    isAbsent: DateTime(2021, 10, 23),
+    isPermission: DateTime(2021, 10, 25),
+  ),
+  IndividualAttendance(
+    name: 'Kim Song',
+    id: '2',
+    totalPresent: '15',
+    totalAbsent: '6',
+    totalPermission: '3',
+    totalLate: '3',
+    isAbsent: DateTime(2021, 10, 24),
+    isPermission: DateTime(2021, 10, 25),
+  ),
+  IndividualAttendance(
+    name: 'Kheav Sunny',
+    id: '3',
+    totalPresent: '20',
+    totalAbsent: '5',
+    totalPermission: '3',
+    totalLate: '3',
+    isAbsent: DateTime(2021, 10, 24),
+    isPermission: DateTime(2021, 10, 25),
+  ),
 ];

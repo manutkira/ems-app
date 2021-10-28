@@ -1,3 +1,4 @@
+import 'package:ems/screens/attendance/individual_attendance.dart';
 import 'package:flutter/material.dart';
 
 import '../dummy_data.dart';
@@ -20,9 +21,16 @@ class AttendanceList extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Image.asset(
-                      'assets/images/profile-icon-png-910.png',
-                      width: 85,
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                            IndividualAttendanceScreen.routeName,
+                            arguments: {'id': attendanceHistory[index].id});
+                      },
+                      child: Image.asset(
+                        'assets/images/profile-icon-png-910.png',
+                        width: 85,
+                      ),
                     ),
                     SizedBox(
                       width: 20,
