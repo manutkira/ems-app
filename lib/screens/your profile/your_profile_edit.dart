@@ -1,4 +1,5 @@
 import 'package:ems/constants.dart';
+import 'package:ems/widgets/statuses/error.dart';
 import 'package:ems/widgets/textbox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,71 +57,103 @@ class _YourProfileEditScreenState extends State<YourProfileEditScreen> {
                 showDialog(
                     context: context,
                     builder: (context) {
-                      return AlertDialog(
-                        insetPadding: const EdgeInsets.all(10),
-                        title: const Text("Confirmation"),
-                        content: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                  "Please enter your password to save the changes."),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              TextBoxCustom(
-                                isPassword: true,
-                                textHint: 'your password',
-                                getValue: (value) {
-                                  setState(() {
-                                    old_password = value;
-                                  });
-                                },
-                                defaultText: old_password,
-                              ),
-                            ],
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: Text(
-                                'Confirm',
-                                style: kParagraph,
+                      var error = "";
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return AlertDialog(
+                            insetPadding: const EdgeInsets.all(10),
+                            title: const Text("Confirmation"),
+                            content: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                      "Please enter your password to save the changes."),
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: error.isNotEmpty
+                                          ? Column(
+                                              children: [
+                                                StatusError(
+                                                  text: error,
+                                                ),
+                                                const SizedBox(
+                                                  height: 20,
+                                                ),
+                                              ],
+                                            )
+                                          : null),
+                                  TextBoxCustom(
+                                    isPassword: true,
+                                    textHint: 'your password',
+                                    getValue: (value) {
+                                      setState(() {
+                                        old_password = value;
+                                      });
+                                    },
+                                    defaultText: old_password,
+                                  ),
+                                ],
                               ),
                             ),
-                            onPressed: () async {
-                              var isVerified = await confirmPassword();
-                              if (isVerified) {
-                                // update info here
-                                await updateProfile();
-                                // if success, close. else stay open
-                                Navigator.of(context).pop();
-                              }
-                            },
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(right: 15),
-                            child: TextButton(
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: Text(
-                                  'Cancel',
-                                  style: kParagraph,
+                            actions: [
+                              TextButton(
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Text(
+                                    'Confirm',
+                                    style: kParagraph,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  setState(() {
+                                    error = "";
+                                  });
+                                  if (old_password.isEmpty) {
+                                    setState(() {
+                                      error = "Please input password.";
+                                    });
+                                  }
+                                  var isVerified = await confirmPassword();
+                                  if (isVerified) {
+                                    // update info here
+                                    await updateProfile();
+                                    // if success, close. else stay open
+                                    Navigator.of(context).pop();
+                                  } else {
+                                    setState(() {
+                                      error = "Wrong password";
+                                    });
+                                  }
+                                },
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(right: 15),
+                                child: TextButton(
+                                  child: const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    child: Text(
+                                      'Cancel',
+                                      style: kParagraph,
+                                    ),
+                                  ),
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: kRedText,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
                                 ),
                               ),
-                              style: TextButton.styleFrom(
-                                backgroundColor: kRedText,
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ),
-                        ],
+                            ],
+                          );
+                        },
                       );
                     });
                 print("$name $email $password");

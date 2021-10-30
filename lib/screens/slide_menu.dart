@@ -1,3 +1,4 @@
+import 'package:ems/screens/login_screen.dart';
 import 'package:ems/screens/your%20profile/your_profile_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,10 @@ class MenuDrawer extends StatelessWidget {
   const MenuDrawer({
     Key? key,
   }) : super(key: key);
+
+  void logout() {
+    // logout here
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,13 +62,17 @@ class MenuDrawer extends StatelessWidget {
                   leading: const Icon(MdiIcons.arrowLeftBottom),
                   title: const Text('Logout'),
                   onTap: () {
-                    // Update the state of the app.
-                    // ...
+                    logout();
+                    Navigator.of(context).pushReplacement(
+                      CupertinoPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
                   },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 15),
+              const Padding(
+                padding: EdgeInsets.only(right: 15),
                 child: Text(
                   "version 1.0",
                   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 10),

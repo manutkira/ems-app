@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:ems/constants.dart';
+import 'package:ems/demo/statuses.dart';
 import 'package:ems/screens/attendance/attendance_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/widgets/menu_item.dart';
@@ -7,9 +10,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  var time = 'calculating';
+  late Timer _timer;
+
+  @override
+  void initState() {
+    // "It's ${DateFormat('jm').format(DateTime.now())} on ${DateFormat('dd-MM-yyyy').format(DateTime.now())}",
+    super.initState();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        time = DateFormat('jm').format(DateTime.now());
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +49,12 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        title: Text('Internal EMS'),
+        title: const Text('Internal EMS'),
       ),
       drawer: const MenuDrawer(),
       body: SafeArea(
         bottom: false,
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
@@ -64,13 +87,13 @@ class HomeScreen extends StatelessWidget {
                               height: 5,
                             ),
                             Text(
-                              "It's ${DateFormat('jm').format(DateTime.now())} on ${DateFormat('dd-MM-yyyy').format(DateTime.now())}",
+                              "It's $time on ${DateFormat('dd-MM-yyyy').format(DateTime.now())}.",
                               style: kSubtitleTwo,
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Container(
                         padding: kPaddingAll.copyWith(top: 30, bottom: 30),
                         margin: kPaddingAll,
@@ -114,7 +137,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               Container(
                 padding: kPaddingAll,
                 width: double.infinity,
@@ -144,6 +167,8 @@ class HomeScreen extends StatelessWidget {
                           child: MenuItem(
                             onTap: () {
                               print('check in tapped');
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (context) => StatusDemo()));
                               //
                             },
                             illustration:
