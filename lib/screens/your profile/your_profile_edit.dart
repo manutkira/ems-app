@@ -14,6 +14,7 @@ class _YourProfileEditScreenState extends State<YourProfileEditScreen> {
   var name = 'loading...';
   var email = 'loading...';
   var password = '';
+  var old_password = '';
 
   @override
   void initState() {
@@ -27,6 +28,21 @@ class _YourProfileEditScreenState extends State<YourProfileEditScreen> {
     email = 'user@login.com';
   }
 
+  Future<bool> confirmPassword() async {
+    if (old_password.isNotEmpty) {
+      // fetch verify password route here
+      print('old password: $old_password');
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<void> updateProfile() async {
+    // await fetch('/api/updateprofile');
+    print("profile updated.");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,9 +53,79 @@ class _YourProfileEditScreenState extends State<YourProfileEditScreen> {
         actions: [
           IconButton(
               onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        insetPadding: const EdgeInsets.all(10),
+                        title: const Text("Confirmation"),
+                        content: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                  "Please enter your password to save the changes."),
+                              const SizedBox(
+                                height: 30,
+                              ),
+                              TextBoxCustom(
+                                isPassword: true,
+                                textHint: 'your password',
+                                getValue: (value) {
+                                  setState(() {
+                                    old_password = value;
+                                  });
+                                },
+                                defaultText: old_password,
+                              ),
+                            ],
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                'Confirm',
+                                style: kParagraph,
+                              ),
+                            ),
+                            onPressed: () async {
+                              var isVerified = await confirmPassword();
+                              if (isVerified) {
+                                // update info here
+                                await updateProfile();
+                                // if success, close. else stay open
+                                Navigator.of(context).pop();
+                              }
+                            },
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(right: 15),
+                            child: TextButton(
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Text(
+                                  'Cancel',
+                                  style: kParagraph,
+                                ),
+                              ),
+                              style: TextButton.styleFrom(
+                                backgroundColor: kRedText,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    });
                 print("$name $email $password");
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.check,
                 size: 30,
               ))

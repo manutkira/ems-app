@@ -47,8 +47,6 @@ class _InputFieldState extends State<InputField> {
           cursorColor: kWhite,
           style: kSubtitle,
           decoration: InputDecoration(
-            hintStyle:
-                kSubtitle.copyWith(color: kSubtitle.color!.withOpacity(0.5)),
             hintText: widget.textHint,
             prefixIcon: widget.prefixIcon,
             suffixIcon: widget.isPassword
@@ -60,29 +58,17 @@ class _InputFieldState extends State<InputField> {
                     },
                     child: Container(
                       child: showPassword
-                          ? Icon(
+                          ? const Icon(
                               MdiIcons.eyeOff,
                               color: kWhite,
                             )
-                          : Icon(
+                          : const Icon(
                               MdiIcons.eye,
                               color: kWhite,
                             ),
                     ),
                   )
                 : null,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-            filled: true,
-            fillColor: kDarkestBlue,
-            enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.all(kBorderRadius),
-            ),
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.all(kBorderRadius),
-            ),
           ),
         ),
       ],
