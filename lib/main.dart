@@ -1,16 +1,14 @@
-import 'dart:math';
-
 import 'package:ems/screens/attendance/individual_attendance.dart';
 import 'package:ems/screens/edit_employee.dart';
 import 'package:ems/screens/login_screen.dart';
 import 'package:ems/widgets/employee_info.dart';
 import 'package:flutter/material.dart';
 
+import './constants.dart';
 import './models/employee.dart';
 import './widgets/employee_list.dart';
-import './widgets/search.dart';
 import './widgets/new_employee.dart';
-import './constants.dart';
+import './widgets/search.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,8 +21,44 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData.dark().copyWith(
-        dialogBackgroundColor: Colors.pink,
-        colorScheme: ColorScheme(
+        // dialogBackgroundColor: kBlue,
+        dialogTheme: DialogTheme(
+          titleTextStyle: kHeadingThree,
+          backgroundColor: kDarkestBlue,
+          contentTextStyle: kParagraph,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: kWhite,
+          selectionColor: kBlack.withOpacity(0.25),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          hintStyle:
+              kSubtitle.copyWith(color: kSubtitle.color!.withOpacity(0.5)),
+          contentPadding: const EdgeInsets.all(15),
+          filled: true,
+          fillColor: Colors.black.withOpacity(0.25),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.all(kBorderRadius),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.all(kBorderRadius),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            primary: kWhite,
+            backgroundColor: kBlue,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+          ),
+        ),
+        colorScheme: const ColorScheme(
           primary: kBlue,
           primaryVariant: kDarkestBlue,
           secondary: kBlue,

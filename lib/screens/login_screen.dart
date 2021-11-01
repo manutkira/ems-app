@@ -1,5 +1,6 @@
 import 'package:ems/screens/home_screen.dart';
 import 'package:ems/widgets/inputfield.dart';
+import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String password = "";
   String email = "";
+  String error = "";
 
   void goToHomeScreen(BuildContext context) {
     //
@@ -45,6 +47,17 @@ class _LoginScreenState extends State<LoginScreen> {
               Text(
                 "Internal EMS",
                 style: kHeadingOne.copyWith(fontSize: 42),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              Container(
+                padding: kPadding,
+                child: error.isNotEmpty
+                    ? StatusError(
+                        text: error,
+                      )
+                    : null,
               ),
               const SizedBox(
                 height: 50,
@@ -100,7 +113,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 onPressed: () {
-                  if (email.isEmpty | password.isEmpty) return;
+                  setState(() {
+                    error = "";
+                  });
+                  if (email.isEmpty | password.isEmpty) {
+                    return setState(() {
+                      error = "Please enter both email and password.";
+                    });
+                  }
 
                   Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (_) => HomeScreen()));

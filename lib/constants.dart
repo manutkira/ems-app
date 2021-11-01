@@ -13,6 +13,10 @@ const kRedText = Color(0xffa03e3e);
 const kRedBackground = Color(0xffffcbce);
 const kGreenText = Color(0xff334732);
 const kGreenBackground = Color(0xff9ce29b);
+const kYellowText = Color(0xff4E5133);
+const kYellowBackground = Color(0xffF2E572);
+const kBlueText = Color(0xff334D51);
+const kBlueBackground = Color(0xff72CCF2);
 
 // TEXT
 

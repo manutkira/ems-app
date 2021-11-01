@@ -34,8 +34,8 @@ class _TextBoxCustomState extends State<TextBoxCustom> {
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_onTextChanged);
     _controller.text = widget.defaultText;
+    _controller.addListener(_onTextChanged);
   }
 
   @override
@@ -46,7 +46,6 @@ class _TextBoxCustomState extends State<TextBoxCustom> {
       cursorColor: kWhite,
       style: kSubtitle,
       decoration: InputDecoration(
-        hintStyle: kSubtitle.copyWith(color: kSubtitle.color!.withOpacity(0.5)),
         hintText: widget.textHint,
         prefixIcon: widget.prefixIcon,
         suffixIcon: widget.isPassword
@@ -69,18 +68,6 @@ class _TextBoxCustomState extends State<TextBoxCustom> {
                 ),
               )
             : null,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        filled: true,
-        fillColor: kDarkestBlue,
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.all(kBorderRadius),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.all(kBorderRadius),
-        ),
       ),
     );
   }
