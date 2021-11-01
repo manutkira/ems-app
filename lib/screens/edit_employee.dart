@@ -1,6 +1,7 @@
 import 'package:ems/dummy_data.dart';
 import 'package:ems/widgets/inputfield.dart';
 import 'package:flutter/material.dart';
+
 import '../constants.dart';
 
 class EditEmployeeScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class EditEmployeeScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: kDarkestBlue,
         title: Text(
-          'Edit Employee $employeeId',
+          'Edit Employee',
         ),
       ),
       body: Container(
@@ -23,12 +24,21 @@ class EditEmployeeScreen extends StatelessWidget {
         child: Container(
           margin: EdgeInsets.all(20),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 margin: EdgeInsets.only(bottom: 20),
-                child: Text(
-                  'Edit Employee',
-                  style: kHeadingOne.copyWith(fontSize: 30),
+                child: Row(
+                  children: [
+                    Text(
+                      'Edit Employee: ',
+                      style: kHeadingThree,
+                    ),
+                    Text(
+                      selectedEmployee.name,
+                      style: kHeadingFour,
+                    ),
+                  ],
                 ),
               ),
               Row(
@@ -359,6 +369,47 @@ class EditEmployeeScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(right: 10),
+                    child: RaisedButton(
+                      color: Theme.of(context).primaryColor,
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: Color(0xff043347),
+                                title: Text('Are you sure?'),
+                                content:
+                                    Text('Do you want to save the changes?'),
+                                actions: [
+                                  RaisedButton(
+                                    color: Color(0xff05445E),
+                                    onPressed: () {},
+                                    child: Text('Yes'),
+                                  ),
+                                  RaisedButton(
+                                    color: Colors.red,
+                                    onPressed: () {},
+                                    child: Text('No'),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                      child: Text('Save'),
+                    ),
+                  ),
+                  RaisedButton(
+                    color: Colors.red,
+                    onPressed: () {},
+                    child: Text('Back'),
+                  ),
+                ],
+              )
             ],
           ),
         ),

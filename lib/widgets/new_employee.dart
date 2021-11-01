@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../constants.dart';
+import '../constants.dart';
 
 class NewEmployee extends StatefulWidget {
   final Function addEmployee;
@@ -14,6 +15,8 @@ class NewEmployee extends StatefulWidget {
 }
 
 class _NewEmployeeState extends State<NewEmployee> {
+  final color = const Color(0xff05445E);
+  final color1 = const Color(0xff3B9AAD);
   final _nameController = TextEditingController();
   final _idController = TextEditingController();
   final _dateController = TextEditingController();
@@ -101,8 +104,8 @@ class _NewEmployeeState extends State<NewEmployee> {
               ),
               gradient: LinearGradient(
                 colors: [
-                  Color(0xff3B9AAD),
-                  Colors.blue,
+                  color1,
+                  color,
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -435,7 +438,30 @@ class _NewEmployeeState extends State<NewEmployee> {
                       Container(
                         margin: EdgeInsets.all(10),
                         child: RaisedButton(
-                          onPressed: _submitData,
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    backgroundColor: Color(0xff043347),
+                                    title: Text('Are you sure?'),
+                                    content: Text(
+                                        'Do you want to add this new employee?'),
+                                    actions: [
+                                      RaisedButton(
+                                        color: Color(0xff05445E),
+                                        onPressed: _submitData,
+                                        child: Text('Yes'),
+                                      ),
+                                      RaisedButton(
+                                        color: Colors.red,
+                                        onPressed: () {},
+                                        child: Text('No'),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
                           color: kDarkestBlue,
                           child: Text(
                             'Confirm',

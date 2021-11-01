@@ -43,9 +43,16 @@ class AttendanceScreenByAllTime extends StatelessWidget {
         ],
       ),
       body: Container(
-        margin: EdgeInsets.only(top: 10),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Container(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'All-Time',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
             Expanded(
               flex: 5,
               child: Container(

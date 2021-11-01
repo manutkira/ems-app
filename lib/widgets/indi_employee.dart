@@ -129,7 +129,7 @@ class IndiEmployee extends StatelessWidget {
                   gradient: LinearGradient(
                     colors: [
                       color1,
-                      Colors.blue,
+                      color,
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
