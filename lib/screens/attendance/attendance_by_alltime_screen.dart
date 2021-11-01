@@ -1,40 +1,13 @@
-import 'package:intl/intl.dart';
-
+import 'package:ems/screens/attendance/attendance_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../../dummy_data.dart';
-import '../../widgets/attendance/attendance_list.dart';
+import '../../widgets/attendance/attendacne_all_time_list.dart';
 import '../../constants.dart';
-import '../attendance/attendance_by_alltime_screen.dart';
 
-class AttendanceScreen extends StatefulWidget {
-  @override
-  State<AttendanceScreen> createState() => _AttendanceScreenState();
-}
-
-class _AttendanceScreenState extends State<AttendanceScreen> {
+class AttendanceScreenByAllTime extends StatelessWidget {
   final color = const Color(0xff05445E);
 
   final color1 = const Color(0xff3B9AAD);
-
-  DateTime? _selectDate;
-
-  void _byDayDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1990),
-      lastDate: DateTime.now(),
-    ).then((picked) {
-      if (picked == null) {
-        return;
-      }
-      setState(() {
-        _selectDate = picked;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,32 +46,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         margin: EdgeInsets.only(top: 10),
         child: Column(
           children: [
-            FlatButton(
-              child: Container(
-                child: Row(
-                  children: [
-                    Text(
-                      _selectDate == null
-                          ? 'Pick a Date'
-                          : 'Date: ${DateFormat.yMd().format(_selectDate as DateTime)}',
-                      style: kHeadingFour,
-                    ),
-                    FlatButton(
-                        onPressed: () => _byDayDatePicker(),
-                        child: Text(
-                          'Choose Date',
-                          style: kParagraph,
-                        ))
-                  ],
-                ),
-              ),
-              // style: ButtonStyle(
-              //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              //         RoundedRectangleBorder(
-              //             borderRadius: BorderRadius.circular(18),
-              //             side: BorderSide(color: Colors.red)))),
-              onPressed: () {},
-            ),
             Expanded(
               flex: 5,
               child: Container(
@@ -115,7 +62,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     )),
-                child: AttendanceList(),
+                child: AttendanceAllTime(),
               ),
             ),
           ],
@@ -128,13 +75,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 void onSelected(BuildContext context, int item) {
   switch (item) {
     case 0:
-      break;
-    case 1:
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => AttendanceScreenByAllTime(),
+          builder: (context) => AttendanceScreen(),
         ),
       );
+      break;
+    case 1:
       break;
   }
 }

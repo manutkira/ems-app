@@ -1,7 +1,7 @@
 import 'package:ems/screens/attendance/individual_attendance.dart';
 import 'package:flutter/material.dart';
 
-import '../dummy_data.dart';
+import '../../dummy_data.dart';
 
 class AttendanceList extends StatelessWidget {
   @override
