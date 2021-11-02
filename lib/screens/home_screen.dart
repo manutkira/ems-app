@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ems/constants.dart';
 import 'package:ems/demo/statuses.dart';
 import 'package:ems/screens/attendance/attendance_screen.dart';
+import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,14 +21,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var time = 'calculating';
-  late Timer _timer;
 
   @override
   void initState() {
     // "It's ${DateFormat('jm').format(DateTime.now())} on ${DateFormat('dd-MM-yyyy').format(DateTime.now())}",
     super.initState();
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         time = DateFormat('jm').format(DateTime.now());
       });
@@ -168,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             onTap: () {
                               print('check in tapped');
                               Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (context) => StatusDemo()));
+                                  builder: (context) => const StatusDemo()));
                               //
                             },
                             illustration:
@@ -176,15 +176,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             label: "Check In",
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 15,
                         ),
                         Expanded(
                           flex: 1,
                           child: MenuItem(
                             onTap: () {
-                              print('check out tapped');
-                              //
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => EmployeeListScreen(),
+                                ),
+                              );
                             },
                             illustration:
                                 SvgPicture.asset("assets/images/close.svg"),
@@ -193,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     GestureDetector(
@@ -206,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             builder: (_) => AttendanceScreen(),
                           ));
                         },
-                        child: Container(
+                        child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           height: 175,
                           child: AspectRatio(

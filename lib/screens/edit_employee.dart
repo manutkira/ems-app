@@ -9,6 +9,7 @@ class EditEmployeeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final employeeId = ModalRoute.of(context)!.settings.arguments as String;
+    print(employeeId);
     final selectedEmployee =
         indiEmployee.firstWhere((employee) => employee.id == employeeId);
     return Scaffold(

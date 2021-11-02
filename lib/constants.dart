@@ -19,7 +19,6 @@ const kBlueText = Color(0xff334D51);
 const kBlueBackground = Color(0xff72CCF2);
 
 // TEXT
-
 const kHeadingOne =
     TextStyle(fontSize: 26, color: kWhite, fontWeight: FontWeight.w700);
 const kHeadingTwo =
