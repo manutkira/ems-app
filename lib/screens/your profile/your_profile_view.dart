@@ -39,13 +39,50 @@ class YourProfileViewScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Center(
-                          child: CircleAvatar(
-                            backgroundColor: kDarkestBlue,
-                            radius: 75,
-                            child: Image.asset(
-                              'assets/images/bigprofile.png',
-                              fit: BoxFit.cover,
-                            ),
+                          child: Stack(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: kDarkestBlue,
+                                radius: 75,
+                                child: Image.asset(
+                                  'assets/images/bigprofile.png',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 10,
+                                child: Container(
+                                  width: 25,
+                                  height: 25,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 5),
+                                  decoration: BoxDecoration(
+                                    color: snapshot.data!.status.toString() ==
+                                            "Active"
+                                        ? kGreenBackground
+                                        : snapshot.data!.status.toString() ==
+                                                "Inactive"
+                                            ? kRedBackground
+                                            : Colors.grey,
+                                    borderRadius: BorderRadius.circular(360),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: snapshot.data!.status
+                                                      .toString() ==
+                                                  "Active"
+                                              ? kGreenBackground
+                                              : snapshot.data!.status
+                                                          .toString() ==
+                                                      "Inactive"
+                                                  ? kRedBackground
+                                                  : Colors.grey,
+                                          blurRadius: 15)
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
                         ),
                         const SizedBox(
@@ -122,14 +159,6 @@ class YourProfileViewScreen extends StatelessWidget {
                                     height: 20,
                                   ),
                                   Text(
-                                    "Status",
-                                    style: kParagraph.copyWith(
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
                                     "Rate",
                                     style: kParagraph.copyWith(
                                         fontWeight: FontWeight.w700),
@@ -198,13 +227,6 @@ class YourProfileViewScreen extends StatelessWidget {
                                     height: 20,
                                   ),
                                   Text(
-                                    snapshot.data!.status.toString(),
-                                    style: kParagraph,
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
                                     snapshot.data!.rate.toString(),
                                     style: kParagraph,
                                   ),
@@ -225,10 +247,10 @@ class YourProfileViewScreen extends StatelessWidget {
                                   fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             Text(
-                              snapshot.data!.background ?? "Not available",
+                              snapshot.data!.background ?? "Not Available",
                               style: kParagraph,
                             ),
                           ],
@@ -238,11 +260,22 @@ class YourProfileViewScreen extends StatelessWidget {
                   ),
                 );
               } else if (snapshot.hasError) {
+                print(snapshot.error);
                 return const Text('Error fetching data.');
               } else {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: kWhite,
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const [
+                      CircularProgressIndicator(
+                        color: kWhite,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text("fetching data"),
+                    ],
                   ),
                 );
               }
