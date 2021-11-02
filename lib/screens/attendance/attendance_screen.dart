@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 
-import '../../dummy_data.dart';
+import '../../screens/attendance/attendance_by_month_screen.dart';
 import '../../widgets/attendance/attendance_list.dart';
 import '../../constants.dart';
 import '../attendance/attendance_by_alltime_screen.dart';
@@ -21,11 +21,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   void _byDayDatePicker() {
     showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1990),
-      lastDate: DateTime.now(),
-    ).then((picked) {
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(1990),
+            lastDate: DateTime.now(),
+            initialEntryMode: DatePickerEntryMode.calendarOnly,
+            initialDatePickerMode: DatePickerMode.year)
+        .then((picked) {
       if (picked == null) {
         return;
       }
@@ -65,6 +67,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         ),
                       ),
                       value: 1,
+                    ),
+                    PopupMenuItem(
+                      child: Text(
+                        'By Month',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      value: 2,
                     ),
                   ])
         ],
@@ -133,6 +145,13 @@ void onSelected(BuildContext context, int item) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => AttendanceScreenByAllTime(),
+        ),
+      );
+      break;
+    case 2:
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => AttendanceByMonthScreen(),
         ),
       );
       break;
