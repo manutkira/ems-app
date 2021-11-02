@@ -9,23 +9,17 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class StatusWarning extends StatusWidget {
   const StatusWarning({
     Key? key,
-    this.backgroundColor = kYellowBackground,
-    this.textColor = kYellowText,
-    this.icon = const Icon(
-      MdiIcons.alertOutline,
-      size: 16,
-      color: kYellowText,
-    ),
     this.text = "this is a warning.",
   }) : super(
             key: key,
-            backgroundColor: backgroundColor,
-            icon: icon,
+            backgroundColor: kYellowBackground,
+            icon: const Icon(
+              MdiIcons.alertOutline,
+              size: 16,
+              color: kYellowText,
+            ),
             text: text,
-            textColor: textColor);
+            textColor: kYellowText);
 
   final String text;
-  final Color backgroundColor;
-  final Color textColor;
-  final Icon icon;
 }
