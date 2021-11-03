@@ -242,11 +242,12 @@ class _YourProfileEditScreenState extends State<YourProfileEditScreen> {
                                   child: TextBoxCustom(
                                     textHint: 'username',
                                     getValue: (value) {
+                                      print(value);
                                       setState(() {
                                         _user.name = value;
                                       });
                                     },
-                                    defaultText: "_user.name",
+                                    defaultText: "${snapshot.data!.name}",
                                   ),
                                 ),
                               ],

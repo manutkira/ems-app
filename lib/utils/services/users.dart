@@ -9,7 +9,7 @@ class UserService extends BaseService {
     var url = "https://laravel-rest-api-app.herokuapp.com/api/users/$id";
     var response = await http.get(Uri.parse(url));
     var data = json.decode(response.body);
-    return User.fromJson(data);
+    return User.fromJson(data['data']);
   }
 
   Future<List<User>> getAllUsers() async {
