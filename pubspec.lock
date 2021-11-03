@@ -202,11 +202,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -338,15 +333,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
-<<<<<<< HEAD
-  month_picker_dialog:
-    dependency: "direct main"
-    description:
-      name: month_picker_dialog
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.0"
-=======
   mime:
     dependency: transitive
     description:
@@ -361,7 +347,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.2"
->>>>>>> 9dae53b02b0504f3f8d24f0e7edc64b9c268d260
   path:
     dependency: transitive
     description:
@@ -390,15 +375,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.4.0"
-<<<<<<< HEAD
-  rxdart:
-    dependency: transitive
-    description:
-      name: rxdart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.26.0"
-=======
   pool:
     dependency: transitive
     description:
@@ -434,7 +410,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
->>>>>>> 9dae53b02b0504f3f8d24f0e7edc64b9c268d260
   sky_engine:
     dependency: transitive
     description: flutter
@@ -495,21 +470,21 @@ packages:
       name: syncfusion_flutter_calendar
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "19.3.47"
+    version: "19.3.48"
   syncfusion_flutter_core:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "19.3.47"
+    version: "19.3.48"
   syncfusion_flutter_datepicker:
     dependency: transitive
     description:
       name: syncfusion_flutter_datepicker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "19.3.47"
+    version: "19.3.48"
   term_glyph:
     dependency: transitive
     description:

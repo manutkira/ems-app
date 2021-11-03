@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../utils/services/users.dart';
 import '../../models/user.dart';
 import '../../constants.dart';
+import '../../screens/employee/new_employee_screen.dart';
 
 class EmployeeListScreen extends StatelessWidget {
   final color = const Color(0xff05445E);
@@ -14,6 +15,18 @@ class EmployeeListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Employee'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => NewEmployeeScreen(),
+                ),
+              );
+            },
+            icon: Icon(Icons.add),
+          ),
+        ],
       ),
       body: Column(
         children: [

@@ -166,6 +166,38 @@ class EmployeeInfoScreen extends StatelessWidget {
                                   SizedBox(
                                     height: 20,
                                   ),
+                                  Text(
+                                    'Phone: ',
+                                    style: kHeadingFour.copyWith(
+                                        color: Colors.black),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    'Email: ',
+                                    style: kHeadingFour.copyWith(
+                                        color: Colors.black),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    'Address: ',
+                                    style: kHeadingFour.copyWith(
+                                        color: Colors.black),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    'Position: ',
+                                    style: kHeadingFour.copyWith(
+                                        color: Colors.black),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
                                   Column(
                                     children: [
                                       Text(
@@ -177,7 +209,7 @@ class EmployeeInfoScreen extends StatelessWidget {
                                         height: 20,
                                       ),
                                       Text(
-                                        snapshot.data!.background as String,
+                                        snapshot.data!.background.toString(),
                                         style: kParagraph,
                                       ),
                                     ],
@@ -203,13 +235,13 @@ class EmployeeInfoScreen extends StatelessWidget {
                                   ),
                                   Text(
                                     snapshot.data!.skill as String,
-                                    style: kParagraph,
+                                    style: kParagraph.copyWith(fontSize: 12),
                                   ),
                                   SizedBox(
                                     height: 22,
                                   ),
                                   Text(
-                                    snapshot.data!.salary.toString(),
+                                    '\$${snapshot.data!.salary.toString()}',
                                     style: kParagraph,
                                   ),
                                   SizedBox(
@@ -217,6 +249,34 @@ class EmployeeInfoScreen extends StatelessWidget {
                                   ),
                                   Text(
                                     snapshot.data!.rate as String,
+                                    style: kParagraph,
+                                  ),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  Text(
+                                    snapshot.data!.phone as String,
+                                    style: kParagraph,
+                                  ),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  Text(
+                                    snapshot.data!.email as String,
+                                    style: kParagraph.copyWith(fontSize: 12),
+                                  ),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  Text(
+                                    snapshot.data!.address.toString(),
+                                    style: kParagraph,
+                                  ),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  Text(
+                                    snapshot.data!.position as String,
                                     style: kParagraph,
                                   ),
                                 ],
