@@ -46,6 +46,9 @@ class User {
   DateTime createdAt;
   DateTime updatedAt;
 
+  // factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  // Map<String, dynamic> toJson() => _$UserToJson(this);
+
   factory User.fromJson(Map<String, dynamic> json) {
     // json.forEach((key, value) {
     //   if (value.toString().isNotEmpty) {
@@ -54,21 +57,21 @@ class User {
     // });
 
     return User(
-      id: json["id"],
-      name: json["name"],
-      phone: json["phone"],
-      email: json["email"] ?? "",
+      id: json["id"] as int,
+      name: json["name"] as String,
+      phone: json["phone"] as String,
+      email: json["email"] as String?,
       emailVerifiedAt: json["email_verified_at"],
-      address: json["address"],
-      position: json["position"],
-      skill: json["skill"],
-      salary: json["salary"],
-      background: json["background"],
-      status: json["status"],
-      rate: json["rate"],
-      roleId: json["role_id"],
-      createdAt: DateTime.parse(json["created_at"]),
-      updatedAt: DateTime.parse(json["updated_at"]),
+      address: json["address"] as String?,
+      position: json["position"] as String?,
+      skill: json["skill"] as String?,
+      salary: json["salary"] as int?,
+      background: json["background"] as String?,
+      status: json["status"] as String?,
+      rate: json["rate"] as String?,
+      roleId: json["role_id"] as int,
+      createdAt: DateTime.parse(json["created_at"] as String),
+      updatedAt: DateTime.parse(json["updated_at"] as String),
     );
   }
 

@@ -27,9 +27,6 @@ class EmployeeEditScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // SizedBox(
-                          //   width: 10,
-                          // ),
                           Text(
                             'ID ',
                             style: kParagraph.copyWith(

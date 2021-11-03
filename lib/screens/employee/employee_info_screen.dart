@@ -9,7 +9,11 @@ class EmployeeInfoScreen extends StatelessWidget {
   static const routeName = '/employee-infomation';
   @override
   Widget build(BuildContext context) {
+    final color = const Color(0xff05445E);
+
+    final color1 = const Color(0xff3B9AAD);
     final employeeId = ModalRoute.of(context)!.settings.arguments as int;
+    print(employeeId);
     return Scaffold(
         appBar: AppBar(
           title: Text('Employee'),
@@ -57,7 +61,7 @@ class EmployeeInfoScreen extends StatelessWidget {
                                             color: Colors.black),
                                       ),
                                       SizedBox(
-                                        width: 85,
+                                        width: 65,
                                       ),
                                       Text(
                                         snapshot.data!.id.toString(),
@@ -74,7 +78,7 @@ class EmployeeInfoScreen extends StatelessWidget {
                                             color: Colors.black),
                                       ),
                                       SizedBox(
-                                        width: 50,
+                                        width: 30,
                                       ),
                                       Text(
                                         snapshot.data!.name,
@@ -91,6 +95,138 @@ class EmployeeInfoScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Container(
+                    margin: EdgeInsets.only(top: 30),
+                    width: double.infinity,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      )),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                            gradient: LinearGradient(
+                              colors: [
+                                color1,
+                                color,
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            )),
+                        child: Container(
+                          margin: EdgeInsets.all(20),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Name: ',
+                                    style: kHeadingFour.copyWith(
+                                        color: Colors.black),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    'ID: ',
+                                    style: kHeadingFour.copyWith(
+                                        color: Colors.black),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    'Skill: ',
+                                    style: kHeadingFour.copyWith(
+                                        color: Colors.black),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    'Salary: ',
+                                    style: kHeadingFour.copyWith(
+                                        color: Colors.black),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    'Work-Quality: ',
+                                    style: kHeadingFour.copyWith(
+                                        color: Colors.black),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        'Work-Background: ',
+                                        style: kHeadingFour.copyWith(
+                                            color: Colors.black),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        snapshot.data!.background as String,
+                                        style: kParagraph,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    snapshot.data!.name,
+                                    style: kParagraph,
+                                  ),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  Text(
+                                    snapshot.data!.id.toString(),
+                                    style: kParagraph,
+                                  ),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  Text(
+                                    snapshot.data!.skill as String,
+                                    style: kParagraph,
+                                  ),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  Text(
+                                    snapshot.data!.salary.toString(),
+                                    style: kParagraph,
+                                  ),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  Text(
+                                    snapshot.data!.rate as String,
+                                    style: kParagraph,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               );
             }

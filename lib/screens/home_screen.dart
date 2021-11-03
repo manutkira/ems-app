@@ -94,43 +94,52 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(height: 15),
-                      Container(
-                        padding: kPaddingAll.copyWith(top: 30, bottom: 30),
-                        margin: kPaddingAll,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: const BoxDecoration(
-                          color: kLightBlue,
-                          borderRadius: BorderRadius.all(kBorderRadius),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 75,
-                              child: Image.asset(
-                                "assets/images/profile-icon-png-910.png",
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => EmployeeListScreen(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: kPaddingAll.copyWith(top: 30, bottom: 30),
+                          margin: kPaddingAll,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: const BoxDecoration(
+                            color: kLightBlue,
+                            borderRadius: BorderRadius.all(kBorderRadius),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 75,
+                                child: Image.asset(
+                                  "assets/images/profile-icon-png-910.png",
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 50,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '26',
-                                  style: kHeadingOne.copyWith(
-                                      color: kBlack, fontSize: 32),
-                                ),
-                                Text(
-                                  'employees',
-                                  style: kSubtitle.copyWith(color: kBlack),
-                                ),
-                              ],
-                            )
-                          ],
+                              const SizedBox(
+                                width: 50,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '26',
+                                    style: kHeadingOne.copyWith(
+                                        color: kBlack, fontSize: 32),
+                                  ),
+                                  Text(
+                                    'employees',
+                                    style: kSubtitle.copyWith(color: kBlack),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -182,13 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                           flex: 1,
                           child: MenuItem(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => EmployeeListScreen(),
-                                ),
-                              );
-                            },
+                            onTap: () {},
                             illustration:
                                 SvgPicture.asset("assets/images/close.svg"),
                             label: "Check out",
