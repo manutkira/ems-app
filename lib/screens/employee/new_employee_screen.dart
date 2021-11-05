@@ -1,10 +1,22 @@
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbols.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '../../constants.dart';
 
 class NewEmployeeScreen extends StatelessWidget {
-  const NewEmployeeScreen({Key? key}) : super(key: key);
+  String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
+  TextEditingController name = TextEditingController();
+  TextEditingController phone = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController address = TextEditingController();
+  TextEditingController position = TextEditingController();
+  TextEditingController skill = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController workrate = TextEditingController();
+  TextEditingController background = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -21,35 +33,6 @@ class NewEmployeeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'ID ',
-                      style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Container(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.6),
-                      child: Flexible(
-                        child: TextField(
-                          decoration: InputDecoration(hintText: 'Enter ID'),
-                          // controller: TextEditingController(
-                          //     text: snapshot.data!.id.toString()),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // SizedBox(
-                    //   width: 10,
-                    // ),
-                    Text(
                       'Name ',
                       style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                     ),
@@ -62,8 +45,7 @@ class NewEmployeeScreen extends StatelessWidget {
                       child: Flexible(
                         child: TextField(
                           decoration: InputDecoration(hintText: 'Enter Name'),
-                          // controller: TextEditingController(
-                          //     text: snapshot.data!.name),
+                          controller: name,
                         ),
                       ),
                     ),
@@ -89,8 +71,7 @@ class NewEmployeeScreen extends StatelessWidget {
                         child: TextField(
                           decoration:
                               InputDecoration(hintText: 'Enter Phone Number'),
-                          // controller: TextEditingController(
-                          //     text: snapshot.data!.phone),
+                          controller: phone,
                         ),
                       ),
                     ),
@@ -116,8 +97,7 @@ class NewEmployeeScreen extends StatelessWidget {
                         child: TextField(
                           decoration:
                               InputDecoration(hintText: 'Enter Email address'),
-                          // controller: TextEditingController(
-                          //     text: snapshot.data!.email),
+                          controller: email,
                         ),
                       ),
                     ),
@@ -143,8 +123,7 @@ class NewEmployeeScreen extends StatelessWidget {
                         child: TextField(
                           decoration:
                               InputDecoration(hintText: 'Enter Address'),
-                          // controller: TextEditingController(
-                          //     text: snapshot.data!.address),
+                          controller: address,
                         ),
                       ),
                     ),
@@ -170,8 +149,7 @@ class NewEmployeeScreen extends StatelessWidget {
                         child: TextField(
                           decoration:
                               InputDecoration(hintText: 'Enter Position'),
-                          // controller: TextEditingController(
-                          //     text: snapshot.data!.position),
+                          controller: position,
                         ),
                       ),
                     ),
@@ -196,8 +174,7 @@ class NewEmployeeScreen extends StatelessWidget {
                       child: Flexible(
                         child: TextField(
                           decoration: InputDecoration(hintText: 'Enter Skill'),
-                          // controller: TextEditingController(
-                          //     text: snapshot.data!.skill),
+                          controller: skill,
                         ),
                       ),
                     ),
@@ -210,7 +187,7 @@ class NewEmployeeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Salary ',
+                      'password ',
                       style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
@@ -221,9 +198,9 @@ class NewEmployeeScreen extends StatelessWidget {
                           maxWidth: MediaQuery.of(context).size.width * 0.6),
                       child: Flexible(
                         child: TextField(
-                          decoration: InputDecoration(hintText: 'Enter Salary'),
-                          // controller: TextEditingController(
-                          //     text: snapshot.data!.salary.toString()),
+                          decoration:
+                              InputDecoration(hintText: 'Enter password'),
+                          controller: password,
                         ),
                       ),
                     ),
@@ -249,8 +226,7 @@ class NewEmployeeScreen extends StatelessWidget {
                         child: TextField(
                           decoration:
                               InputDecoration(hintText: 'Enter Work-Rate'),
-                          // controller: TextEditingController(
-                          //     text: snapshot.data!.rate),
+                          controller: workrate,
                         ),
                       ),
                     ),
@@ -276,8 +252,7 @@ class NewEmployeeScreen extends StatelessWidget {
                         child: TextField(
                           decoration: InputDecoration(
                               hintText: 'Enter Employee background'),
-                          // controller: TextEditingController(
-                          //     text: snapshot.data!.background),
+                          controller: background,
                           maxLines: 8,
                         ),
                       ),
@@ -303,7 +278,9 @@ class NewEmployeeScreen extends StatelessWidget {
                                         OutlineButton(
                                           borderSide:
                                               BorderSide(color: Colors.green),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            addNew();
+                                          },
                                           child: Text('Yes'),
                                         ),
                                         OutlineButton(
@@ -337,5 +314,44 @@ class NewEmployeeScreen extends StatelessWidget {
             ),
           ),
         ));
+  }
+
+  addNew() async {
+    var aName = name.text;
+    var aPhone = phone.text;
+    var aEmail = email.text;
+    var aAddress = address.text;
+    var aPosition = position.text;
+    var aSkill = skill.text;
+    var apassword = password.text;
+    var aWorkrate = workrate.text;
+    var aBackground = background.text;
+
+    var data = json.encode({
+      "name": aName,
+      "phone": aPhone,
+      "email": aEmail,
+      "address": aAddress,
+      "position": aPosition,
+      "skill": aSkill,
+      "password": apassword,
+      "rate": aWorkrate,
+      "background": aBackground,
+    });
+
+    var response = await http.post(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: data,
+    );
+
+    if (response.statusCode == 201) {
+      print(response.body);
+    } else {
+      print(response.statusCode);
+    }
   }
 }

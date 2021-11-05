@@ -99,7 +99,7 @@ class MyApp extends StatelessWidget {
         EditEmployeeScreen.routeName: (ctx) => EditEmployeeScreen(),
         IndividualAttendanceScreen.routeName: (ctx) =>
             IndividualAttendanceScreen(),
-        EmployeeEditScreen.routeName: (ctx) => EmployeeEditScreen(),
+        // EmployeeEditScreen.routeName: (ctx) => EmployeeEditScreen(),
         EmployeeInfoScreen.routeName: (ctx) => EmployeeInfoScreen(),
       },
     );

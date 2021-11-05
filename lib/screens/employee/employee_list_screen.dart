@@ -18,7 +18,7 @@ class EmployeeListScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context).push(
+              Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
                   builder: (_) => NewEmployeeScreen(),
                 ),
@@ -29,8 +29,17 @@ class EmployeeListScreen extends StatelessWidget {
         ],
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(flex: 1, child: Text('data')),
+          Container(
+            padding: EdgeInsets.all(10),
+            child: Expanded(
+                flex: 1,
+                child: Text(
+                  'Employee List',
+                  style: kHeadingTwo,
+                )),
+          ),
           Expanded(flex: 9, child: EmployeeList()),
         ],
       ),
