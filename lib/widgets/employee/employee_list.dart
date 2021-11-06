@@ -136,7 +136,7 @@ class _EmployeeListState extends State<EmployeeList> {
                                     String background = (snapshot.data
                                             as dynamic)[index]['background']
                                         .toString();
-                                    Navigator.of(context).push(
+                                    Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
                                             builder: (_) => EmployeeEditScreen(
                                                 id,

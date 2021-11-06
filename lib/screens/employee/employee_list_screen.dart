@@ -1,3 +1,4 @@
+import 'package:ems/screens/home_screen.dart';
 import 'package:ems/widgets/employee/employee_list.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,11 @@ class EmployeeListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Employee'),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Icon(Icons.arrow_back)),
         actions: [
           IconButton(
             onPressed: () {

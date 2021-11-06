@@ -56,6 +56,8 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   String status = 'Active';
   String rate = 'Good';
 
+  final _form = GlobalKey<FormState>();
+
   @override
   void initState() {
     nameController.text = widget.name;
@@ -77,337 +79,573 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Edit Employee'),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Edit Employee'),
+          leading: IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                          title: Text('Are you Sure?'),
+                          content: Text('Your changes will be lost.'),
+                          actions: [
+                            OutlineButton(
+                              onPressed: () async {
+                                // Navigator.of(context).pushReplacement(
+                                //   MaterialPageRoute(
+                                //     builder: (BuildContext context) =>
+                                //         EmployeeListScreen(),
+                                //   ),
+                                // );
+                                Navigator.of(context).pop();
+                                await Navigator.of(context)
+                                    .pushReplacementNamed(
+                                  EmployeeListScreen.routeName,
+                                );
+                              },
+                              child: Text('Yes'),
+                              borderSide: BorderSide(color: Colors.green),
+                            ),
+                            OutlineButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('No'),
+                              borderSide: BorderSide(color: Colors.red),
+                            )
+                          ],
+                        ));
+              },
+              icon: Icon(Icons.arrow_back)),
+        ),
+        body: Form(
+          key: _form,
+          child: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.all(20),
+              child: Column(
                 children: [
-                  Text(
-                    'Name ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextField(
-                        controller: nameController,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Name ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Phone ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextField(
-                        controller: phoneController,
+                      SizedBox(
+                        width: 20,
                       ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Email ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextField(
-                        controller: emailController,
+                      Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        child: Flexible(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter Name',
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: nameController,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              if (value!.isEmpty ||
+                                  !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
+                                return 'Please Enter Correct Name';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Address ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextField(
-                        controller: addressController,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Position ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextField(
-                        controller: positionController,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Skill ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextField(
-                        controller: skillController,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Salary ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextField(
-                        controller: salaryController,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Role ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    width: 233,
-                    child: DropdownButtonFormField(
-                      icon: Icon(Icons.expand_more),
-                      value: role,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          role = newValue!;
-                        });
-                        widget.role;
-                      },
-                      items: <String>['Admin', 'Employee']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                            ));
-                      }).toList(),
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Status ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    width: 233,
-                    child: DropdownButtonFormField(
-                      icon: Icon(Icons.expand_more),
-                      value: status,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          status = newValue!;
-                        });
-                        widget.status;
-                      },
-                      items: <String>['Active', 'Inactive', 'Resigned', 'Fired']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                            ));
-                      }).toList(),
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Rate ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    width: 233,
-                    child: DropdownButtonFormField(
-                      icon: Icon(Icons.expand_more),
-                      value: rate,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          rate = newValue!;
-                        });
-                        widget.ratee;
-                      },
-                      items: <String>['Very\ Good', 'Good', 'Meduim', 'Low']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                            ));
-                      }).toList(),
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Background ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                    ],
                   ),
                   SizedBox(
                     height: 15,
                   ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 1),
-                    child: Flexible(
-                      child: TextField(
-                        controller: backgroundController,
-                        maxLines: 5,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Phone ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
-                    ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        child: Flexible(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter Phone number',
+                              errorStyle: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: phoneController,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please Enter Phone Number';
+                              }
+                              if (double.tryParse(value) == null) {
+                                return 'Please Enter valid number';
+                              }
+                              if (value.length < 9 || value.length > 10) {
+                                return 'Enter Between 8-9 Digits';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Email ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        child: Flexible(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter Email address',
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: emailController,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              if (value!.isEmpty ||
+                                  !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
+                                      .hasMatch(value!)) {
+                                return 'Please Enter Correct Email';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Address ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        child: Flexible(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter Address',
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: addressController,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please Enter address';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Position ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        child: Flexible(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter Position',
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: positionController,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please Enter Position';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Skill ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        child: Flexible(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter Skill',
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: skillController,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please Enter Skill';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Salary ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        child: Flexible(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter Salary',
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: salaryController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please Enter Salary';
+                              }
+                              if (double.tryParse(value) == null) {
+                                return 'Please Enter valid number';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Role ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        width: 233,
+                        child: DropdownButtonFormField(
+                          icon: Icon(Icons.expand_more),
+                          value: role,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              role = newValue!;
+                            });
+                            widget.role;
+                          },
+                          items: <String>['Admin', 'Employee']
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                ));
+                          }).toList(),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Status ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        width: 233,
+                        child: DropdownButtonFormField(
+                          icon: Icon(Icons.expand_more),
+                          value: status,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              status = newValue!;
+                            });
+                            widget.status;
+                          },
+                          items: <String>[
+                            'Active',
+                            'Inactive',
+                            'Resigned',
+                            'Fired'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                ));
+                          }).toList(),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Rate ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        width: 233,
+                        child: DropdownButtonFormField(
+                          icon: Icon(Icons.expand_more),
+                          value: rate,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              rate = newValue!;
+                            });
+                            widget.ratee;
+                          },
+                          items: <String>['Very\ Good', 'Good', 'Meduim', 'Low']
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                ));
+                          }).toList(),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Background ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 1),
+                        child: Flexible(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              hintText: 'Enter Employee background',
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: backgroundController,
+                            textInputAction: TextInputAction.done,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please Enter Employee Background';
+                              }
+                              if (value.length < 10) {
+                                return 'Enter more than 10 characters';
+                              }
+                              return null;
+                            },
+                            maxLines: 8,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(right: 10),
+                          child: RaisedButton(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                        title: Text('Are you sure?'),
+                                        content: Text(
+                                            'Do you want to save the changes'),
+                                        actions: [
+                                          OutlineButton(
+                                            borderSide:
+                                                BorderSide(color: Colors.green),
+                                            child: Text('Yes'),
+                                            onPressed: () {
+                                              if (_form.currentState!
+                                                  .validate()) {
+                                                updateData();
+                                              }
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          OutlineButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('No'),
+                                            borderSide:
+                                                BorderSide(color: Colors.red),
+                                          )
+                                        ],
+                                      ));
+                            },
+                            child: Text('Save'),
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        RaisedButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                      title: Text('Are you Sure?'),
+                                      content:
+                                          Text('Your changes will be lost.'),
+                                      actions: [
+                                        OutlineButton(
+                                          onPressed: () async {
+                                            // Navigator.of(context).pushReplacement(
+                                            //   MaterialPageRoute(
+                                            //     builder: (BuildContext context) =>
+                                            //         EmployeeListScreen(),
+                                            //   ),
+                                            // );
+                                            Navigator.of(context).pop();
+                                            await Navigator.of(context)
+                                                .pushReplacementNamed(
+                                              EmployeeListScreen.routeName,
+                                            );
+                                          },
+                                          child: Text('Yes'),
+                                          borderSide:
+                                              BorderSide(color: Colors.green),
+                                        ),
+                                        OutlineButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('No'),
+                                          borderSide:
+                                              BorderSide(color: Colors.red),
+                                        )
+                                      ],
+                                    ));
+                          },
+                          child: Text('Cancel'),
+                          color: Colors.red,
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
-              Container(
-                padding: EdgeInsets.all(15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(right: 10),
-                      child: RaisedButton(
-                        onPressed: () {
-                          updateData();
-                        },
-                        child: Text('Save'),
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    RaisedButton(
-                      onPressed: () {},
-                      child: Text('Cancel'),
-                      color: Colors.red,
-                    ),
-                  ],
-                ),
-              )
-            ],
+            ),
           ),
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../constants.dart';
+import '../edit_employee.dart';
 
 class EmployeeInfoScreen extends StatefulWidget {
   static const routeName = '/employee-infomation';
@@ -26,7 +27,6 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
   @override
   void didChangeDependencies() {
     employeeId = ModalRoute.of(context)!.settings.arguments as int;
-    print(employeeId);
     super.didChangeDependencies();
   }
 
@@ -40,6 +40,58 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Employee'),
+          // actions: [
+          //   IconButton(onPressed: (){
+          //     int id =
+          //                               (snapshot.data as dynamic)[index]['id'];
+          //                           String name = (snapshot.data
+          //                               as dynamic)[index]['name'];
+          //                           String phone = (snapshot.data
+          //                               as dynamic)[index]['phone'];
+          //                           String email = (snapshot.data
+          //                                   as dynamic)[index]['email']
+          //                               .toString();
+          //                           String address = (snapshot.data
+          //                                   as dynamic)[index]['address']
+          //                               .toString();
+          //                           String position = (snapshot.data
+          //                                   as dynamic)[index]['position']
+          //                               .toString();
+          //                           String skill = (snapshot.data
+          //                                   as dynamic)[index]['skill']
+          //                               .toString();
+          //                           String salary = (snapshot.data
+          //                                   as dynamic)[index]['salary']
+          //                               .toString();
+          //                           String role = (snapshot.data
+          //                                   as dynamic)[index]['role']
+          //                               .toString();
+          //                           String status = (snapshot.data
+          //                                   as dynamic)[index]['status']
+          //                               .toString();
+          //                           String rate = (snapshot.data
+          //                                   as dynamic)[index]['rate']
+          //                               .toString();
+          //                           String background = (snapshot.data
+          //                                   as dynamic)[index]['background']
+          //                               .toString();
+          //                           Navigator.of(context).pushReplacement(
+          //                               MaterialPageRoute(
+          //                                   builder: (_) => EmployeeEditScreen(
+          //                                       id,
+          //                                       name,
+          //                                       phone,
+          //                                       email,
+          //                                       address,
+          //                                       position,
+          //                                       skill,
+          //                                       salary,
+          //                                       role,
+          //                                       status,
+          //                                       rate,
+          //                                       background)));
+          //   }, icon: Icon(Icons.edit))
+          // ],
         ),
         body: FutureBuilder(
           future: fetchData(),
@@ -86,7 +138,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                               color: Colors.black),
                                         ),
                                         SizedBox(
-                                          width: 55,
+                                          width: 45,
                                         ),
                                         Text(
                                           (snapshot.data as dynamic)['id']
@@ -96,6 +148,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                         ),
                                       ],
                                     ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
                                     Row(
                                       children: [
                                         Text(
@@ -104,7 +159,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                               color: Colors.black),
                                         ),
                                         SizedBox(
-                                          width: 30,
+                                          width: 20,
                                         ),
                                         Text(
                                           (snapshot.data as dynamic)['name'],
