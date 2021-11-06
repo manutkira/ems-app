@@ -82,6 +82,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               ),
                             ),
                             controller: name,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value!.isEmpty ||
                                   !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)) {
@@ -120,6 +121,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               ),
                             ),
                             controller: phone,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value!.isEmpty ||
                                   !RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$')
@@ -159,6 +161,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               ),
                             ),
                             controller: email,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value!.isEmpty ||
                                   !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
@@ -198,6 +201,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               ),
                             ),
                             controller: password,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please Enter Password';
@@ -237,6 +241,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                   fontWeight: FontWeight.bold,
                                 )),
                             controller: address,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please Enter address';
@@ -273,6 +278,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                   fontWeight: FontWeight.bold,
                                 )),
                             controller: position,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please Enter Position';
@@ -309,6 +315,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                   fontWeight: FontWeight.bold,
                                 )),
                             controller: skill,
+                            textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please Enter Skill';
@@ -495,6 +502,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                   fontWeight: FontWeight.bold,
                                 )),
                             controller: background,
+                            textInputAction: TextInputAction.done,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please Enter Employee Background';
@@ -553,11 +561,36 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         ),
                         RaisedButton(
                           onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (_) => EmployeeListScreen(),
-                              ),
-                            );
+                            showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                      title: Text('Are you sure?'),
+                                      content: Text('Your data will be lost.'),
+                                      actions: [
+                                        OutlineButton(
+                                          borderSide:
+                                              BorderSide(color: Colors.green),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pushReplacement(
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    EmployeeListScreen(),
+                                              ),
+                                            );
+                                          },
+                                          child: Text('Yes'),
+                                        ),
+                                        OutlineButton(
+                                          borderSide:
+                                              BorderSide(color: Colors.red),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('No'),
+                                        )
+                                      ],
+                                    ));
                           },
                           child: Text('Cancel'),
                           color: Colors.red,
