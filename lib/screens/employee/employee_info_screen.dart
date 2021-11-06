@@ -147,6 +147,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                           child: Container(
                             margin: EdgeInsets.all(20),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,7 +276,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           style: kParagraph,
                                         ),
                                         SizedBox(
-                                          height: 30.5,
+                                          height: 30,
                                         ),
                                         Text(
                                           (snapshot.data as dynamic)['id']
@@ -283,14 +284,14 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           style: kParagraph,
                                         ),
                                         SizedBox(
-                                          height: 30.5,
+                                          height: 30,
                                         ),
                                         Text(
                                           (snapshot.data as dynamic)['email'],
                                           style: kParagraph,
                                         ),
                                         SizedBox(
-                                          height: 30.5,
+                                          height: 30,
                                         ),
                                         Text(
                                           (snapshot.data as dynamic)['address']
@@ -298,51 +299,51 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           style: kParagraph,
                                         ),
                                         SizedBox(
-                                          height: 30.5,
+                                          height: 30,
                                         ),
                                         Text(
-                                          (snapshot.data
-                                              as dynamic)['position'],
+                                          (snapshot.data as dynamic)['position']
+                                              .toString(),
                                           style: kParagraph,
                                         ),
                                         SizedBox(
-                                          height: 30.5,
+                                          height: 30,
                                         ),
                                         Text(
-                                          (snapshot.data as dynamic)['skill'],
+                                          (snapshot.data as dynamic)['skill']
+                                              .toString(),
                                           style: kParagraph,
                                         ),
                                         SizedBox(
-                                          height: 30.5,
+                                          height: 30,
                                         ),
                                         Text(
-                                          (snapshot.data as dynamic)['salary'],
-                                          style:
-                                              kParagraph.copyWith(fontSize: 12),
+                                          '\$${(snapshot.data as dynamic)['salary'].toString()}',
+                                          style: kParagraph,
                                         ),
                                         SizedBox(
-                                          height: 30.5,
+                                          height: 30,
                                         ),
                                         Text(
                                           (snapshot.data as dynamic)['role'],
                                           style: kParagraph,
                                         ),
                                         SizedBox(
-                                          height: 30.5,
+                                          height: 30,
                                         ),
                                         Text(
                                           (snapshot.data as dynamic)['status'],
                                           style: kParagraph,
                                         ),
                                         SizedBox(
-                                          height: 30.5,
+                                          height: 30,
                                         ),
                                         Text(
                                           (snapshot.data as dynamic)['rate'],
                                           style: kParagraph,
                                         ),
                                         SizedBox(
-                                          height: 30.5,
+                                          height: 30,
                                         ),
                                       ],
                                     ),
@@ -362,8 +363,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     Padding(
                                       padding: const EdgeInsets.only(left: 15),
                                       child: Text(
-                                        (snapshot.data
-                                            as dynamic)['background'],
+                                        (snapshot.data as dynamic)['background']
+                                            .toString(),
                                         style: kParagraph,
                                       ),
                                     ),
