@@ -6,17 +6,43 @@ import 'dart:convert';
 
 import '../../constants.dart';
 
-class NewEmployeeScreen extends StatelessWidget {
+class NewEmployeeScreen extends StatefulWidget {
+  @override
+  State<NewEmployeeScreen> createState() => _NewEmployeeScreenState();
+}
+
+class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
+
   TextEditingController name = TextEditingController();
+
   TextEditingController phone = TextEditingController();
+
   TextEditingController email = TextEditingController();
+
   TextEditingController address = TextEditingController();
+
   TextEditingController position = TextEditingController();
+
   TextEditingController skill = TextEditingController();
+
+  TextEditingController salary = TextEditingController();
+
+  TextEditingController role = TextEditingController();
+
+  TextEditingController status = TextEditingController();
+
   TextEditingController password = TextEditingController();
+
   TextEditingController workrate = TextEditingController();
+
   TextEditingController background = TextEditingController();
+
+  String dropDownValue = 'Active';
+
+  String dropDownValue1 = 'Admin';
+
+  String dropDownValue2 = 'Very\ Good';
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +136,32 @@ class NewEmployeeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
+                      'Password ',
+                      style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.6),
+                      child: Flexible(
+                        child: TextField(
+                          decoration:
+                              InputDecoration(hintText: 'Enter Password'),
+                          controller: password,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
                       'Address ',
                       style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                     ),
@@ -187,7 +239,7 @@ class NewEmployeeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'password ',
+                      'Salary ',
                       style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
@@ -198,9 +250,8 @@ class NewEmployeeScreen extends StatelessWidget {
                           maxWidth: MediaQuery.of(context).size.width * 0.6),
                       child: Flexible(
                         child: TextField(
-                          decoration:
-                              InputDecoration(hintText: 'Enter password'),
-                          controller: password,
+                          decoration: InputDecoration(hintText: 'Enter Salary'),
+                          controller: salary,
                         ),
                       ),
                     ),
@@ -213,23 +264,140 @@ class NewEmployeeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Work-Rate ',
+                      'Role ',
                       style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
                       width: 20,
                     ),
                     Container(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.6),
-                      child: Flexible(
-                        child: TextField(
-                          decoration:
-                              InputDecoration(hintText: 'Enter Work-Rate'),
-                          controller: workrate,
-                        ),
+                      width: 233,
+                      child: DropdownButtonFormField(
+                        icon: Icon(Icons.expand_more),
+                        value: dropDownValue1,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropDownValue1 = newValue!;
+                          });
+                        },
+                        items: <String>['Admin', 'Employee']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                              ));
+                        }).toList(),
                       ),
+                    )
+                    // Container(
+                    //   constraints: BoxConstraints(
+                    //       maxWidth: MediaQuery.of(context).size.width * 0.6),
+                    //   child: Flexible(
+                    //     child: TextField(
+                    //       decoration: InputDecoration(hintText: 'Enter Role'),
+                    //       controller: role,
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Status ',
+                      style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                     ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      width: 233,
+                      child: DropdownButtonFormField(
+                        icon: Icon(Icons.expand_more),
+                        value: dropDownValue,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropDownValue = newValue!;
+                          });
+                        },
+                        items: <String>[
+                          'Active',
+                          'Inactive',
+                          'Resigned',
+                          'Fired'
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                    // Container(
+                    //   constraints: BoxConstraints(
+                    //       maxWidth: MediaQuery.of(context).size.width * 0.6),
+                    //   child: Flexible(
+                    //     child: TextField(
+                    //       decoration: InputDecoration(
+                    //           hintText: 'Enter employee status'),
+                    //       controller: status,
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Rate ',
+                      style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      width: 233,
+                      child: DropdownButtonFormField(
+                        icon: Icon(Icons.expand_more),
+                        value: dropDownValue2,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropDownValue2 = newValue!;
+                          });
+                        },
+                        items: <String>[
+                          'Very \Good',
+                          'Good',
+                          'Meduim',
+                          'Low',
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                    // Container(
+                    //   constraints: BoxConstraints(
+                    //       maxWidth: MediaQuery.of(context).size.width * 0.6),
+                    //   child: Flexible(
+                    //     child: TextField(
+                    //       decoration:
+                    //           InputDecoration(hintText: 'Enter employee rate'),
+                    //       controller: workrate,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
                 SizedBox(
@@ -323,8 +491,11 @@ class NewEmployeeScreen extends StatelessWidget {
     var aAddress = address.text;
     var aPosition = position.text;
     var aSkill = skill.text;
+    var aSalary = salary.text;
+    var aRole = dropDownValue1;
+    var aStatus = dropDownValue;
     var apassword = password.text;
-    var aWorkrate = workrate.text;
+    var aWorkrate = dropDownValue2;
     var aBackground = background.text;
 
     var data = json.encode({
@@ -334,6 +505,9 @@ class NewEmployeeScreen extends StatelessWidget {
       "address": aAddress,
       "position": aPosition,
       "skill": aSkill,
+      "salary": aSalary,
+      "role": aRole,
+      "status": aStatus,
       "password": apassword,
       "rate": aWorkrate,
       "background": aBackground,
@@ -349,7 +523,8 @@ class NewEmployeeScreen extends StatelessWidget {
     );
 
     if (response.statusCode == 201) {
-      print(response.body);
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => EmployeeListScreen()));
     } else {
       print(response.statusCode);
     }

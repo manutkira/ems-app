@@ -7,6 +7,7 @@ import '../../constants.dart';
 import '../../screens/employee/new_employee_screen.dart';
 
 class EmployeeListScreen extends StatelessWidget {
+  static const routeName = '/employee-list';
   final color = const Color(0xff05445E);
 
   final color1 = const Color(0xff3B9AAD);

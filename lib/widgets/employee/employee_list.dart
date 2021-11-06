@@ -70,7 +70,7 @@ class _EmployeeListState extends State<EmployeeList> {
                           width: 10,
                         ),
                         Container(
-                          width: 250,
+                          width: 240,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -121,8 +121,14 @@ class _EmployeeListState extends State<EmployeeList> {
                                     String skill = (snapshot.data
                                             as dynamic)[index]['skill']
                                         .toString();
-                                    String password = (snapshot.data
-                                            as dynamic)[index]['password']
+                                    String salary = (snapshot.data
+                                            as dynamic)[index]['salary']
+                                        .toString();
+                                    String role = (snapshot.data
+                                            as dynamic)[index]['role']
+                                        .toString();
+                                    String status = (snapshot.data
+                                            as dynamic)[index]['status']
                                         .toString();
                                     String rate = (snapshot.data
                                             as dynamic)[index]['rate']
@@ -140,7 +146,9 @@ class _EmployeeListState extends State<EmployeeList> {
                                                 address,
                                                 position,
                                                 skill,
-                                                password,
+                                                salary,
+                                                role,
+                                                status,
                                                 rate,
                                                 background)));
                                   }
@@ -183,8 +191,19 @@ class _EmployeeListState extends State<EmployeeList> {
           if (snapshot.hasError) {
             print(snapshot.error);
           }
-          return const CircularProgressIndicator(
-            color: kWhite,
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Fetching Data'),
+                SizedBox(
+                  height: 10,
+                ),
+                const CircularProgressIndicator(
+                  color: kWhite,
+                ),
+              ],
+            ),
           );
         }
       },

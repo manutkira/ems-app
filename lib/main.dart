@@ -11,6 +11,7 @@ import './models/employee.dart';
 import './widgets/employee_list.dart';
 import './widgets/new_employee.dart';
 import './widgets/search.dart';
+import './screens/employee/employee_list_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -101,6 +102,7 @@ class MyApp extends StatelessWidget {
             IndividualAttendanceScreen(),
         // EmployeeEditScreen.routeName: (ctx) => EmployeeEditScreen(),
         EmployeeInfoScreen.routeName: (ctx) => EmployeeInfoScreen(),
+        EmployeeListScreen.routeName: (ctx) => EmployeeListScreen(),
       },
     );
   }

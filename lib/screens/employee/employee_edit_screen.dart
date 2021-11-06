@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/widgets/textbox.dart';
 import 'package:http/http.dart' as http;
 import 'package:ems/constants.dart';
@@ -14,8 +15,10 @@ class EmployeeEditScreen extends StatefulWidget {
   final String address;
   final String position;
   final String skill;
-  final String password;
-  final String rate;
+  final String salary;
+  final String role;
+  final String status;
+  final String ratee;
   final String background;
 
   EmployeeEditScreen(
@@ -26,8 +29,10 @@ class EmployeeEditScreen extends StatefulWidget {
     this.address,
     this.position,
     this.skill,
-    this.password,
-    this.rate,
+    this.salary,
+    this.role,
+    this.status,
+    this.ratee,
     this.background,
   );
   static const routeName = '/employee-edit';
@@ -45,9 +50,11 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   TextEditingController addressController = TextEditingController();
   TextEditingController positionController = TextEditingController();
   TextEditingController skillController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController workrateController = TextEditingController();
+  TextEditingController salaryController = TextEditingController();
   TextEditingController backgroundController = TextEditingController();
+  String role = 'Admin';
+  String status = 'Active';
+  String rate = 'Good';
 
   @override
   void initState() {
@@ -57,48 +64,16 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     addressController.text = widget.address;
     positionController.text = widget.position;
     skillController.text = widget.skill;
-    passwordController.text = widget.password;
-    workrateController.text = widget.rate;
+    salaryController.text = widget.salary;
     backgroundController.text = widget.background;
+    role = widget.role;
+    status = widget.status;
+    rate = widget.ratee;
 
     super.initState();
 
     print('object');
   }
-  // Future fetchData() async {
-  //   final response = await http.get(Uri.parse(
-  //       "http://rest-api-laravel-flutter.herokuapp.com/api/users/$employeeId"));
-
-  //   return json.decode(response.body);
-  // }
-
-  // void _getUsers() {
-  //   setState(() {});
-  // idController.text = _user.id.toString();
-  // final nameController = _user.name;
-  // phoneController.text = _user.phone;
-  // emailController.text = _user.email.toString();
-  // addressController.text = _user.address.toString();
-  // positionController.text = _user.position.toString();
-  // skillController.text = _user.skill.toString();
-  // passwordController.text = _user.password.toString();
-  // workrateController.text = _user.rate.toString();
-  // backgroundController.text = _user.background.toString();
-  // }
-
-  // @override
-  // void didChangeDependencies() {
-  //   employeeId = ModalRoute.of(context)!.settings.arguments as int;
-  //   super.didChangeDependencies();
-  //   _getUsers();
-  // }
-
-  // @override
-  // initState() {
-  //   super.initState();
-  //   // _getUser();
-  //   _getUsers();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -106,18 +81,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
       appBar: AppBar(
         title: Text('Edit Employee'),
       ),
-      body:
-          // FutureBuilder<User>(
-          //     future: UserService().getUser(employeeId),
-          //     builder: (context, snapshot) {
-          //       if (snapshot.hasData) {
-          //         return SingleChildScrollView(
-          //           child:
-          //   FutureBuilder(
-          // builder: (context, snapshot) {
-          //   if (snapshot.hasData) {
-          //     return
-          SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(20),
           child: Column(
@@ -125,9 +89,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // SizedBox(
-                  //   width: 10,
-                  // ),
                   Text(
                     'Name ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
@@ -273,7 +234,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'password ',
+                    'Salary ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
@@ -284,7 +245,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                         maxWidth: MediaQuery.of(context).size.width * 0.6),
                     child: Flexible(
                       child: TextField(
-                        controller: passwordController,
+                        controller: salaryController,
                       ),
                     ),
                   ),
@@ -297,21 +258,105 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Work-Rate ',
+                    'Role ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     width: 20,
                   ),
                   Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextField(
-                        controller: workrateController,
-                      ),
+                    width: 233,
+                    child: DropdownButtonFormField(
+                      icon: Icon(Icons.expand_more),
+                      value: role,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          role = newValue!;
+                        });
+                        widget.role;
+                      },
+                      items: <String>['Admin', 'Employee']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                            ));
+                      }).toList(),
                     ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Status ',
+                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Container(
+                    width: 233,
+                    child: DropdownButtonFormField(
+                      icon: Icon(Icons.expand_more),
+                      value: status,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          status = newValue!;
+                        });
+                        widget.status;
+                      },
+                      items: <String>['Active', 'Inactive', 'Resigned', 'Fired']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                            ));
+                      }).toList(),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Rate ',
+                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Container(
+                    width: 233,
+                    child: DropdownButtonFormField(
+                      icon: Icon(Icons.expand_more),
+                      value: rate,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          rate = newValue!;
+                        });
+                        widget.ratee;
+                      },
+                      items: <String>['Very\ Good', 'Good', 'Meduim', 'Low']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                            ));
+                      }).toList(),
+                    ),
+                  )
                 ],
               ),
               SizedBox(
@@ -333,6 +378,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     child: Flexible(
                       child: TextField(
                         controller: backgroundController,
+                        maxLines: 5,
                       ),
                     ),
                   ),
@@ -365,17 +411,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
           ),
         ),
       ),
-      // } else if (snapshot.hasError) {
-      //   print(snapshot.error);
-      // }
-      // return const CircularProgressIndicator(
-      //   color: kWhite,
-      // );
-      // }),
-      // );
-      // },
-      // future: fetchData(),
-      // ),
     );
   }
 
@@ -386,9 +421,11 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     var aAddress = addressController.text;
     var aPosition = positionController.text;
     var aSkill = skillController.text;
-    var aPassword = passwordController.text;
-    var aWorkrate = workrateController.text;
+    var aSalary = salaryController.text;
     var aBackground = backgroundController.text;
+    var aRole = role;
+    var aStatus = status;
+    var aRate = rate;
 
     var data = json.encode({
       "name": aName,
@@ -397,9 +434,11 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
       "address": aAddress,
       "position": aPosition,
       "skill": aSkill,
-      "password": aPassword,
-      "rate": aWorkrate,
+      "salary": aSalary,
       "background": aBackground,
+      "role": aRole,
+      "status": aStatus,
+      "rate": aRate,
     });
     var response = await http.put(Uri.parse("${url}/${widget.id}"),
         headers: {
@@ -408,8 +447,9 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
         },
         body: data);
 
-    if (response.statusCode == 405) {
-      print('succeeded');
+    if (response.statusCode == 200) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => EmployeeListScreen()));
     } else {
       print(response.statusCode);
     }
