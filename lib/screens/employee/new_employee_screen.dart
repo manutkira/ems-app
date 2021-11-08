@@ -63,12 +63,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                             actions: [
                               OutlineButton(
                                 onPressed: () async {
-                                  // Navigator.of(context).pushReplacement(
-                                  //   MaterialPageRoute(
-                                  //     builder: (BuildContext context) =>
-                                  //         EmployeeListScreen(),
-                                  //   ),
-                                  // );
                                   Navigator.of(context).pop();
                                   await Navigator.of(context)
                                       .pushReplacementNamed(

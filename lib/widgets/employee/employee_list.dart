@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
@@ -21,10 +22,24 @@ class _EmployeeListState extends State<EmployeeList> {
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
-  Future FetchData() async {
-    final response = await http.get(Uri.parse(url));
+  Future deleteData(int id) async {
+    final response = await http.delete(Uri.parse("$url/$id"));
+    if (response.statusCode == 200) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => EmployeeListScreen()));
+    } else {
+      return false;
+    }
+  }
 
-    return json.decode(response.body);
+  Future fetchData(String text) async {
+    final response = await http.get(Uri.parse(
+        "http://rest-api-laravel-flutter.herokuapp.com/api/search?search=${text}"));
+    if (response.statusCode == 200) {
+      print('okey');
+    } else {
+      print('not okey');
+    }
   }
 
   List<User> users = [];
@@ -287,6 +302,7 @@ class _EmployeeListState extends State<EmployeeList> {
         onChanged: (text) {
           text = text.toLowerCase();
           setState(() {
+            // fetchData(text);
             userDisplay = users.where((user) {
               var userName = user.name.toLowerCase();
               return userName.contains(text);
@@ -346,9 +362,11 @@ class _EmployeeListState extends State<EmployeeList> {
                   //   width: 50,
                   // ),
                   PopupMenuButton(
+                    color: kDarkestBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                     onSelected: (int selectedValue) {
                       if (selectedValue == 1) {
-                        print('clicked 1');
                         int id = userDisplay[index].id;
                         String name = userDisplay[index].name;
                         String phone = userDisplay[index].phone;
@@ -384,6 +402,32 @@ class _EmployeeListState extends State<EmployeeList> {
                           arguments: userDisplay[index].id,
                         );
                       }
+                      if (selectedValue == 2) {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text('Are you sure?'),
+                            content: Text('This action cannot be undone!'),
+                            actions: [
+                              OutlineButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  deleteData(userDisplay[index].id);
+                                },
+                                child: Text('Yes'),
+                                borderSide: BorderSide(color: Colors.green),
+                              ),
+                              OutlineButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                borderSide: BorderSide(color: Colors.red),
+                                child: Text('No'),
+                              )
+                            ],
+                          ),
+                        );
+                      }
                     },
                     itemBuilder: (_) => [
                       PopupMenuItem(
@@ -393,6 +437,10 @@ class _EmployeeListState extends State<EmployeeList> {
                       PopupMenuItem(
                         child: Text('Edit'),
                         value: 1,
+                      ),
+                      PopupMenuItem(
+                        child: Text('Delete'),
+                        value: 2,
                       ),
                     ],
                     icon: Icon(Icons.more_vert),

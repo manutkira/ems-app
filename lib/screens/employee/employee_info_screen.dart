@@ -35,63 +35,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
     final color = const Color(0xff05445E);
 
     final color1 = const Color(0xff3B9AAD);
-    //  employeeId = ModalRoute.of(context)!.settings.arguments as int;
-    // print(employeeId);
     return Scaffold(
         appBar: AppBar(
           title: Text('Employee'),
-          // actions: [
-          //   IconButton(onPressed: (){
-          //     int id =
-          //                               (snapshot.data as dynamic)[index]['id'];
-          //                           String name = (snapshot.data
-          //                               as dynamic)[index]['name'];
-          //                           String phone = (snapshot.data
-          //                               as dynamic)[index]['phone'];
-          //                           String email = (snapshot.data
-          //                                   as dynamic)[index]['email']
-          //                               .toString();
-          //                           String address = (snapshot.data
-          //                                   as dynamic)[index]['address']
-          //                               .toString();
-          //                           String position = (snapshot.data
-          //                                   as dynamic)[index]['position']
-          //                               .toString();
-          //                           String skill = (snapshot.data
-          //                                   as dynamic)[index]['skill']
-          //                               .toString();
-          //                           String salary = (snapshot.data
-          //                                   as dynamic)[index]['salary']
-          //                               .toString();
-          //                           String role = (snapshot.data
-          //                                   as dynamic)[index]['role']
-          //                               .toString();
-          //                           String status = (snapshot.data
-          //                                   as dynamic)[index]['status']
-          //                               .toString();
-          //                           String rate = (snapshot.data
-          //                                   as dynamic)[index]['rate']
-          //                               .toString();
-          //                           String background = (snapshot.data
-          //                                   as dynamic)[index]['background']
-          //                               .toString();
-          //                           Navigator.of(context).pushReplacement(
-          //                               MaterialPageRoute(
-          //                                   builder: (_) => EmployeeEditScreen(
-          //                                       id,
-          //                                       name,
-          //                                       phone,
-          //                                       email,
-          //                                       address,
-          //                                       position,
-          //                                       skill,
-          //                                       salary,
-          //                                       role,
-          //                                       status,
-          //                                       rate,
-          //                                       background)));
-          //   }, icon: Icon(Icons.edit))
-          // ],
         ),
         body: FutureBuilder(
           future: fetchData(),

@@ -38,15 +38,15 @@ class EmployeeListScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            child: Expanded(
-                flex: 1,
-                child: Text(
-                  'Employee List',
-                  style: kHeadingTwo,
-                )),
-          ),
+          // Container(
+          //   padding: EdgeInsets.all(10),
+          //   child: Expanded(
+          //       flex: 1,
+          //       child: Text(
+          //         'Employee List',
+          //         style: kHeadingTwo,
+          //       )),
+          // ),
           Expanded(flex: 9, child: EmployeeList()),
         ],
       ),
