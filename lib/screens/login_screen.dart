@@ -88,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           password = value;
                         });
                       },
+                      textInputAction: TextInputAction.done,
                       isPassword: true,
                       labelText: "Password",
                       textHint: "your password",

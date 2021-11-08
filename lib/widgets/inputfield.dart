@@ -10,9 +10,11 @@ class InputField extends StatefulWidget {
   final Icon prefixIcon;
   final Function getValue;
   final bool isPassword;
+  final TextInputAction textInputAction;
 
   InputField(
       {Key? key,
+      this.textInputAction = TextInputAction.next,
       required this.labelText,
       required this.textHint,
       required this.prefixIcon,
@@ -43,6 +45,7 @@ class _InputFieldState extends State<InputField> {
           onChanged: (value) {
             widget.getValue(value);
           },
+          textInputAction: widget.textInputAction,
           obscureText: widget.isPassword & !showPassword,
           cursorColor: kWhite,
           style: kSubtitle,

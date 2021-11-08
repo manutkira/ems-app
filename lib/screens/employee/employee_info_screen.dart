@@ -342,7 +342,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           height: 30,
                                         ),
                                         Text(
-                                          (snapshot.data as dynamic)['email'],
+                                          (snapshot.data as dynamic)['email']
+                                              .toString(),
                                           style: kParagraph,
                                         ),
                                         SizedBox(
@@ -380,21 +381,24 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           height: 30,
                                         ),
                                         Text(
-                                          (snapshot.data as dynamic)['role'],
+                                          (snapshot.data as dynamic)['role']
+                                              .toString(),
                                           style: kParagraph,
                                         ),
                                         SizedBox(
                                           height: 30,
                                         ),
                                         Text(
-                                          (snapshot.data as dynamic)['status'],
+                                          (snapshot.data as dynamic)['status']
+                                              .toString(),
                                           style: kParagraph,
                                         ),
                                         SizedBox(
                                           height: 30,
                                         ),
                                         Text(
-                                          (snapshot.data as dynamic)['rate'],
+                                          (snapshot.data as dynamic)['rate']
+                                              .toString(),
                                           style: kParagraph,
                                         ),
                                         SizedBox(
