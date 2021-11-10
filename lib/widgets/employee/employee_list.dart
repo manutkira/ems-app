@@ -46,6 +46,8 @@ class _EmployeeListState extends State<EmployeeList> {
   List<User> userDisplay = [];
 
   bool _isLoading = true;
+  bool order = false;
+  // bool sort = false;
 
   @override
   void initState() {
@@ -55,8 +57,11 @@ class _EmployeeListState extends State<EmployeeList> {
         _isLoading = false;
         users.addAll(usersFromServer);
         userDisplay = users;
-        userDisplay.sort(
-            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        if (order) {
+        } else {
+          userDisplay.sort(
+              (b, a) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        }
       });
     });
   }
@@ -64,6 +69,7 @@ class _EmployeeListState extends State<EmployeeList> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20),
@@ -77,238 +83,133 @@ class _EmployeeListState extends State<EmployeeList> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           )),
-      child: ListView.builder(
-          itemCount: userDisplay.length + 1,
-          itemBuilder: (context, index) {
-            if (!_isLoading) {
-              return index == 0 ? _searchBar() : _listItem(index - 1);
-            } else {
-              return Container(
-                padding: EdgeInsets.only(top: 320),
-                alignment: Alignment.center,
-                child: Center(
+      child: _isLoading
+          ? Container(
+              padding: EdgeInsets.only(top: 320),
+              alignment: Alignment.center,
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text('Fetching Data'),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    const CircularProgressIndicator(
+                      color: kWhite,
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : userDisplay.isEmpty
+              ? Container(
+                  padding: EdgeInsets.only(top: 200),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Fetching Data'),
-                      SizedBox(
-                        height: 10,
+                      Text(
+                        'NO EMPLOYEE ADDED YET!!',
+                        style: kHeadingThree.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
-                      const CircularProgressIndicator(
-                        color: kWhite,
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Image.asset(
+                        'assets/images/no-data.jpeg',
+                        width: 220,
                       ),
                     ],
                   ),
+                )
+              : Column(
+                  children: [
+                    _searchBar(),
+                    Expanded(
+                      child: ListView.builder(
+                          // reverse: order,
+                          itemCount: userDisplay.length,
+                          itemBuilder: (context, index) {
+                            return _listItem(index);
+                          }),
+                    ),
+                  ],
                 ),
-              );
-            }
-          }),
     );
-    // FutureBuilder(
-    //   future: FetchData(),
-    //   builder: (context, AsyncSnapshot<dynamic> snapshot) {
-    //     if (snapshot.hasData) {
-    //       return Container(
-    //         decoration: BoxDecoration(
-    //             borderRadius: BorderRadius.only(
-    //               topLeft: Radius.circular(20),
-    //               topRight: Radius.circular(20),
-    //             ),
-    //             gradient: LinearGradient(
-    //               colors: [
-    //                 color1,
-    //                 color,
-    //               ],
-    //               begin: Alignment.topCenter,
-    //               end: Alignment.bottomCenter,
-    //             )),
-    //         child: ListView.builder(
-    //           shrinkWrap: true,
-    //           scrollDirection: Axis.vertical,
-    //           itemBuilder: (context, index) {
-    //             return Container(
-    //               width: double.infinity,
-    //               padding: EdgeInsets.only(bottom: 20),
-    //               margin: EdgeInsets.all(20),
-    //               decoration: BoxDecoration(
-    //                   border: Border(
-    //                       bottom: BorderSide(color: Colors.black, width: 2))),
-    //               child: Container(
-    //                 width: double.infinity,
-    //                 child: Row(
-    //                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                   children: [
-    //                     Container(
-    //                       child: Image.asset(
-    //                         'assets/images/profile-icon-png-910.png',
-    //                         width: 85,
-    //                       ),
-    //                     ),
-    //                     SizedBox(
-    //                       width: 10,
-    //                     ),
-    //                     Container(
-    //                       width: 240,
-    //                       child: Row(
-    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                         children: [
-    //                           Column(
-    //                             crossAxisAlignment: CrossAxisAlignment.start,
-    //                             children: [
-    //                               Row(
-    //                                 children: [
-    //                                   Text('Name: '),
-    //                                   Text(
-    //                                     (snapshot.data as dynamic)[index]
-    //                                         ['name'],
-    //                                   ),
-    //                                 ],
-    //                               ),
-    //                               Row(
-    //                                 children: [
-    //                                   Text('ID: '),
-    //                                   Text((snapshot.data as dynamic)[index]
-    //                                           ['id']
-    //                                       .toString()),
-    //                                 ],
-    //                               )
-    //                             ],
-    //                           ),
-    //                           // SizedBox(
-    //                           //   width: 50,
-    //                           // ),
-    //                           PopupMenuButton(
-    //                             onSelected: (int selectedValue) {
-    //                               if (selectedValue == 1) {
-    //                                 print('clicked 1');
-    //                                 int id =
-    //                                     (snapshot.data as dynamic)[index]['id'];
-    //                                 String name = (snapshot.data
-    //                                     as dynamic)[index]['name'];
-    //                                 String phone = (snapshot.data
-    //                                     as dynamic)[index]['phone'];
-    //                                 String email = (snapshot.data
-    //                                         as dynamic)[index]['email']
-    //                                     .toString();
-    //                                 String address = (snapshot.data
-    //                                         as dynamic)[index]['address']
-    //                                     .toString();
-    //                                 String position = (snapshot.data
-    //                                         as dynamic)[index]['position']
-    //                                     .toString();
-    //                                 String skill = (snapshot.data
-    //                                         as dynamic)[index]['skill']
-    //                                     .toString();
-    //                                 String salary = (snapshot.data
-    //                                         as dynamic)[index]['salary']
-    //                                     .toString();
-    //                                 String role = (snapshot.data
-    //                                         as dynamic)[index]['role']
-    //                                     .toString();
-    //                                 String status = (snapshot.data
-    //                                         as dynamic)[index]['status']
-    //                                     .toString();
-    //                                 String rate = (snapshot.data
-    //                                         as dynamic)[index]['rate']
-    //                                     .toString();
-    //                                 String background = (snapshot.data
-    //                                         as dynamic)[index]['background']
-    //                                     .toString();
-    //                                 Navigator.of(context).pushReplacement(
-    //                                     MaterialPageRoute(
-    //                                         builder: (_) => EmployeeEditScreen(
-    //                                             id,
-    //                                             name,
-    //                                             phone,
-    //                                             email,
-    //                                             address,
-    //                                             position,
-    //                                             skill,
-    //                                             salary,
-    //                                             role,
-    //                                             status,
-    //                                             rate,
-    //                                             background)));
-    //                               }
-    //                               if (selectedValue == 0) {
-    //                                 Navigator.of(context).pushNamed(
-    //                                   EmployeeInfoScreen.routeName,
-    //                                   arguments: (snapshot.data
-    //                                       as dynamic)[index]['id'],
-    //                                 );
-    //                               }
-    //                             },
-    //                             itemBuilder: (_) => [
-    //                               PopupMenuItem(
-    //                                 child: Text('Info'),
-    //                                 value: 0,
-    //                               ),
-    //                               PopupMenuItem(
-    //                                 child: Text('Edit'),
-    //                                 value: 1,
-    //                               ),
-    //                             ],
-    //                             icon: Icon(Icons.more_vert),
-    //                           )
-    //                         ],
-    //                       ),
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ),
-    //             );
-    //           },
-    //           itemCount: (snapshot.data as dynamic).length,
-    //         ),
-    //       );
-    //     } else {
-    //       if (snapshot.hasError) {
-    //         print(snapshot.error);
-    //       }
-    //       return Center(
-    //         child: Column(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           children: [
-    //             Text('Fetching Data'),
-    //             SizedBox(
-    //               height: 10,
-    //             ),
-    //             const CircularProgressIndicator(
-    //               color: kWhite,
-    //             ),
-    //           ],
-    //         ),
-    //       );
-    //     }
-    //   },
-    // );
   }
 
   _searchBar() {
     return Padding(
       padding: EdgeInsets.all(10),
-      child: TextField(
-        decoration: InputDecoration(
-          suffixIcon: Icon(
-            Icons.search,
-            color: Colors.white,
+      child: Row(
+        children: [
+          Flexible(
+            child: TextField(
+              decoration: InputDecoration(
+                suffixIcon: Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ),
+                hintText: 'Search...',
+                errorStyle: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onChanged: (text) {
+                text = text.toLowerCase();
+                setState(() {
+                  // fetchData(text);
+                  userDisplay = users.where((user) {
+                    var userName = user.name.toLowerCase();
+                    return userName.contains(text);
+                  }).toList();
+                });
+              },
+            ),
           ),
-          hintText: 'Search...',
-          errorStyle: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
+          PopupMenuButton(
+            color: kDarkestBlue,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            onSelected: (int selectedValue) {
+              if (selectedValue == 0) {
+                setState(() {
+                  userDisplay.sort((a, b) =>
+                      a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+                });
+              }
+              if (selectedValue == 1) {
+                setState(() {
+                  userDisplay.sort((b, a) =>
+                      a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+                });
+              }
+              if (selectedValue == 2) {
+                setState(() {
+                  userDisplay.sort((a, b) => a.id.compareTo(b.id));
+                });
+              }
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text('From A-Z'),
+                value: 0,
+              ),
+              PopupMenuItem(
+                child: Text('From Z-A'),
+                value: 1,
+              ),
+              PopupMenuItem(
+                child: Text('by ID'),
+                value: 2,
+              ),
+            ],
+            icon: Icon(Icons.filter_list),
           ),
-        ),
-        onChanged: (text) {
-          text = text.toLowerCase();
-          setState(() {
-            // fetchData(text);
-            userDisplay = users.where((user) {
-              var userName = user.name.toLowerCase();
-              return userName.contains(text);
-            }).toList();
-          });
-        },
+        ],
       ),
     );
   }

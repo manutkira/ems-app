@@ -119,7 +119,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               textInputAction: TextInputAction.next,
                               validator: (value) {
                                 if (value!.isEmpty ||
-                                    !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)) {
+                                    !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
                                   return 'Please Enter Correct Name';
                                 }
                                 return null;
@@ -161,7 +161,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               validator: (value) {
                                 if (value!.isEmpty ||
                                     !RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$')
-                                        .hasMatch(value!)) {
+                                        .hasMatch(value)) {
                                   return 'Please Enter Correct Phone';
                                 }
                                 return null;
@@ -203,7 +203,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               validator: (value) {
                                 if (value!.isEmpty ||
                                     !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
-                                        .hasMatch(value!)) {
+                                        .hasMatch(value)) {
                                   return 'Please Enter Correct Email';
                                 }
                                 return null;
@@ -246,7 +246,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                 if (value!.isEmpty) {
                                   return 'Please Enter Password';
                                 }
-                                if (value!.length < 8) {
+                                if (value.length < 8) {
                                   return 'Enter more than 8 characters';
                                 }
                                 return null;
@@ -284,12 +284,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                   )),
                               controller: address,
                               textInputAction: TextInputAction.next,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please Enter address';
-                                }
-                                return null;
-                              },
                             ),
                           ),
                         ),
@@ -323,12 +317,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                   )),
                               controller: position,
                               textInputAction: TextInputAction.next,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please Enter Position';
-                                }
-                                return null;
-                              },
                             ),
                           ),
                         ),
@@ -362,12 +350,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                   )),
                               controller: skill,
                               textInputAction: TextInputAction.next,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please Enter Skill';
-                                }
-                                return null;
-                              },
                             ),
                           ),
                         ),
@@ -400,15 +382,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                     fontWeight: FontWeight.bold,
                                   )),
                               controller: salary,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please Enter Salary';
-                                }
-                                if (double.tryParse(value) == null) {
-                                  return 'Please Enter valid number';
-                                }
-                                return null;
-                              },
                             ),
                           ),
                         ),
@@ -555,15 +528,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                   )),
                               controller: background,
                               textInputAction: TextInputAction.done,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please Enter Employee Background';
-                                }
-                                if (value!.length < 10) {
-                                  return 'Enter more than 10 characters';
-                                }
-                                return null;
-                              },
                               maxLines: 8,
                             ),
                           ),

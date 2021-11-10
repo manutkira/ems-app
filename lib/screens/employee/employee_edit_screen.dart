@@ -238,7 +238,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             validator: (value) {
                               if (value!.isEmpty ||
                                   !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
-                                      .hasMatch(value!)) {
+                                      .hasMatch(value)) {
                                 return 'Please Enter Correct Email';
                               }
                               return null;

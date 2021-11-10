@@ -78,6 +78,7 @@ flutter:
     - assets/images/menuburger.svg
     - assets/images/graph.svg
     - assets/images/waiting.png
+    - assets/images/no-data.jpeg
     - assets/images/profile-icon-png-910.png
   #   - images/a_dot_ham.jpeg
 
