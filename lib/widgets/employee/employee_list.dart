@@ -1,15 +1,14 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
-import 'package:ems/screens/employee/employee_list_screen.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:async';
 import 'package:ems/constants.dart';
 import 'package:ems/screens/employee/employee_edit_screen.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
+import 'package:ems/screens/employee/employee_list_screen.dart';
+import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
-import '../../models/m_user.dart';
-import '../../utils/services/m_user.dart';
+import 'package:http/http.dart' as http;
 
 class EmployeeList extends StatefulWidget {
   @override
@@ -19,6 +18,7 @@ class EmployeeList extends StatefulWidget {
 class _EmployeeListState extends State<EmployeeList> {
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3B9AAD);
+  final UserService _userService = UserService().instance;
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
@@ -52,18 +52,23 @@ class _EmployeeListState extends State<EmployeeList> {
   @override
   void initState() {
     super.initState();
-    fetchPost().then((usersFromServer) {
-      setState(() {
-        _isLoading = false;
-        users.addAll(usersFromServer);
-        userDisplay = users;
-        if (order) {
-        } else {
-          userDisplay.sort(
-              (b, a) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-        }
+
+    try {
+      _userService.findMany().then((usersFromServer) {
+        setState(() {
+          _isLoading = false;
+          users.addAll(usersFromServer);
+          userDisplay = users;
+          if (order) {
+          } else {
+            userDisplay.sort(
+                (b, a) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+          }
+        });
       });
-    });
+    } catch (err) {
+      //
+    }
   }
 
   @override
