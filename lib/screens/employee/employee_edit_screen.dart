@@ -274,12 +274,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             ),
                             controller: addressController,
                             textInputAction: TextInputAction.next,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please Enter address';
-                              }
-                              return null;
-                            },
                           ),
                         ),
                       ),
@@ -312,12 +306,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             ),
                             controller: positionController,
                             textInputAction: TextInputAction.next,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please Enter Position';
-                              }
-                              return null;
-                            },
                           ),
                         ),
                       ),
@@ -350,12 +338,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             ),
                             controller: skillController,
                             textInputAction: TextInputAction.next,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please Enter Skill';
-                              }
-                              return null;
-                            },
                           ),
                         ),
                       ),
@@ -387,15 +369,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                               ),
                             ),
                             controller: salaryController,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please Enter Salary';
-                              }
-                              if (double.tryParse(value) == null) {
-                                return 'Please Enter valid number';
-                              }
-                              return null;
-                            },
                           ),
                         ),
                       ),
@@ -540,15 +513,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             ),
                             controller: backgroundController,
                             textInputAction: TextInputAction.done,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please Enter Employee Background';
-                              }
-                              if (value.length < 10) {
-                                return 'Enter more than 10 characters';
-                              }
-                              return null;
-                            },
                             maxLines: 8,
                           ),
                         ),

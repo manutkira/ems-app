@@ -57,11 +57,8 @@ class _EmployeeListState extends State<EmployeeList> {
         setState(() {
           _isLoading = false;
           userDisplay.addAll(usersFromServer);
-          if (order) {
-          } else {
-            userDisplay.sort((b, a) =>
-                a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
-          }
+
+          userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
         });
       });
     } catch (err) {
