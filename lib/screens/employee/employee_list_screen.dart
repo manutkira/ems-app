@@ -2,7 +2,6 @@ import 'package:ems/screens/home_screen.dart';
 import 'package:ems/widgets/employee/employee_list.dart';
 import 'package:flutter/material.dart';
 
-import '../../utils/services/users.dart';
 import '../../models/user.dart';
 import '../../constants.dart';
 import '../../screens/employee/new_employee_screen.dart';

@@ -4,7 +4,6 @@ import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/widgets/textbox.dart';
 import 'package:http/http.dart' as http;
 import 'package:ems/constants.dart';
-import 'package:ems/utils/services/users.dart';
 import 'package:flutter/material.dart';
 
 class EmployeeEditScreen extends StatefulWidget {

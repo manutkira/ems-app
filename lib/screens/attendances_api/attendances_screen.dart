@@ -1,52 +1,27 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
-
-import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
-import 'package:ems/screens/employee/employee_edit_screen.dart';
-import 'package:ems/screens/employee/employee_info_screen.dart';
-import 'package:ems/screens/employee/employee_list_screen.dart';
+import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
+import 'package:ems/screens/attendances_api/attendance_info.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
-class EmployeeList extends StatefulWidget {
+import '../../models/attendance.dart';
+import '../../utils/services/attendance_service.dart';
+import '../../constants.dart';
+import '../../screens/employee/employee_edit_screen.dart';
+import '../../screens/employee/employee_info_screen.dart';
+
+class AttendancesScreen extends StatefulWidget {
   @override
-  State<EmployeeList> createState() => _EmployeeListState();
+  State<AttendancesScreen> createState() => _AttendancesScreenState();
 }
 
-class _EmployeeListState extends State<EmployeeList> {
+class _AttendancesScreenState extends State<AttendancesScreen> {
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3B9AAD);
-  final UserService _userService = UserService().instance;
-
-  String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
-
-  Future deleteData(int id) async {
-    final response = await http.delete(Uri.parse("$url/$id"));
-    if (response.statusCode == 200) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => EmployeeListScreen()));
-    } else {
-      return false;
-    }
-  }
-
-  // Future fetchData(String text) async {
-  //   final response = await http.get(Uri.parse(
-  //       "http://rest-api-laravel-flutter.herokuapp.com/api/search?search=${text}"));
-  //   if (response.statusCode == 200) {
-  //     print('okey');
-  //   } else {
-  //     print('not okey');
-  //   }
-  // }
+  UserService _userService = UserService().instance;
   List<User> userDisplay = [];
-
   bool _isLoading = true;
   bool order = false;
-  // bool sort = false;
 
   @override
   void initState() {
@@ -59,8 +34,7 @@ class _EmployeeListState extends State<EmployeeList> {
           userDisplay.addAll(usersFromServer);
           if (order) {
           } else {
-            userDisplay.sort((b, a) =>
-                a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+            userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
           }
         });
       });
@@ -71,76 +45,118 @@ class _EmployeeListState extends State<EmployeeList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          gradient: LinearGradient(
-            colors: [
-              color1,
-              color,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          )),
-      child: _isLoading
-          ? Container(
-              padding: EdgeInsets.only(top: 320),
-              alignment: Alignment.center,
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('Fetching Data'),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    const CircularProgressIndicator(
-                      color: kWhite,
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : userDisplay.isEmpty
-              ? Container(
-                  padding: EdgeInsets.only(top: 200),
-                  child: Column(
-                    children: [
-                      Text(
-                        'NO EMPLOYEE ADDED YET!!',
-                        style: kHeadingThree.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Attendance'),
+          actions: [
+            PopupMenuButton(
+                onSelected: (item) => onSelected(context, item as int),
+                color: Colors.white,
+                icon: Icon(Icons.filter_list),
+                itemBuilder: (_) => [
+                      PopupMenuItem(
+                        child: Text(
+                          'By Day',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
+                        value: 0,
                       ),
-                      SizedBox(
-                        height: 30,
+                      PopupMenuItem(
+                        child: Text(
+                          'By All-Time',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        value: 1,
                       ),
-                      Image.asset(
-                        'assets/images/no-data.jpeg',
-                        width: 220,
+                      PopupMenuItem(
+                        child: Text(
+                          'By Month',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        value: 2,
                       ),
-                    ],
+                    ])
+          ],
+        ),
+        body: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              gradient: LinearGradient(
+                colors: [
+                  color1,
+                  color,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              )),
+          child: _isLoading
+              ? Container(
+                  padding: EdgeInsets.only(top: 320),
+                  alignment: Alignment.center,
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text('Fetching Data'),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        const CircularProgressIndicator(
+                          color: kWhite,
+                        ),
+                      ],
+                    ),
                   ),
                 )
-              : Column(
-                  children: [
-                    _searchBar(),
-                    Expanded(
-                      child: ListView.builder(
-                          // reverse: order,
-                          itemCount: userDisplay.length,
-                          itemBuilder: (context, index) {
-                            return _listItem(index);
-                          }),
+              : userDisplay.isEmpty
+                  ? Container(
+                      padding: EdgeInsets.only(top: 200),
+                      child: Column(
+                        children: [
+                          Text(
+                            'NO EMPLOYEE ADDED YET!!',
+                            style: kHeadingThree.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Image.asset(
+                            'assets/images/no-data.jpeg',
+                            width: 220,
+                          ),
+                        ],
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        _searchBar(),
+                        Expanded(
+                          child: ListView.builder(
+                              // reverse: order,
+                              itemCount: userDisplay.length,
+                              itemBuilder: (context, index) {
+                                return _listItem(index);
+                              }),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-    );
+        ));
   }
 
   _searchBar() {
@@ -210,7 +226,7 @@ class _EmployeeListState extends State<EmployeeList> {
                 value: 2,
               ),
             ],
-            icon: Icon(Icons.filter_list),
+            icon: Icon(Icons.sort),
           ),
         ],
       ),
@@ -270,7 +286,7 @@ class _EmployeeListState extends State<EmployeeList> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     onSelected: (int selectedValue) {
-                      if (selectedValue == 1) {
+                      if (selectedValue == 0) {
                         int id = userDisplay[index].id as int;
                         String name = userDisplay[index].name.toString();
                         String phone = userDisplay[index].phone.toString();
@@ -285,26 +301,12 @@ class _EmployeeListState extends State<EmployeeList> {
                         String rate = userDisplay[index].rate.toString();
                         String background =
                             userDisplay[index].background.toString();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (_) => EmployeeEditScreen(
-                                id,
-                                name,
-                                phone,
-                                email,
-                                address,
-                                position,
-                                skill,
-                                salary,
-                                role,
-                                status,
-                                rate,
-                                background)));
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => AttendancesInfoScreen(id)));
                       }
-                      if (selectedValue == 0) {
-                        Navigator.of(context).pushNamed(
-                          EmployeeInfoScreen.routeName,
-                          arguments: userDisplay[index].id,
-                        );
+                      if (selectedValue == 1) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => AttendanceByDayScreen()));
                       }
                       if (selectedValue == 2) {
                         showDialog(
@@ -314,10 +316,7 @@ class _EmployeeListState extends State<EmployeeList> {
                             content: Text('This action cannot be undone!'),
                             actions: [
                               OutlineButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  deleteData(userDisplay[index].id as int);
-                                },
+                                onPressed: () {},
                                 child: Text('Yes'),
                                 borderSide: BorderSide(color: Colors.green),
                               ),
@@ -335,17 +334,17 @@ class _EmployeeListState extends State<EmployeeList> {
                     },
                     itemBuilder: (_) => [
                       PopupMenuItem(
-                        child: Text('Info'),
+                        child: Text('att Info'),
                         value: 0,
                       ),
-                      PopupMenuItem(
-                        child: Text('Edit'),
-                        value: 1,
-                      ),
-                      PopupMenuItem(
-                        child: Text('Delete'),
-                        value: 2,
-                      ),
+                      // PopupMenuItem(
+                      //   child: Text('By Day'),
+                      //   value: 1,
+                      // ),
+                      // PopupMenuItem(
+                      //   child: Text('Delete'),
+                      //   value: 2,
+                      // ),
                     ],
                     icon: Icon(Icons.more_vert),
                   )
@@ -356,5 +355,28 @@ class _EmployeeListState extends State<EmployeeList> {
         ),
       ),
     );
+  }
+}
+
+void onSelected(BuildContext context, int item) {
+  switch (item) {
+    case 0:
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (_) => AttendanceByDayScreen()));
+      break;
+    case 1:
+      // Navigator.of(context).pushReplacement(
+      //   MaterialPageRoute(
+      //     builder: (context) => AttendanceScreenByAllTime(),
+      //   ),
+      // );
+      break;
+    case 2:
+      // Navigator.of(context).push(
+      //   MaterialPageRoute(
+      //     builder: (context) => AttendanceByMonthScreen(),
+      //   ),
+      // );
+      break;
   }
 }

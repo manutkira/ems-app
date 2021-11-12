@@ -1,11 +1,9 @@
 import 'package:ems/models/user.dart';
-import 'package:ems/utils/services/users.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../constants.dart';
-import '../edit_employee.dart';
 
 class EmployeeInfoScreen extends StatefulWidget {
   static const routeName = '/employee-infomation';
@@ -33,7 +31,6 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
   @override
   Widget build(BuildContext context) {
     final color = const Color(0xff05445E);
-
     final color1 = const Color(0xff3B9AAD);
     return Scaffold(
         appBar: AppBar(

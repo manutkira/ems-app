@@ -1,8 +1,12 @@
 import 'dart:async';
 
 import 'package:ems/constants.dart';
+<<<<<<< HEAD
 import 'package:ems/providers/current_user.dart';
+=======
+>>>>>>> 610ed4a (added individual attendance screen)
 import 'package:ems/screens/attendance/attendance_screen.dart';
+import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/widgets/menu_item.dart';
@@ -187,7 +191,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: MenuItem(
                             onTap: () {
                               print('check in tapped');
+<<<<<<< HEAD
 
+=======
+                              // Navigator.of(context).push(CupertinoPageRoute(
+                              //     builder: (context) => const StatusDemo()));
+>>>>>>> 610ed4a (added individual attendance screen)
                               //
                             },
                             illustration:
@@ -201,7 +210,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                           flex: 1,
                           child: MenuItem(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => AttendancesScreen()));
+                            },
                             illustration:
                                 SvgPicture.asset("assets/images/close.svg"),
                             label: "Check out",

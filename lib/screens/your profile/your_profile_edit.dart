@@ -1,6 +1,10 @@
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
+<<<<<<< HEAD
 import 'package:ems/providers/current_user.dart';
+=======
+import 'package:ems/utils/services/user_service.dart';
+>>>>>>> 610ed4a (added individual attendance screen)
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:ems/widgets/textbox.dart';
 import 'package:flutter/cupertino.dart';
@@ -34,6 +38,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
     fetchUserData();
   }
 
+<<<<<<< HEAD
   // Future<User> fetchUserData() {
   //   var future = UserService().getUser(1);
   //   future.then((snapshot) {
@@ -43,6 +48,17 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   //   });
   //   return future;
   // }
+=======
+  Future<User> fetchUserData() {
+    var future = UserService().findOne(1);
+    future.then((snapshot) {
+      setState(() {
+        _user = snapshot;
+      });
+    });
+    return future;
+  }
+>>>>>>> 610ed4a (added individual attendance screen)
 
   Future<bool> confirmPassword() async {
     if (old_password.isNotEmpty) {
@@ -264,6 +280,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
 
+<<<<<<< HEAD
                         child: TextBoxCustom(
                           textHint: 'Phone Number',
                           getValue: (value) {
@@ -272,6 +289,106 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                             });
                           },
                           defaultText: "${_user.phone}",
+=======
+                                  child: TextBoxCustom(
+                                    textHint: 'Phone Number',
+                                    getValue: (value) {
+                                      setState(() {
+                                        _user.phone = value;
+                                      });
+                                    },
+                                    defaultText: _user.phone.toString(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Email",
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.6),
+                                  child: TextBoxCustom(
+                                    defaultText: _user.email as String,
+                                    textHint: 'email',
+                                    getValue: (value) {
+                                      setState(() {
+                                        _user.email = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Address",
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.6),
+                                  child: TextBoxCustom(
+                                    defaultText: _user.address as String,
+                                    textHint: 'address',
+                                    getValue: (value) {
+                                      setState(() {
+                                        _user.address = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Password",
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.6),
+                                  child: TextBoxCustom(
+                                    isPassword: true,
+                                    textHint: 'password',
+                                    getValue: (value) {
+                                      setState(() {
+                                        password = value;
+                                      });
+                                    },
+                                    defaultText: password,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+>>>>>>> 610ed4a (added individual attendance screen)
                         ),
                       ),
                     ],
@@ -406,6 +523,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
 
+<<<<<<< HEAD
                         child: TextBoxCustom(
                           textHint: 'skill',
                           getValue: (value) {
@@ -414,6 +532,147 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                             });
                           },
                           defaultText: "${_user.skill}",
+=======
+                                  child: TextBoxCustom(
+                                    textHint: 'skill',
+                                    getValue: (value) {
+                                      setState(() {
+                                        _user.skill = value;
+                                      });
+                                    },
+                                    defaultText: "${_user.skill}",
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Salary",
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.6),
+                                  child: TextBoxCustom(
+                                    defaultText: "${_user.salary}",
+                                    textHint: 'salary',
+                                    getValue: (value) {
+                                      setState(() {
+                                        _user.salary = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Status",
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.6),
+                                  child: TextBoxCustom(
+                                    defaultText: "${_user.status}",
+                                    textHint: 'status',
+                                    getValue: (value) {
+                                      setState(() {
+                                        _user.status = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Rate",
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.6),
+                                  child: TextBoxCustom(
+                                    defaultText: "${_user.rate}",
+                                    textHint: 'rate',
+                                    getValue: (value) {
+                                      setState(() {
+                                        _user.rate = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Start",
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                // Container(
+                                //   constraints: BoxConstraints(
+                                //       maxWidth:
+                                //           MediaQuery.of(context).size.width *
+                                //               0.6),
+                                //   child: TextBoxCustom(
+                                //     defaultText: DateFormat('dd-MM-yyyy')
+                                //         .format(_user.createdAt),
+                                //     textHint: 'createdAt',
+                                //     getValue: (value) {
+                                //       setState(() {
+                                //         _user.createdAt = value;
+                                //       });
+                                //     },
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                            Text(DateFormat('dd-MM-yyyy')
+                                .format(_user.createdAt!)),
+                            GestureDetector(
+                              onTap: popupDate,
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                color: kBlack,
+                              ),
+                            )
+                          ],
+                        ), // Employment Info
+                        const SizedBox(
+                          height: 40,
+>>>>>>> 610ed4a (added individual attendance screen)
                         ),
                       ),
                     ],
