@@ -1,10 +1,6 @@
 import 'package:ems/constants.dart';
 import 'package:ems/providers/current_user.dart';
 import 'package:ems/screens/your%20profile/your_profile_edit.dart';
-<<<<<<< HEAD
-=======
-import 'package:ems/utils/services/user_service.dart';
->>>>>>> 610ed4a (added individual attendance screen)
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,7 +17,6 @@ class YourProfileViewScreen extends ConsumerWidget {
         title: const Text(
           "Your Profile",
         ),
-<<<<<<< HEAD
         actions: [
           IconButton(
               onPressed: () {
@@ -71,40 +66,6 @@ class YourProfileViewScreen extends ConsumerWidget {
                             BoxShadow(
                                 color:
                                     _currentUser.status.toString() == "Active"
-=======
-        body: FutureBuilder<User>(
-            future: UserService().findOne(1),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Stack(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: kDarkestBlue,
-                                radius: 75,
-                                child: Image.asset(
-                                  'assets/images/bigprofile.png',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 10,
-                                child: Container(
-                                  width: 25,
-                                  height: 25,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 5),
-                                  decoration: BoxDecoration(
-                                    color: snapshot.data!.status.toString() ==
-                                            "Active"
->>>>>>> 610ed4a (added individual attendance screen)
                                         ? kGreenBackground
                                         : _currentUser.status.toString() ==
                                                 "Inactive"
