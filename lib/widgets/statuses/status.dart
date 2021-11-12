@@ -28,11 +28,13 @@ class StatusWidget extends StatelessWidget {
         children: [
           icon,
           const SizedBox(
-            width: 5,
+            width: 10,
           ),
-          Text(
-            text,
-            style: kSubtitle.copyWith(color: textColor),
+          Expanded(
+            child: Text(
+              text,
+              style: kSubtitle.copyWith(color: textColor),
+            ),
           ),
         ],
       ),

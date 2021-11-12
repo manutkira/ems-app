@@ -39,6 +39,7 @@ class MenuDrawer extends ConsumerWidget {
                     "${_user.name}",
                     style: kHeadingThree,
                   ),
+                  const SizedBox(height: 5),
                   Text(
                     "${_user.role}",
                     style: kSubtitle,

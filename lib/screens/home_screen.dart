@@ -6,6 +6,7 @@ import 'package:ems/screens/attendance/attendance_screen.dart';
 import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
+import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,17 +24,44 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var time = 'calculating';
+  dynamic employeeCount = "loading...";
+  late Timer _timer;
+  UserService _userService = UserService().instance;
+
+  getCount() async {
+    var c = await _userService.count();
+    if (mounted) {
+      setState(() {
+        employeeCount = c;
+      });
+    }
+  }
+
+  getTime() async {
+    if (!mounted) {
+      return;
+    }
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        time = DateFormat('jm').format(DateTime.now());
+      });
+    });
+  }
 
   @override
   void initState() {
     // "It's ${DateFormat('jm').format(DateTime.now())} on ${DateFormat('dd-MM-yyyy').format(DateTime.now())}",
     super.initState();
+    getCount();
+    getTime();
+  }
 
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        time = DateFormat('jm').format(DateTime.now());
-      });
-    });
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _timer.cancel();
   }
 
   @override
@@ -140,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    '26',
+                                    '$employeeCount',
                                     style: kHeadingOne.copyWith(
                                         color: kBlack, fontSize: 32),
                                   ),
@@ -188,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: MenuItem(
                             onTap: () {
                               print('check in tapped');
-
+                              getCount();
                               // Navigator.of(context).push(CupertinoPageRoute(
                               //     builder: (context) => const StatusDemo()));
 
