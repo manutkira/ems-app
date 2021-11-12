@@ -82,6 +82,13 @@ class YourProfileViewScreen extends ConsumerWidget {
               const SizedBox(
                 height: 40,
               ),
+              Text(
+                "Basic Info",
+                style: kHeadingThree.copyWith(fontWeight: FontWeight.w400),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               Row(
                 children: [
                   Expanded(
@@ -125,9 +132,66 @@ class YourProfileViewScreen extends ConsumerWidget {
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.w700),
                         ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _currentUser.name ?? "Not Available",
+                          style: kParagraph,
+                        ),
                         const SizedBox(
                           height: 20,
                         ),
+                        Text(
+                          _currentUser.phone ?? "Not Available",
+                          style: kParagraph,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          _currentUser.email ?? "Not Available",
+                          style: kParagraph,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          _currentUser.address ?? "Not Available",
+                          style: kParagraph,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          _currentUser.role ?? "Employee",
+                          style: kParagraph,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Text(
+                "Employee Info",
+                style: kHeadingThree.copyWith(fontWeight: FontWeight.w400),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
                           "Position",
                           style:
@@ -165,63 +229,28 @@ class YourProfileViewScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _currentUser.name.toString(),
+                          _currentUser.position ?? "Not Available",
                           style: kParagraph,
                         ),
                         const SizedBox(
                           height: 20,
                         ),
                         Text(
-                          _currentUser.phone.toString(),
+                          _currentUser.skill ?? "Not Available",
                           style: kParagraph,
                         ),
                         const SizedBox(
                           height: 20,
                         ),
                         Text(
-                          _currentUser.email.toString(),
+                          "\$${_currentUser.salary ?? "Not Available"}",
                           style: kParagraph,
                         ),
                         const SizedBox(
                           height: 20,
                         ),
                         Text(
-                          _currentUser.address.toString(),
-                          style: kParagraph,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "Administrator",
-                          style: kParagraph,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          _currentUser.position.toString(),
-                          style: kParagraph,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          _currentUser.skill.toString(),
-                          style: kParagraph,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "\$${_currentUser.salary.toString()}",
-                          style: kParagraph,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          _currentUser.rate.toString(),
+                          _currentUser.rate ?? "Not Available",
                           style: kParagraph,
                         ),
                       ],
@@ -283,7 +312,7 @@ class YourProfileViewScreen extends ConsumerWidget {
     //                           padding: const EdgeInsets.symmetric(
     //                               horizontal: 15, vertical: 5),
     //                           decoration: BoxDecoration(
-    //                             color: snapshot.data!.status.toString() ==
+    //                             color: snapshot.data!.status??"Not Available" ==
     //                                     "Active"
     //                                 ? kGreenBackground
     //                                 : snapshot.data!.status.toString() ==

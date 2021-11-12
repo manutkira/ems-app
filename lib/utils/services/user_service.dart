@@ -11,6 +11,23 @@ class UserService extends BaseService {
 
   int _code = 0;
 
+  Future<int> count() async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/countUser'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw UserException(code: _code);
+      }
+
+      // var jsondata = json.decode(response.body);
+      // var user = User.fromJson(jsondata);
+      return int.parse(response.body);
+    } catch (e) {
+      throw UserException(code: _code);
+    }
+  }
+
   Future<User> findOne(int id) async {
     try {
       Response response = await get(Uri.parse('$baseUrl/users/$id'));
@@ -79,6 +96,7 @@ class UserService extends BaseService {
         body: json.encode(jsons),
       );
       _code = response.statusCode;
+      print(response.body);
       var jsondata = json.decode(response.body);
       var user = User.fromJson(jsondata['user']);
       return user;

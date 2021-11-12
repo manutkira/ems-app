@@ -1,12 +1,13 @@
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/providers/current_user.dart';
+import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:ems/widgets/textbox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class YourProfileEditScreen extends ConsumerStatefulWidget {
   const YourProfileEditScreen({Key? key}) : super(key: key);
@@ -20,6 +21,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   var old_password = '';
 
   late User _user;
+  UserService _userService = UserService().instance;
 
   fetchUserData() {
     User _currentUser = ref.read(currentUserProvider);
@@ -45,17 +47,22 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   // }
 
   Future<bool> confirmPassword() async {
-    if (old_password.isNotEmpty) {
-      // fetch verify password route here
-      print('old password: $old_password');
-      return true;
-    } else {
+    if (old_password.isEmpty) {
       return false;
     }
+    return _user.password == old_password;
   }
 
   Future<void> updateProfile() async {
     // await fetch('/api/updateprofile');
+    String finalPassword = password.isEmpty ? "${_user.password}" : password;
+    User user = await _userService.updateOne(
+        user: _user.copyWith(password: finalPassword));
+    print(ref.read(currentUserProvider).password);
+    ref
+        .read(currentUserProvider.notifier)
+        .setUser(user.copyWith(password: _user.password));
+    print(user.name);
 
     print("profile updated. ${_user.name}");
   }
@@ -78,6 +85,10 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    void closePage() {
+      Navigator.of(context).pop();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -156,7 +167,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                                     // update info here
                                     await updateProfile();
                                     // if success, close. else stay open
-                                    Navigator.of(context).pop();
+                                    closePage();
                                   } else {
                                     setState(() {
                                       error = "Wrong password";
@@ -241,10 +252,10 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                           getValue: (value) {
                             print(value);
                             setState(() {
-                              _user.name = value;
+                              _user.name = "$value";
                             });
                           },
-                          defaultText: "${_user.name}",
+                          defaultText: "${_user.name ?? ""}",
                         ),
                       ),
                     ],
@@ -271,7 +282,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                               _user.phone = value;
                             });
                           },
-                          defaultText: "${_user.phone}",
+                          defaultText: "${_user.phone ?? ""}",
                         ),
                       ),
                     ],
@@ -290,7 +301,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
                         child: TextBoxCustom(
-                          defaultText: _user.email as String,
+                          defaultText: "${_user.email ?? ""}",
                           textHint: 'email',
                           getValue: (value) {
                             setState(() {
@@ -315,7 +326,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
                         child: TextBoxCustom(
-                          defaultText: _user.address as String,
+                          defaultText: "${_user.address ?? ""}",
                           textHint: 'address',
                           getValue: (value) {
                             setState(() {
@@ -386,7 +397,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                               _user.position = value;
                             });
                           },
-                          defaultText: "${_user.position}",
+                          defaultText: "${_user.position ?? ""}",
                         ),
                       ),
                     ],
@@ -413,7 +424,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                               _user.skill = value;
                             });
                           },
-                          defaultText: "${_user.skill}",
+                          defaultText: "${_user.skill ?? ""}",
                         ),
                       ),
                     ],
@@ -432,7 +443,11 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
                         child: TextBoxCustom(
-                          defaultText: "${_user.salary}",
+                          prefixIcon: const Icon(
+                            MdiIcons.currencyUsd,
+                            color: kWhite,
+                          ),
+                          defaultText: "${_user.salary ?? ""}",
                           textHint: 'salary',
                           getValue: (value) {
                             setState(() {
@@ -457,7 +472,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
                         child: TextBoxCustom(
-                          defaultText: "${_user.status}",
+                          defaultText: "${_user.status ?? ""}",
                           textHint: 'status',
                           getValue: (value) {
                             setState(() {
@@ -482,7 +497,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
                         child: TextBoxCustom(
-                          defaultText: "${_user.rate}",
+                          defaultText: "${_user.rate ?? ""}",
                           textHint: 'rate',
                           getValue: (value) {
                             setState(() {
@@ -496,41 +511,41 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Start",
-                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      // Container(
-                      //   constraints: BoxConstraints(
-                      //       maxWidth:
-                      //           MediaQuery.of(context).size.width *
-                      //               0.6),
-                      //   child: TextBoxCustom(
-                      //     defaultText: DateFormat('dd-MM-yyyy')
-                      //         .format(_user.createdAt),
-                      //     textHint: 'createdAt',
-                      //     getValue: (value) {
-                      //       setState(() {
-                      //         _user.createdAt = value;
-                      //       });
-                      //     },
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                  Text(DateFormat('dd-MM-yyyy')
-                      .format(_user.createdAt as DateTime)),
-                  GestureDetector(
-                    onTap: popupDate,
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      color: kBlack,
-                    ),
-                  )
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       "Start",
+                  //       style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                  //     ),
+                  //     // Container(
+                  //     //   constraints: BoxConstraints(
+                  //     //       maxWidth:
+                  //     //           MediaQuery.of(context).size.width *
+                  //     //               0.6),
+                  //     //   child: TextBoxCustom(
+                  //     //     defaultText: DateFormat('dd-MM-yyyy')
+                  //     //         .format(_user.createdAt),
+                  //     //     textHint: 'createdAt',
+                  //     //     getValue: (value) {
+                  //     //       setState(() {
+                  //     //         _user.createdAt = value;
+                  //     //       });
+                  //     //     },
+                  //     //   ),
+                  //     // ),
+                  //   ],
+                  // ),
+                  // Text(DateFormat('dd-MM-yyyy')
+                  //     .format(_user.createdAt as DateTime)),
+                  // GestureDetector(
+                  //   onTap: popupDate,
+                  //   child: Container(
+                  //     height: 40,
+                  //     width: 40,
+                  //     color: kBlack,
+                  //   ),
+                  // ),
                 ],
               ), // Employment Info
               const SizedBox(
@@ -541,740 +556,5 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
         ),
       ),
     );
-    // body: FutureBuilder<User>(
-    //     future: fetchUserData(),
-    //     builder: (context, snapshot) {
-    //       if (snapshot.hasData) {
-    //         return SingleChildScrollView(
-    //           child: Padding(
-    //             padding: const EdgeInsets.all(20),
-    //             child: Column(
-    //               children: [
-    //                 Center(
-    //                   child: CircleAvatar(
-    //                     backgroundColor: kDarkestBlue,
-    //                     radius: 75,
-    //                     child: Image.asset(
-    //                       'assets/images/bigprofile.png',
-    //                       fit: BoxFit.cover,
-    //                     ),
-    //                   ),
-    //                 ),
-    //                 const SizedBox(
-    //                   height: 40,
-    //                 ),
-    //                 Column(
-    //                   crossAxisAlignment: CrossAxisAlignment.start,
-    //                   children: [
-    //                     Text(
-    //                       "Basic Info",
-    //                       style: kHeadingThree.copyWith(
-    //                           fontWeight: FontWeight.w400),
-    //                     ),
-    //                     const SizedBox(
-    //                       height: 20,
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Text(
-    //                           "Name",
-    //                           style: kParagraph.copyWith(
-    //                               fontWeight: FontWeight.w700),
-    //                         ),
-    //                         Container(
-    //                           //
-    //                           constraints: BoxConstraints(
-    //                               maxWidth:
-    //                                   MediaQuery.of(context).size.width *
-    //                                       0.6),
-    //
-    //                           child: TextBoxCustom(
-    //                             textHint: 'username',
-    //                             getValue: (value) {
-    //                               print(value);
-    //                               setState(() {
-    //                                 _user.name = value;
-    //                               });
-    //                             },
-    //                             defaultText: "${snapshot.data!.name}",
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     const SizedBox(
-    //                       height: 20,
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Text(
-    //                           "Phone",
-    //                           style: kParagraph.copyWith(
-    //                               fontWeight: FontWeight.w700),
-    //                         ),
-    //                         Container(
-    //                           //
-    //                           constraints: BoxConstraints(
-    //                               maxWidth:
-    //                                   MediaQuery.of(context).size.width *
-    //                                       0.6),
-    //
-    //                           child: TextBoxCustom(
-    //                             textHint: 'Phone Number',
-    //                             getValue: (value) {
-    //                               setState(() {
-    //                                 _user.phone = value;
-    //                               });
-    //                             },
-    //                             defaultText: "${_user.phone}",
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     const SizedBox(
-    //                       height: 20,
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Text(
-    //                           "Email",
-    //                           style: kParagraph.copyWith(
-    //                               fontWeight: FontWeight.w700),
-    //                         ),
-    //                         Container(
-    //                           constraints: BoxConstraints(
-    //                               maxWidth:
-    //                                   MediaQuery.of(context).size.width *
-    //                                       0.6),
-    //                           child: TextBoxCustom(
-    //                             defaultText: _user.email as String,
-    //                             textHint: 'email',
-    //                             getValue: (value) {
-    //                               setState(() {
-    //                                 _user.email = value;
-    //                               });
-    //                             },
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     const SizedBox(
-    //                       height: 20,
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Text(
-    //                           "Address",
-    //                           style: kParagraph.copyWith(
-    //                               fontWeight: FontWeight.w700),
-    //                         ),
-    //                         Container(
-    //                           constraints: BoxConstraints(
-    //                               maxWidth:
-    //                                   MediaQuery.of(context).size.width *
-    //                                       0.6),
-    //                           child: TextBoxCustom(
-    //                             defaultText: _user.address as String,
-    //                             textHint: 'address',
-    //                             getValue: (value) {
-    //                               setState(() {
-    //                                 _user.address = value;
-    //                               });
-    //                             },
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     const SizedBox(
-    //                       height: 20,
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Text(
-    //                           "Password",
-    //                           style: kParagraph.copyWith(
-    //                               fontWeight: FontWeight.w700),
-    //                         ),
-    //                         Container(
-    //                           constraints: BoxConstraints(
-    //                               maxWidth:
-    //                                   MediaQuery.of(context).size.width *
-    //                                       0.6),
-    //                           child: TextBoxCustom(
-    //                             isPassword: true,
-    //                             textHint: 'password',
-    //                             getValue: (value) {
-    //                               setState(() {
-    //                                 password = value;
-    //                               });
-    //                             },
-    //                             defaultText: password,
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   ],
-    //                 ),
-    //                 const SizedBox(
-    //                   height: 40,
-    //                 ),
-    //                 Column(
-    //                   crossAxisAlignment: CrossAxisAlignment.start,
-    //                   children: [
-    //                     Text(
-    //                       "Employment Info",
-    //                       style: kHeadingThree.copyWith(
-    //                           fontWeight: FontWeight.w400),
-    //                     ),
-    //                     const SizedBox(
-    //                       height: 20,
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Text(
-    //                           "Position",
-    //                           style: kParagraph.copyWith(
-    //                               fontWeight: FontWeight.w700),
-    //                         ),
-    //                         Container(
-    //                           //
-    //                           constraints: BoxConstraints(
-    //                               maxWidth:
-    //                                   MediaQuery.of(context).size.width *
-    //                                       0.6),
-    //
-    //                           child: TextBoxCustom(
-    //                             textHint: 'position',
-    //                             getValue: (value) {
-    //                               setState(() {
-    //                                 _user.position = value;
-    //                               });
-    //                             },
-    //                             defaultText: "${_user.position}",
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     const SizedBox(
-    //                       height: 20,
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Text(
-    //                           "Skill",
-    //                           style: kParagraph.copyWith(
-    //                               fontWeight: FontWeight.w700),
-    //                         ),
-    //                         Container(
-    //                           //
-    //                           constraints: BoxConstraints(
-    //                               maxWidth:
-    //                                   MediaQuery.of(context).size.width *
-    //                                       0.6),
-    //
-    //                           child: TextBoxCustom(
-    //                             textHint: 'skill',
-    //                             getValue: (value) {
-    //                               setState(() {
-    //                                 _user.skill = value;
-    //                               });
-    //                             },
-    //                             defaultText: "${_user.skill}",
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     const SizedBox(
-    //                       height: 20,
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Text(
-    //                           "Salary",
-    //                           style: kParagraph.copyWith(
-    //                               fontWeight: FontWeight.w700),
-    //                         ),
-    //                         Container(
-    //                           constraints: BoxConstraints(
-    //                               maxWidth:
-    //                                   MediaQuery.of(context).size.width *
-    //                                       0.6),
-    //                           child: TextBoxCustom(
-    //                             defaultText: "${_user.salary}",
-    //                             textHint: 'salary',
-    //                             getValue: (value) {
-    //                               setState(() {
-    //                                 _user.salary = value;
-    //                               });
-    //                             },
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     const SizedBox(
-    //                       height: 20,
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Text(
-    //                           "Status",
-    //                           style: kParagraph.copyWith(
-    //                               fontWeight: FontWeight.w700),
-    //                         ),
-    //                         Container(
-    //                           constraints: BoxConstraints(
-    //                               maxWidth:
-    //                                   MediaQuery.of(context).size.width *
-    //                                       0.6),
-    //                           child: TextBoxCustom(
-    //                             defaultText: "${_user.status}",
-    //                             textHint: 'status',
-    //                             getValue: (value) {
-    //                               setState(() {
-    //                                 _user.status = value;
-    //                               });
-    //                             },
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     const SizedBox(
-    //                       height: 20,
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Text(
-    //                           "Rate",
-    //                           style: kParagraph.copyWith(
-    //                               fontWeight: FontWeight.w700),
-    //                         ),
-    //                         Container(
-    //                           constraints: BoxConstraints(
-    //                               maxWidth:
-    //                                   MediaQuery.of(context).size.width *
-    //                                       0.6),
-    //                           child: TextBoxCustom(
-    //                             defaultText: "${_user.rate}",
-    //                             textHint: 'rate',
-    //                             getValue: (value) {
-    //                               setState(() {
-    //                                 _user.rate = value;
-    //                               });
-    //                             },
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                     const SizedBox(
-    //                       height: 20,
-    //                     ),
-    //                     Row(
-    //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                       children: [
-    //                         Text(
-    //                           "Start",
-    //                           style: kParagraph.copyWith(
-    //                               fontWeight: FontWeight.w700),
-    //                         ),
-    //                         // Container(
-    //                         //   constraints: BoxConstraints(
-    //                         //       maxWidth:
-    //                         //           MediaQuery.of(context).size.width *
-    //                         //               0.6),
-    //                         //   child: TextBoxCustom(
-    //                         //     defaultText: DateFormat('dd-MM-yyyy')
-    //                         //         .format(_user.createdAt),
-    //                         //     textHint: 'createdAt',
-    //                         //     getValue: (value) {
-    //                         //       setState(() {
-    //                         //         _user.createdAt = value;
-    //                         //       });
-    //                         //     },
-    //                         //   ),
-    //                         // ),
-    //                       ],
-    //                     ),
-    //                     Text(DateFormat('dd-MM-yyyy')
-    //                         .format(_user.createdAt as DateTime)),
-    //                     GestureDetector(
-    //                       onTap: popupDate,
-    //                       child: Container(
-    //                         height: 40,
-    //                         width: 40,
-    //                         color: kBlack,
-    //                       ),
-    //                     )
-    //                   ],
-    //                 ), // Employment Info
-    //                 const SizedBox(
-    //                   height: 40,
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //         );
-    //       } else if (snapshot.hasError) {
-    //         print(snapshot.error);
-    //         return const Text('Error fetching data.');
-    //       } else {
-    //         return Center(
-    //           child: Column(
-    //             mainAxisAlignment: MainAxisAlignment.center,
-    //             crossAxisAlignment: CrossAxisAlignment.center,
-    //             children: const [
-    //               CircularProgressIndicator(
-    //                 color: kWhite,
-    //               ),
-    //               SizedBox(
-    //                 height: 10,
-    //               ),
-    //               Text("fetching data"),
-    //             ],
-    //           ),
-    //         );
-    //       }
-    //     }
-    //     // body: SingleChildScrollView(
-    //     //   child: Padding(
-    //     //     padding: const EdgeInsets.all(20),
-    //     //     child: Column(
-    //     //       children: [
-    //     //         Center(
-    //     //           child: CircleAvatar(
-    //     //             backgroundColor: kDarkestBlue,
-    //     //             radius: 75,
-    //     //             child: Image.asset(
-    //     //               'assets/images/bigprofile.png',
-    //     //               fit: BoxFit.cover,
-    //     //             ),
-    //     //           ),
-    //     //         ),
-    //     //         const SizedBox(
-    //     //           height: 40,
-    //     //         ),
-    //     //         Row(
-    //     //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     //           children: [
-    //     //             Text(
-    //     //               "Name",
-    //     //               style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-    //     //             ),
-    //     //             Container(
-    //     //               //
-    //     //               constraints: BoxConstraints(
-    //     //                   maxWidth: MediaQuery.of(context).size.width * 0.6),
-    //     //
-    //     //               child: TextBoxCustom(
-    //     //                 textHint: 'username',
-    //     //                 getValue: (value) {
-    //     //                   setState(() {
-    //     //                     _user.name = value;
-    //     //                   });
-    //     //                 },
-    //     //                 defaultText: _user.name,
-    //     //               ),
-    //     //             ),
-    //     //           ],
-    //     //         ),
-    //     //         const SizedBox(
-    //     //           height: 20,
-    //     //         ),
-    //     //         Row(
-    //     //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     //           children: [
-    //     //             Text(
-    //     //               "Email",
-    //     //               style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-    //     //             ),
-    //     //             Container(
-    //     //               constraints: BoxConstraints(
-    //     //                   maxWidth: MediaQuery.of(context).size.width * 0.6),
-    //     //               child: TextBoxCustom(
-    //     //                 defaultText: _user.email as String,
-    //     //                 textHint: 'email',
-    //     //                 getValue: (value) {
-    //     //                   setState(() {
-    //     //                     _user.email = value;
-    //     //                   });
-    //     //                 },
-    //     //               ),
-    //     //             ),
-    //     //           ],
-    //     //         ),
-    //     //         const SizedBox(
-    //     //           height: 20,
-    //     //         ),
-    //     //         Row(
-    //     //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     //           children: [
-    //     //             Text(
-    //     //               "Password",
-    //     //               style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-    //     //             ),
-    //     //             Container(
-    //     //               constraints: BoxConstraints(
-    //     //                   maxWidth: MediaQuery.of(context).size.width * 0.6),
-    //     //               child: TextBoxCustom(
-    //     //                 isPassword: true,
-    //     //                 textHint: 'password',
-    //     //                 getValue: (value) {
-    //     //                   setState(() {
-    //     //                     password = value;
-    //     //                   });
-    //     //                 },
-    //     //                 defaultText: password,
-    //     //               ),
-    //     //             ),
-    //     //           ],
-    //     //         ),
-    //     //         const SizedBox(
-    //     //           height: 20,
-    //     //         ),
-    //     //       ],
-    //     //     ),
-    //     //   ),
-    //     // ),
-    //     // body: FutureBuilder<User>(
-    //     //     future: _user,
-    //     //     builder: (context, snapshot) {
-    //     //       print(snapshot.data!.name);
-    //     //       if (snapshot.hasData) {
-    //     //         return SingleChildScrollView(
-    //     //           child: Padding(
-    //     //             padding: const EdgeInsets.all(20),
-    //     //             child: Column(
-    //     //               children: [
-    //     //                 Center(
-    //     //                   child: CircleAvatar(
-    //     //                     backgroundColor: kDarkestBlue,
-    //     //                     radius: 75,
-    //     //                     child: Image.asset(
-    //     //                       'assets/images/bigprofile.png',
-    //     //                       fit: BoxFit.cover,
-    //     //                     ),
-    //     //                   ),
-    //     //                 ),
-    //     //                 const SizedBox(
-    //     //                   height: 40,
-    //     //                 ),
-    //     //                 Row(
-    //     //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     //                   children: [
-    //     //                     Text(
-    //     //                       "Name",
-    //     //                       style: kParagraph.copyWith(
-    //     //                           fontWeight: FontWeight.w700),
-    //     //                     ),
-    //     //                     Container(
-    //     //                       //
-    //     //                       constraints: BoxConstraints(
-    //     //                           maxWidth:
-    //     //                               MediaQuery.of(context).size.width * 0.6),
-    //     //
-    //     //                       child: TextBoxCustom(
-    //     //                         textHint: 'username',
-    //     //                         getValue: (value) {
-    //     //                           setState(() {
-    //     //                             name = value;
-    //     //                           });
-    //     //                         },
-    //     //                         defaultText: name,
-    //     //                       ),
-    //     //                     ),
-    //     //                   ],
-    //     //                 ),
-    //     //                 const SizedBox(
-    //     //                   height: 20,
-    //     //                 ),
-    //     //                 Row(
-    //     //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     //                   children: [
-    //     //                     Text(
-    //     //                       "Email",
-    //     //                       style: kParagraph.copyWith(
-    //     //                           fontWeight: FontWeight.w700),
-    //     //                     ),
-    //     //                     Container(
-    //     //                       constraints: BoxConstraints(
-    //     //                           maxWidth:
-    //     //                               MediaQuery.of(context).size.width * 0.6),
-    //     //                       child: TextBoxCustom(
-    //     //                         defaultText: email,
-    //     //                         textHint: 'email',
-    //     //                         getValue: (value) {
-    //     //                           setState(() {
-    //     //                             email = value;
-    //     //                           });
-    //     //                         },
-    //     //                       ),
-    //     //                     ),
-    //     //                   ],
-    //     //                 ),
-    //     //                 const SizedBox(
-    //     //                   height: 20,
-    //     //                 ),
-    //     //                 Row(
-    //     //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     //                   children: [
-    //     //                     Text(
-    //     //                       "Password",
-    //     //                       style: kParagraph.copyWith(
-    //     //                           fontWeight: FontWeight.w700),
-    //     //                     ),
-    //     //                     Container(
-    //     //                       constraints: BoxConstraints(
-    //     //                           maxWidth:
-    //     //                               MediaQuery.of(context).size.width * 0.6),
-    //     //                       child: TextBoxCustom(
-    //     //                         isPassword: true,
-    //     //                         textHint: 'password',
-    //     //                         getValue: (value) {
-    //     //                           setState(() {
-    //     //                             password = value;
-    //     //                           });
-    //     //                         },
-    //     //                         defaultText: password,
-    //     //                       ),
-    //     //                     ),
-    //     //                   ],
-    //     //                 ),
-    //     //                 const SizedBox(
-    //     //                   height: 20,
-    //     //                 ),
-    //     //               ],
-    //     //             ),
-    //     //           ),
-    //     //         );
-    //     //       } else if (snapshot.hasError) {
-    //     //         print(snapshot.error);
-    //     //         return const Text('Error fetching data.');
-    //     //       } else {
-    //     //         return Center(
-    //     //           child: Column(
-    //     //             mainAxisAlignment: MainAxisAlignment.center,
-    //     //             crossAxisAlignment: CrossAxisAlignment.center,
-    //     //             children: const [
-    //     //               CircularProgressIndicator(
-    //     //                 color: kWhite,
-    //     //               ),
-    //     //               SizedBox(
-    //     //                 height: 10,
-    //     //               ),
-    //     //               Text("fetching data"),
-    //     //             ],
-    //     //           ),
-    //     //         );
-    //     //       }
-    //     //     }),
-    //     // body: SingleChildScrollView(
-    //     //   child: Padding(
-    //     //     padding: const EdgeInsets.all(20),
-    //     //     child: Column(
-    //     //       children: [
-    //     //         Center(
-    //     //           child: CircleAvatar(
-    //     //             backgroundColor: kDarkestBlue,
-    //     //             radius: 75,
-    //     //             child: Image.asset(
-    //     //               'assets/images/bigprofile.png',
-    //     //               fit: BoxFit.cover,
-    //     //             ),
-    //     //           ),
-    //     //         ),
-    //     //         const SizedBox(
-    //     //           height: 40,
-    //     //         ),
-    //     //         Row(
-    //     //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     //           children: [
-    //     //             Text(
-    //     //               "Name",
-    //     //               style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-    //     //             ),
-    //     //             Container(
-    //     //               //
-    //     //               constraints: BoxConstraints(
-    //     //                   maxWidth: MediaQuery.of(context).size.width * 0.6),
-    //     //
-    //     //               child: TextBoxCustom(
-    //     //                 textHint: 'username',
-    //     //                 getValue: (value) {
-    //     //                   setState(() {
-    //     //                     name = value;
-    //     //                   });
-    //     //                 },
-    //     //                 defaultText: name,
-    //     //               ),
-    //     //             ),
-    //     //           ],
-    //     //         ),
-    //     //         const SizedBox(
-    //     //           height: 20,
-    //     //         ),
-    //     //         Row(
-    //     //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     //           children: [
-    //     //             Text(
-    //     //               "Email",
-    //     //               style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-    //     //             ),
-    //     //             Container(
-    //     //               constraints: BoxConstraints(
-    //     //                   maxWidth: MediaQuery.of(context).size.width * 0.6),
-    //     //               child: TextBoxCustom(
-    //     //                 defaultText: email,
-    //     //                 textHint: 'email',
-    //     //                 getValue: (value) {
-    //     //                   setState(() {
-    //     //                     email = value;
-    //     //                   });
-    //     //                 },
-    //     //               ),
-    //     //             ),
-    //     //           ],
-    //     //         ),
-    //     //         const SizedBox(
-    //     //           height: 20,
-    //     //         ),
-    //     //         Row(
-    //     //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     //           children: [
-    //     //             Text(
-    //     //               "Password",
-    //     //               style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-    //     //             ),
-    //     //             Container(
-    //     //               constraints: BoxConstraints(
-    //     //                   maxWidth: MediaQuery.of(context).size.width * 0.6),
-    //     //               child: TextBoxCustom(
-    //     //                 isPassword: true,
-    //     //                 textHint: 'password',
-    //     //                 getValue: (value) {
-    //     //                   setState(() {
-    //     //                     password = value;
-    //     //                   });
-    //     //                 },
-    //     //                 defaultText: password,
-    //     //               ),
-    //     //             ),
-    //     //           ],
-    //     //         ),
-    //     //         const SizedBox(
-    //     //           height: 20,
-    //     //         ),
-    //     //       ],
-    //     //     ),
-    //     //   ),
-    //     // ),
-    //     ));
   }
 }

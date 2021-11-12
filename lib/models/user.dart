@@ -89,6 +89,7 @@ class User {
     String? name,
     String? phone,
     String? email,
+    String? password,
     DateTime? emailVerifiedAt,
     String? address,
     String? position,
@@ -106,6 +107,7 @@ class User {
         name: name ?? this.name,
         phone: phone ?? this.phone,
         email: email ?? this.email,
+        password: password ?? this.password,
         emailVerifiedAt: emailVerifiedAt ?? this.emailVerifiedAt,
         address: address ?? this.address,
         position: position ?? this.position,
@@ -126,7 +128,7 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    if (name == null || name!.isEmpty || phone == null || password == null) {
+    if (name == null || name!.isEmpty || phone == null) {
       throw UserException(code: 2);
     }
 

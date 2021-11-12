@@ -1,6 +1,5 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/providers/current_user.dart';
-import 'package:ems/screens/home_screen.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/widgets/inputfield.dart';
 import 'package:ems/widgets/statuses/error.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -21,13 +21,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String password = "";
   String phone = "";
   String error = "";
+  bool isLoading = false;
 
   AuthService _authService = AuthService().instance;
 
-  void logUserIn() async {
+  Future<void> logUserIn() async {
     try {
       User _user = await _authService.login(phone: phone, password: password);
-      ref.read(currentUserProvider.notifier).setUser(_user);
+      ref
+          .read(currentUserProvider.notifier)
+          .setUser(_user.copyWith(password: password));
+      print(ref.watch(currentUserProvider).name);
     } catch (err) {
       setState(() {
         error = err.toString();
@@ -115,43 +119,83 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(
                 height: 35.0,
               ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  padding: kPadding.copyWith(top: 10, bottom: 10),
-                  primary: Colors.white,
-                  textStyle: kParagraph,
-                  backgroundColor: kDarkestBlue,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(kBorderRadius),
-                  ),
-                ),
-                onPressed: () async {
-                  setState(() {
-                    error = "";
-                  });
+              isLoading
+                  ? Container(
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      // width: MediaQuery.of(context).size.width / 2,
+                      padding: kPadding.copyWith(top: 10, bottom: 10),
+                      decoration: const BoxDecoration(
+                        color: kDarkestBlue,
+                        borderRadius: BorderRadius.all(kBorderRadius),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: kWhite,
+                              strokeWidth: 3,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Logging in',
+                            style: kParagraph.copyWith(
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    )
+                  : TextButton(
+                      style: TextButton.styleFrom(
+                        padding: kPadding.copyWith(top: 10, bottom: 10),
+                        primary: Colors.white,
+                        textStyle: kParagraph,
+                        backgroundColor: kDarkestBlue,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(kBorderRadius),
+                        ),
+                      ),
+                      onPressed: () async {
+                        setState(() {
+                          error = "";
+                          isLoading = true;
+                        });
 
-                  logUserIn();
+                        await logUserIn();
 
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => HomeScreen()));
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Login',
-                      style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                        setState(() {
+                          isLoading = false;
+                        });
+
+                        if (error.isEmpty) {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (_) => HomeScreen()));
+                        }
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Login',
+                            style: kParagraph.copyWith(
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      size: 16,
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
         ),
