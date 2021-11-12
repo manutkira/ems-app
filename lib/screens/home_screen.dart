@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:ems/constants.dart';
-import 'package:ems/demo/statuses.dart';
+import 'package:ems/providers/current_user.dart';
 import 'package:ems/screens/attendance/attendance_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
@@ -51,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         title: const Text('Internal EMS'),
       ),
-      drawer: const MenuDrawer(),
+      drawer: MenuDrawer(),
       body: SafeArea(
         bottom: false,
         child: SizedBox(
@@ -79,9 +80,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Hello, [username].",
-                              style: kHeadingFour,
+                            Consumer(
+                              builder: (BuildContext context, WidgetRef ref,
+                                  Widget? child) {
+                                String? username = ref
+                                    .watch(currentUserProvider.notifier)
+                                    .state
+                                    .name;
+
+                                return Text(
+                                  "Hello, ${username}.",
+                                  style: kHeadingFour,
+                                );
+                              },
                             ),
                             const SizedBox(
                               height: 5,
@@ -176,8 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: MenuItem(
                             onTap: () {
                               print('check in tapped');
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (context) => const StatusDemo()));
+
                               //
                             },
                             illustration:

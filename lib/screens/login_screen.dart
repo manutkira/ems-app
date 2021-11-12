@@ -1,26 +1,38 @@
+import 'package:ems/models/user.dart';
+import 'package:ems/providers/current_user.dart';
 import 'package:ems/screens/home_screen.dart';
+import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/widgets/inputfield.dart';
 import 'package:ems/widgets/statuses/error.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   String password = "";
-  String email = "";
+  String phone = "";
   String error = "";
 
-  void goToHomeScreen(BuildContext context) {
-    //
+  AuthService _authService = AuthService().instance;
+
+  void logUserIn() async {
+    try {
+      User _user = await _authService.login(phone: phone, password: password);
+      ref.read(currentUserProvider.notifier).setUser(_user);
+    } catch (err) {
+      setState(() {
+        error = err.toString();
+      });
+    }
   }
 
   @override
@@ -69,13 +81,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     InputField(
                       getValue: (value) {
                         setState(() {
-                          email = value;
+                          phone = value;
                         });
                       },
-                      labelText: "Email",
+                      labelText: "Phone",
                       textHint: "your email",
                       prefixIcon: const Icon(
-                        Icons.email,
+                        Icons.phone,
                         color: kWhite,
                       ),
                     ),
@@ -113,15 +125,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.all(kBorderRadius),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   setState(() {
                     error = "";
                   });
-                  if (email.isEmpty | password.isEmpty) {
-                    return setState(() {
-                      error = "Please enter both email and password.";
-                    });
-                  }
+
+                  logUserIn();
 
                   Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (_) => HomeScreen()));

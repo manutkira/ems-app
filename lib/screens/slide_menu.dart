@@ -1,22 +1,26 @@
+import 'package:ems/models/user.dart';
+import 'package:ems/providers/current_user.dart';
 import 'package:ems/screens/login_screen.dart';
 import 'package:ems/screens/your%20profile/your_profile_view.dart';
+import 'package:ems/utils/services/auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../constants.dart';
 
-class MenuDrawer extends StatelessWidget {
-  const MenuDrawer({
+class MenuDrawer extends ConsumerWidget {
+  MenuDrawer({
     Key? key,
   }) : super(key: key);
 
-  void logout() {
-    // logout here
-  }
+  AuthService _auth = AuthService().instance;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    User _user = ref.watch(currentUserProvider.notifier).state;
+
     return Drawer(
       child: Container(
         color: kDarkestBlue,
@@ -31,12 +35,12 @@ class MenuDrawer extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    "User Name",
+                  Text(
+                    "${_user.name}",
                     style: kHeadingThree,
                   ),
-                  const Text(
-                    "Admin",
+                  Text(
+                    "${_user.role}",
                     style: kSubtitle,
                   ),
                 ],
@@ -61,13 +65,22 @@ class MenuDrawer extends StatelessWidget {
                 child: ListTile(
                   leading: const Icon(MdiIcons.arrowLeftBottom),
                   title: const Text('Logout'),
-                  onTap: () {
-                    logout();
-                    Navigator.of(context).pushReplacement(
-                      CupertinoPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    );
+                  onTap: () async {
+                    try {
+                      await _auth.logout(currentUserId: _user.id as int);
+                      ref.read(currentUserProvider.notifier).reset();
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      );
+                    } catch (err) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("$err"),
+                        ),
+                      );
+                    }
                   },
                 ),
               ),
