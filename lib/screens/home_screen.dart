@@ -1,10 +1,7 @@
 import 'dart:async';
 
 import 'package:ems/constants.dart';
-<<<<<<< HEAD
 import 'package:ems/providers/current_user.dart';
-=======
->>>>>>> 610ed4a (added individual attendance screen)
 import 'package:ems/screens/attendance/attendance_screen.dart';
 import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
@@ -191,12 +188,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: MenuItem(
                             onTap: () {
                               print('check in tapped');
-<<<<<<< HEAD
 
-=======
                               // Navigator.of(context).push(CupertinoPageRoute(
                               //     builder: (context) => const StatusDemo()));
->>>>>>> 610ed4a (added individual attendance screen)
+
                               //
                             },
                             illustration:

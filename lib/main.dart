@@ -1,17 +1,18 @@
 import 'package:ems/screens/attendance/individual_attendance.dart';
-import 'package:ems/screens/employee/employee_edit_screen.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import './constants.dart';
-import './models/employee.dart';
-import './widgets/new_employee.dart';
-import './widgets/search.dart';
 import './screens/employee/employee_list_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
