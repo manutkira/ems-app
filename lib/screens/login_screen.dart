@@ -25,19 +25,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   AuthService _authService = AuthService().instance;
 
-  Future<void> logUserIn() async {
-    try {
-      User _user = await _authService.login(phone: phone, password: password);
-      ref
-          .read(currentUserProvider.notifier)
-          .setUser(_user.copyWith(password: password));
-      print(ref.watch(currentUserProvider).name);
-    } catch (err) {
-      setState(() {
-        error = err.toString();
-      });
-    }
-  }
+  // Future<void> logUserIn() async {
+  //   try {
+  //     User _user = await _authService.login(phone: phone, password: password);
+  //     ref
+  //         .read(currentUserProvider.notifier)
+  //         .setUser(_user.copyWith(password: password));
+  //     print(ref.watch(currentUserProvider).name);
+  //   } catch (err) {
+  //     setState(() {
+  //       error = err.toString();
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +167,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           isLoading = true;
                         });
 
-                        await logUserIn();
+                        // await logUserIn();
 
                         setState(() {
                           isLoading = false;

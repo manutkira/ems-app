@@ -20,11 +20,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Attendance> attendanceDisplay = [];
   bool _isLoading = true;
   bool order = false;
-
+  List<Appointment>? _appointment;
   @override
   void initState() {
-    // _dataCollection = getAppointments();
-
     super.initState();
 
     try {
@@ -34,7 +32,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
         setState(() {
           _isLoading = false;
           attendanceDisplay.addAll(usersFromServer);
-          print(attendanceDisplay.map((e) => e.date));
         });
       });
     } catch (err) {
@@ -42,26 +39,29 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
+  Color checkColor(Attendance attendance) {
+    if (attendance.type == 'absent') {
+      return Colors.red;
+    }
+    if (attendance.type == 'permission') {
+      return Colors.blue;
+    }
+    if (attendance.date!.hour >= 9 && attendance.type == 'check in') {
+      return Colors.yellow;
+    } else {
+      return Colors.green;
+    }
+  }
+
   List<Appointment> getAppointments() {
     List<Appointment> meetings = <Appointment>[];
-    final isAbsent = attendanceDisplay[0].date;
-    final DateTime aStartTime =
-        DateTime(isAbsent!.year, isAbsent.month, isAbsent.day, 8, 0, 0);
-    final DateTime aEndTime = aStartTime.add(const Duration(hours: 8));
-    final isPermission = attendanceDisplay[0].updatedAt;
-    final DateTime pStartTime = DateTime(
-        isPermission!.year, isPermission.month, isPermission.day, 8, 0, 0);
-    final DateTime pEndTime = pStartTime.add(const Duration(hours: 5));
-    meetings.add(Appointment(
-      startTime: aStartTime,
-      endTime: aEndTime,
-      color: Colors.red,
-    ));
-    meetings.add(Appointment(
-      startTime: pStartTime,
-      endTime: pEndTime,
-      color: Color(0xffAAFDA8),
-    ));
+    attendanceDisplay.asMap().forEach((key, value) {
+      Appointment newAppointment = Appointment(
+          startTime: value.date as DateTime,
+          endTime: value.date as DateTime,
+          color: checkColor(value));
+      meetings.add(newAppointment);
+    });
     return meetings;
   }
 
@@ -209,7 +209,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                       Text(
                                         attendanceDisplay
                                             .where((element) =>
-                                                element.userId == widget.id)
+                                                element.date!.hour <= 9 &&
+                                                element.type == 'check in')
                                             .toList()
                                             .length
                                             .toString(),
@@ -228,7 +229,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     Text(
                                       attendanceDisplay
                                           .where((element) =>
-                                              element.userId == widget.id)
+                                              element.type == 'absent')
                                           .toList()
                                           .length
                                           .toString(),
@@ -259,7 +260,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                       Text(
                                         attendanceDisplay
                                             .where((element) =>
-                                                element.userId == widget.id)
+                                                element.type == 'permission')
                                             .toList()
                                             .length
                                             .toString(),
@@ -278,7 +279,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     Text(
                                       attendanceDisplay
                                           .where((element) =>
-                                              element.userId == widget.id)
+                                              element.date!.hour >= 9 &&
+                                              element.type == 'check in')
                                           .toList()
                                           .length
                                           .toString(),
