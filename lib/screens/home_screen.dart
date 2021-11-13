@@ -254,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => AttendanceScreen(),
+                            builder: (_) => AttendancesScreen(),
                           ));
                         },
                         child: SizedBox(

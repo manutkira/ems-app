@@ -1,4 +1,5 @@
 import 'package:ems/models/user.dart';
+import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/attendance_info.dart';
 import 'package:ems/utils/services/user_service.dart';
@@ -365,11 +366,11 @@ void onSelected(BuildContext context, int item) {
           .push(MaterialPageRoute(builder: (_) => AttendanceByDayScreen()));
       break;
     case 1:
-      // Navigator.of(context).pushReplacement(
-      //   MaterialPageRoute(
-      //     builder: (context) => AttendanceScreenByAllTime(),
-      //   ),
-      // );
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => AttendanceAllTimeScreen(),
+        ),
+      );
       break;
     case 2:
       // Navigator.of(context).push(

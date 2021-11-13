@@ -64,93 +64,93 @@ class AttendanceAllTime extends StatelessWidget {
     //                 ),
     //               ],
     //             ),
-    //             Container(
-    //               width: 125,
-    //               child: Row(
-    //                 children: [
-    //                   Container(
-    //                     width: 55,
-    //                     child: Column(
-    //                       crossAxisAlignment: CrossAxisAlignment.start,
-    //                       mainAxisAlignment: MainAxisAlignment.start,
-    //                       children: [
-    //                         Row(
-    //                           children: [
-    //                             Text(
-    //                               'P: ',
-    //                               style: TextStyle(fontWeight: FontWeight.bold),
-    //                             ),
-    //                             Text(
-    //                               attendanceHistory[index]
-    //                                   .totalPresent
-    //                                   .toString(),
-    //                             ),
-    //                           ],
-    //                         ),
-    //                         SizedBox(
-    //                           height: 10,
-    //                         ),
-    //                         Row(
-    //                           children: [
-    //                             Text(
-    //                               'PM: ',
-    //                               style: TextStyle(fontWeight: FontWeight.bold),
-    //                             ),
-    //                             Text(
-    //                               attendanceHistory[index]
-    //                                   .totalPermission
-    //                                   .toString(),
-    //                             ),
-    //                           ],
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   ),
-    //                   SizedBox(
-    //                     width: 20,
-    //                   ),
-    //                   Container(
-    //                     child: Column(
-    //                       crossAxisAlignment: CrossAxisAlignment.start,
-    //                       children: [
-    //                         Row(
-    //                           children: [
-    //                             Text(
-    //                               'A: ',
-    //                               style: TextStyle(fontWeight: FontWeight.bold),
-    //                             ),
-    //                             Text(
-    //                               attendanceHistory[index]
-    //                                   .totalAbsent
-    //                                   .toString(),
-    //                             ),
-    //                           ],
-    //                         ),
-    //                         SizedBox(
-    //                           height: 10,
-    //                         ),
-    //                         Row(
-    //                           children: [
-    //                             Text(
-    //                               'L: ',
-    //                               style: TextStyle(fontWeight: FontWeight.bold),
-    //                             ),
-    //                             Text(
-    //                               attendanceHistory[index].totalLate.toString(),
-    //                             ),
-    //                           ],
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   ),
-    //                 ],
-    //               ),
+    // Container(
+    //   width: 125,
+    //   child: Row(
+    //     children: [
+    //       Container(
+    //         width: 55,
+    //         child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           mainAxisAlignment: MainAxisAlignment.start,
+    //           children: [
+    //             Row(
+    //               children: [
+    //                 Text(
+    //                   'P: ',
+    //                   style: TextStyle(fontWeight: FontWeight.bold),
+    //                 ),
+    //                 Text(
+    //                   attendanceHistory[index]
+    //                       .totalPresent
+    //                       .toString(),
+    //                 ),
+    //               ],
+    //             ),
+    //             SizedBox(
+    //               height: 10,
+    //             ),
+    //             Row(
+    //               children: [
+    //                 Text(
+    //                   'PM: ',
+    //                   style: TextStyle(fontWeight: FontWeight.bold),
+    //                 ),
+    //                 Text(
+    //                   attendanceHistory[index]
+    //                       .totalPermission
+    //                       .toString(),
+    //                 ),
+    //               ],
     //             ),
     //           ],
     //         ),
-    //       );
-    //     },
+    //       ),
+    //       SizedBox(
+    //         width: 20,
+    //       ),
+    //       Container(
+    //         child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: [
+    //             Row(
+    //               children: [
+    //                 Text(
+    //                   'A: ',
+    //                   style: TextStyle(fontWeight: FontWeight.bold),
+    //                 ),
+    //                 Text(
+    //                   attendanceHistory[index]
+    //                       .totalAbsent
+    //                       .toString(),
+    //                 ),
+    //               ],
+    //             ),
+    //             SizedBox(
+    //               height: 10,
+    //             ),
+    //             Row(
+    //               children: [
+    //                 Text(
+    //                   'L: ',
+    //                   style: TextStyle(fontWeight: FontWeight.bold),
+    //                 ),
+    //                 Text(
+    //                   attendanceHistory[index].totalLate.toString(),
+    //                 ),
+    //               ],
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ],
     //   ),
-    // );
+    // ),
+    //             ],
+    //           ),
+    //         );
+    //       },
+    //     ),
+    //   );
   }
 }

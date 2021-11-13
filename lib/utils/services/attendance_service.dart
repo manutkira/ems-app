@@ -37,6 +37,38 @@ class AttendanceService extends BaseService {
     }
   }
 
+  Future<List<dynamic>> findAll() async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/showAll'));
+      _code = response.statusCode;
+      List<dynamic> jsondata = json.decode(response.body);
+      List<Attendance> att = [];
+
+      // jsondata.asMap().forEach((key, value) {
+      //   User _user = User.fromJson(value);
+
+      //   List<Attendance> _attendances =
+      //       attendancesFromJson(value["attendances"]);
+
+      //   List<Attendance> attendances = _attendances.map((attendance) {
+      //     return attendance.copyWith(users: _user);
+      //   }).toList();
+      //   att.addAll(attendances);
+      // if (attendances.where((element) => element.userId == _user.id)) {
+      //   print(attendances
+      //       .where((element) => element.type == 'check in')
+      //       .length);
+      // }
+      // });
+
+      // List<Attendance> attendances = [Attendance(), Attendance()];
+      return jsondata;
+    } catch (e) {
+      print(e);
+      throw AttendanceException(code: _code);
+    }
+  }
+
   Future<List<Attendance>> findManyByUserId({required int userId}) async {
     try {
       Response response =
