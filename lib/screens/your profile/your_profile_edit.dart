@@ -54,7 +54,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   }
 
   Future<void> updateProfile() async {
-    // await fetch('/api/updateprofile');
     String finalPassword = password.isEmpty ? "${_user.password}" : password;
     User user = await _userService.updateOne(
         user: _user.copyWith(password: finalPassword));
@@ -339,29 +338,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                   ),
                   const SizedBox(
                     height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Password",
-                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: TextBoxCustom(
-                          isPassword: true,
-                          textHint: 'password',
-                          getValue: (value) {
-                            setState(() {
-                              password = value;
-                            });
-                          },
-                          defaultText: password,
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),

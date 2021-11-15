@@ -60,4 +60,25 @@ class AuthService extends BaseService {
       throw AuthException(code: _code);
     }
   }
+
+  Future<bool> verifyPassword({required int currentUserId}) async {
+    try {
+      Response response = await post(
+        Uri.parse(
+          '$baseUrl/logout/$currentUserId',
+        ),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        _code = response.statusCode;
+        print(_code);
+        throw AuthException(code: _code);
+      }
+    } catch (err) {
+      throw AuthException(code: _code);
+    }
+  }
 }
