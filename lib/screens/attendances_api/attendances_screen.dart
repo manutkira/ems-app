@@ -2,6 +2,7 @@ import 'package:ems/models/user.dart';
 import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/attendance_info.dart';
+import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 
@@ -373,11 +374,11 @@ void onSelected(BuildContext context, int item) {
       );
       break;
     case 2:
-      // Navigator.of(context).push(
-      //   MaterialPageRoute(
-      //     builder: (context) => AttendanceByMonthScreen(),
-      //   ),
-      // );
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => AttendancesByMonthScreen(),
+        ),
+      );
       break;
   }
 }
