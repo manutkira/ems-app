@@ -86,9 +86,9 @@ class MyApp extends StatelessWidget {
           subtitle1: kSubtitle,
         ),
         scaffoldBackgroundColor: kBlue,
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
           backgroundColor: kBlue,
-          titleTextStyle: kHeadingTwo,
+          titleTextStyle: kHeadingThree,
           elevation: 0,
         ),
       ),

@@ -23,21 +23,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String error = "";
   bool isLoading = false;
 
-  AuthService _authService = AuthService().instance;
+  final AuthService _authService = AuthService().instance;
 
-  // Future<void> logUserIn() async {
-  //   try {
-  //     User _user = await _authService.login(phone: phone, password: password);
-  //     ref
-  //         .read(currentUserProvider.notifier)
-  //         .setUser(_user.copyWith(password: password));
-  //     print(ref.watch(currentUserProvider).name);
-  //   } catch (err) {
-  //     setState(() {
-  //       error = err.toString();
-  //     });
-  //   }
-  // }
+  Future<void> logUserIn() async {
+    try {
+      User _user = await _authService.login(phone: phone, password: password);
+      ref
+          .read(currentUserProvider.notifier)
+          .setUser(_user.copyWith(password: password));
+      print(ref.watch(currentUserProvider).name);
+    } catch (err) {
+      setState(() {
+        error = err.toString();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +89,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         });
                       },
                       labelText: "Phone",
-                      textHint: "your email",
+                      textHint: "your phone number",
                       prefixIcon: const Icon(
                         Icons.phone,
                         color: kWhite,
@@ -167,7 +167,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           isLoading = true;
                         });
 
-                        // await logUserIn();
+                        await logUserIn();
 
                         setState(() {
                           isLoading = false;

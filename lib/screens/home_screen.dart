@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:ems/constants.dart';
 import 'package:ems/providers/current_user.dart';
-import 'package:ems/screens/attendance/attendance_screen.dart';
 import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
@@ -15,7 +14,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -26,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var time = 'calculating';
   dynamic employeeCount = "loading...";
   late Timer _timer;
-  UserService _userService = UserService().instance;
+  final UserService _userService = UserService().instance;
 
   getCount() async {
     var c = await _userService.count();
@@ -86,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
         bottom: false,
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
-          child: Column(
+          child: ListView(
             children: [
               Stack(
                 children: [
@@ -186,11 +185,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              const Spacer(),
+              const SizedBox(
+                height: 25,
+              ),
               Container(
                 padding: kPaddingAll,
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * .57,
+                height: MediaQuery.of(context).size.height * .60,
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
@@ -208,6 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -291,6 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
+                    const Spacer(),
                   ],
                 ),
               ),
