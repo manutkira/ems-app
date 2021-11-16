@@ -6,6 +6,8 @@ import 'package:dart_date/dart_date.dart';
 import '../../models/attendance.dart';
 import '../../utils/services/attendance_service.dart';
 import '../../constants.dart';
+import '../../screens/attendances_api/attendance_by_day_screen.dart';
+import '../../screens/attendances_api/attendance_all_time.dart';
 
 class AttendancesByMonthScreen extends StatefulWidget {
   @override
@@ -66,15 +68,42 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Attendance'),
-        actions: [],
+        actions: [
+          PopupMenuButton(
+              onSelected: (item) => onSelected(context, item as int),
+              color: Colors.white,
+              icon: Icon(Icons.filter_list),
+              itemBuilder: (_) => [
+                    PopupMenuItem(
+                      child: Text(
+                        'By Day',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      value: 0,
+                    ),
+                    PopupMenuItem(
+                      child: Text(
+                        'By All-Time',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      value: 1,
+                    ),
+                  ])
+        ],
       ),
       body: Container(
-        margin: EdgeInsets.only(top: 10),
+        margin: EdgeInsets.only(top: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              margin: EdgeInsets.only(left: 20, bottom: 20),
+              margin: EdgeInsets.only(left: 20, bottom: 10),
               child: OutlineButton(
                 onPressed: () {
                   showDialog(
@@ -399,7 +428,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                     ),
                   )
                 : Expanded(
-                    flex: 5,
+                    flex: 3,
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -473,12 +502,6 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                   ],
                                 ),
                                 Container(
-                                    // decoration: BoxDecoration(
-                                    //     borderRadius: BorderRadius.circular(10),
-                                    //     color: attendanceHistory[index].bgColor),
-                                    // alignment: Alignment.center,
-                                    // padding: EdgeInsets.symmetric(
-                                    //     horizontal: 10, vertical: 5),
                                     child: Row(
                                   children: [
                                     Column(
@@ -601,5 +624,24 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
         ),
       ),
     );
+  }
+}
+
+void onSelected(BuildContext context, int item) {
+  switch (item) {
+    case 0:
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => AttendanceByDayScreen(),
+        ),
+      );
+      break;
+    case 1:
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => AttendanceAllTimeScreen(),
+        ),
+      );
+      break;
   }
 }

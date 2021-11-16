@@ -1,3 +1,5 @@
+import 'package:ems/screens/attendances_api/attendance_all_time.dart';
+import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -17,23 +19,34 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   UserService _userService = UserService().instance;
 
   List userDisplay = [];
-  List attendanceDisplay = [];
+  List<Attendance> attendanceDisplay = [];
   bool _isLoading = true;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3B9AAD);
   DateTime testdate = DateTime(10, 11, 2021);
+  bool noData = true;
+  List<Attendance> checkedDate = [];
 
   @override
   void initState() {
     super.initState();
     _attendanceService.findMany().then((value) {
-      attendanceDisplay.addAll(value);
-      // print(attendanceDisplay.where((element) => (element.date.month == 11 &&
-      //     element.type == 'check in' &&
-      //     element.date.hour >= 9)));
+      setState(() {
+        attendanceDisplay.addAll(value);
+      });
     });
     _userService.findMany().then((value) {
       userDisplay.addAll(value);
+    });
+  }
+
+  void checkDate(DateTime pick) {
+    var checkingDate = attendanceDisplay.where((element) =>
+        element.date!.day == pick.day &&
+        element.date!.month == pick.month &&
+        element.date!.year == pick.year);
+    setState(() {
+      checkedDate = checkingDate.toList();
     });
   }
 
@@ -51,8 +64,11 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
       if (picked == null) {
         return;
       }
+      checkDate(picked);
       setState(() {
         _selectDate = picked;
+
+        noData = false;
       });
     });
   }
@@ -60,205 +76,270 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Attendance'),
-        actions: [
-          PopupMenuButton(
-              onSelected: (item) => onSelected(context, item as int),
-              color: Colors.white,
-              icon: Icon(Icons.filter_list),
-              itemBuilder: (_) => [
-                    PopupMenuItem(
-                      child: Text(
-                        'By Day',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      value: 0,
-                    ),
-                    PopupMenuItem(
-                      child: Text(
-                        'By All-Time',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      value: 1,
-                    ),
-                    PopupMenuItem(
-                      child: Text(
-                        'By Month',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      value: 2,
-                    ),
-                  ])
-        ],
-      ),
-      body: Container(
-        margin: EdgeInsets.only(top: 10),
-        child: Column(
-          children: [
-            FlatButton(
-              child: Container(
-                child: Row(
-                  children: [
-                    Text(
-                      _selectDate == null
-                          ? 'Pick a Date'
-                          : 'Date: ${DateFormat.yMd().format(_selectDate as DateTime)}',
-                      style: kHeadingFour,
-                    ),
-                    FlatButton(
-                        onPressed: () {
-                          setState(() {
-                            _byDayDatePicker();
-                          });
-                        },
+        appBar: AppBar(
+          title: Text('Attendance'),
+          actions: [
+            PopupMenuButton(
+                onSelected: (item) => onSelected(context, item as int),
+                color: Colors.white,
+                icon: Icon(Icons.filter_list),
+                itemBuilder: (_) => [
+                      PopupMenuItem(
                         child: Text(
-                          'Choose Date',
-                          style: kParagraph,
-                        ))
-                  ],
-                ),
-              ),
-              // style: ButtonStyle(
-              //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              //         RoundedRectangleBorder(
-              //             borderRadius: BorderRadius.circular(18),
-              //             side: BorderSide(color: Colors.red)))),
-              onPressed: () {},
-            ),
-            Expanded(
-              flex: 5,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    gradient: LinearGradient(
-                      colors: [
-                        color1,
-                        color,
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    )),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: userDisplay.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: EdgeInsets.only(bottom: 20),
-                      margin: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom:
-                                  BorderSide(color: Colors.black, width: 2))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                'assets/images/profile-icon-png-910.png',
-                                width: 75,
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Name: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        userDisplay[index].name.toString(),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'ID: ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(userDisplay[index].id.toString()),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
+                          'By Month',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.green),
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            child: Text(
-                                attendanceDisplay
-                                    .where((element) {
-                                      return element.userId ==
-                                              userDisplay[index].id &&
-                                          element.type == 'check in' &&
-                                          element.date.day ==
-                                              _selectDate?.day &&
-                                          element.date.month ==
-                                              _selectDate?.month &&
-                                          element.date.year ==
-                                              _selectDate?.year;
-                                    })
-                                    .map((e) => e.type)
-                                    .toString(),
-                                style: kParagraph),
-                          )
-                        ],
+                        ),
+                        value: 0,
                       ),
-                    );
-                  },
-                ),
-              ),
-            ),
+                      PopupMenuItem(
+                        child: Text(
+                          'By All-Time',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        value: 1,
+                      ),
+                    ])
           ],
         ),
-      ),
-    );
+        body: attendanceDisplay.isEmpty
+            ? Container(
+                padding: EdgeInsets.only(top: 320),
+                alignment: Alignment.center,
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('Fetching Data'),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      const CircularProgressIndicator(
+                        color: kWhite,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Row(
+                      children: [
+                        Text(
+                          _selectDate == null
+                              ? 'Pick a Date'
+                              : 'Date: ${DateFormat.yMd().format(_selectDate as DateTime)}',
+                          style: kHeadingFour,
+                        ),
+                        FlatButton(
+                            onPressed: () {
+                              setState(() {
+                                _byDayDatePicker();
+                              });
+                            },
+                            child: Text(
+                              'Choose Date',
+                              style: kParagraph,
+                            ))
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: noData
+                        ? Container(
+                            padding: EdgeInsets.only(top: 120),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'NO DATE PICKED YET!!',
+                                  style: kHeadingThree.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Image.asset(
+                                  'assets/images/no-data.jpeg',
+                                  width: 220,
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    color1,
+                                    color,
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                )),
+                            child: ListView.builder(
+                              itemBuilder: (ctx, index) {
+                                DateTime checkDate =
+                                    attendanceDisplay[index].date as DateTime;
+                                return Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.only(bottom: 10),
+                                  margin: EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                          color: Colors.black, width: 2),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'assets/images/profile-icon-png-910.png',
+                                            width: 75,
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text('Name: '),
+                                                  Text(checkedDate[index]
+                                                      .users!
+                                                      .name
+                                                      .toString()),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text('ID: '),
+                                                  Text(checkedDate[index]
+                                                      .userId
+                                                      .toString()),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 60),
+                                        child: Container(
+                                          padding: EdgeInsets.all(3),
+                                          width: 80,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                              color: checkedDate[index].type ==
+                                                          'check in' &&
+                                                      checkedDate[index]
+                                                              .date!
+                                                              .hour <
+                                                          9
+                                                  ? Color(0xff9CE29B)
+                                                  : checkedDate[index].type ==
+                                                              'check in' &&
+                                                          checkedDate[index]
+                                                                  .date!
+                                                                  .hour >
+                                                              8
+                                                      ? Color(0xffF3FDB6)
+                                                      : checkedDate[index]
+                                                                  .type ==
+                                                              'absent'
+                                                          ? Color(0xffFFCBCE)
+                                                          : Color(0xff77B1C9),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Text(
+                                            checkedDate[index].type ==
+                                                        'check in' &&
+                                                    checkedDate[index]
+                                                            .date!
+                                                            .hour <
+                                                        9
+                                                ? 'Present'
+                                                : checkedDate[index].type ==
+                                                            'check in' &&
+                                                        checkedDate[index]
+                                                                .date!
+                                                                .hour >
+                                                            8
+                                                    ? 'Late'
+                                                    : checkedDate[index].type ==
+                                                            'absent'
+                                                        ? 'Absent'
+                                                        : 'Permission',
+                                            style: TextStyle(
+                                              color: checkedDate[index].type ==
+                                                          'check in' &&
+                                                      checkedDate[index]
+                                                              .date!
+                                                              .hour <
+                                                          9
+                                                  ? Color(0xff334732)
+                                                  : checkedDate[index].type ==
+                                                              'check in' &&
+                                                          checkedDate[index]
+                                                                  .date!
+                                                                  .hour >
+                                                              8
+                                                      ? Color(0xff5A5E45)
+                                                      : checkedDate[index]
+                                                                  .type ==
+                                                              'absent'
+                                                          ? Color(0xffA03E3E)
+                                                          : Color(0xff313B3F),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              itemCount: checkedDate.length,
+                            ),
+                          ),
+                  ),
+                ],
+              ));
   }
-}
 
-void onSelected(BuildContext context, int item) {
-  switch (item) {
-    case 0:
-      break;
-    case 1:
-      // Navigator.of(context).pushReplacement(
-      //   MaterialPageRoute(
-      //     builder: (context) => AttendanceScreenByAllTime(),
-      //   ),
-      // );
-      break;
-    case 2:
-      // Navigator.of(context).push(
-      //   MaterialPageRoute(
-      //     builder: (context) => AttendanceByMonthScreen(),
-      //   ),
-      // );
-      break;
+  void onSelected(BuildContext context, int item) {
+    switch (item) {
+      case 0:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => AttendancesByMonthScreen(),
+          ),
+        );
+        break;
+      case 1:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => AttendanceAllTimeScreen(),
+          ),
+        );
+        break;
+    }
   }
 }

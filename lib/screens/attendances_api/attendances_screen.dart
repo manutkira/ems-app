@@ -191,45 +191,45 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
               },
             ),
           ),
-          PopupMenuButton(
-            color: kDarkestBlue,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            onSelected: (int selectedValue) {
-              if (selectedValue == 0) {
-                setState(() {
-                  userDisplay.sort((a, b) =>
-                      a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
-                });
-              }
-              if (selectedValue == 1) {
-                setState(() {
-                  userDisplay.sort((b, a) =>
-                      a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
-                });
-              }
-              if (selectedValue == 2) {
-                setState(() {
-                  userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-                });
-              }
-            },
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                child: Text('From A-Z'),
-                value: 0,
-              ),
-              PopupMenuItem(
-                child: Text('From Z-A'),
-                value: 1,
-              ),
-              PopupMenuItem(
-                child: Text('by ID'),
-                value: 2,
-              ),
-            ],
-            icon: Icon(Icons.sort),
-          ),
+          // PopupMenuButton(
+          //   color: kDarkestBlue,
+          //   shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.all(Radius.circular(10))),
+          //   onSelected: (int selectedValue) {
+          //     if (selectedValue == 0) {
+          //       setState(() {
+          //         userDisplay.sort((a, b) =>
+          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+          //       });
+          //     }
+          //     if (selectedValue == 1) {
+          //       setState(() {
+          //         userDisplay.sort((b, a) =>
+          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+          //       });
+          //     }
+          //     if (selectedValue == 2) {
+          //       setState(() {
+          //         userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+          //       });
+          //     }
+          //   },
+          //   itemBuilder: (_) => [
+          //     PopupMenuItem(
+          //       child: Text('From A-Z'),
+          //       value: 0,
+          //     ),
+          //     PopupMenuItem(
+          //       child: Text('From Z-A'),
+          //       value: 1,
+          //     ),
+          //     PopupMenuItem(
+          //       child: Text('by ID'),
+          //       value: 2,
+          //     ),
+          //   ],
+          //   icon: Icon(Icons.sort),
+          // ),
         ],
       ),
     );
@@ -367,7 +367,7 @@ void onSelected(BuildContext context, int item) {
           .push(MaterialPageRoute(builder: (_) => AttendanceByDayScreen()));
       break;
     case 1:
-      Navigator.of(context).pushReplacement(
+      Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => AttendanceAllTimeScreen(),
         ),

@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:ems/models/user.dart';
+import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
+import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 
@@ -52,6 +54,34 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text('Attendance'),
+          actions: [
+            PopupMenuButton(
+                onSelected: (item) => onSelected(context, item as int),
+                color: Colors.white,
+                icon: Icon(Icons.filter_list),
+                itemBuilder: (_) => [
+                      PopupMenuItem(
+                        child: Text(
+                          'By Day',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        value: 1,
+                      ),
+                      PopupMenuItem(
+                        child: Text(
+                          'By Month',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        value: 0,
+                      ),
+                    ])
+          ],
         ),
         body: Container(
           width: double.infinity,
@@ -155,45 +185,45 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
               },
             ),
           ),
-          PopupMenuButton(
-            color: kDarkestBlue,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            onSelected: (int selectedValue) {
-              if (selectedValue == 0) {
-                setState(() {
-                  userDisplay.sort((a, b) =>
-                      a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
-                });
-              }
-              if (selectedValue == 1) {
-                setState(() {
-                  userDisplay.sort((b, a) =>
-                      a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
-                });
-              }
-              if (selectedValue == 2) {
-                setState(() {
-                  userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-                });
-              }
-            },
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                child: Text('From A-Z'),
-                value: 0,
-              ),
-              PopupMenuItem(
-                child: Text('From Z-A'),
-                value: 1,
-              ),
-              PopupMenuItem(
-                child: Text('by ID'),
-                value: 2,
-              ),
-            ],
-            icon: Icon(Icons.sort),
-          ),
+          // PopupMenuButton(
+          //   color: kDarkestBlue,
+          //   shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.all(Radius.circular(10))),
+          //   onSelected: (int selectedValue) {
+          //     if (selectedValue == 0) {
+          //       setState(() {
+          //         userDisplay.sort((a, b) =>
+          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+          //       });
+          //     }
+          //     if (selectedValue == 1) {
+          //       setState(() {
+          //         userDisplay.sort((b, a) =>
+          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+          //       });
+          //     }
+          //     if (selectedValue == 2) {
+          //       setState(() {
+          //         userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+          //       });
+          //     }
+          //   },
+          //   itemBuilder: (_) => [
+          //     PopupMenuItem(
+          //       child: Text('From A-Z'),
+          //       value: 0,
+          //     ),
+          //     PopupMenuItem(
+          //       child: Text('From Z-A'),
+          //       value: 1,
+          //     ),
+          //     PopupMenuItem(
+          //       child: Text('by ID'),
+          //       value: 2,
+          //     ),
+          //   ],
+          //   icon: Icon(Icons.sort),
+          // ),
         ],
       ),
     );
@@ -214,14 +244,14 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
             Container(
               child: Image.asset(
                 'assets/images/profile-icon-png-910.png',
-                width: 85,
+                width: 65,
               ),
             ),
             SizedBox(
               width: 10,
             ),
             Container(
-              width: 230,
+              width: 260,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -232,7 +262,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                         children: [
                           Text('Name: '),
                           Text(
-                            userDisplay[index].name.toString(),
+                            userDisplay[index].name.substring(0, 7).toString(),
                           ),
                         ],
                       ),
@@ -322,5 +352,24 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
         ),
       ),
     );
+  }
+
+  void onSelected(BuildContext context, int item) {
+    switch (item) {
+      case 0:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => AttendancesByMonthScreen(),
+          ),
+        );
+        break;
+      case 1:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => AttendanceByDayScreen(),
+          ),
+        );
+        break;
+    }
   }
 }
