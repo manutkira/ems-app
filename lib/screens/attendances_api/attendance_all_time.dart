@@ -22,6 +22,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
 
   List attendancedisplay = [];
   List userDisplay = [];
+  List<User> users = [];
   bool _isLoading = true;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3B9AAD);
@@ -41,7 +42,8 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
       _userService.findMany().then((value) {
         setState(() {
           _isLoading = false;
-          userDisplay.addAll(value);
+          users.addAll(value);
+          userDisplay = users;
         });
       });
     } catch (err) {
@@ -118,26 +120,31 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                   ),
                 )
               : userDisplay.isEmpty
-                  ? Container(
-                      padding: EdgeInsets.only(top: 200),
-                      child: Column(
-                        children: [
-                          Text(
-                            'NO EMPLOYEE ADDED YET!!',
-                            style: kHeadingThree.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                  ? Column(
+                      children: [
+                        _searchBar(),
+                        Container(
+                          padding: EdgeInsets.only(top: 200),
+                          child: Column(
+                            children: [
+                              Text(
+                                'NO EMPLOYEE ADDED YET!!',
+                                style: kHeadingThree.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Image.asset(
+                                'assets/images/no-data.jpeg',
+                                width: 220,
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Image.asset(
-                            'assets/images/no-data.jpeg',
-                            width: 220,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     )
                   : Column(
                       children: [
@@ -153,80 +160,6 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                       ],
                     ),
         ));
-  }
-
-  _searchBar() {
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: Row(
-        children: [
-          Flexible(
-            child: TextField(
-              decoration: InputDecoration(
-                suffixIcon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
-                hintText: 'Search...',
-                errorStyle: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onChanged: (text) {
-                text = text.toLowerCase();
-                setState(() {
-                  // fetchData(text);
-                  userDisplay = userDisplay.where((user) {
-                    var userName = user.name!.toLowerCase();
-                    return userName.contains(text);
-                  }).toList();
-                });
-              },
-            ),
-          ),
-          // PopupMenuButton(
-          //   color: kDarkestBlue,
-          //   shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.all(Radius.circular(10))),
-          //   onSelected: (int selectedValue) {
-          //     if (selectedValue == 0) {
-          //       setState(() {
-          //         userDisplay.sort((a, b) =>
-          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
-          //       });
-          //     }
-          //     if (selectedValue == 1) {
-          //       setState(() {
-          //         userDisplay.sort((b, a) =>
-          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
-          //       });
-          //     }
-          //     if (selectedValue == 2) {
-          //       setState(() {
-          //         userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-          //       });
-          //     }
-          //   },
-          //   itemBuilder: (_) => [
-          //     PopupMenuItem(
-          //       child: Text('From A-Z'),
-          //       value: 0,
-          //     ),
-          //     PopupMenuItem(
-          //       child: Text('From Z-A'),
-          //       value: 1,
-          //     ),
-          //     PopupMenuItem(
-          //       child: Text('by ID'),
-          //       value: 2,
-          //     ),
-          //   ],
-          //   icon: Icon(Icons.sort),
-          // ),
-        ],
-      ),
-    );
   }
 
   _listItem(index) {
@@ -288,7 +221,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                   .where((element) =>
                                       element.userId == userDisplay[index].id &&
                                       element.type == 'check in' &&
-                                      element.date!.hour <= 9)
+                                      element.date!.hour < 9)
                                   .length
                                   .toString()),
                             ],
@@ -322,7 +255,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                   .where((element) =>
                                       element.userId == userDisplay[index].id &&
                                       element.type == 'check in' &&
-                                      element.date!.hour >= 9)
+                                      element.date!.hour > 8)
                                   .length
                                   .toString()),
                             ],
@@ -350,6 +283,79 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  _searchBar() {
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Flexible(
+            child: TextField(
+              decoration: InputDecoration(
+                suffixIcon: Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ),
+                hintText: 'Search...',
+                errorStyle: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onChanged: (text) {
+                text = text.toLowerCase();
+                setState(() {
+                  userDisplay = users.where((user) {
+                    var userName = user.name!.toLowerCase();
+                    return userName.contains(text);
+                  }).toList();
+                });
+              },
+            ),
+          ),
+          // PopupMenuButton(
+          //   color: kDarkestBlue,
+          //   shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.all(Radius.circular(10))),
+          //   onSelected: (int selectedValue) {
+          //     if (selectedValue == 0) {
+          //       setState(() {
+          //         userDisplay.sort((a, b) =>
+          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+          //       });
+          //     }
+          //     if (selectedValue == 1) {
+          //       setState(() {
+          //         userDisplay.sort((b, a) =>
+          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+          //       });
+          //     }
+          //     if (selectedValue == 2) {
+          //       setState(() {
+          //         userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+          //       });
+          //     }
+          //   },
+          //   itemBuilder: (_) => [
+          //     PopupMenuItem(
+          //       child: Text('From A-Z'),
+          //       value: 0,
+          //     ),
+          //     PopupMenuItem(
+          //       child: Text('From Z-A'),
+          //       value: 1,
+          //     ),
+          //     PopupMenuItem(
+          //       child: Text('by ID'),
+          //       value: 2,
+          //     ),
+          //   ],
+          //   icon: Icon(Icons.filter_list),
+          // ),
+        ],
       ),
     );
   }

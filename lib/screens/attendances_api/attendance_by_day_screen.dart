@@ -26,6 +26,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   DateTime testdate = DateTime(10, 11, 2021);
   bool noData = true;
   List<Attendance> checkedDate = [];
+  List<Attendance> users = [];
 
   @override
   void initState() {
@@ -46,7 +47,8 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
         element.date!.month == pick.month &&
         element.date!.year == pick.year);
     setState(() {
-      checkedDate = checkingDate.toList();
+      users = checkingDate.toList();
+      checkedDate = users;
     });
   }
 
@@ -54,13 +56,12 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
 
   void _byDayDatePicker() {
     showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(1990),
-            lastDate: DateTime.now(),
-            initialEntryMode: DatePickerEntryMode.calendarOnly,
-            initialDatePickerMode: DatePickerMode.year)
-        .then((picked) {
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1990),
+      lastDate: DateTime.now(),
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+    ).then((picked) {
       if (picked == null) {
         return;
       }
@@ -189,139 +190,210 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                 )),
-                            child: ListView.builder(
-                              itemBuilder: (ctx, index) {
-                                DateTime checkDate =
-                                    attendanceDisplay[index].date as DateTime;
-                                return Container(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.only(bottom: 10),
-                                  margin: EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                          color: Colors.black, width: 2),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                            child: checkedDate.isEmpty
+                                ? Column(
                                     children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/images/profile-icon-png-910.png',
-                                            width: 75,
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text('Name: '),
-                                                  Text(checkedDate[index]
-                                                      .users!
-                                                      .name
-                                                      .toString()),
-                                                ],
+                                      _searchBar(),
+                                      Container(
+                                        padding: EdgeInsets.only(top: 200),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              'NO EMPLOYEE ADDED YET!!',
+                                              style: kHeadingThree.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
                                               ),
-                                              Row(
-                                                children: [
-                                                  Text('ID: '),
-                                                  Text(checkedDate[index]
-                                                      .userId
-                                                      .toString()),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 60),
-                                        child: Container(
-                                          padding: EdgeInsets.all(3),
-                                          width: 80,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                              color: checkedDate[index].type ==
-                                                          'check in' &&
-                                                      checkedDate[index]
-                                                              .date!
-                                                              .hour <
-                                                          9
-                                                  ? Color(0xff9CE29B)
-                                                  : checkedDate[index].type ==
-                                                              'check in' &&
-                                                          checkedDate[index]
-                                                                  .date!
-                                                                  .hour >
-                                                              8
-                                                      ? Color(0xffF3FDB6)
-                                                      : checkedDate[index]
-                                                                  .type ==
-                                                              'absent'
-                                                          ? Color(0xffFFCBCE)
-                                                          : Color(0xff77B1C9),
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          child: Text(
-                                            checkedDate[index].type ==
-                                                        'check in' &&
-                                                    checkedDate[index]
-                                                            .date!
-                                                            .hour <
-                                                        9
-                                                ? 'Present'
-                                                : checkedDate[index].type ==
-                                                            'check in' &&
-                                                        checkedDate[index]
-                                                                .date!
-                                                                .hour >
-                                                            8
-                                                    ? 'Late'
-                                                    : checkedDate[index].type ==
-                                                            'absent'
-                                                        ? 'Absent'
-                                                        : 'Permission',
-                                            style: TextStyle(
-                                              color: checkedDate[index].type ==
-                                                          'check in' &&
-                                                      checkedDate[index]
-                                                              .date!
-                                                              .hour <
-                                                          9
-                                                  ? Color(0xff334732)
-                                                  : checkedDate[index].type ==
-                                                              'check in' &&
-                                                          checkedDate[index]
-                                                                  .date!
-                                                                  .hour >
-                                                              8
-                                                      ? Color(0xff5A5E45)
-                                                      : checkedDate[index]
-                                                                  .type ==
-                                                              'absent'
-                                                          ? Color(0xffA03E3E)
-                                                          : Color(0xff313B3F),
                                             ),
-                                          ),
+                                            SizedBox(
+                                              height: 30,
+                                            ),
+                                            Image.asset(
+                                              'assets/images/no-data.jpeg',
+                                              width: 220,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Column(
+                                    children: [
+                                      _searchBar(),
+                                      Expanded(
+                                        child: ListView.builder(
+                                          itemBuilder: (ctx, index) {
+                                            return _listItem(index);
+                                          },
+                                          itemCount: checkedDate.length,
                                         ),
                                       ),
                                     ],
                                   ),
-                                );
-                              },
-                              itemCount: checkedDate.length,
-                            ),
                           ),
                   ),
                 ],
               ));
+  }
+
+  _searchBar() {
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Flexible(
+            child: TextField(
+              decoration: InputDecoration(
+                suffixIcon: Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ),
+                hintText: 'Search...',
+                errorStyle: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onChanged: (text) {
+                text = text.toLowerCase();
+                setState(() {
+                  checkedDate = users.where((user) {
+                    var userName = user.users!.name!.toLowerCase();
+                    return userName.contains(text);
+                  }).toList();
+                });
+              },
+            ),
+          ),
+          // PopupMenuButton(
+          //   color: kDarkestBlue,
+          //   shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.all(Radius.circular(10))),
+          //   onSelected: (int selectedValue) {
+          //     if (selectedValue == 0) {
+          //       setState(() {
+          //         userDisplay.sort((a, b) =>
+          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+          //       });
+          //     }
+          //     if (selectedValue == 1) {
+          //       setState(() {
+          //         userDisplay.sort((b, a) =>
+          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+          //       });
+          //     }
+          //     if (selectedValue == 2) {
+          //       setState(() {
+          //         userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+          //       });
+          //     }
+          //   },
+          //   itemBuilder: (_) => [
+          //     PopupMenuItem(
+          //       child: Text('From A-Z'),
+          //       value: 0,
+          //     ),
+          //     PopupMenuItem(
+          //       child: Text('From Z-A'),
+          //       value: 1,
+          //     ),
+          //     PopupMenuItem(
+          //       child: Text('by ID'),
+          //       value: 2,
+          //     ),
+          //   ],
+          //   icon: Icon(Icons.filter_list),
+          // ),
+        ],
+      ),
+    );
+  }
+
+  _listItem(index) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.black, width: 2),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Image.asset(
+                'assets/images/profile-icon-png-910.png',
+                width: 75,
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text('Name: '),
+                      Text(checkedDate[index].users!.name.toString()),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text('ID: '),
+                      Text(checkedDate[index].userId.toString()),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 60),
+            child: Container(
+              padding: EdgeInsets.all(3),
+              width: 80,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: checkedDate[index].type == 'check in' &&
+                          checkedDate[index].date!.hour < 9
+                      ? Color(0xff9CE29B)
+                      : checkedDate[index].type == 'check in' &&
+                              checkedDate[index].date!.hour > 8
+                          ? Color(0xffF3FDB6)
+                          : checkedDate[index].type == 'absent'
+                              ? Color(0xffFFCBCE)
+                              : Color(0xff77B1C9),
+                  borderRadius: BorderRadius.circular(10)),
+              child: Text(
+                checkedDate[index].type == 'check in' &&
+                        checkedDate[index].date!.hour < 9
+                    ? 'Present'
+                    : checkedDate[index].type == 'check in' &&
+                            checkedDate[index].date!.hour > 8
+                        ? 'Late'
+                        : checkedDate[index].type == 'absent'
+                            ? 'Absent'
+                            : 'Permission',
+                style: TextStyle(
+                  color: checkedDate[index].type == 'check in' &&
+                          checkedDate[index].date!.hour < 9
+                      ? Color(0xff334732)
+                      : checkedDate[index].type == 'check in' &&
+                              checkedDate[index].date!.hour > 8
+                          ? Color(0xff5A5E45)
+                          : checkedDate[index].type == 'absent'
+                              ? Color(0xffA03E3E)
+                              : Color(0xff313B3F),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void onSelected(BuildContext context, int item) {

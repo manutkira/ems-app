@@ -22,6 +22,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
   final color1 = const Color(0xff3B9AAD);
   UserService _userService = UserService().instance;
   List<User> userDisplay = [];
+  List<User> user = [];
   bool _isLoading = true;
   bool order = false;
 
@@ -34,6 +35,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
         setState(() {
           _isLoading = false;
           userDisplay.addAll(usersFromServer);
+          user = userDisplay;
           if (order) {
           } else {
             userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
@@ -124,26 +126,31 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                   ),
                 )
               : userDisplay.isEmpty
-                  ? Container(
-                      padding: EdgeInsets.only(top: 200),
-                      child: Column(
-                        children: [
-                          Text(
-                            'NO EMPLOYEE ADDED YET!!',
-                            style: kHeadingThree.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                  ? Column(
+                      children: [
+                        _searchBar(),
+                        Container(
+                          padding: EdgeInsets.only(top: 200),
+                          child: Column(
+                            children: [
+                              Text(
+                                'NO EMPLOYEE ADDED YET!!',
+                                style: kHeadingThree.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Image.asset(
+                                'assets/images/no-data.jpeg',
+                                width: 220,
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Image.asset(
-                            'assets/images/no-data.jpeg',
-                            width: 220,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     )
                   : Column(
                       children: [
@@ -183,7 +190,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                 text = text.toLowerCase();
                 setState(() {
                   // fetchData(text);
-                  userDisplay = userDisplay.where((user) {
+                  userDisplay = user.where((user) {
                     var userName = user.name!.toLowerCase();
                     return userName.contains(text);
                   }).toList();
@@ -250,7 +257,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
             Container(
               child: Image.asset(
                 'assets/images/profile-icon-png-910.png',
-                width: 85,
+                width: 75,
               ),
             ),
             SizedBox(
@@ -290,19 +297,6 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                     onSelected: (int selectedValue) {
                       if (selectedValue == 0) {
                         int id = userDisplay[index].id as int;
-                        String name = userDisplay[index].name.toString();
-                        String phone = userDisplay[index].phone.toString();
-                        String email = userDisplay[index].email.toString();
-                        String address = userDisplay[index].address.toString();
-                        String position =
-                            userDisplay[index].position.toString();
-                        String skill = userDisplay[index].skill.toString();
-                        String salary = userDisplay[index].salary.toString();
-                        String role = userDisplay[index].role.toString();
-                        String status = userDisplay[index].status.toString();
-                        String rate = userDisplay[index].rate.toString();
-                        String background =
-                            userDisplay[index].background.toString();
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => AttendancesInfoScreen(id)));
                       }
@@ -339,14 +333,6 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                         child: Text('att Info'),
                         value: 0,
                       ),
-                      // PopupMenuItem(
-                      //   child: Text('By Day'),
-                      //   value: 1,
-                      // ),
-                      // PopupMenuItem(
-                      //   child: Text('Delete'),
-                      //   value: 2,
-                      // ),
                     ],
                     icon: Icon(Icons.more_vert),
                   )
@@ -363,8 +349,11 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
 void onSelected(BuildContext context, int item) {
   switch (item) {
     case 0:
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (_) => AttendanceByDayScreen()));
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => AttendanceByDayScreen(),
+        ),
+      );
       break;
     case 1:
       Navigator.of(context).push(
