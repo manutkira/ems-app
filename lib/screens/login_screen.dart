@@ -23,7 +23,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String error = "";
   bool isLoading = false;
 
-  final AuthService _authService = AuthService().instance;
+  final AuthService _authService = AuthService.instance;
 
   Future<void> logUserIn() async {
     try {

@@ -2,6 +2,7 @@ import 'package:ems/screens/attendance/individual_attendance.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import './constants.dart';
@@ -19,6 +20,14 @@ class MyApp extends StatelessWidget {
   final navigatorKey = GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ),
+    );
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,

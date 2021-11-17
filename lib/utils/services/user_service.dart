@@ -7,7 +7,7 @@ import 'base_service.dart';
 import 'exceptions/user.dart';
 
 class UserService extends BaseService {
-  UserService get instance => this;
+  static UserService get instance => UserService();
 
   int _code = 0;
 
@@ -19,9 +19,6 @@ class UserService extends BaseService {
         _code = response.statusCode;
         throw UserException(code: _code);
       }
-
-      // var jsondata = json.decode(response.body);
-      // var user = User.fromJson(jsondata);
       return int.parse(response.body);
     } catch (e) {
       throw UserException(code: _code);

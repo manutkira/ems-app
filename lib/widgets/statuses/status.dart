@@ -20,7 +20,8 @@ class StatusWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      width: MediaQuery.of(context).size.width - 20,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
           color: backgroundColor, borderRadius: BorderRadius.circular(6)),

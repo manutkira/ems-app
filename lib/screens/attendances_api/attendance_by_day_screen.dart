@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/attendance.dart';
 import '../../utils/services/attendance_service.dart';
-import '../../constants.dart';
 
 class AttendanceByDayScreen extends StatefulWidget {
   @override
@@ -10,7 +8,7 @@ class AttendanceByDayScreen extends StatefulWidget {
 }
 
 class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
-  AttendanceService _attendanceService = AttendanceService().instance;
+  AttendanceService _attendanceService = AttendanceService.instance;
   List attendanceDisplay = [];
   bool _isLoading = true;
 

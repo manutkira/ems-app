@@ -17,7 +17,7 @@ class MenuDrawer extends ConsumerWidget {
     Key? key,
   }) : super(key: key);
 
-  AuthService _auth = AuthService().instance;
+  final AuthService _auth = AuthService.instance;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
