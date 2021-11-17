@@ -195,7 +195,13 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                         children: [
                           Text('Name: '),
                           Text(
-                            userDisplay[index].name.substring(0, 7).toString(),
+                            userDisplay[index].name.length >= 13
+                                ? '${userDisplay[index].name.substring(0, 11).toString()}...'
+                                : userDisplay[index]
+                                    .name
+                                    // .substring(
+                                    //     userDisplay[index].name.length - 7)
+                                    .toString(),
                           ),
                         ],
                       ),

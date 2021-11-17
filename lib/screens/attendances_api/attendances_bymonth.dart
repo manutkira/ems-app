@@ -498,7 +498,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                               children: [
                                                 Image.asset(
                                                   'assets/images/profile-icon-png-910.png',
-                                                  width: 75,
+                                                  width: 65,
                                                 ),
                                                 SizedBox(
                                                   width: 20,
@@ -518,8 +518,16 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         ),
                                                         Text(
                                                           userDisplay[index]
-                                                              .name
-                                                              .toString(),
+                                                                      .name
+                                                                      .length >=
+                                                                  13
+                                                              ? '${userDisplay[index].name.substring(0, 11).toString()}...'
+                                                              : userDisplay[
+                                                                      index]
+                                                                  .name
+                                                                  // .substring(
+                                                                  //     userDisplay[index].name.length - 7)
+                                                                  .toString(),
                                                         ),
                                                       ],
                                                     ),
