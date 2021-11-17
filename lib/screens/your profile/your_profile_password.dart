@@ -27,7 +27,7 @@ class _YourProfilePasswordScreenState
 
   late User _user;
 
-  final UserService _userService = UserService().instance;
+  final UserService _userService = UserService.instance;
 
   @override
   void initState() {

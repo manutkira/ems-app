@@ -44,6 +44,8 @@ dependencies:
   json_annotation: ^4.3.0
   json_serializable: ^6.0.1
   flutter_riverpod: ^1.0.0
+  qr_code_scanner: ^0.6.1
+  qr_flutter: ^4.0.0
 
 dev_dependencies:
   build_runner: ^2.1.4

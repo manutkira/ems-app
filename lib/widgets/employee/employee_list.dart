@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
 
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
@@ -19,7 +17,7 @@ class EmployeeList extends StatefulWidget {
 class _EmployeeListState extends State<EmployeeList> {
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
-  final UserService _userService = UserService().instance;
+  final UserService _userService = UserService.instance;
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
