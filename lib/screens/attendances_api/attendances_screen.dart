@@ -6,11 +6,7 @@ import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/attendance.dart';
-import '../../utils/services/attendance_service.dart';
 import '../../constants.dart';
-import '../../screens/employee/employee_edit_screen.dart';
-import '../../screens/employee/employee_info_screen.dart';
 
 class AttendancesScreen extends StatefulWidget {
   @override
@@ -198,45 +194,6 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
               },
             ),
           ),
-          // PopupMenuButton(
-          //   color: kDarkestBlue,
-          //   shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.all(Radius.circular(10))),
-          //   onSelected: (int selectedValue) {
-          //     if (selectedValue == 0) {
-          //       setState(() {
-          //         userDisplay.sort((a, b) =>
-          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
-          //       });
-          //     }
-          //     if (selectedValue == 1) {
-          //       setState(() {
-          //         userDisplay.sort((b, a) =>
-          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
-          //       });
-          //     }
-          //     if (selectedValue == 2) {
-          //       setState(() {
-          //         userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-          //       });
-          //     }
-          //   },
-          //   itemBuilder: (_) => [
-          //     PopupMenuItem(
-          //       child: Text('From A-Z'),
-          //       value: 0,
-          //     ),
-          //     PopupMenuItem(
-          //       child: Text('From Z-A'),
-          //       value: 1,
-          //     ),
-          //     PopupMenuItem(
-          //       child: Text('by ID'),
-          //       value: 2,
-          //     ),
-          //   ],
-          //   icon: Icon(Icons.sort),
-          // ),
         ],
       ),
     );
@@ -252,7 +209,6 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
       child: Container(
         width: double.infinity,
         child: Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
               child: Image.asset(
@@ -287,9 +243,6 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                       )
                     ],
                   ),
-                  // SizedBox(
-                  //   width: 50,
-                  // ),
                   PopupMenuButton(
                     color: kDarkestBlue,
                     shape: RoundedRectangleBorder(

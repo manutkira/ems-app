@@ -39,7 +39,6 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
         body: FutureBuilder(
           future: fetchData(),
           builder: (context, snapshot) {
-            print(snapshot);
             if (snapshot.hasData) {
               return SingleChildScrollView(
                 child: Column(
@@ -296,7 +295,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.only(
-                                                top: 20, left: 30),
+                                                top: 20, left: 30, bottom: 8),
                                             child: Text(
                                               (snapshot.data
                                                       as dynamic)['email']
@@ -304,34 +303,47 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                               style: kParagraph,
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20, left: 30),
-                                            child: Text(
-                                              (snapshot.data
-                                                      as dynamic)['address']
-                                                  .toString(),
-                                              style: kParagraph,
+                                          Container(
+                                            height: 35,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 12,
+                                                left: 30,
+                                              ),
+                                              child: Text(
+                                                (snapshot.data
+                                                        as dynamic)['address']
+                                                    .toString(),
+                                                style: kParagraph,
+                                              ),
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20, left: 30),
-                                            child: Text(
-                                              (snapshot.data
-                                                      as dynamic)['position']
-                                                  .toString(),
-                                              style: kParagraph,
+                                          Container(
+                                            height: 35,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 14,
+                                                left: 30,
+                                              ),
+                                              child: Text(
+                                                (snapshot.data
+                                                        as dynamic)['position']
+                                                    .toString(),
+                                                style: kParagraph,
+                                              ),
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20, left: 30),
-                                            child: Text(
-                                              (snapshot.data
-                                                      as dynamic)['skill']
-                                                  .toString(),
-                                              style: kParagraph,
+                                          Container(
+                                            height: 35,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 16, left: 30),
+                                              child: Text(
+                                                (snapshot.data
+                                                        as dynamic)['skill']
+                                                    .toString(),
+                                                style: kParagraph,
+                                              ),
                                             ),
                                           ),
                                           Padding(
