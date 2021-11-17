@@ -31,7 +31,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
   @override
   Widget build(BuildContext context) {
     final color = const Color(0xff05445E);
-    final color1 = const Color(0xff3B9AAD);
+    final color1 = const Color(0xff3982A0);
     return Scaffold(
         appBar: AppBar(
           title: Text('Employee'),
@@ -39,7 +39,6 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
         body: FutureBuilder(
           future: fetchData(),
           builder: (context, snapshot) {
-            print(snapshot);
             if (snapshot.hasData) {
               return SingleChildScrollView(
                 child: Column(
@@ -56,7 +55,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                         child: Row(
                           children: [
                             Container(
-                              margin: EdgeInsets.only(left: 10),
+                              margin: EdgeInsets.only(
+                                left: 10,
+                              ),
                               child: Expanded(
                                 flex: 3,
                                 child: Image.asset(
@@ -66,8 +67,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                               ),
                             ),
                             Container(
-                              height: 50,
-                              margin: EdgeInsets.only(left: 15),
+                              height: 55,
+                              margin: EdgeInsets.only(left: 15, top: 13),
                               child: Expanded(
                                 flex: 7,
                                 child: Column(
@@ -91,23 +92,27 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
                                     Row(
                                       children: [
-                                        Text(
-                                          'Name: ',
-                                          style: kParagraph.copyWith(
-                                              color: Colors.black),
+                                        Container(
+                                          padding: EdgeInsets.only(top: 3),
+                                          child: Text(
+                                            'Name: ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black),
+                                          ),
                                         ),
                                         SizedBox(
                                           width: 20,
                                         ),
-                                        Text(
-                                          (snapshot.data as dynamic)['name'],
-                                          style: kParagraph.copyWith(
-                                              color: Colors.black),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 4),
+                                          child: Text(
+                                            (snapshot.data as dynamic)['name'],
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black),
+                                          ),
                                         )
                                       ],
                                     )
@@ -120,7 +125,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 30),
+                      margin: EdgeInsets.only(top: 28),
                       width: double.infinity,
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -154,223 +159,261 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Name ',
-                                          style: kHeadingFour.copyWith(
-                                              color: Colors.black),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 11),
+                                          child: Text(
+                                            'Name ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 26),
+                                          child: Text(
+                                            'ID ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Text(
+                                            'Email ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Text(
+                                            'Address ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Text(
+                                            'Position ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Text(
+                                            'Skill ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Text(
+                                            'Salary ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Text(
+                                            'Role ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Text(
+                                            'Status ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Text(
+                                            'Work-Rate ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                         ),
                                         SizedBox(
-                                          height: 28,
-                                        ),
-                                        Text(
-                                          'ID ',
-                                          style: kHeadingFour.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          height: 28,
-                                        ),
-                                        Text(
-                                          'Email ',
-                                          style: kHeadingFour.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          height: 28,
-                                        ),
-                                        Text(
-                                          'Address ',
-                                          style: kHeadingFour.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          height: 28,
-                                        ),
-                                        Text(
-                                          'Position ',
-                                          style: kHeadingFour.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          height: 28,
-                                        ),
-                                        Text(
-                                          'Skill ',
-                                          style: kHeadingFour.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          height: 28,
-                                        ),
-                                        Text(
-                                          'Salary ',
-                                          style: kHeadingFour.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          height: 28,
-                                        ),
-                                        Text(
-                                          'Role ',
-                                          style: kHeadingFour.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          height: 28,
-                                        ),
-                                        Text(
-                                          'Status ',
-                                          style: kHeadingFour.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          height: 28,
-                                        ),
-                                        Text(
-                                          'Work-Rate ',
-                                          style: kHeadingFour.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          height: 28,
-                                        ),
-                                        // Column(
-                                        //   crossAxisAlignment:
-                                        //       CrossAxisAlignment.start,
-                                        //   children: [
-                                        //     Text(
-                                        //       'Address: ',
-                                        //       style: kHeadingFour.copyWith(
-                                        //           color: Colors.black),
-                                        //     ),
-                                        //     SizedBox(
-                                        //       height: 15,
-                                        //     ),
-                                        //     Padding(
-                                        //       padding:
-                                        //           const EdgeInsets.only(left: 15),
-                                        //       child: Text(
-                                        //         (snapshot.data
-                                        //             as dynamic)['address'],
-                                        //         style: kParagraph,
-                                        //       ),
-                                        //     ),
-                                        //   ],
-                                        // ),
-                                        // SizedBox(
-                                        //   height: 28,
-                                        // ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 25,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          (snapshot.data as dynamic)['name'],
-                                          style: kParagraph,
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          (snapshot.data as dynamic)['id']
-                                              .toString(),
-                                          style: kParagraph,
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          (snapshot.data as dynamic)['email']
-                                              .toString(),
-                                          style: kParagraph,
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          (snapshot.data as dynamic)['address']
-                                              .toString(),
-                                          style: kParagraph,
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          (snapshot.data as dynamic)['position']
-                                              .toString(),
-                                          style: kParagraph,
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          (snapshot.data as dynamic)['skill']
-                                              .toString(),
-                                          style: kParagraph,
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          '\$${(snapshot.data as dynamic)['salary'].toString()}',
-                                          style: kParagraph,
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          (snapshot.data as dynamic)['role']
-                                              .toString(),
-                                          style: kParagraph,
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          (snapshot.data as dynamic)['status']
-                                              .toString(),
-                                          style: kParagraph,
-                                        ),
-                                        SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          (snapshot.data as dynamic)['rate']
-                                              .toString(),
-                                          style: kParagraph,
-                                        ),
-                                        SizedBox(
-                                          height: 30,
+                                          height: 5,
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Work-Background: ',
-                                      style: kHeadingFour.copyWith(
-                                          color: Colors.black),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 15),
-                                      child: Text(
-                                        (snapshot.data as dynamic)['background']
-                                            .toString(),
-                                        style: kParagraph,
+                                    Container(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            height: 34,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 10, left: 30),
+                                              child: Text(
+                                                (snapshot.data
+                                                    as dynamic)['name'],
+                                                style: kParagraph,
+                                              ),
+                                            ),
+                                          ),
+                                          // SizedBox(
+                                          //   height: 14,
+                                          // ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 20, left: 30),
+                                            child: Text(
+                                              (snapshot.data as dynamic)['id']
+                                                  .toString(),
+                                              style: kParagraph,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 20, left: 30, bottom: 8),
+                                            child: Text(
+                                              (snapshot.data
+                                                      as dynamic)['email']
+                                                  .toString(),
+                                              style: kParagraph,
+                                            ),
+                                          ),
+                                          Container(
+                                            height: 35,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 12,
+                                                left: 30,
+                                              ),
+                                              child: Text(
+                                                (snapshot.data
+                                                        as dynamic)['address']
+                                                    .toString(),
+                                                style: kParagraph,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            height: 35,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 14,
+                                                left: 30,
+                                              ),
+                                              child: Text(
+                                                (snapshot.data
+                                                        as dynamic)['position']
+                                                    .toString(),
+                                                style: kParagraph,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            height: 35,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 16, left: 30),
+                                              child: Text(
+                                                (snapshot.data
+                                                        as dynamic)['skill']
+                                                    .toString(),
+                                                style: kParagraph,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 20, left: 30),
+                                            child: Text(
+                                              '\$${(snapshot.data as dynamic)['salary'].toString()}',
+                                              style: kParagraph,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 20, left: 30),
+                                            child: Text(
+                                              (snapshot.data as dynamic)['role']
+                                                  .toString(),
+                                              style: kParagraph,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 20, left: 30),
+                                            child: Text(
+                                              (snapshot.data
+                                                      as dynamic)['status']
+                                                  .toString(),
+                                              style: kParagraph,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 20, left: 30),
+                                            child: Text(
+                                              (snapshot.data as dynamic)['rate']
+                                                  .toString(),
+                                              style: kParagraph,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Work-Background: ',
+                                        style: kParagraph.copyWith(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 15),
+                                        child: Text(
+                                          (snapshot.data
+                                                  as dynamic)['background']
+                                              .toString(),
+                                          style: kParagraph,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -387,9 +430,6 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Fetching Data'),
-                  SizedBox(
-                    height: 10,
-                  ),
                   const CircularProgressIndicator(
                     color: kWhite,
                   ),

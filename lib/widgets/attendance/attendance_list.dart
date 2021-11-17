@@ -64,11 +64,11 @@ class AttendanceList extends StatelessWidget {
     //               ],
     //             ),
     //             Container(
-    //               decoration: BoxDecoration(
-    //                   borderRadius: BorderRadius.circular(10),
-    //                   color: attendanceHistory[index].bgColor),
-    //               alignment: Alignment.center,
-    //               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    // decoration: BoxDecoration(
+    //     borderRadius: BorderRadius.circular(10),
+    //     color: attendanceHistory[index].bgColor),
+    // alignment: Alignment.center,
+    // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
     //               child: Text(
     //                 attendanceHistory[index].status,
     //                 style: TextStyle(

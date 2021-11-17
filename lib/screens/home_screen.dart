@@ -235,10 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                           flex: 1,
                           child: MenuItem(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_) => AttendancesScreen()));
-                            },
+                            onTap: () {},
                             illustration:
                                 SvgPicture.asset("assets/images/close.svg"),
                             label: "Check out",

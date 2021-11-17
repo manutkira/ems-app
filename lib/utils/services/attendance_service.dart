@@ -30,7 +30,6 @@ class AttendanceService extends BaseService {
       _code = response.statusCode;
       var jsondata = json.decode(response.body);
       var attendances = attendancesFromJson(jsondata);
-      print(attendances[0].users?.name);
       return attendances;
     } catch (e) {
       throw AttendanceException(code: _code);

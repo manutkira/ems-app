@@ -18,7 +18,7 @@ class EmployeeList extends StatefulWidget {
 
 class _EmployeeListState extends State<EmployeeList> {
   final color = const Color(0xff05445E);
-  final color1 = const Color(0xff3B9AAD);
+  final color1 = const Color(0xff3982A0);
   final UserService _userService = UserService().instance;
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
@@ -43,6 +43,7 @@ class _EmployeeListState extends State<EmployeeList> {
   //   }
   // }
   List<User> userDisplay = [];
+  List<User> user = [];
 
   bool _isLoading = true;
   bool order = false;
@@ -50,17 +51,17 @@ class _EmployeeListState extends State<EmployeeList> {
 
   @override
   void initState() {
-    super.initState();
-
     try {
       _userService.findMany().then((usersFromServer) {
         setState(() {
           _isLoading = false;
-          userDisplay.addAll(usersFromServer);
+          user.addAll(usersFromServer);
+          userDisplay = user;
 
           userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
         });
       });
+      super.initState();
     } catch (err) {
       //
     }
@@ -103,33 +104,37 @@ class _EmployeeListState extends State<EmployeeList> {
               ),
             )
           : userDisplay.isEmpty
-              ? Container(
-                  padding: EdgeInsets.only(top: 200),
-                  child: Column(
-                    children: [
-                      Text(
-                        'NO EMPLOYEE ADDED YET!!',
-                        style: kHeadingThree.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
+              ? Column(
+                  children: [
+                    _searchBar(),
+                    Container(
+                      padding: EdgeInsets.only(top: 200),
+                      child: Column(
+                        children: [
+                          Text(
+                            'NO EMPLOYEE ADDED YET!!',
+                            style: kHeadingThree.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Image.asset(
+                            'assets/images/no-data.jpeg',
+                            width: 220,
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      Image.asset(
-                        'assets/images/no-data.jpeg',
-                        width: 220,
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 )
               : Column(
                   children: [
                     _searchBar(),
                     Expanded(
                       child: ListView.builder(
-                          // reverse: order,
                           itemCount: userDisplay.length,
                           itemBuilder: (context, index) {
                             return _listItem(index);
@@ -160,9 +165,11 @@ class _EmployeeListState extends State<EmployeeList> {
               ),
               onChanged: (text) {
                 text = text.toLowerCase();
+                // if (text.isEmpty) {
+                //   userDisplay;
+                // }
                 setState(() {
-                  // fetchData(text);
-                  userDisplay = userDisplay.where((user) {
+                  userDisplay = user.where((user) {
                     var userName = user.name!.toLowerCase();
                     return userName.contains(text);
                   }).toList();
@@ -229,7 +236,7 @@ class _EmployeeListState extends State<EmployeeList> {
             Container(
               child: Image.asset(
                 'assets/images/profile-icon-png-910.png',
-                width: 85,
+                width: 75,
               ),
             ),
             SizedBox(

@@ -152,8 +152,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             controller: nameController,
                             textInputAction: TextInputAction.next,
                             validator: (value) {
-                              if (value!.isEmpty ||
-                                  !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
+                              if (value!.isEmpty) {
                                 return 'Please Enter Correct Name';
                               }
                               return null;

@@ -32,6 +32,7 @@ dependencies:
   intl: ^0.17.0
   material_floating_search_bar: ^0.3.6
   syncfusion_flutter_calendar: ^19.3.47
+  dart_date: ^1.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
