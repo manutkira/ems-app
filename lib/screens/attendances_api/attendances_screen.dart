@@ -19,7 +19,7 @@ class AttendancesScreen extends StatefulWidget {
 
 class _AttendancesScreenState extends State<AttendancesScreen> {
   final color = const Color(0xff05445E);
-  final color1 = const Color(0xff3B9AAD);
+  final color1 = const Color(0xff3982A0);
   UserService _userService = UserService().instance;
   List<User> userDisplay = [];
   List<User> user = [];

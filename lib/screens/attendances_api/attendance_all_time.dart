@@ -25,7 +25,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   List<User> users = [];
   bool _isLoading = true;
   final color = const Color(0xff05445E);
-  final color1 = const Color(0xff3B9AAD);
+  final color1 = const Color(0xff3982A0);
 
   @override
   void initState() {

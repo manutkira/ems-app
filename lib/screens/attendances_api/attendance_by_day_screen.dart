@@ -22,7 +22,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   List<Attendance> attendanceDisplay = [];
   bool _isLoading = true;
   final color = const Color(0xff05445E);
-  final color1 = const Color(0xff3B9AAD);
+  final color1 = const Color(0xff3982A0);
   DateTime testdate = DateTime(10, 11, 2021);
   bool noData = true;
   List<Attendance> checkedDate = [];

@@ -31,7 +31,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
   @override
   Widget build(BuildContext context) {
     final color = const Color(0xff05445E);
-    final color1 = const Color(0xff3B9AAD);
+    final color1 = const Color(0xff3982A0);
     return Scaffold(
         appBar: AppBar(
           title: Text('Employee'),
