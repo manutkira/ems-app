@@ -1,9 +1,11 @@
+import 'package:ems/models/user.dart';
+import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-import '../../constants.dart';
 import '../../models/attendance.dart';
 import '../../utils/services/attendance_service.dart';
+import '../../constants.dart';
 
 class AttendancesInfoScreen extends StatefulWidget {
   final int id;
@@ -14,7 +16,7 @@ class AttendancesInfoScreen extends StatefulWidget {
 }
 
 class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
-  AttendanceService _attendanceService = AttendanceService.instance;
+  AttendanceService _attendanceService = AttendanceService().instance;
   List<Attendance> attendanceDisplay = [];
   bool _isLoading = true;
   bool order = false;

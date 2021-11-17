@@ -5,7 +5,11 @@ import 'package:ems/screens/attendances_api/attendance_info.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/attendance.dart';
+import '../../utils/services/attendance_service.dart';
 import '../../constants.dart';
+import '../../screens/employee/employee_edit_screen.dart';
+import '../../screens/employee/employee_info_screen.dart';
 
 class AttendancesScreen extends StatefulWidget {
   @override
@@ -15,7 +19,7 @@ class AttendancesScreen extends StatefulWidget {
 class _AttendancesScreenState extends State<AttendancesScreen> {
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3B9AAD);
-  UserService _userService = UserService.instance;
+  UserService _userService = UserService().instance;
   List<User> userDisplay = [];
   bool _isLoading = true;
   bool order = false;

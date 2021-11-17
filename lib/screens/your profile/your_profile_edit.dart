@@ -21,7 +21,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   var old_password = '';
 
   late User _user;
-  UserService _userService = UserService.instance;
+  UserService _userService = UserService().instance;
 
   fetchUserData() {
     User _currentUser = ref.read(currentUserProvider);

@@ -1,8 +1,12 @@
+import 'dart:math';
+
+import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
+import '../../models/attendance.dart';
 import '../../utils/services/attendance_service.dart';
+import '../../constants.dart';
 
 class AttendanceAllTimeScreen extends StatefulWidget {
   @override
@@ -11,8 +15,8 @@ class AttendanceAllTimeScreen extends StatefulWidget {
 }
 
 class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
-  AttendanceService _attendanceService = AttendanceService.instance;
-  UserService _userService = UserService.instance;
+  AttendanceService _attendanceService = AttendanceService().instance;
+  UserService _userService = UserService().instance;
 
   List attendancedisplay = [];
   List userDisplay = [];

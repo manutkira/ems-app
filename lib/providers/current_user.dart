@@ -28,7 +28,7 @@ class CurrentUserState extends StateNotifier<User> {
   CurrentUserState(User state) : super(state);
 
   void setUser(User user) {
-    state = user.copyWith(role: user.role ?? "Employee");
+    state = user;
   }
 
   void reset() {

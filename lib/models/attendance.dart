@@ -10,8 +10,8 @@ String attendancesToJson(List<Attendance> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class AttendanceType {
-  static String get typeCheckIn => "check in";
-  static String get typeCheckOut => "check out";
+  String get typeCheckIn => "check in";
+  String get typeCheckOut => "check out";
 }
 
 class Attendance {

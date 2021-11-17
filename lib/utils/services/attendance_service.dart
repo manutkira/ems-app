@@ -8,7 +8,7 @@ import 'base_service.dart';
 import 'exceptions/attendance.dart';
 
 class AttendanceService extends BaseService {
-  static AttendanceService get instance => AttendanceService();
+  AttendanceService get instance => this;
   int _code = 0;
 
   Future<Attendance> findOne(int id) async {
@@ -93,12 +93,13 @@ class AttendanceService extends BaseService {
   }
 
   Future<Attendance> createOne({required Attendance attendance}) async {
-    if (attendance.userId == null || attendance.type!.isEmpty) {
+    if (attendance.userId == null ||
+        attendance.type!.isEmpty ||
+        attendance.date == null) {
       throw AttendanceException(
           code: 0, message: "Required fields cannot be empty.");
     }
-    var jsons =
-        attendance.copyWith(date: attendance.date ?? DateTime.now()).toJson();
+    var jsons = attendance.toJson();
     try {
       Response response = await post(
         Uri.parse(
