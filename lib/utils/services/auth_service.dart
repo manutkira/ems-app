@@ -7,7 +7,7 @@ import 'base_service.dart';
 import 'exceptions/auth.dart';
 
 class AuthService extends BaseService {
-  AuthService get instance => this;
+  static AuthService get instance => AuthService();
   int _code = 0;
 
   Future<User> login({required String phone, required String password}) async {

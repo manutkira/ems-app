@@ -7,7 +7,7 @@ import 'base_service.dart';
 import 'exceptions/user.dart';
 
 class UserService extends BaseService {
-  UserService get instance => this;
+  static UserService get instance => UserService();
 
   int _code = 0;
 

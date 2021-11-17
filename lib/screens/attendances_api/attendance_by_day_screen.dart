@@ -3,11 +3,10 @@ import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:dart_date/dart_date.dart';
 
+import '../../constants.dart';
 import '../../models/attendance.dart';
 import '../../utils/services/attendance_service.dart';
-import '../../constants.dart';
 
 class AttendanceByDayScreen extends StatefulWidget {
   @override
@@ -15,8 +14,8 @@ class AttendanceByDayScreen extends StatefulWidget {
 }
 
 class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
-  AttendanceService _attendanceService = AttendanceService().instance;
-  UserService _userService = UserService().instance;
+  AttendanceService _attendanceService = AttendanceService.instance;
+  UserService _userService = UserService.instance;
 
   List userDisplay = [];
   List<Attendance> attendanceDisplay = [];

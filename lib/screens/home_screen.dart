@@ -5,6 +5,8 @@ import 'package:ems/providers/current_user.dart';
 import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
+import 'package:ems/screens/take_attendance/check_in_screen.dart';
+import 'package:ems/screens/take_attendance/check_out_screen.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var time = 'calculating';
   dynamic employeeCount = "loading...";
   late Timer _timer;
-  final UserService _userService = UserService().instance;
+  final UserService _userService = UserService.instance;
 
   getCount() async {
     var c = await _userService.count();
@@ -219,10 +221,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             onTap: () {
                               print('check in tapped');
                               getCount();
-                              // Navigator.of(context).push(CupertinoPageRoute(
-                              //     builder: (context) => const StatusDemo()));
-
-                              //
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (context) => CheckInScreen()));
                             },
                             illustration:
                                 SvgPicture.asset("assets/images/tick.svg"),
@@ -235,7 +235,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                           flex: 1,
                           child: MenuItem(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (context) => CheckOutScreen()));
+                            },
                             illustration:
                                 SvgPicture.asset("assets/images/close.svg"),
                             label: "Check out",
