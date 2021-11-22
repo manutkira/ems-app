@@ -16,14 +16,59 @@ class AttendancesInfoScreen extends StatefulWidget {
 class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   AttendanceService _attendanceService = AttendanceService.instance;
   List<Attendance> attendanceDisplay = [];
+  dynamic countPresent = '';
+  dynamic countLate = '';
+  dynamic countAbsent = '';
+  dynamic countPermission = '';
   bool _isLoading = true;
   bool order = false;
   List<Appointment>? _appointment;
+
+  getPresent() async {
+    var pc = await _attendanceService.countPresent(widget.id);
+    if (mounted) {
+      setState(() {
+        countPresent = pc;
+      });
+    }
+  }
+
+  getLate() async {
+    var pc = await _attendanceService.countLate(widget.id);
+    if (mounted) {
+      setState(() {
+        countLate = pc;
+      });
+    }
+  }
+
+  getAbsent() async {
+    var pc = await _attendanceService.countAbsent(widget.id);
+    if (mounted) {
+      setState(() {
+        countAbsent = pc;
+      });
+    }
+  }
+
+  getPermission() async {
+    var pc = await _attendanceService.countPermission(widget.id);
+    if (mounted) {
+      setState(() {
+        countPermission = pc;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
     try {
+      getPresent();
+      getLate();
+      getAbsent();
+      getPermission();
       _attendanceService
           .findManyByUserId(userId: widget.id)
           .then((usersFromServer) {
@@ -43,6 +88,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
     if (attendance.type == 'permission') {
       return Colors.blue;
+    }
+    if (attendance.type == 'check out') {
+      return Colors.lightGreen;
     }
     if (attendance.date!.hour >= 9 && attendance.type == 'check in') {
       return Colors.yellow;
@@ -195,7 +243,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                     Container(
                       padding: kPaddingAll,
                       width: double.infinity,
-                      height: MediaQuery.of(context).size.height * .57,
+                      height: MediaQuery.of(context).size.height * .60,
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(30),
@@ -231,16 +279,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             style: kHeadingFour,
                                           ),
                                           Text(
-                                            attendanceDisplay
-                                                .where((element) =>
-                                                    element.date!.hour <= 9 &&
-                                                    element.type == 'check in')
-                                                .toList()
-                                                .length
-                                                .toString(),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
+                                            countPresent.toString(),
+                                            style: kHeadingFour,
+                                          )
                                         ],
                                       ),
                                     ),
@@ -251,14 +292,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                           style: kHeadingFour,
                                         ),
                                         Text(
-                                          attendanceDisplay
-                                              .where((element) =>
-                                                  element.type == 'absent')
-                                              .toList()
-                                              .length
-                                              .toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                          countAbsent.toString(),
+                                          style: kHeadingFour,
                                         ),
                                       ],
                                     ),
@@ -283,15 +318,24 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             style: kHeadingFour,
                                           ),
                                           Text(
-                                            attendanceDisplay
-                                                .where((element) =>
-                                                    element.type ==
-                                                    'permission')
-                                                .toList()
-                                                .length
-                                                .toString(),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
+                                            countPermission.toString(),
+                                            style: kHeadingFour,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 20),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'Late: ',
+                                            style: kHeadingFour,
+                                          ),
+                                          Text(
+                                            countLate.toString(),
+                                            style: kHeadingFour,
                                           ),
                                         ],
                                       ),
@@ -299,19 +343,19 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     Row(
                                       children: [
                                         Text(
-                                          'Late: ',
+                                          'Left Early: ',
                                           style: kHeadingFour,
                                         ),
                                         Text(
                                           attendanceDisplay
                                               .where((element) =>
-                                                  element.date!.hour >= 9 &&
-                                                  element.type == 'check in')
+                                                  // element.date!.hour < 8 &&
+                                                  element.date!.hour < 16 &&
+                                                  element.type == 'check out')
                                               .toList()
                                               .length
                                               .toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                          style: kHeadingFour,
                                         ),
                                       ],
                                     ),
@@ -321,25 +365,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             ],
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 50, right: 10),
+                            padding: const EdgeInsets.only(top: 34, right: 10),
                             child: SfCalendar(
                               view: CalendarView.month,
                               dataSource: MeetingDataSource(getAppointments()),
-                              // loadMoreWidgetBuilder: (BuildContext context,
-                              //     LoadMoreCallback loadMoreAppointments) {
-                              //   return FutureBuilder(
-                              //     future: loadMoreAppointments(),
-                              //     builder: (context, snapshot) {
-                              //       return Container(
-                              //         alignment: Alignment.center,
-                              //         child: CircularProgressIndicator(
-                              //           valueColor:
-                              //               AlwaysStoppedAnimation(Colors.blue),
-                              //         ),
-                              //       );
-                              //     },
-                              //   );
-                              // },
                             ),
                           ),
                         ],
@@ -355,29 +384,4 @@ class MeetingDataSource extends CalendarDataSource {
   MeetingDataSource(List<Appointment> source) {
     appointments = source;
   }
-
-  // @override
-  // Future<void> handleLoadMore(DateTime startDate, DateTime endDate) async {
-  //   await Future.delayed(Duration(seconds: 1));
-  //   final List<Appointment> meetings = <Appointment>[];
-  //   DateTime appStartDate = startDate;
-  //   DateTime appEndDate = endDate;
-
-  //   while (appStartDate.isBefore(appEndDate)) {
-  //     final List<Appointment>? data = _dataCollection[appStartDate];
-  //     if (data == null) {
-  //       appStartDate = appStartDate.add(Duration(days: 1));
-  //       continue;
-  //     }
-  //     for (final Appointment meeting in data) {
-  //       if (appointments!.contains(meeting)) {
-  //         continue;
-  //       }
-  //       meetings.add(meeting);
-  //     }
-  //     appStartDate = appStartDate.add(Duration(days: 1));
-  //   }
-  //   appointments!.addAll(meetings);
-  //   notifyListeners(CalendarDataSourceAction.add, meetings);
-  // }
 }

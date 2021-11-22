@@ -193,16 +193,6 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           padding:
                                               const EdgeInsets.only(top: 20),
                                           child: Text(
-                                            'Address ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          child: Text(
                                             'Position ',
                                             style: kParagraph.copyWith(
                                                 color: Colors.black,
@@ -307,22 +297,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                             height: 35,
                                             child: Padding(
                                               padding: const EdgeInsets.only(
-                                                top: 12,
-                                                left: 30,
-                                              ),
-                                              child: Text(
-                                                (snapshot.data
-                                                        as dynamic)['address']
-                                                    .toString(),
-                                                style: kParagraph,
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            height: 35,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                top: 14,
+                                                top: 11,
                                                 left: 30,
                                               ),
                                               child: Text(
@@ -337,7 +312,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                             height: 35,
                                             child: Padding(
                                               padding: const EdgeInsets.only(
-                                                  top: 16, left: 30),
+                                                  top: 15, left: 30),
                                               child: Text(
                                                 (snapshot.data
                                                         as dynamic)['skill']
@@ -386,6 +361,38 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                       ),
                                     ),
                                   ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Address ',
+                                        style: kParagraph.copyWith(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Container(
+                                        height: 35,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 15,
+                                          ),
+                                          child: Text(
+                                            (snapshot.data
+                                                    as dynamic)['address']
+                                                .toString(),
+                                            style: kParagraph,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 10),

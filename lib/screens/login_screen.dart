@@ -133,7 +133,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           isLoading = true;
                         });
 
-                        await logUserIn();
+                        // await logUserIn();
 
                         setState(() {
                           isLoading = false;

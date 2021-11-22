@@ -44,7 +44,8 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     var checkingDate = attendanceDisplay.where((element) =>
         element.date!.day == pick.day &&
         element.date!.month == pick.month &&
-        element.date!.year == pick.year);
+        element.date!.year == pick.year &&
+        element.type != 'check out');
     setState(() {
       users = checkingDate.toList();
       checkedDate = users;
@@ -76,6 +77,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text('Attendance'),
           actions: [

@@ -1,3 +1,4 @@
+import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
@@ -16,6 +17,7 @@ class AttendanceAllTimeScreen extends StatefulWidget {
 class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   AttendanceService _attendanceService = AttendanceService.instance;
   UserService _userService = UserService.instance;
+  dynamic countPresent = '';
 
   List attendancedisplay = [];
   List userDisplay = [];
@@ -23,6 +25,15 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   bool _isLoading = true;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
+
+  getPresent() async {
+    var pc = await _attendanceService.countPresent(1);
+    if (mounted) {
+      setState(() {
+        countPresent = pc;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -43,6 +54,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
           userDisplay = users;
         });
       });
+      getPresent();
     } catch (err) {
       print(err);
     }
@@ -51,6 +63,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text('Attendance'),
           actions: [
@@ -220,13 +233,14 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           Row(
                             children: [
                               Text('P:'),
-                              Text(attendancedisplay
-                                  .where((element) =>
-                                      element.userId == userDisplay[index].id &&
-                                      element.type == 'check in' &&
-                                      element.date!.hour < 9)
-                                  .length
-                                  .toString()),
+                              Text(countPresent.toString())
+                              // Text(attendancedisplay
+                              //     .where((element) =>
+                              //         element.userId == userDisplay[index].id &&
+                              //         element.type == 'check in' &&
+                              //         element.date!.hour < 9)
+                              //     .length
+                              //     .toString()),
                             ],
                           ),
                           SizedBox(
@@ -259,6 +273,22 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                       element.userId == userDisplay[index].id &&
                                       element.type == 'check in' &&
                                       element.date!.hour > 8)
+                                  .length
+                                  .toString()),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Text('E:'),
+                              Text(attendancedisplay
+                                  .where((element) =>
+                                      element.userId == userDisplay[index].id &&
+                                      element.type == 'check out' &&
+                                      element.date!.hour > 8 &&
+                                      element.date!.hour < 17)
                                   .length
                                   .toString()),
                             ],

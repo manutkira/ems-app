@@ -36,6 +36,75 @@ class AttendanceService extends BaseService {
     }
   }
 
+  Future<int> countLate(int id) async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/a-count?late=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      // var jsondata = json.decode(response.body);
+      // var user = User.fromJson(jsondata);
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countPresent(int id) async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/a-count?present=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      // var jsondata = json.decode(response.body);
+      // var user = User.fromJson(jsondata);
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countAbsent(int id) async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/a-count?absent=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      // var jsondata = json.decode(response.body);
+      // var user = User.fromJson(jsondata);
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countPermission(int id) async {
+    try {
+      Response response =
+          await get(Uri.parse('$baseUrl/a-count?permission=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      // var jsondata = json.decode(response.body);
+      // var user = User.fromJson(jsondata);
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
   Future<List<dynamic>> findAll() async {
     try {
       Response response = await get(Uri.parse('$baseUrl/showAll'));

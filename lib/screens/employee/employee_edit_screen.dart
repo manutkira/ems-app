@@ -253,38 +253,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Address ',
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: Flexible(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'Enter Address',
-                              errorStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            controller: addressController,
-                            textInputAction: TextInputAction.next,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
                         'Position ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
@@ -489,32 +457,77 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     height: 15,
                   ),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Background ',
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Address ',
+                            style: kParagraph.copyWith(
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            width: 20,
+                            height: 15,
+                          ),
+                          Container(
+                            constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 1),
+                            child: Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: 'Enter Address',
+                                  errorStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                controller: addressController,
+                                textInputAction: TextInputAction.next,
+                                maxLines: 3,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: 15,
                       ),
-                      Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 1),
-                        child: Flexible(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: 'Enter Employee background',
-                              errorStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Background ',
+                            style: kParagraph.copyWith(
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                            constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 1),
+                            child: Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: 'Enter Employee background',
+                                  errorStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                controller: backgroundController,
+                                textInputAction: TextInputAction.done,
+                                maxLines: 8,
                               ),
                             ),
-                            controller: backgroundController,
-                            textInputAction: TextInputAction.done,
-                            maxLines: 8,
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),

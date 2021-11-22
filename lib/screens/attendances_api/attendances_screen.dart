@@ -46,6 +46,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text('Attendance'),
           actions: [

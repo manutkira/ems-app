@@ -263,39 +263,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Address ',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Container(
-                          constraints: BoxConstraints(
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.6),
-                          child: Flexible(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  hintText: 'Enter Address',
-                                  errorStyle: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              controller: address,
-                              textInputAction: TextInputAction.next,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
                           'Position ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
@@ -499,6 +466,40 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                             }).toList(),
                           ),
                         )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Address ',
+                          style:
+                              kParagraph.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          width: 20,
+                          height: 15,
+                        ),
+                        Container(
+                          constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width * 1),
+                          child: Flexible(
+                            child: TextFormField(
+                              decoration: InputDecoration(
+                                  hintText: 'Enter Address',
+                                  errorStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                              controller: address,
+                              textInputAction: TextInputAction.next,
+                              maxLines: 3,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(

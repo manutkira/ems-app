@@ -66,6 +66,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Attendance'),
         actions: [
@@ -120,6 +121,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                             Column(
                               children: [
                                 TextField(
+                                  keyboardType: TextInputType.number,
                                   decoration:
                                       InputDecoration(hintText: 'Enter year'),
                                   controller: yearController,
@@ -631,6 +633,35 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                   element.date
                                                                           .hour >
                                                                       8 &&
+                                                                  element.date
+                                                                          .year ==
+                                                                      int.parse(
+                                                                          pickedYear)))
+                                                              .length
+                                                              .toString(),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text('E:'),
+                                                        Text(
+                                                          attendanceDisplay
+                                                              .where((element) => (element
+                                                                          .userId ==
+                                                                      userDisplay[index]
+                                                                          .id &&
+                                                                  element.date
+                                                                          .month ==
+                                                                      _selectMonth &&
+                                                                  element.type ==
+                                                                      'check out' &&
+                                                                  element.date
+                                                                          .hour <
+                                                                      17 &&
                                                                   element.date
                                                                           .year ==
                                                                       int.parse(
