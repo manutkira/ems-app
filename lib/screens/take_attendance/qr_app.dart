@@ -20,10 +20,11 @@ class QRAppScreen extends StatelessWidget {
         body: Column(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: TabBar(
-                labelStyle: TextStyle(fontWeight: FontWeight.w700),
-                unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w400),
+                labelStyle: const TextStyle(fontWeight: FontWeight.w700),
+                unselectedLabelStyle:
+                    const TextStyle(fontWeight: FontWeight.w400),
                 overlayColor: MaterialStateProperty.all(kBlue),
                 indicator: BoxDecoration(
                   borderRadius: BorderRadius.circular(
@@ -32,7 +33,6 @@ class QRAppScreen extends StatelessWidget {
                   color: kDarkestBlue,
                 ),
                 tabs: const [
-                  // Text("Scan")
                   Tab(
                     // icon: Icon(Icons.code),
                     text: "QR Code",
@@ -60,11 +60,13 @@ class QRAppScreen extends StatelessWidget {
     );
   }
 
+  /// qr code
   Widget _scan(BuildContext context) {
     var size = (MediaQuery.of(context).size.width < 400 ||
             MediaQuery.of(context).size.height < 400)
         ? 200.0
         : 250.0;
+
     return Container(
       color: kDarkestBlue,
       child: Column(
@@ -72,7 +74,7 @@ class QRAppScreen extends StatelessWidget {
         children: [
           Center(
             child: Container(
-              padding: EdgeInsets.all(30),
+              padding: const EdgeInsets.all(30),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),

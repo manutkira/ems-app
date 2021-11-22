@@ -61,11 +61,12 @@ class AuthService extends BaseService {
     }
   }
 
-  Future<bool> verifyPassword({required int currentUserId}) async {
+  Future<bool> verifyPassword(
+      {required int id, required String password}) async {
     try {
-      Response response = await post(
+      Response response = await get(
         Uri.parse(
-          '$baseUrl/logout/$currentUserId',
+          "$baseUrl/verify/${id.toString()}?password=$password",
         ),
         headers: headers,
       );
@@ -74,7 +75,6 @@ class AuthService extends BaseService {
         return true;
       } else {
         _code = response.statusCode;
-        print(_code);
         throw AuthException(code: _code);
       }
     } catch (err) {

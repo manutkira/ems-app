@@ -96,7 +96,6 @@ class UserService extends BaseService {
         body: json.encode(jsons),
       );
       _code = response.statusCode;
-      print(response.body);
       var jsondata = json.decode(response.body);
       var user = User.fromJson(jsondata['user']);
       return user;

@@ -1,6 +1,7 @@
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/providers/current_user.dart';
+import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:ems/widgets/textbox.dart';
@@ -17,17 +18,65 @@ class YourProfileEditScreen extends ConsumerStatefulWidget {
 }
 
 class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
-  var password = '';
-  var old_password = '';
+  String password = '';
+  String oldPassword = '';
+  String error = "";
 
   late User _user;
-  UserService _userService = UserService.instance;
+  final AuthService _authService = AuthService.instance;
+  final UserService _userService = UserService.instance;
 
-  fetchUserData() {
+  /// fetch user data from currentUserProvider
+  /// then put it in a local variable for edits
+  void fetchUserData() {
     User _currentUser = ref.read(currentUserProvider);
     setState(() {
       _user = _currentUser.copyWith();
     });
+  }
+
+  /// confirm password using authservice
+  /// returns boolean
+  Future<bool> confirmPassword() async {
+    if (oldPassword.isEmpty) {
+      setState(() {
+        error = "Please input password.";
+      });
+      return false;
+    }
+
+    try {
+      bool isVerified = await _authService.verifyPassword(
+          id: _user.id as int, password: oldPassword);
+      return isVerified;
+    } catch (err) {
+      setState(() {
+        error = err.toString();
+      });
+      return false;
+    }
+  }
+
+  /// update the profile using user service
+  /// then setting the current user state
+  Future<void> updateProfile() async {
+    String finalPassword = password.isEmpty ? "${_user.password}" : password;
+    User user = User();
+
+    try {
+      await _userService.updateOne(
+          user: _user.copyWith(password: finalPassword));
+      ref
+          .read(currentUserProvider.notifier)
+          .setUser(user.copyWith(password: _user.password));
+    } catch (err) {
+      ///
+    }
+  }
+
+  /// go back to home screen
+  void closePage() {
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   @override
@@ -36,57 +85,9 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
     fetchUserData();
   }
 
-  // Future<User> fetchUserData() {
-  //   var future = UserService().getUser(1);
-  //   future.then((snapshot) {
-  //     setState(() {
-  //       _user = snapshot;
-  //     });
-  //   });
-  //   return future;
-  // }
-
-  Future<bool> confirmPassword() async {
-    if (old_password.isEmpty) {
-      return false;
-    }
-    return _user.password == old_password;
-  }
-
-  Future<void> updateProfile() async {
-    String finalPassword = password.isEmpty ? "${_user.password}" : password;
-    User user = await _userService.updateOne(
-        user: _user.copyWith(password: finalPassword));
-    print(ref.read(currentUserProvider).password);
-    ref
-        .read(currentUserProvider.notifier)
-        .setUser(user.copyWith(password: _user.password));
-    print(user.name);
-
-    print("profile updated. ${_user.name}");
-  }
-
-  void popupDate() {
-    showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2014),
-            lastDate: DateTime.now())
-        .then((picked) {
-      if (picked == null) {
-        return;
-      }
-      setState(() {
-        _user.createdAt = picked;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    void closePage() {
-      Navigator.of(context).pop();
-    }
+    Size _size = MediaQuery.of(context).size;
 
     return Scaffold(
       appBar: AppBar(
@@ -96,109 +97,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      var error = "";
-                      return StatefulBuilder(
-                        builder: (context, setState) {
-                          return AlertDialog(
-                            insetPadding: const EdgeInsets.all(10),
-                            title: const Text("Confirmation"),
-                            content: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                      "Please enter your password to save the changes."),
-                                  const SizedBox(
-                                    height: 30,
-                                  ),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                      child: error.isNotEmpty
-                                          ? Column(
-                                              children: [
-                                                StatusError(
-                                                  text: error,
-                                                ),
-                                                const SizedBox(
-                                                  height: 20,
-                                                ),
-                                              ],
-                                            )
-                                          : null),
-                                  TextBoxCustom(
-                                    isPassword: true,
-                                    textHint: 'your password',
-                                    getValue: (value) {
-                                      setState(() {
-                                        old_password = value;
-                                      });
-                                    },
-                                    defaultText: old_password,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Text(
-                                    'Confirm',
-                                    style: kParagraph,
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  setState(() {
-                                    error = "";
-                                  });
-                                  if (old_password.isEmpty) {
-                                    setState(() {
-                                      error = "Please input password.";
-                                    });
-                                  }
-                                  var isVerified = await confirmPassword();
-                                  if (isVerified) {
-                                    // update info here
-                                    await updateProfile();
-                                    // if success, close. else stay open
-                                    closePage();
-                                  } else {
-                                    setState(() {
-                                      error = "Wrong password";
-                                    });
-                                  }
-                                },
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(right: 15),
-                                child: TextButton(
-                                  child: const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    child: Text(
-                                      'Cancel',
-                                      style: kParagraph,
-                                    ),
-                                  ),
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: kRedText,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    });
-                // print("$name $email $password");
+                _buildDialog(context, error);
               },
               icon: const Icon(
                 Icons.check,
@@ -243,13 +142,12 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                       ),
                       Container(
                         //
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        constraints:
+                            BoxConstraints(maxWidth: _size.width * 0.6),
 
                         child: TextBoxCustom(
                           textHint: 'username',
                           getValue: (value) {
-                            print(value);
                             setState(() {
                               _user.name = "$value";
                             });
@@ -271,8 +169,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                       ),
                       Container(
                         //
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        constraints:
+                            BoxConstraints(maxWidth: _size.width * 0.6),
 
                         child: TextBoxCustom(
                           textHint: 'Phone Number',
@@ -297,8 +195,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         style: kParagraph.copyWith(fontWeight: FontWeight.w700),
                       ),
                       Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        constraints:
+                            BoxConstraints(maxWidth: _size.width * 0.6),
                         child: TextBoxCustom(
                           defaultText: "${_user.email ?? ""}",
                           textHint: 'email',
@@ -322,8 +220,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         style: kParagraph.copyWith(fontWeight: FontWeight.w700),
                       ),
                       Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        constraints:
+                            BoxConstraints(maxWidth: _size.width * 0.6),
                         child: TextBoxCustom(
                           defaultText: "${_user.address ?? ""}",
                           textHint: 'address',
@@ -363,8 +261,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                       ),
                       Container(
                         //
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        constraints:
+                            BoxConstraints(maxWidth: _size.width * 0.6),
 
                         child: TextBoxCustom(
                           textHint: 'position',
@@ -390,8 +288,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                       ),
                       Container(
                         //
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        constraints:
+                            BoxConstraints(maxWidth: _size.width * 0.6),
 
                         child: TextBoxCustom(
                           textHint: 'skill',
@@ -416,8 +314,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         style: kParagraph.copyWith(fontWeight: FontWeight.w700),
                       ),
                       Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        constraints:
+                            BoxConstraints(maxWidth: _size.width * 0.6),
                         child: TextBoxCustom(
                           prefixIcon: const Icon(
                             MdiIcons.currencyUsd,
@@ -445,8 +343,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         style: kParagraph.copyWith(fontWeight: FontWeight.w700),
                       ),
                       Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        constraints:
+                            BoxConstraints(maxWidth: _size.width * 0.6),
                         child: TextBoxCustom(
                           defaultText: "${_user.status ?? ""}",
                           textHint: 'status',
@@ -470,8 +368,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         style: kParagraph.copyWith(fontWeight: FontWeight.w700),
                       ),
                       Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        constraints:
+                            BoxConstraints(maxWidth: _size.width * 0.6),
                         child: TextBoxCustom(
                           defaultText: "${_user.rate ?? ""}",
                           textHint: 'rate',
@@ -487,41 +385,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     Text(
-                  //       "Start",
-                  //       style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                  //     ),
-                  //     // Container(
-                  //     //   constraints: BoxConstraints(
-                  //     //       maxWidth:
-                  //     //           MediaQuery.of(context).size.width *
-                  //     //               0.6),
-                  //     //   child: TextBoxCustom(
-                  //     //     defaultText: DateFormat('dd-MM-yyyy')
-                  //     //         .format(_user.createdAt),
-                  //     //     textHint: 'createdAt',
-                  //     //     getValue: (value) {
-                  //     //       setState(() {
-                  //     //         _user.createdAt = value;
-                  //     //       });
-                  //     //     },
-                  //     //   ),
-                  //     // ),
-                  //   ],
-                  // ),
-                  // Text(DateFormat('dd-MM-yyyy')
-                  //     .format(_user.createdAt as DateTime)),
-                  // GestureDetector(
-                  //   onTap: popupDate,
-                  //   child: Container(
-                  //     height: 40,
-                  //     width: 40,
-                  //     color: kBlack,
-                  //   ),
-                  // ),
                 ],
               ), // Employment Info
               const SizedBox(
@@ -532,5 +395,127 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
         ),
       ),
     );
+  }
+
+  /// confirm password dialog
+  /// appears after clicking submit button
+  Future<dynamic> _buildDialog(context, errorString) {
+    Size _size = MediaQuery.of(context).size;
+    return showDialog(
+        context: context,
+        builder: (context) {
+          var error = errorString;
+          bool loading = false;
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                // insetPadding: const EdgeInsets.all(10),
+                title: const Text("Confirmation"),
+                content: SizedBox(
+                  width: _size.width * 0.8,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                          "Please enter your password to save the changes."),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      SizedBox(
+                          width: _size.width,
+                          child: error.isNotEmpty
+                              ? Column(
+                                  children: [
+                                    StatusError(
+                                      text: error,
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                  ],
+                                )
+                              : null),
+                      TextBoxCustom(
+                        isPassword: true,
+                        textHint: 'your password',
+                        getValue: (value) {
+                          setState(() {
+                            oldPassword = value;
+                          });
+                        },
+                        defaultText: oldPassword,
+                      ),
+                    ],
+                  ),
+                ),
+
+                actions: [
+                  Visibility(
+                    visible: loading,
+                    child: const CircularProgressIndicator(
+                      color: kWhite,
+                      strokeWidth: 3,
+                    ),
+                  ),
+                  TextButton(
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        'Confirm',
+                        style: kParagraph,
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (loading == false) {
+                        setState(() {
+                          loading = true;
+                          error = "";
+                        });
+                        if (oldPassword.isEmpty) {
+                          setState(() {
+                            error = "Please input password.";
+                          });
+                        }
+                        var isVerified = await confirmPassword();
+                        if (isVerified) {
+                          // update info here
+                          await updateProfile();
+                          // if success, close. else stay open
+                          closePage();
+                        } else {
+                          setState(() {
+                            loading = false;
+                            error = "Wrong password";
+                          });
+                        }
+                      }
+                    },
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(right: 15),
+                    child: TextButton(
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          'Cancel',
+                          style: kParagraph,
+                        ),
+                      ),
+                      style: TextButton.styleFrom(
+                        backgroundColor: kRedText,
+                      ),
+                      onPressed: () {
+                        if (loading == false) {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        });
   }
 }
