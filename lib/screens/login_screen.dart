@@ -23,21 +23,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String error = "";
   bool isLoading = false;
 
-  final AuthService _authService = AuthService().instance;
+  final AuthService _authService = AuthService.instance;
 
-  // Future<void> logUserIn() async {
-  //   try {
-  //     User _user = await _authService.login(phone: phone, password: password);
-  //     ref
-  //         .read(currentUserProvider.notifier)
-  //         .setUser(_user.copyWith(password: password));
-  //     print(ref.watch(currentUserProvider).name);
-  //   } catch (err) {
-  //     setState(() {
-  //       error = err.toString();
-  //     });
-  //   }
-  // }
+  Future<void> logUserIn() async {
+    try {
+      User _user = await _authService.login(phone: phone, password: password);
+      ref
+          .read(currentUserProvider.notifier)
+          .setUser(_user.copyWith(password: password));
+    } catch (err) {
+      setState(() {
+        error = err.toString();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(
                 height: 10,
               ),
-              Text(
-                "Internal EMS",
-                style: kHeadingOne.copyWith(fontSize: 42),
-              ),
+              Text("Internal EMS", style: kHeadingOne.copyWith(fontSize: 42)),
               const SizedBox(
                 height: 50,
               ),
@@ -89,7 +85,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         });
                       },
                       labelText: "Phone",
-                      textHint: "your phone number",
+                      textHint: "phone number",
                       prefixIcon: const Icon(
                         Icons.phone,
                         color: kWhite,
@@ -107,7 +103,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       textInputAction: TextInputAction.done,
                       isPassword: true,
                       labelText: "Password",
-                      textHint: "your password",
+                      textHint: "password",
                       prefixIcon: const Icon(
                         Icons.lock,
                         color: kWhite,
@@ -120,37 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 height: 35.0,
               ),
               isLoading
-                  ? Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5),
-                      // width: MediaQuery.of(context).size.width / 2,
-                      padding: kPadding.copyWith(top: 10, bottom: 10),
-                      decoration: const BoxDecoration(
-                        color: kDarkestBlue,
-                        borderRadius: BorderRadius.all(kBorderRadius),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: kWhite,
-                              strokeWidth: 3,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            'Logging in',
-                            style: kParagraph.copyWith(
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    )
+                  ? _buildLoading
                   : TextButton(
                       style: TextButton.styleFrom(
                         padding: kPadding.copyWith(top: 10, bottom: 10),
@@ -167,7 +133,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           isLoading = true;
                         });
 
-                        // await logUserIn();
+                        await logUserIn();
 
                         setState(() {
                           isLoading = false;
@@ -175,7 +141,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                         if (error.isEmpty) {
                           Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (_) => HomeScreen()));
+                              MaterialPageRoute(
+                                  builder: (_) => const HomeScreen()));
                         }
                       },
                       child: Row(
@@ -199,6 +166,39 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget get _buildLoading {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      // width: MediaQuery.of(context).size.width / 2,
+      padding: kPadding.copyWith(top: 10, bottom: 10),
+      decoration: const BoxDecoration(
+        color: kDarkestBlue,
+        borderRadius: BorderRadius.all(kBorderRadius),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(
+            height: 20,
+            width: 20,
+            child: CircularProgressIndicator(
+              color: kWhite,
+              strokeWidth: 3,
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Text(
+            'Logging in',
+            style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
     );
   }

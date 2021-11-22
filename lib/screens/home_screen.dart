@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late Timer _timer;
   final UserService _userService = UserService.instance;
 
+  // Get total employee counts
   getCount() async {
     var c = await _userService.count();
     if (mounted) {
@@ -67,33 +68,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size _size = MediaQuery.of(context).size;
+
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () => _scaffoldKey.currentState!.openDrawer(),
-          child: Container(
-            padding: kPaddingAll,
-            child: SvgPicture.asset(
-              'assets/images/menuburger.svg',
-              semanticsLabel: "menu",
-            ),
-          ),
-        ),
-        title: const Text('Internal EMS'),
-      ),
+      appBar: _buildAppBar,
       drawer: MenuDrawer(),
       body: SafeArea(
         bottom: false,
         child: SizedBox(
-          height: MediaQuery.of(context).size.height,
+          height: _size.height,
           child: ListView(
             children: [
               Stack(
                 children: [
                   SizedBox(
                     height: 200,
-                    width: MediaQuery.of(context).size.width,
+                    width: _size.width,
                     child: SvgPicture.asset(
                       'assets/images/graph.svg',
                       semanticsLabel: "menu",
@@ -119,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     .name;
 
                                 return Text(
-                                  "Hello, ${username}.",
+                                  "Hello, ${username.toString()}.",
                                   style: kHeadingFour,
                                 );
                               },
@@ -146,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Container(
                           padding: kPaddingAll.copyWith(top: 30, bottom: 30),
                           margin: kPaddingAll,
-                          width: MediaQuery.of(context).size.width,
+                          width: _size.width,
                           decoration: const BoxDecoration(
                             color: kLightBlue,
                             borderRadius: BorderRadius.all(kBorderRadius),
@@ -193,11 +184,12 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: kPaddingAll,
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * .60,
+                height: _size.height * .60,
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30)),
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -212,6 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Spacer(),
+                    // Check in / Checkout
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -219,10 +212,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           flex: 1,
                           child: MenuItem(
                             onTap: () {
-                              print('check in tapped');
                               getCount();
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (context) => CheckInScreen()));
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) => const CheckInScreen(),
+                                ),
+                              );
                             },
                             illustration:
                                 SvgPicture.asset("assets/images/tick.svg"),
@@ -236,8 +231,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           flex: 1,
                           child: MenuItem(
                             onTap: () {
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (context) => CheckOutScreen()));
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) => const CheckOutScreen(),
+                                ),
+                              );
                             },
                             illustration:
                                 SvgPicture.asset("assets/images/close.svg"),
@@ -249,45 +247,43 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(
                       height: 15,
                     ),
-                    GestureDetector(
+                    // Attendance history
+                    InkWell(
                       onTap: () {
-                        print("attendance history tapped");
-                      },
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
                             builder: (_) => AttendancesScreen(),
-                          ));
-                        },
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: 175,
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: Container(
-                              width: double.infinity,
-                              decoration: const BoxDecoration(
-                                  color: kLightBlue,
-                                  borderRadius:
-                                      BorderRadius.all(kBorderRadius)),
-                              padding: kPaddingAll,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/images/chart.svg',
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    "Attendance History",
-                                    style: kSubtitle.copyWith(
-                                        color: kBlack,
-                                        fontWeight: FontWeight.w700),
-                                    textAlign: TextAlign.center,
-                                  )
-                                ],
-                              ),
+                          ),
+                        );
+                      },
+                      child: SizedBox(
+                        width: _size.width,
+                        height: 175,
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: Container(
+                            width: double.infinity,
+                            decoration: const BoxDecoration(
+                              color: kLightBlue,
+                              borderRadius: BorderRadius.all(kBorderRadius),
+                            ),
+                            padding: kPaddingAll,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/images/chart.svg',
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  "Attendance History",
+                                  style: kSubtitle.copyWith(
+                                      color: kBlack,
+                                      fontWeight: FontWeight.w700),
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
                             ),
                           ),
                         ),
@@ -301,6 +297,22 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  PreferredSizeWidget get _buildAppBar {
+    return AppBar(
+      leading: GestureDetector(
+        onTap: () => _scaffoldKey.currentState?.openDrawer(),
+        child: Container(
+          padding: kPaddingAll,
+          child: SvgPicture.asset(
+            'assets/images/menuburger.svg',
+            semanticsLabel: "menu",
+          ),
+        ),
+      ),
+      title: const Text('Internal EMS'),
     );
   }
 }

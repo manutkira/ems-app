@@ -22,7 +22,7 @@ class AuthException extends IBaseException {
       case 401:
         {
           return message =
-              "Invalid credentials. Please check your login data again.";
+              "Invalid credentials. Please check your input data again.";
         }
 
       case 422:

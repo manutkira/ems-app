@@ -17,11 +17,12 @@ class MenuDrawer extends ConsumerWidget {
     Key? key,
   }) : super(key: key);
 
-  AuthService _auth = AuthService.instance;
+  final AuthService _auth = AuthService.instance;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    User _user = ref.watch(currentUserProvider.notifier).state;
+    User _user = ref.watch(currentUserProvider);
+    Size _size = MediaQuery.of(context).size;
 
     return Drawer(
       child: Container(
@@ -29,14 +30,15 @@ class MenuDrawer extends ConsumerWidget {
         child: SafeArea(
           child: SingleChildScrollView(
             child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              width: _size.width,
+              height: _size.height,
               child: Stack(
-                // padding: const EdgeInsets.only(top: 60),
                 children: [
                   Column(
                     children: [
                       const SizedBox(height: 60),
+
+                      // Profile picture
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -65,6 +67,8 @@ class MenuDrawer extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: 40),
+
+                      //Your Profile button
                       Material(
                         type: MaterialType.transparency,
                         child: ListTile(
@@ -72,13 +76,17 @@ class MenuDrawer extends ConsumerWidget {
                           title: const Text('Your Profile'),
                           onTap: () {
                             Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                    builder: (context) =>
-                                        YourProfileViewScreen()));
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) =>
+                                    const YourProfileViewScreen(),
+                              ),
+                            );
                           },
                         ),
                       ),
+
+                      //Edit Profile button
                       Material(
                         type: MaterialType.transparency,
                         child: ListTile(
@@ -86,13 +94,17 @@ class MenuDrawer extends ConsumerWidget {
                           title: const Text('Edit Profile'),
                           onTap: () {
                             Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                    builder: (context) =>
-                                        const YourProfileEditScreen()));
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) =>
+                                    const YourProfileEditScreen(),
+                              ),
+                            );
                           },
                         ),
                       ),
+
+                      //Change password button
                       Material(
                         type: MaterialType.transparency,
                         child: ListTile(
@@ -107,6 +119,8 @@ class MenuDrawer extends ConsumerWidget {
                           },
                         ),
                       ),
+
+                      //Logout button
                       Material(
                         type: MaterialType.transparency,
                         child: ListTile(
@@ -134,6 +148,8 @@ class MenuDrawer extends ConsumerWidget {
                       ),
                     ],
                   ),
+
+                  // Version
                   const Positioned(
                     bottom: 25,
                     right: 15,
@@ -142,7 +158,9 @@ class MenuDrawer extends ConsumerWidget {
                       child: Text(
                         "version 1.0",
                         style: TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 10),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 10,
+                        ),
                         textAlign: TextAlign.right,
                       ),
                     ),

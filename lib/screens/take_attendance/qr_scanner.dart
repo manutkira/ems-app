@@ -29,6 +29,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
 
   final AttendanceService _attService = AttendanceService.instance;
 
+  /// helps with hotreload
   @override
   void reassemble() {
     super.reassemble();
@@ -39,6 +40,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   }
 
   addAttendance(Barcode _result) async {
+    // TODO:
     // maybe check password from qr code?
     setState(() {
       isAddingAttendance = true;
@@ -57,25 +59,10 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
         isAddingAttendance = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: const Duration(seconds: 2),
+        _buildSnackBar(
+          textColor: kGreenText,
           backgroundColor: kGreenBackground,
-          content: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.check,
-                  size: 80,
-                  color: kGreenText,
-                ),
-                Text(
-                  '${widget.type} successfully!',
-                  style: kParagraph.copyWith(color: kGreenText),
-                ),
-              ],
-            ),
-          ),
+          type: widget.type,
         ),
       );
     } catch (err) {
@@ -83,71 +70,84 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
         isAddingAttendance = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: const Duration(seconds: 2),
+        _buildSnackBar(
+          textColor: kRedText,
           backgroundColor: kRedBackground,
-          content: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.close,
-                  size: 80,
-                  color: kRedText,
-                ),
-                Text(
-                  '${widget.type} failed! $err',
-                  style: kParagraph.copyWith(color: kRedText),
-                ),
-              ],
-            ),
-          ),
+          type: widget.type,
         ),
       );
     }
   }
 
+  /// Full screen snackbar widget
+  SnackBar _buildSnackBar(
+      {required backgroundColor,
+      required Color textColor,
+      required String type}) {
+    return SnackBar(
+      duration: const Duration(seconds: 2),
+      backgroundColor: backgroundColor,
+      content: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.check,
+              size: 80,
+              color: textColor,
+            ),
+            Text(
+              '${widget.type} successfully!',
+              style: kParagraph.copyWith(color: textColor),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    Size _size = MediaQuery.of(context).size;
     return Scaffold(
-      body: isAddingAttendance
-          ? _loading(context)
-          : Container(
-              color: kDarkestBlue,
-              child: Stack(
-                children: <Widget>[
-                  _buildQrView(context),
-                  Positioned(
-                    bottom: 80,
-                    child: SizedBox(
-                      width: _size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () async {
-                              await controller?.toggleFlash();
-                            },
-                            child: const Text(
-                              'Flash',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ],
-                      ),
+        body: isAddingAttendance ? _loading(context) : _buildScanner);
+  }
+
+  Widget get _buildScanner {
+    return Container(
+      color: kDarkestBlue,
+      child: Stack(
+        children: <Widget>[
+          _buildQrView(context),
+          Positioned(
+            bottom: 80,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      await controller?.toggleFlash();
+                    },
+                    child: const Text(
+                      'Flash',
+                      style: TextStyle(fontSize: 20),
                     ),
-                  ),
-                  const Positioned(
-                    top: 80,
-                    child: StatusInfo(text: "Keep the QR code in the center"),
                   ),
                 ],
               ),
             ),
+          ),
+          const Positioned(
+            top: 80,
+            child: StatusInfo(text: "Keep the QR code in the center"),
+          ),
+        ],
+      ),
     );
   }
 
+  /// qr scanner
   Widget _buildQrView(BuildContext context) {
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
             MediaQuery.of(context).size.height < 400)
@@ -167,30 +167,32 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     );
   }
 
+  /// set controller and listen to events
   void _onQRViewCreated(QRViewController controller) {
     setState(() {
       this.controller = controller;
     });
-    // if (this.controller?.hasPermissions as bool) {
     controller.scannedDataStream.listen((scanData) async {
       if (scanData.code.toString().isNotEmpty) {
+        // set scanning result
         setState(() {
           result = scanData;
         });
 
+        // stop the camera to let user know that the app got the data
         if (Platform.isAndroid) {
           await this.controller!.stopCamera();
         }
         if (Platform.isIOS) {
           await this.controller!.pauseCamera();
         }
+        // add attendance
         await addAttendance(scanData);
       }
     });
-
-    // }
   }
 
+  /// check permission
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     if (!p) {
@@ -208,12 +210,14 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     }
   }
 
+  /// dispose the controller to avoid memory leak
   @override
   void dispose() {
     controller?.dispose();
     super.dispose();
   }
 
+  /// loading widget
   Widget _loading(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     return Container(
