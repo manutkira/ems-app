@@ -82,15 +82,17 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
           title: Text('Attendance'),
           actions: [
             PopupMenuButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                color: Color(0xff43c3c52),
                 onSelected: (item) => onSelected(context, item as int),
-                color: Colors.white,
                 icon: Icon(Icons.filter_list),
                 itemBuilder: (_) => [
                       PopupMenuItem(
                         child: Text(
                           'By Month',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -100,7 +102,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                         child: Text(
                           'By All-Time',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

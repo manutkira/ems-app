@@ -53,8 +53,8 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
             PopupMenuButton(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
+                color: Color(0xff43c3c52),
                 onSelected: (item) => onSelected(context, item as int),
-                color: kBlack,
                 icon: Icon(Icons.filter_list),
                 itemBuilder: (_) => [
                       PopupMenuItem(
