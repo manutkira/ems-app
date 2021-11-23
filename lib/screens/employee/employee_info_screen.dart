@@ -1,4 +1,3 @@
-import 'package:ems/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -79,7 +78,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                         Text(
                                           'ID: ',
                                           style: kParagraph.copyWith(
-                                              color: Colors.black),
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                         SizedBox(
                                           width: 45,
@@ -88,7 +88,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           (snapshot.data as dynamic)['id']
                                               .toString(),
                                           style: kParagraph.copyWith(
-                                              color: Colors.black),
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),
@@ -99,7 +100,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           child: Text(
                                             'Name: ',
                                             style: kParagraph.copyWith(
-                                                color: Colors.black),
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                         SizedBox(
@@ -111,7 +113,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           child: Text(
                                             (snapshot.data as dynamic)['name'],
                                             style: kParagraph.copyWith(
-                                                color: Colors.black),
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         )
                                       ],
@@ -165,7 +168,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           child: Text(
                                             'Name ',
                                             style: kParagraph.copyWith(
-                                                color: Colors.black,
+                                                color: Colors.white,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -175,7 +178,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           child: Text(
                                             'ID ',
                                             style: kParagraph.copyWith(
-                                                color: Colors.black,
+                                                color: Colors.white,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -185,7 +188,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           child: Text(
                                             'Email ',
                                             style: kParagraph.copyWith(
-                                                color: Colors.black,
+                                                color: Colors.white,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -195,7 +198,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           child: Text(
                                             'Position ',
                                             style: kParagraph.copyWith(
-                                                color: Colors.black,
+                                                color: Colors.white,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -205,7 +208,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           child: Text(
                                             'Skill ',
                                             style: kParagraph.copyWith(
-                                                color: Colors.black,
+                                                color: Colors.white,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -215,7 +218,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           child: Text(
                                             'Salary ',
                                             style: kParagraph.copyWith(
-                                                color: Colors.black,
+                                                color: Colors.white,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -225,7 +228,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           child: Text(
                                             'Role ',
                                             style: kParagraph.copyWith(
-                                                color: Colors.black,
+                                                color: Colors.white,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -235,7 +238,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           child: Text(
                                             'Status ',
                                             style: kParagraph.copyWith(
-                                                color: Colors.black,
+                                                color: Colors.white,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -245,7 +248,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           child: Text(
                                             'Work-Rate ',
                                             style: kParagraph.copyWith(
-                                                color: Colors.black,
+                                                color: Colors.white,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -267,20 +270,22 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                               child: Text(
                                                 (snapshot.data
                                                     as dynamic)['name'],
-                                                style: kParagraph,
+                                                style: kParagraph.copyWith(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                             ),
                                           ),
-                                          // SizedBox(
-                                          //   height: 14,
-                                          // ),
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 top: 20, left: 30),
                                             child: Text(
                                               (snapshot.data as dynamic)['id']
                                                   .toString(),
-                                              style: kParagraph,
+                                              style: kParagraph.copyWith(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                           Padding(
@@ -290,7 +295,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                               (snapshot.data
                                                       as dynamic)['email']
                                                   .toString(),
-                                              style: kParagraph,
+                                              style: kParagraph.copyWith(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                           Container(
@@ -304,7 +311,10 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                                 (snapshot.data
                                                         as dynamic)['position']
                                                     .toString(),
-                                                style: kParagraph,
+                                                style: kParagraph.copyWith(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                             ),
                                           ),
@@ -317,7 +327,10 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                                 (snapshot.data
                                                         as dynamic)['skill']
                                                     .toString(),
-                                                style: kParagraph,
+                                                style: kParagraph.copyWith(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                             ),
                                           ),
@@ -326,7 +339,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                                 top: 20, left: 30),
                                             child: Text(
                                               '\$${(snapshot.data as dynamic)['salary'].toString()}',
-                                              style: kParagraph,
+                                              style: kParagraph.copyWith(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                           Padding(
@@ -335,7 +350,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                             child: Text(
                                               (snapshot.data as dynamic)['role']
                                                   .toString(),
-                                              style: kParagraph,
+                                              style: kParagraph.copyWith(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                           Padding(
@@ -345,7 +362,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                               (snapshot.data
                                                       as dynamic)['status']
                                                   .toString(),
-                                              style: kParagraph,
+                                              style: kParagraph.copyWith(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                           Padding(
@@ -354,7 +373,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                             child: Text(
                                               (snapshot.data as dynamic)['rate']
                                                   .toString(),
-                                              style: kParagraph,
+                                              style: kParagraph.copyWith(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                         ],
@@ -371,7 +392,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                       Text(
                                         'Address ',
                                         style: kParagraph.copyWith(
-                                            color: Colors.black,
+                                            color: Colors.white,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(
@@ -387,7 +408,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                             (snapshot.data
                                                     as dynamic)['address']
                                                 .toString(),
-                                            style: kParagraph,
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                       ),
@@ -403,7 +426,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                       Text(
                                         'Work-Background: ',
                                         style: kParagraph.copyWith(
-                                            color: Colors.black,
+                                            color: Colors.white,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(
@@ -416,7 +439,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           (snapshot.data
                                                   as dynamic)['background']
                                               .toString(),
-                                          style: kParagraph,
+                                          style: kParagraph.copyWith(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                     ],

@@ -1,6 +1,5 @@
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/date_symbols.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

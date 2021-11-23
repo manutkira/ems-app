@@ -26,15 +26,6 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
 
-  getPresent() async {
-    var pc = await _attendanceService.countPresent(1);
-    if (mounted) {
-      setState(() {
-        countPresent = pc;
-      });
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -52,9 +43,23 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
           _isLoading = false;
           users.addAll(value);
           userDisplay = users;
+          var pc = _attendanceService
+              .countPresent(int.parse(users.map((e) => e.id).toString()));
+          //     .then((value) {
+          //   setState(() {
+          //     _isLoading = false;
+          //     print(value);
+          //     // countPresent = value;
+          //   });
+          // });
+          if (mounted) {
+            setState(() {
+              countPresent = pc;
+              print(countPresent);
+            });
+          }
         });
       });
-      getPresent();
     } catch (err) {
       print(err);
     }
@@ -233,14 +238,14 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           Row(
                             children: [
                               Text('P:'),
-                              Text(countPresent.toString())
-                              // Text(attendancedisplay
-                              //     .where((element) =>
-                              //         element.userId == userDisplay[index].id &&
-                              //         element.type == 'check in' &&
-                              //         element.date!.hour < 9)
-                              //     .length
-                              //     .toString()),
+                              // Text(countPresent.toString())
+                              Text(attendancedisplay
+                                  .where((element) =>
+                                      element.userId == userDisplay[index].id &&
+                                      element.type == 'check in' &&
+                                      element.date!.hour < 9)
+                                  .length
+                                  .toString()),
                             ],
                           ),
                           SizedBox(

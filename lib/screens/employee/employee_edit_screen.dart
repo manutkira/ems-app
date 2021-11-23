@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:ems/screens/employee/employee_list_screen.dart';
-import 'package:ems/widgets/textbox.dart';
 import 'package:http/http.dart' as http;
 import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
@@ -72,8 +71,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     rate = widget.ratee;
 
     super.initState();
-
-    print('object');
   }
 
   @override
@@ -93,12 +90,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                           actions: [
                             OutlineButton(
                               onPressed: () async {
-                                // Navigator.of(context).pushReplacement(
-                                //   MaterialPageRoute(
-                                //     builder: (BuildContext context) =>
-                                //         EmployeeListScreen(),
-                                //   ),
-                                // );
                                 Navigator.of(context).pop();
                                 await Navigator.of(context)
                                     .pushReplacementNamed(
@@ -585,12 +576,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                       actions: [
                                         OutlineButton(
                                           onPressed: () async {
-                                            // Navigator.of(context).pushReplacement(
-                                            //   MaterialPageRoute(
-                                            //     builder: (BuildContext context) =>
-                                            //         EmployeeListScreen(),
-                                            //   ),
-                                            // );
                                             Navigator.of(context).pop();
                                             await Navigator.of(context)
                                                 .pushReplacementNamed(

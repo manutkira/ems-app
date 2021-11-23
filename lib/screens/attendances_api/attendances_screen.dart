@@ -51,15 +51,17 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
           title: Text('Attendance'),
           actions: [
             PopupMenuButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
                 onSelected: (item) => onSelected(context, item as int),
-                color: Colors.white,
+                color: kBlack,
                 icon: Icon(Icons.filter_list),
                 itemBuilder: (_) => [
                       PopupMenuItem(
                         child: Text(
                           'By Day',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -69,7 +71,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                         child: Text(
                           'By All-Time',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -79,7 +81,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                         child: Text(
                           'By Month',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

@@ -31,21 +31,11 @@ class _EmployeeListState extends State<EmployeeList> {
     }
   }
 
-  // Future fetchData(String text) async {
-  //   final response = await http.get(Uri.parse(
-  //       "http://rest-api-laravel-flutter.herokuapp.com/api/search?search=${text}"));
-  //   if (response.statusCode == 200) {
-  //     print('okey');
-  //   } else {
-  //     print('not okey');
-  //   }
-  // }
   List<User> userDisplay = [];
   List<User> user = [];
 
   bool _isLoading = true;
   bool order = false;
-  // bool sort = false;
 
   @override
   void initState() {
@@ -60,9 +50,7 @@ class _EmployeeListState extends State<EmployeeList> {
         });
       });
       super.initState();
-    } catch (err) {
-      //
-    }
+    } catch (err) {}
   }
 
   @override
@@ -163,9 +151,6 @@ class _EmployeeListState extends State<EmployeeList> {
               ),
               onChanged: (text) {
                 text = text.toLowerCase();
-                // if (text.isEmpty) {
-                //   userDisplay;
-                // }
                 setState(() {
                   userDisplay = user.where((user) {
                     var userName = user.name!.toLowerCase();
@@ -229,19 +214,18 @@ class _EmployeeListState extends State<EmployeeList> {
       child: Container(
         width: double.infinity,
         child: Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
               child: Image.asset(
                 'assets/images/profile-icon-png-910.png',
-                width: 75,
+                width: 65,
               ),
             ),
             SizedBox(
               width: 10,
             ),
             Container(
-              width: 240,
+              width: 255,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -264,9 +248,6 @@ class _EmployeeListState extends State<EmployeeList> {
                       )
                     ],
                   ),
-                  // SizedBox(
-                  //   width: 50,
-                  // ),
                   PopupMenuButton(
                     color: kDarkestBlue,
                     shape: RoundedRectangleBorder(

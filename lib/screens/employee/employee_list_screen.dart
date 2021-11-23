@@ -1,9 +1,6 @@
-import 'package:ems/screens/home_screen.dart';
 import 'package:ems/widgets/employee/employee_list.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/user.dart';
-import '../../constants.dart';
 import '../../screens/employee/new_employee_screen.dart';
 
 class EmployeeListScreen extends StatelessWidget {
@@ -38,15 +35,6 @@ class EmployeeListScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Container(
-          //   padding: EdgeInsets.all(10),
-          //   child: Expanded(
-          //       flex: 1,
-          //       child: Text(
-          //         'Employee List',
-          //         style: kHeadingTwo,
-          //       )),
-          // ),
           Expanded(flex: 9, child: EmployeeList()),
         ],
       ),
