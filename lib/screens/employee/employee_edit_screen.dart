@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ems/screens/employee/employee_list_screen.dart';
+import 'package:ems/widgets/image_input.dart';
 import 'package:http/http.dart' as http;
 import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +57,12 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   String rate = 'Good';
 
   final _form = GlobalKey<FormState>();
+
+  File? _pickedImage;
+
+  void _selectImage(File pickedImage) {
+    _pickedImage = pickedImage;
+  }
 
   @override
   void initState() {
@@ -118,6 +126,10 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
               padding: EdgeInsets.all(20),
               child: Column(
                 children: [
+                  ImageInput(_selectImage),
+                  SizedBox(
+                    height: 30,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

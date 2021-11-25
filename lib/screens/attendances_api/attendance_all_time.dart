@@ -141,11 +141,11 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                       children: [
                         _searchBar(),
                         Container(
-                          padding: EdgeInsets.only(top: 200),
+                          padding: EdgeInsets.only(top: 10),
                           child: Column(
                             children: [
                               Text(
-                                'NO EMPLOYEE ADDED YET!!',
+                                'Employee not found!!',
                                 style: kHeadingThree.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -155,7 +155,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                 height: 30,
                               ),
                               Image.asset(
-                                'assets/images/no-data.jpeg',
+                                'assets/images/notfound.png',
                                 width: 220,
                               ),
                             ],

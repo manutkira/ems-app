@@ -575,8 +575,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                       child: Column(
                         children: [
                           Text(
-                            'NO MONTH PiCKED YET!!',
-                            style: kHeadingThree.copyWith(
+                            'Please pick a month!!',
+                            style: kHeadingTwo.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
@@ -585,7 +585,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                             height: 30,
                           ),
                           Image.asset(
-                            'assets/images/no-data.jpeg',
+                            'assets/images/calendar.jpeg',
                             width: 220,
                           ),
                         ],
@@ -613,11 +613,11 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                 children: [
                                   _searchBar(),
                                   Container(
-                                    padding: EdgeInsets.only(top: 200),
+                                    padding: EdgeInsets.only(top: 150),
                                     child: Column(
                                       children: [
                                         Text(
-                                          'NO EMPLOYEE ADDED YET!!',
+                                          'Employee not found!!',
                                           style: kHeadingThree.copyWith(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black,
@@ -627,7 +627,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                           height: 30,
                                         ),
                                         Image.asset(
-                                          'assets/images/no-data.jpeg',
+                                          'assets/images/notfound.png',
                                           width: 220,
                                         ),
                                       ],

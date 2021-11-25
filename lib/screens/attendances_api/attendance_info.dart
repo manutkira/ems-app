@@ -102,11 +102,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Appointment> getAppointments() {
     List<Appointment> meetings = <Appointment>[];
     attendanceDisplay.asMap().forEach((key, value) {
-      Appointment newAppointment = Appointment(
-          startTime: value.date as DateTime,
-          endTime: value.date as DateTime,
-          color: checkColor(value));
-      meetings.add(newAppointment);
+      if (value.type != 'check out') {
+        Appointment newAppointment = Appointment(
+            startTime: value.date as DateTime,
+            endTime: value.date as DateTime,
+            color: checkColor(value));
+        meetings.add(newAppointment);
+      }
     });
     return meetings;
   }
@@ -138,11 +140,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             )
           : attendanceDisplay.isEmpty
               ? Container(
-                  padding: EdgeInsets.only(top: 200, left: 50),
+                  padding: EdgeInsets.only(top: 200, left: 40),
                   child: Column(
                     children: [
                       Text(
-                        'NO EMPLOYEE ADDED YET!!',
+                        'NO ATTENDANCE ADDED YET!!',
                         style: kHeadingThree.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
@@ -152,7 +154,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                         height: 30,
                       ),
                       Image.asset(
-                        'assets/images/no-data.jpeg',
+                        'assets/images/attendanceicon.png',
                         width: 220,
                       ),
                     ],
@@ -248,14 +250,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(30),
                             topRight: Radius.circular(30)),
-                        // gradient: LinearGradient(
-                        //   begin: Alignment.topCenter,
-                        //   end: Alignment.bottomCenter,
-                        //   colors: [
-                        //     color1,
-                        //     color,
-                        //   ],
-                        // ),
                       ),
                       child: Column(
                         children: [
@@ -369,6 +363,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             child: SfCalendar(
                               view: CalendarView.month,
                               dataSource: MeetingDataSource(getAppointments()),
+                              todayHighlightColor: Colors.grey,
+                              headerHeight: 22,
+                              cellBorderColor: Colors.grey,
+                              allowedViews: [
+                                CalendarView.week,
+                                CalendarView.month,
+                              ],
                             ),
                           ),
                         ],

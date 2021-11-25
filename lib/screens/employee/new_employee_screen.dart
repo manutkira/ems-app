@@ -1,7 +1,13 @@
+import 'dart:io';
+import 'dart:convert';
+
 import 'package:ems/screens/employee/employee_list_screen.dart';
+import 'package:ems/widgets/image_input.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart' as syspaths;
+import 'package:path/path.dart' as path;
 
 import '../../constants.dart';
 
@@ -14,36 +20,29 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
   TextEditingController name = TextEditingController();
-
   TextEditingController phone = TextEditingController();
-
   TextEditingController email = TextEditingController();
-
   TextEditingController address = TextEditingController();
-
   TextEditingController position = TextEditingController();
-
   TextEditingController skill = TextEditingController();
-
   TextEditingController salary = TextEditingController();
-
   TextEditingController role = TextEditingController();
-
   TextEditingController status = TextEditingController();
-
   TextEditingController password = TextEditingController();
-
   TextEditingController workrate = TextEditingController();
-
   TextEditingController background = TextEditingController();
 
   String dropDownValue = 'Active';
-
   String dropDownValue1 = 'Admin';
-
   String dropDownValue2 = 'Very\ Good';
 
   final _form = GlobalKey<FormState>();
+
+  File? _pickedImage;
+
+  void _selectImage(File pickedImage) {
+    _pickedImage = pickedImage;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +89,10 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                 padding: EdgeInsets.all(20),
                 child: Column(
                   children: [
+                    ImageInput(_selectImage),
+                    SizedBox(
+                      height: 30,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

@@ -158,12 +158,12 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                   Expanded(
                     child: noData
                         ? Container(
-                            padding: EdgeInsets.only(top: 120),
+                            padding: EdgeInsets.only(top: 140),
                             child: Column(
                               children: [
                                 Text(
-                                  'NO DATE PICKED YET!!',
-                                  style: kHeadingThree.copyWith(
+                                  'Please pick a date!!',
+                                  style: kHeadingTwo.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   ),
@@ -172,7 +172,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                                   height: 30,
                                 ),
                                 Image.asset(
-                                  'assets/images/no-data.jpeg',
+                                  'assets/images/calendar.jpeg',
                                   width: 220,
                                 ),
                               ],
@@ -198,11 +198,11 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                                     children: [
                                       _searchBar(),
                                       Container(
-                                        padding: EdgeInsets.only(top: 200),
+                                        padding: EdgeInsets.only(top: 150),
                                         child: Column(
                                           children: [
                                             Text(
-                                              'NO EMPLOYEE ADDED YET!!',
+                                              'NO ATTENDANCE ADDED YET!!',
                                               style: kHeadingThree.copyWith(
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.black,
@@ -212,7 +212,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                                               height: 30,
                                             ),
                                             Image.asset(
-                                              'assets/images/no-data.jpeg',
+                                              'assets/images/attendanceicon.png',
                                               width: 220,
                                             ),
                                           ],
@@ -268,45 +268,6 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
               },
             ),
           ),
-          // PopupMenuButton(
-          //   color: kDarkestBlue,
-          //   shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.all(Radius.circular(10))),
-          //   onSelected: (int selectedValue) {
-          //     if (selectedValue == 0) {
-          //       setState(() {
-          //         userDisplay.sort((a, b) =>
-          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
-          //       });
-          //     }
-          //     if (selectedValue == 1) {
-          //       setState(() {
-          //         userDisplay.sort((b, a) =>
-          //             a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
-          //       });
-          //     }
-          //     if (selectedValue == 2) {
-          //       setState(() {
-          //         userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-          //       });
-          //     }
-          //   },
-          //   itemBuilder: (_) => [
-          //     PopupMenuItem(
-          //       child: Text('From A-Z'),
-          //       value: 0,
-          //     ),
-          //     PopupMenuItem(
-          //       child: Text('From Z-A'),
-          //       value: 1,
-          //     ),
-          //     PopupMenuItem(
-          //       child: Text('by ID'),
-          //       value: 2,
-          //     ),
-          //   ],
-          //   icon: Icon(Icons.filter_list),
-          // ),
         ],
       ),
     );

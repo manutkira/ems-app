@@ -129,12 +129,12 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                       children: [
                         _searchBar(),
                         Container(
-                          padding: EdgeInsets.only(top: 200),
+                          padding: EdgeInsets.only(top: 150),
                           child: Column(
                             children: [
                               Text(
-                                'NO EMPLOYEE ADDED YET!!',
-                                style: kHeadingThree.copyWith(
+                                'Employee not found!!',
+                                style: kHeadingTwo.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
                                 ),
@@ -143,7 +143,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                                 height: 30,
                               ),
                               Image.asset(
-                                'assets/images/no-data.jpeg',
+                                'assets/images/notfound.png',
                                 width: 220,
                               ),
                             ],

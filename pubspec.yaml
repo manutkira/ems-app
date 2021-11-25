@@ -33,6 +33,9 @@ dependencies:
   material_floating_search_bar: ^0.3.6
   syncfusion_flutter_calendar: ^19.3.47
   dart_date: ^1.1.0
+  image_picker: ^0.8.4+4
+  path_provider: ^2.0.7
+  path: ^1.8.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -84,6 +87,9 @@ flutter:
     - assets/images/waiting.png
     - assets/images/no-data.jpeg
     - assets/images/profile-icon-png-910.png
+    - assets/images/calendar.jpeg
+    - assets/images/attendanceicon.png
+    - assets/images/notfound.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
