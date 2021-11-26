@@ -50,9 +50,10 @@ class MyApp extends ConsumerWidget {
       home: ValueListenableBuilder(
         valueListenable: ref.watch(currentUserProvider).currentUserListenable,
         builder: (BuildContext context, Box<User> box, Widget? child) {
-          var currentUser = box.values.toList()[0];
-
-          return currentUser.isEmpty ? const LoginScreen() : const HomeScreen();
+          final currentUserData = box.values.toList();
+          return box.isEmpty || currentUserData[0].isEmpty
+              ? const LoginScreen()
+              : const HomeScreen();
         },
       ),
       routes: {
