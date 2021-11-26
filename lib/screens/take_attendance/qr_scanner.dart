@@ -138,7 +138,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             top: 80,
             child: StatusInfo(text: "Keep the QR code in the center"),
           ),

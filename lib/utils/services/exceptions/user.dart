@@ -6,7 +6,7 @@ class UserException extends IBaseException {
 
   final int code;
 
-  String message = "User error.";
+  String message;
 
   @override
   String toString() {
@@ -18,6 +18,10 @@ class UserException extends IBaseException {
       case 2:
         {
           return message = "Insufficient or malformed data provided.";
+        }
+      case 3:
+        {
+          return message = message;
         }
       case 404:
         {

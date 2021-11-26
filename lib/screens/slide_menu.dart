@@ -1,5 +1,5 @@
 import 'package:ems/models/user.dart';
-import 'package:ems/providers/current_user.dart';
+import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/login_screen.dart';
 import 'package:ems/screens/your%20profile/your_profile_edit.dart';
 import 'package:ems/screens/your%20profile/your_profile_password.dart';
@@ -8,6 +8,7 @@ import 'package:ems/utils/services/auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../constants.dart';
@@ -21,7 +22,6 @@ class MenuDrawer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    User _user = ref.watch(currentUserProvider);
     Size _size = MediaQuery.of(context).size;
 
     return Drawer(
@@ -39,32 +39,43 @@ class MenuDrawer extends ConsumerWidget {
                       const SizedBox(height: 60),
 
                       // Profile picture
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
+                      ValueListenableBuilder(
+                        valueListenable: ref
+                            .watch(currentUserProvider)
+                            .currentUserListenable,
+                        builder: (BuildContext context, Box<User> box,
+                            Widget? child) {
+                          var currentUser = box.values.toList()[0];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
                                   builder: (context) =>
-                                      const YourProfileViewScreen()));
+                                      const YourProfileViewScreen(),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/images/bigprofile.png',
+                                  fit: BoxFit.cover,
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  "${currentUser.name}",
+                                  style: kHeadingThree,
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  "${currentUser.role}",
+                                  style: kSubtitle,
+                                ),
+                              ],
+                            ),
+                          );
                         },
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              'assets/images/bigprofile.png',
-                              fit: BoxFit.cover,
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              "${_user.name}",
-                              style: kHeadingThree,
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              "${_user.role}",
-                              style: kSubtitle,
-                            ),
-                          ],
-                        ),
                       ),
                       const SizedBox(height: 40),
 
@@ -128,9 +139,8 @@ class MenuDrawer extends ConsumerWidget {
                           title: const Text('Logout'),
                           onTap: () async {
                             try {
-                              await _auth.logout(
-                                  currentUserId: _user.id as int);
-                              ref.read(currentUserProvider.notifier).reset();
+                              await _auth.logout();
+                              await ref.read(currentUserProvider).reset();
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                   builder: (context) => const LoginScreen(),

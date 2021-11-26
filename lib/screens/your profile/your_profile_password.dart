@@ -1,5 +1,5 @@
 import 'package:ems/models/user.dart';
-import 'package:ems/providers/current_user.dart';
+import 'package:ems/persistence/current_user.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/widgets/statuses/error.dart';
@@ -34,13 +34,16 @@ class _YourProfilePasswordScreenState
   @override
   void initState() {
     super.initState();
-    _user = ref.read(currentUserProvider).copyWith();
+    _user = ref.read(currentUserProvider).user.copyWith();
   }
 
   Future<bool> verifyPassword() async {
     try {
-      return _authService.verifyPassword(
-          id: _user.id as int, password: password);
+      bool isVerified = await _authService.verifyPassword(
+        id: _user.id as int,
+        password: password,
+      );
+      return isVerified;
     } catch (err) {
       return false;
     }
@@ -80,12 +83,7 @@ class _YourProfilePasswordScreenState
     }
 
     try {
-      User user = await _userService.updateOne(
-          user: _user.copyWith(password: newPassword));
-      ref
-          .read(currentUserProvider.notifier)
-          .setUser(user.copyWith(password: _user.password));
-
+      await _userService.updateOne(user: _user.copyWith(password: newPassword));
       setState(() {
         isLoading = false;
       });
