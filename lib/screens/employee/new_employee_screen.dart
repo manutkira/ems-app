@@ -642,6 +642,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     var apassword = password.text;
     var aWorkrate = dropDownValue2;
     var aBackground = background.text;
+    var aImage = _pickedImage!.path;
 
     var data = json.encode({
       "name": aName,
@@ -656,6 +657,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
       "password": apassword,
       "rate": aWorkrate,
       "background": aBackground,
+      "image": aImage,
     });
 
     var response = await http.post(
@@ -666,8 +668,26 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
       },
       body: data,
     );
+    // response.files.add(await http.MultipartFile.fromBytes(
+    //     'image', _pickedImage!.readAsBytesSync()));
+    // response.files.add(http.MultipartFile.fromString('data', data));
+    // response.headers.addAll({
+    //   "Content-Type": "multipart/form-data",
+    // });
+    // response.send().then((res) {
+    //   if (res.statusCode == 201) {
+    //     print('uploaded');
+    //   } else {
+    //     print('object');
+    //   }
+    // });
 
-    if (response.statusCode == 201) {
+    // print(request.statusCode);
+    // request.stream.transform(utf8.decoder).listen((event) {
+    //   print(event);
+    // });
+
+    if (response == 201) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => EmployeeListScreen()));
     } else {

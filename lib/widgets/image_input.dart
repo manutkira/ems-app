@@ -18,8 +18,8 @@ class _ImageInputState extends State<ImageInput> {
   File? _storeImage;
 
   Future _imgFromGallery() async {
-    final picker = ImagePicker();
-    final imageFile =
+    var picker = ImagePicker();
+    var imageFile =
         await picker.getImage(source: ImageSource.gallery, maxHeight: 900);
     if (imageFile == null) {
       return;
