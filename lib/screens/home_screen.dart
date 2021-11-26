@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:ems/constants.dart';
-import 'package:ems/providers/current_user.dart';
+import 'package:ems/models/user.dart';
+import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
@@ -13,16 +14,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var time = 'calculating';
   dynamic employeeCount = "loading...";
@@ -101,16 +103,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Consumer(
-                              builder: (BuildContext context, WidgetRef ref,
-                                  Widget? child) {
-                                String? username = ref
-                                    .watch(currentUserProvider.notifier)
-                                    .state
-                                    .name;
-
+                            ValueListenableBuilder(
+                              valueListenable: ref
+                                  .watch(currentUserProvider)
+                                  .currentUserListenable,
+                              builder: (_, Box<User> box, __) {
+                                final currentUser = box.values.toList()[0];
                                 return Text(
-                                  "Hello, ${username.toString()}.",
+                                  "Hello, ${currentUser.name}",
                                   style: kHeadingFour,
                                 );
                               },

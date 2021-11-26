@@ -7,7 +7,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 ///
 /// @params String text
 class StatusError extends StatusWidget {
-  const StatusError({
+  StatusError({
     Key? key,
     this.text = "an error has occurred.",
   }) : super(

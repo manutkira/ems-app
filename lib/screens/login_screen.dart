@@ -1,5 +1,5 @@
 import 'package:ems/models/user.dart';
-import 'package:ems/providers/current_user.dart';
+import 'package:ems/persistence/current_user.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/widgets/inputfield.dart';
 import 'package:ems/widgets/statuses/error.dart';
@@ -28,9 +28,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> logUserIn() async {
     try {
       User _user = await _authService.login(phone: phone, password: password);
-      ref
-          .read(currentUserProvider.notifier)
-          .setUser(_user.copyWith(password: password));
+      ref.read(currentUserProvider).setUser(user: _user);
     } catch (err) {
       setState(() {
         error = err.toString();
@@ -133,7 +131,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           isLoading = true;
                         });
 
-                        // await logUserIn();
+                        await logUserIn();
 
                         setState(() {
                           isLoading = false;

@@ -82,6 +82,7 @@ class UserService extends BaseService {
 
   Future<User> updateOne({required User user}) async {
     int? userid = user.id;
+    print(user.toRawJson());
 
     if (userid!.isNaN || userid.isNegative || userid == 0) {
       throw Exception("Incorrect id");
@@ -95,8 +96,9 @@ class UserService extends BaseService {
         headers: headers,
         body: json.encode(jsons),
       );
-      _code = response.statusCode;
       var jsondata = json.decode(response.body);
+
+      _code = response.statusCode;
       var user = User.fromJson(jsondata['user']);
       return user;
     } catch (e) {

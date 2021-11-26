@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:ems/models/user.dart';
+import 'package:ems/persistence/current_user.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart';
 
 import 'base_service.dart';
@@ -40,7 +42,9 @@ class AuthService extends BaseService {
     }
   }
 
-  Future<bool> logout({required int currentUserId}) async {
+  Future<bool> logout() async {
+    final box = Hive.box<User>(currentUserBoxName);
+    var currentUserId = box.get(currentUserBoxName)?.id;
     try {
       Response response = await post(
         Uri.parse(
@@ -70,7 +74,6 @@ class AuthService extends BaseService {
         ),
         headers: headers,
       );
-
       if (response.statusCode == 200) {
         return true;
       } else {

@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:ems/utils/services/exceptions/user.dart';
+import 'package:hive/hive.dart';
+
+part 'user.g.dart';
 
 List<User> usersFromJson(List<dynamic> list) {
   return List<User>.from(list.map((x) => User.fromJson(x)));
@@ -9,6 +12,7 @@ List<User> usersFromJson(List<dynamic> list) {
 String usersToJson(List<User> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+@HiveType(typeId: 0)
 class User {
   User({
     this.id,
@@ -29,22 +33,47 @@ class User {
     this.updatedAt,
   });
 
+  @HiveField(0)
   int? id;
+  @HiveField(1)
   String? name;
+  @HiveField(2)
   String? phone;
+  @HiveField(3)
   String? email;
+  @HiveField(4)
   DateTime? emailVerifiedAt;
+  @HiveField(5)
   String? address;
+  @HiveField(6)
   String? password;
+  @HiveField(7)
   String? position;
+  @HiveField(8)
   String? skill;
+  @HiveField(9)
   String? salary;
+  @HiveField(10)
   String? role;
+  @HiveField(11)
   String? background;
+  @HiveField(12)
   String? status;
+  @HiveField(13)
   String? rate;
+  @HiveField(14)
   DateTime? createdAt;
+  @HiveField(15)
   DateTime? updatedAt;
+
+  bool get isEmpty {
+    return id == null ||
+        id == 0 ||
+        id!.isNaN ||
+        id!.isNegative ||
+        name!.isEmpty ||
+        phone!.isEmpty;
+  }
 
   factory User.fromRawJson(String str) => User.fromJson(json.decode(str));
 

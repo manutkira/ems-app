@@ -1,6 +1,6 @@
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
-import 'package:ems/providers/current_user.dart';
+import 'package:ems/persistence/current_user.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/widgets/statuses/error.dart';
@@ -29,7 +29,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   /// fetch user data from currentUserProvider
   /// then put it in a local variable for edits
   void fetchUserData() {
-    User _currentUser = ref.read(currentUserProvider);
+    User _currentUser = ref.read(currentUserProvider).user;
     setState(() {
       _user = _currentUser.copyWith();
     });
@@ -60,17 +60,11 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   /// update the profile using user service
   /// then setting the current user state
   Future<void> updateProfile() async {
-    String finalPassword = password.isEmpty ? "${_user.password}" : password;
-    User user = User();
-
     try {
-      await _userService.updateOne(
-          user: _user.copyWith(password: finalPassword));
-      ref
-          .read(currentUserProvider.notifier)
-          .setUser(user.copyWith(password: _user.password));
+      await _userService.updateOne(user: _user.copyWith());
+      ref.read(currentUserProvider).setUser(user: _user.copyWith());
     } catch (err) {
-      ///
+      print(err);
     }
   }
 
@@ -479,8 +473,10 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         }
                         var isVerified = await confirmPassword();
                         if (isVerified) {
+                          print('verified');
                           // update info here
                           await updateProfile();
+                          print('updated');
                           // if success, close. else stay open
                           closePage();
                         } else {
