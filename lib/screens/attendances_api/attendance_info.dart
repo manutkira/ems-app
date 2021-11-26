@@ -102,13 +102,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Appointment> getAppointments() {
     List<Appointment> meetings = <Appointment>[];
     attendanceDisplay.asMap().forEach((key, value) {
-      if (value.type != 'check out') {
-        Appointment newAppointment = Appointment(
-            startTime: value.date as DateTime,
-            endTime: value.date as DateTime,
-            color: checkColor(value));
-        meetings.add(newAppointment);
-      }
+      // if (value.type == 'check in') {
+      Appointment newAppointment = Appointment(
+          startTime: value.date as DateTime,
+          endTime: value.date as DateTime,
+          color: checkColor(value));
+      meetings.add(newAppointment);
+      // }
     });
     return meetings;
   }
@@ -253,113 +253,136 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                       ),
                       child: Column(
                         children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 40,
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
+                            height: 110,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                              Container(
-                                padding: EdgeInsets.only(top: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 20),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'Present: ',
-                                            style: kHeadingFour,
-                                          ),
-                                          Text(
-                                            countPresent.toString(),
-                                            style: kHeadingFour,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Row(
+                              color: kLightBlue,
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 40,
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.only(top: 20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Absent: ',
-                                          style: kHeadingFour,
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 20),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                'Present: ',
+                                                style: kHeadingFour.copyWith(
+                                                    color: kBlack),
+                                              ),
+                                              Text(
+                                                countPresent.toString(),
+                                                style: kHeadingFour.copyWith(
+                                                    color: kBlack),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          countAbsent.toString(),
-                                          style: kHeadingFour,
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Absent: ',
+                                              style: kHeadingFour.copyWith(
+                                                  color: kBlack),
+                                            ),
+                                            Text(
+                                              countAbsent.toString(),
+                                              style: kHeadingFour.copyWith(
+                                                  color: kBlack),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 70,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(top: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 20),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'Permission: ',
-                                            style: kHeadingFour,
-                                          ),
-                                          Text(
-                                            countPermission.toString(),
-                                            style: kHeadingFour,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 20),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'Late: ',
-                                            style: kHeadingFour,
-                                          ),
-                                          Text(
-                                            countLate.toString(),
-                                            style: kHeadingFour,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Row(
+                                  ),
+                                  SizedBox(
+                                    width: 60,
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.only(top: 20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Left Early: ',
-                                          style: kHeadingFour,
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 20),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                'Permission: ',
+                                                style: kHeadingFour.copyWith(
+                                                    color: kBlack),
+                                              ),
+                                              Text(
+                                                countPermission.toString(),
+                                                style: kHeadingFour.copyWith(
+                                                    color: kBlack),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          attendanceDisplay
-                                              .where((element) =>
-                                                  // element.date!.hour < 8 &&
-                                                  element.date!.hour < 16 &&
-                                                  element.type == 'check out')
-                                              .toList()
-                                              .length
-                                              .toString(),
-                                          style: kHeadingFour,
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 20),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                'Late: ',
+                                                style: kHeadingFour.copyWith(
+                                                    color: kBlack),
+                                              ),
+                                              Text(
+                                                countLate.toString(),
+                                                style: kHeadingFour.copyWith(
+                                                    color: kBlack),
+                                              ),
+                                            ],
+                                          ),
                                         ),
+                                        // Row(
+                                        //   children: [
+                                        //     Text(
+                                        //       'Left Early: ',
+                                        //       style: kHeadingFour.copyWith(
+                                        //           color: kBlack),
+                                        //     ),
+                                        //     Text(
+                                        //       attendanceDisplay
+                                        //           .where((element) =>
+                                        //               // element.date!.hour < 8 &&
+                                        //               element.date!.hour < 16 &&
+                                        //               element.type ==
+                                        //                   'check out')
+                                        //           .toList()
+                                        //           .length
+                                        //           .toString(),
+                                        //       style: kHeadingFour.copyWith(
+                                        //           color: kBlack),
+                                        //     ),
+                                        //   ],
+                                        // ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              )
-                            ],
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 34, right: 10),
+                            padding: const EdgeInsets.only(top: 44, right: 10),
                             child: SfCalendar(
                               view: CalendarView.month,
                               dataSource: MeetingDataSource(getAppointments()),
@@ -367,8 +390,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                               headerHeight: 22,
                               cellBorderColor: Colors.grey,
                               allowedViews: [
-                                CalendarView.week,
                                 CalendarView.month,
+                                CalendarView.schedule,
                               ],
                             ),
                           ),

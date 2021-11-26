@@ -177,21 +177,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                         children: [
                                           ElevatedButton(
                                             onPressed: () {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = true
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 1;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: const Text('Jan'),
                                             style: ButtonStyle(
@@ -207,21 +204,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                           ),
                                           ElevatedButton(
                                             onPressed: () {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = true
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 2;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: Text('Feb'),
                                             style: ButtonStyle(
@@ -237,21 +231,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                           ),
                                           ElevatedButton(
                                             onPressed: () {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = true
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 3;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: Text('Mar'),
                                             style: ButtonStyle(
@@ -273,21 +264,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                         children: [
                                           ElevatedButton(
                                             onPressed: () async {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = true
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 4;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: Text('Apr'),
                                             style: ButtonStyle(
@@ -303,21 +291,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                           ),
                                           ElevatedButton(
                                             onPressed: () async {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = true
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 5;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: Text('May'),
                                             style: ButtonStyle(
@@ -333,21 +318,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                           ),
                                           ElevatedButton(
                                             onPressed: () {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = true
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 6;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: Text('Jun'),
                                             style: ButtonStyle(
@@ -369,21 +351,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                         children: [
                                           ElevatedButton(
                                             onPressed: () async {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = true
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 7;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: Text('Jul'),
                                             style: ButtonStyle(
@@ -399,21 +378,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                           ),
                                           ElevatedButton(
                                             onPressed: () async {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = true
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 8;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: Text('Aug'),
                                             style: ButtonStyle(
@@ -429,21 +405,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                           ),
                                           ElevatedButton(
                                             onPressed: () {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = true
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 9;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: Text('Sep'),
                                             style: ButtonStyle(
@@ -465,21 +438,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                         children: [
                                           ElevatedButton(
                                             onPressed: () async {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = true
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 10;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: Text('Oct'),
                                             style: ButtonStyle(
@@ -495,21 +465,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                           ),
                                           ElevatedButton(
                                             onPressed: () {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = false
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 11;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: Text('Nov'),
                                             style: ButtonStyle(
@@ -525,21 +492,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                           ),
                                           ElevatedButton(
                                             onPressed: () {
-                                              yearController.text.isEmpty &&
-                                                          yearController.value
-                                                                  .text.length >
-                                                              4 ||
+                                              yearController.text.isNotEmpty &&
                                                       yearController.value.text
-                                                              .length <
+                                                              .length ==
                                                           4
-                                                  ? _validate = true
-                                                  : setState(() {
+                                                  ? setState(() {
                                                       _selectMonth = 12;
                                                       pickedYear =
                                                           yearController.text;
                                                       Navigator.of(context)
                                                           .pop();
-                                                    });
+                                                    })
+                                                  : _validate = true;
                                             },
                                             child: Text('Dec'),
                                             style: ButtonStyle(
