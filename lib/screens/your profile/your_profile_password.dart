@@ -26,7 +26,7 @@ class _YourProfilePasswordScreenState
   String error = "";
   bool isLoading = false;
 
-  late User _user;
+  late User _currentUser;
 
   final UserService _userService = UserService.instance;
   final AuthService _authService = AuthService.instance;
@@ -34,13 +34,13 @@ class _YourProfilePasswordScreenState
   @override
   void initState() {
     super.initState();
-    _user = ref.read(currentUserProvider).user.copyWith();
+    _currentUser = ref.read(currentUserProvider).user.copyWith();
   }
 
   Future<bool> verifyPassword() async {
     try {
       bool isVerified = await _authService.verifyPassword(
-        id: _user.id as int,
+        id: _currentUser.id as int,
         password: password,
       );
       return isVerified;
@@ -83,7 +83,8 @@ class _YourProfilePasswordScreenState
     }
 
     try {
-      await _userService.updateOne(user: _user.copyWith(password: newPassword));
+      await _userService.updateOne(
+          user: _currentUser.copyWith(password: newPassword));
       setState(() {
         isLoading = false;
       });
@@ -126,7 +127,7 @@ class _YourProfilePasswordScreenState
     );
   }
 
-  /// form
+  /// build form
   Widget get _buildForm {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),

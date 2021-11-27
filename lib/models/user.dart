@@ -75,6 +75,10 @@ class User {
         phone!.isEmpty;
   }
 
+  bool get isNotEmpty {
+    return !isEmpty;
+  }
+
   factory User.fromRawJson(String str) => User.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());

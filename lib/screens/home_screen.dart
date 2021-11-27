@@ -82,6 +82,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           height: _size.height,
           child: ListView(
             children: [
+              // top
               Stack(
                 children: [
                   SizedBox(
@@ -108,9 +109,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   .watch(currentUserProvider)
                                   .currentUserListenable,
                               builder: (_, Box<User> box, __) {
-                                final currentUser = box.values.toList()[0];
+                                final listFromBox = box.values.toList();
+                                final currentUser = listFromBox.isNotEmpty
+                                    ? listFromBox[0]
+                                    : null;
+
                                 return Text(
-                                  "Hello, ${currentUser.name}",
+                                  "Hello, ${currentUser?.name}",
                                   style: kHeadingFour,
                                 );
                               },
@@ -181,6 +186,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(
                 height: 25,
               ),
+              // menu tile: CHECK IN, CHECK OUT, ATTENDANCE HISTORY
               Container(
                 padding: kPaddingAll,
                 width: double.infinity,

@@ -45,7 +45,9 @@ class MenuDrawer extends ConsumerWidget {
                             .currentUserListenable,
                         builder: (BuildContext context, Box<User> box,
                             Widget? child) {
-                          var currentUser = box.values.toList()[0];
+                          final listFromBox = box.values.toList();
+                          final currentUser =
+                              listFromBox.isNotEmpty ? listFromBox[0] : null;
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -64,12 +66,12 @@ class MenuDrawer extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  "${currentUser.name}",
+                                  "${currentUser?.name}",
                                   style: kHeadingThree,
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  "${currentUser.role}",
+                                  "${currentUser != null ? currentUser.role : ""}",
                                   style: kSubtitle,
                                 ),
                               ],
