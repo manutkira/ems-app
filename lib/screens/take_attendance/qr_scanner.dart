@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:ems/constants.dart';
 import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
-import 'package:ems/providers/current_user.dart';
+import 'package:ems/persistence/current_user.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/widgets/statuses/info.dart';
 import 'package:flutter/foundation.dart';
@@ -46,7 +46,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
       isAddingAttendance = true;
     });
 
-    User _currentUser = ref.read(currentUserProvider);
+    User _currentUser = ref.read(currentUserProvider).user;
 
     try {
       await _attService.createOne(
@@ -97,7 +97,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
               color: textColor,
             ),
             Text(
-              '${widget.type} successfully!',
+              '$type successfully!',
               style: kParagraph.copyWith(color: textColor),
             ),
           ],
@@ -138,7 +138,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
               ),
             ),
           ),
-          Positioned(
+          const Positioned(
             top: 80,
             child: StatusInfo(text: "Keep the QR code in the center"),
           ),

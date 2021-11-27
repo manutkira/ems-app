@@ -61,8 +61,10 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   /// then setting the current user state
   Future<void> updateProfile() async {
     try {
-      await _userService.updateOne(user: _user.copyWith());
-      ref.read(currentUserProvider).setUser(user: _user.copyWith());
+      User user = await _userService.updateOne(
+        user: _user.copyWith(),
+      );
+      ref.read(currentUserProvider).setUser(user: user.copyWith());
     } catch (err) {
       print(err);
     }

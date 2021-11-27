@@ -14,6 +14,7 @@ import 'models/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // initializing local database
   final dataStore = CurrentUserStore();
   await dataStore.init();
 

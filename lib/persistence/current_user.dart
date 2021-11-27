@@ -6,6 +6,24 @@ import 'package:hive_flutter/hive_flutter.dart';
 const currentUserBoxName = 'currentUser';
 
 class CurrentUserStore {
+  final User initUser = User(
+    id: 0,
+    name: "UNREGISTERED USER",
+    phone: "012 345 678",
+    email: "",
+    emailVerifiedAt: DateTime.now(),
+    address: "",
+    position: "",
+    skill: "",
+    salary: "",
+    status: "",
+    password: "",
+    role: "",
+    rate: "",
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+  );
+
   init() async {
     //initialize hive
     await Hive.initFlutter();
@@ -17,22 +35,21 @@ class CurrentUserStore {
     await Hive.openBox<User>(currentUserBoxName);
   }
 
+  /// returns the current user
   User get user {
     final box = Hive.box<User>(currentUserBoxName);
-    // Stream<User> _user = box.watch().map((event) => box.values.toList()[0]);
-    // var user = await _user.toList();
-    return box.values.toList()[0];
+    final listFromBox = box.values.toList();
+    return listFromBox[0];
   }
 
-  // to be used with ValueListenableBuilder
+  /// to be used with ValueListenableBuilder
   ValueListenable<Box<User>> get currentUserListenable =>
       Hive.box<User>(currentUserBoxName).listenable();
 
-  // set current user
+  /// Sets current user to local data
   void setUser({required User user}) async {
-    print('hi from persistence');
     final box = Hive.box<User>(currentUserBoxName);
-    if (user.isEmpty == false) {
+    if (user.isNotEmpty) {
       await box.put(
         currentUserBoxName,
         user.copyWith(
@@ -43,15 +60,32 @@ class CurrentUserStore {
     }
   }
 
-  // reset to empty box
+  /// delete the current user box all together
   Future<void> reset() async {
     final box = Hive.box<User>(currentUserBoxName);
     // await box.delete(currentUserBoxName);
-    await box.put(currentUserBoxName, User());
+    await box.delete(currentUserBoxName);
   }
 }
 
-// provider will be overridden in main function
+/// provider will be overridden in the main function in main.dart
+/// probably look something like this:
+/// ```dart
+/// void main() async {
+///   WidgetsFlutterBinding.ensureInitialized();
+///   final dataStore = CurrentUserStore();
+///   await dataStore.init();
+///
+///   runApp(
+///     ProviderScope(
+///       overrides: [
+///         currentUserProvider.overrideWithValue(dataStore),
+///       ],
+///       child: MyApp(),
+///     ),
+///   );
+/// }
+/// ```
 final currentUserProvider = Provider<CurrentUserStore>(
   (ref) => throw UnimplementedError(),
 );

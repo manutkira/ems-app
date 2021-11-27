@@ -28,7 +28,6 @@ class AuthService extends BaseService {
           "password": password,
         }),
       );
-      print(response.body);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body)["user"];
         var user = User.fromJson(data);
@@ -57,7 +56,6 @@ class AuthService extends BaseService {
         return true;
       } else {
         _code = response.statusCode;
-        print(_code);
         throw AuthException(code: _code);
       }
     } catch (err) {
