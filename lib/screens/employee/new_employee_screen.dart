@@ -201,6 +201,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                 ),
                               ),
                               controller: email,
+                              keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
                               validator: (value) {
                                 if (value!.isEmpty ||
@@ -642,7 +643,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     var apassword = password.text;
     var aWorkrate = dropDownValue2;
     var aBackground = background.text;
-    var aImage = _pickedImage!.path;
+    var aImage = _pickedImage!.readAsBytesSync();
+    String baseImage = base64Encode(aImage);
 
     var data = json.encode({
       "name": aName,
@@ -657,7 +659,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
       "password": apassword,
       "rate": aWorkrate,
       "background": aBackground,
-      "image": aImage,
+      "image": baseImage,
     });
 
     var response = await http.post(
@@ -687,7 +689,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     //   print(event);
     // });
 
-    if (response == 201) {
+    if (response.statusCode == 201) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => EmployeeListScreen()));
     } else {
