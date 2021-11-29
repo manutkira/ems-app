@@ -5,6 +5,7 @@ import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
+import 'package:ems/screens/overtime/overtime_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/check_in_screen.dart';
 import 'package:ems/screens/take_attendance/check_out_screen.dart';
@@ -114,9 +115,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     ? listFromBox[0]
                                     : null;
 
-                                return Text(
-                                  "Hello, ${currentUser?.name}",
-                                  style: kHeadingFour,
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => OvertimeScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    "Hello, ${currentUser?.name}",
+                                    style: kHeadingFour,
+                                  ),
                                 );
                               },
                             ),

@@ -1,4 +1,5 @@
 import 'package:ems/models/user.dart';
+import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -33,6 +34,16 @@ class CurrentUserStore {
 
     // open the box
     await Hive.openBox<User>(currentUserBoxName);
+
+    final box = Hive.box<User>(currentUserBoxName);
+
+    try {
+      int? id = box.values.toList().isNotEmpty ? box.values.toList()[0].id : 0;
+      User user = await UserService().findOne(id as int);
+      box.put(currentUserBoxName, user);
+    } catch (err) {
+      await box.delete(currentUserBoxName);
+    }
   }
 
   /// returns the current user
