@@ -17,7 +17,8 @@ class NewEmployeeScreen extends StatefulWidget {
 }
 
 class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
-  String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
+  String url = "http://rest-api-laravel-flutter.herokuapp.com/api/image";
+  String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
@@ -39,9 +40,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   final _form = GlobalKey<FormState>();
 
   File? _pickedImage;
+  var resJson;
 
-  void _selectImage(File pickedImage) {
-    _pickedImage = pickedImage;
+  // void _selectImage(File pickedImage) {
+  //   _pickedImage = pickedImage;
+  // }
+
+  Future getImage() async {
+    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+
+    setState(() {
+      _pickedImage = File(image!.path);
+    });
   }
 
   @override
@@ -89,7 +99,101 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                 padding: EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    ImageInput(_selectImage),
+                    // ImageInput(_selectImage),
+                    Row(
+                      children: [
+                        Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              border: Border.all(
+                                width: 1,
+                                color: Colors.white,
+                              )),
+                          child: _pickedImage != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(150),
+                                  child: Image.file(
+                                    _pickedImage!,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
+                                )
+                              : Text(
+                                  'No Profile',
+                                  textAlign: TextAlign.center,
+                                ),
+                          alignment: Alignment.center,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color.fromRGBO(255, 143, 158, 1),
+                                    Color.fromRGBO(255, 188, 143, 1),
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(45.0),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.red.withOpacity(0.2),
+                                    spreadRadius: 4,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 3),
+                                  )
+                                ]),
+                            child: RaisedButton.icon(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return Container(
+                                        height: 150,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            ListTile(
+                                              onTap: () {
+                                                getImage();
+                                                Navigator.of(context).pop();
+                                              },
+                                              leading: Icon(Icons.camera),
+                                              title: Text('Take a picture'),
+                                            ),
+                                            ListTile(
+                                              onTap: () {
+                                                getImage();
+                                                Navigator.of(context).pop();
+                                              },
+                                              leading: Icon(Icons.folder),
+                                              title: Text('From library'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    });
+                              },
+                              elevation: 10,
+                              color: kBlue,
+                              // borderSide: BorderSide(color: Colors.black),
+                              icon: Icon(Icons.photo),
+                              label: Text('Upload an image'),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                     SizedBox(
                       height: 30,
                     ),
@@ -560,7 +664,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                               onPressed: () {
                                                 if (_form.currentState!
                                                     .validate()) {
-                                                  addNew();
+                                                  uploadImage();
+                                                  // addNew();
                                                 }
                                                 Navigator.of(context).pop();
                                               },
@@ -630,7 +735,41 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     );
   }
 
-  addNew() async {
+  // addNew() async {
+
+  //   var data = json.encode({
+  //     "name": aName,
+  //     "phone": aPhone,
+  //     "email": aEmail,
+  //     "address": aAddress,
+  //     "position": aPosition,
+  //     "skill": aSkill,
+  //     "salary": aSalary,
+  //     "role": aRole,
+  //     "status": aStatus,
+  //     "password": apassword,
+  //     "rate": aWorkrate,
+  //     "background": aBackground,
+  //     "image": _pickedImage!.readAsBytes().asStream()
+  //   });
+
+  //   var response = await http.post(
+  //     Uri.parse(urlUser),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Accept": "application/json",
+  //     },
+  //     body: data,
+  //   );
+  //   if (response.statusCode == 201) {
+  //     Navigator.of(context).pushReplacement(
+  //         MaterialPageRoute(builder: (_) => EmployeeListScreen()));
+  //   } else {
+  //     print(response.statusCode);
+  //   }
+  // }
+
+  uploadImage() async {
     var aName = name.text;
     var aPhone = phone.text;
     var aEmail = email.text;
@@ -643,33 +782,45 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     var apassword = password.text;
     var aWorkrate = dropDownValue2;
     var aBackground = background.text;
-    var aImage = _pickedImage!.readAsBytesSync();
-    String baseImage = base64Encode(aImage);
+    var request = await http.MultipartRequest('POST', Uri.parse(urlUser));
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Content": "charset-UTF-8",
+      // "Accept": "multipart/form-data"
+    };
+    request.files.add(http.MultipartFile('image',
+        _pickedImage!.readAsBytes().asStream(), _pickedImage!.lengthSync(),
+        filename: _pickedImage!.path.split('/').last));
+    request.files.add(http.MultipartFile.fromString('name', aName));
+    request.files.add(http.MultipartFile.fromString('phone', aPhone));
+    request.files.add(http.MultipartFile.fromString('email', aEmail));
+    request.files.add(http.MultipartFile.fromString('address', aAddress));
+    request.files.add(http.MultipartFile.fromString('position', aPosition));
+    request.files.add(http.MultipartFile.fromString('skill', aSkill));
+    request.files.add(http.MultipartFile.fromString('salary', aSalary));
+    request.files.add(http.MultipartFile.fromString('role', aRole));
+    request.files.add(http.MultipartFile.fromString('status', aStatus));
+    request.files.add(http.MultipartFile.fromString('password', apassword));
+    request.files.add(http.MultipartFile.fromString('rate', aWorkrate));
+    request.files.add(http.MultipartFile.fromString('background', aBackground));
+    request.headers.addAll(headers);
 
-    var data = json.encode({
-      "name": aName,
-      "phone": aPhone,
-      "email": aEmail,
-      "address": aAddress,
-      "position": aPosition,
-      "skill": aSkill,
-      "salary": aSalary,
-      "role": aRole,
-      "status": aStatus,
-      "password": apassword,
-      "rate": aWorkrate,
-      "background": aBackground,
-      "image": baseImage,
+    var res = await request.send();
+    print(res.statusCode);
+    res.stream.transform(utf8.decoder).listen((event) {
+      print(event);
     });
 
-    var response = await http.post(
-      Uri.parse(url),
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
-      body: data,
-    );
+    // http.Response response = await http.Response.fromStream(res);
+    // setState(() {
+    //   resJson = jsonDecode(response.body);
+    // });
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Accept": "application/json",
+    //   },
+    //   body: data,
+    // );
     // response.files.add(await http.MultipartFile.fromBytes(
     //     'image', _pickedImage!.readAsBytesSync()));
     // response.files.add(http.MultipartFile.fromString('data', data));
@@ -689,11 +840,11 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     //   print(event);
     // });
 
-    if (response.statusCode == 201) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => EmployeeListScreen()));
-    } else {
-      print(response.statusCode);
-    }
+    // if (response.statusCode == 201) {
+    //   Navigator.of(context).pushReplacement(
+    //       MaterialPageRoute(builder: (_) => EmployeeListScreen()));
+    // } else {
+    //   print(response.statusCode);
+    // }
   }
 }
