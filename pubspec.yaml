@@ -29,6 +29,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   intl: ^0.17.0
   material_floating_search_bar: ^0.3.6
   syncfusion_flutter_calendar: ^19.3.47
