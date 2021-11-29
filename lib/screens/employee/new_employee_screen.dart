@@ -735,40 +735,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     );
   }
 
-  // addNew() async {
-
-  //   var data = json.encode({
-  //     "name": aName,
-  //     "phone": aPhone,
-  //     "email": aEmail,
-  //     "address": aAddress,
-  //     "position": aPosition,
-  //     "skill": aSkill,
-  //     "salary": aSalary,
-  //     "role": aRole,
-  //     "status": aStatus,
-  //     "password": apassword,
-  //     "rate": aWorkrate,
-  //     "background": aBackground,
-  //     "image": _pickedImage!.readAsBytes().asStream()
-  //   });
-
-  //   var response = await http.post(
-  //     Uri.parse(urlUser),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "Accept": "application/json",
-  //     },
-  //     body: data,
-  //   );
-  //   if (response.statusCode == 201) {
-  //     Navigator.of(context).pushReplacement(
-  //         MaterialPageRoute(builder: (_) => EmployeeListScreen()));
-  //   } else {
-  //     print(response.statusCode);
-  //   }
-  // }
-
   uploadImage() async {
     var aName = name.text;
     var aPhone = phone.text;
@@ -786,7 +752,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     Map<String, String> headers = {
       "Accept": "application/json",
       "Content": "charset-UTF-8",
-      // "Accept": "multipart/form-data"
     };
     request.files.add(http.MultipartFile('image',
         _pickedImage!.readAsBytes().asStream(), _pickedImage!.lengthSync(),
@@ -810,41 +775,5 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     res.stream.transform(utf8.decoder).listen((event) {
       print(event);
     });
-
-    // http.Response response = await http.Response.fromStream(res);
-    // setState(() {
-    //   resJson = jsonDecode(response.body);
-    // });
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "Accept": "application/json",
-    //   },
-    //   body: data,
-    // );
-    // response.files.add(await http.MultipartFile.fromBytes(
-    //     'image', _pickedImage!.readAsBytesSync()));
-    // response.files.add(http.MultipartFile.fromString('data', data));
-    // response.headers.addAll({
-    //   "Content-Type": "multipart/form-data",
-    // });
-    // response.send().then((res) {
-    //   if (res.statusCode == 201) {
-    //     print('uploaded');
-    //   } else {
-    //     print('object');
-    //   }
-    // });
-
-    // print(request.statusCode);
-    // request.stream.transform(utf8.decoder).listen((event) {
-    //   print(event);
-    // });
-
-    // if (response.statusCode == 201) {
-    //   Navigator.of(context).pushReplacement(
-    //       MaterialPageRoute(builder: (_) => EmployeeListScreen()));
-    // } else {
-    //   print(response.statusCode);
-    // }
   }
 }

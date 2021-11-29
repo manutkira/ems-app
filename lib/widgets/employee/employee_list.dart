@@ -216,8 +216,8 @@ class _EmployeeListState extends State<EmployeeList> {
         child: Row(
           children: [
             Container(
-              child: Image.asset(
-                'assets/images/profile-icon-png-910.png',
+              child: Image.network(
+                'http://rest-api-laravel-flutter.herokuapp.com/image/${userDisplay[index].image}',
                 width: 65,
               ),
             ),
