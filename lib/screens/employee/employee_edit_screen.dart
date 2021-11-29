@@ -62,7 +62,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   final _form = GlobalKey<FormState>();
 
   File? _pickedImage;
-  String imageUrl = '';
+  String? imageUrl = '';
 
   // void _selectImage(File pickedImage) {
   //   _pickedImage = pickedImage;
@@ -161,17 +161,17 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                   height: 120,
                                 ),
                               )
-                            : imageUrl == null
-                                ? Image.asset(
-                                    'assets/images/profile-icon-png-910.png')
-                                : ClipRRect(
+                            : imageUrl != null
+                                ? ClipRRect(
                                     borderRadius: BorderRadius.circular(150),
                                     child: Image.network(
-                                      imageUrl,
+                                      imageUrl!,
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                     ),
-                                  ),
+                                  )
+                                : Image.asset(
+                                    'assets/images/profile-icon-png-910.png'),
                         alignment: Alignment.center,
                       ),
                       SizedBox(
