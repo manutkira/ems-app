@@ -771,7 +771,10 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     request.headers.addAll(headers);
 
     var res = await request.send();
-    print(res.statusCode);
+    if (res.statusCode == 201) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (ctx) => EmployeeListScreen()));
+    }
     res.stream.transform(utf8.decoder).listen((event) {
       print(event);
     });

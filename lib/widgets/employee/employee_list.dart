@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
@@ -216,16 +217,31 @@ class _EmployeeListState extends State<EmployeeList> {
         child: Row(
           children: [
             Container(
-              child: Image.network(
-                'http://rest-api-laravel-flutter.herokuapp.com/image/${userDisplay[index].image}',
-                width: 65,
+              width: 75,
+              height: 75,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.white,
+                  )),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(150),
+                child: userDisplay[index].image == null
+                    ? Image.asset('assets/images/profile-icon-png-910.png')
+                    : Image.network(
+                        userDisplay[index].image!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 75,
+                      ),
               ),
             ),
             SizedBox(
               width: 10,
             ),
             Container(
-              width: 255,
+              width: 245,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -268,6 +284,7 @@ class _EmployeeListState extends State<EmployeeList> {
                         String rate = userDisplay[index].rate.toString();
                         String background =
                             userDisplay[index].background.toString();
+                        String image = userDisplay[index].image.toString();
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (_) => EmployeeEditScreen(
                                 id,
@@ -281,7 +298,8 @@ class _EmployeeListState extends State<EmployeeList> {
                                 role,
                                 status,
                                 rate,
-                                background)));
+                                background,
+                                image)));
                       }
                       if (selectedValue == 0) {
                         Navigator.of(context).pushNamed(

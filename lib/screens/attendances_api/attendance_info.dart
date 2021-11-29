@@ -163,82 +163,99 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
               : Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-                      height: 139,
+                      margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      height: 130,
                       width: double.infinity,
                       child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                         color: kLightBlue,
-                        child: Row(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(left: 10),
-                              child: Expanded(
-                                flex: 3,
-                                child: Image.asset(
-                                  'assets/images/profile-icon-png-910.png',
-                                  width: 80,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Container(
+                                  width: 75,
+                                  height: 75,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100)),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Colors.white,
+                                      )),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(150),
+                                    child: Image.network(
+                                      attendanceDisplay[0].users!.image!,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: 75,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                            Container(
-                              height: 50,
-                              margin: EdgeInsets.only(left: 25),
-                              child: Expanded(
-                                flex: 7,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'ID: ',
-                                          style: kParagraph.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          width: 45,
-                                        ),
-                                        Text(
-                                          attendanceDisplay[0]
-                                              .users!
-                                              .id
-                                              .toString(),
-                                          style: kParagraph.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Name: ',
-                                          style: kParagraph.copyWith(
-                                              color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Text(
-                                          attendanceDisplay[0]
-                                              .users!
-                                              .name
-                                              .toString(),
-                                          style: kParagraph.copyWith(
-                                              color: Colors.black),
-                                        )
-                                      ],
-                                    )
-                                  ],
+                              Container(
+                                height: 50,
+                                margin: EdgeInsets.only(left: 25),
+                                child: Expanded(
+                                  flex: 7,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'ID: ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black),
+                                          ),
+                                          SizedBox(
+                                            width: 45,
+                                          ),
+                                          Text(
+                                            attendanceDisplay[0]
+                                                .users!
+                                                .id
+                                                .toString(),
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Name: ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Text(
+                                            attendanceDisplay[0]
+                                                .users!
+                                                .name
+                                                .toString(),
+                                            style: kParagraph.copyWith(
+                                                color: Colors.black),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                          ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),

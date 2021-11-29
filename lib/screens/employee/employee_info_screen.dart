@@ -59,9 +59,25 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                               ),
                               child: Expanded(
                                 flex: 3,
-                                child: Image.asset(
-                                  'assets/images/profile-icon-png-910.png',
-                                  width: 80,
+                                child: Container(
+                                  width: 85,
+                                  height: 85,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(100)),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Colors.white,
+                                      )),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(150),
+                                    child: Image.network(
+                                      (snapshot.data as dynamic)['image'],
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: 75,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),

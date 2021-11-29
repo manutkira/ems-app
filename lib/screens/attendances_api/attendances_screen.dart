@@ -214,9 +214,22 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
         child: Row(
           children: [
             Container(
-              child: Image.asset(
-                'assets/images/profile-icon-png-910.png',
-                width: 75,
+              width: 75,
+              height: 75,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.white,
+                  )),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(150),
+                child: Image.network(
+                  userDisplay[index].image!,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 75,
+                ),
               ),
             ),
             SizedBox(
