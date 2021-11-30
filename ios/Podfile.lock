@@ -1,5 +1,8 @@
 PODS:
   - Flutter (1.0.0)
+  - image_cropper (0.0.4):
+    - Flutter
+    - TOCropViewController (~> 2.6.0)
   - image_picker (0.0.1):
     - Flutter
   - MTBBarcodeScanner (5.0.11)
@@ -8,9 +11,11 @@ PODS:
   - qr_code_scanner (0.2.0):
     - Flutter
     - MTBBarcodeScanner
+  - TOCropViewController (2.6.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
@@ -18,10 +23,13 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - MTBBarcodeScanner
+    - TOCropViewController
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  image_cropper:
+    :path: ".symlinks/plugins/image_cropper/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
   path_provider_ios:
@@ -31,10 +39,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb
   image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
+  TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 

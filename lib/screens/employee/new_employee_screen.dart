@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/widgets/image_input.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:path/path.dart' as path;
 
@@ -40,6 +42,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   final _form = GlobalKey<FormState>();
 
   File? _pickedImage;
+  File? _idFile;
   var resJson;
 
   // void _selectImage(File pickedImage) {
@@ -52,6 +55,24 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     setState(() {
       _pickedImage = File(image!.path);
     });
+  }
+
+  Future _getIdFromCamera() async {
+    PickedFile? pickedFile = await ImagePicker()
+        .getImage(source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
+    cropImage(pickedFile!.path);
+
+    // Navigator.pop(context);
+  }
+
+  Future cropImage(filePath) async {
+    File? cropped = await ImageCropper.cropImage(
+        sourcePath: filePath, maxHeight: 1080, maxWidth: 1080);
+    if (cropped != null) {
+      setState(() {
+        _idFile = cropped;
+      });
+    }
   }
 
   @override
@@ -639,6 +660,100 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               maxLines: 8,
                             ),
                           ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 120,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                width: 1,
+                                color: Colors.white,
+                              )),
+                              child: _idFile != null
+                                  ? ClipRRect(
+                                      child: Image.file(
+                                        _idFile!,
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                      ),
+                                    )
+                                  : Text(
+                                      'No Profile',
+                                      textAlign: TextAlign.center,
+                                    ),
+                              alignment: Alignment.center,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Container(
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color.fromRGBO(255, 143, 158, 1),
+                                        Color.fromRGBO(255, 188, 143, 1),
+                                      ],
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                    ),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(45.0),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.red.withOpacity(0.2),
+                                        spreadRadius: 4,
+                                        blurRadius: 10,
+                                        offset: Offset(0, 3),
+                                      )
+                                    ]),
+                                child: RaisedButton.icon(
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Container(
+                                            height: 150,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ListTile(
+                                                  onTap: () {
+                                                    _getIdFromCamera();
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  leading: Icon(Icons.camera),
+                                                  title: Text('Take a picture'),
+                                                ),
+                                                ListTile(
+                                                  onTap: () {
+                                                    _getIdFromCamera();
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  leading: Icon(Icons.folder),
+                                                  title: Text('From library'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                  },
+                                  elevation: 10,
+                                  color: kBlue,
+                                  // borderSide: BorderSide(color: Colors.black),
+                                  icon: Icon(Icons.photo),
+                                  label: Text('Upload an image'),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
                       ],
                     ),
