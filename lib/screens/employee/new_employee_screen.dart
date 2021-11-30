@@ -49,18 +49,35 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   //   _pickedImage = pickedImage;
   // }
 
-  Future getImage() async {
-    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+  Future getImageFromCamera() async {
+    var image = await ImagePicker().getImage(source: ImageSource.camera);
+    if (image == null) {
+      return;
+    }
 
     setState(() {
-      _pickedImage = File(image!.path);
+      _pickedImage = File(image.path);
+    });
+  }
+
+  Future getImage() async {
+    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+    if (image == null) {
+      return;
+    }
+
+    setState(() {
+      _pickedImage = File(image.path);
     });
   }
 
   Future _getIdFromCamera() async {
     PickedFile? pickedFile = await ImagePicker()
         .getImage(source: ImageSource.camera, maxHeight: 1080, maxWidth: 1080);
-    cropImage(pickedFile!.path);
+    if (pickedFile == null) {
+      return;
+    }
+    cropImage(pickedFile.path);
 
     // Navigator.pop(context);
   }
@@ -68,7 +85,10 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   Future _getIdFromGallery() async {
     PickedFile? pickedFile = await ImagePicker()
         .getImage(source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
-    cropImage(pickedFile!.path);
+    if (pickedFile == null) {
+      return;
+    }
+    cropImage(pickedFile.path);
 
     // Navigator.pop(context);
   }
@@ -204,7 +224,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                           children: [
                                             ListTile(
                                               onTap: () {
-                                                getImage();
+                                                getImageFromCamera();
                                                 Navigator.of(context).pop();
                                               },
                                               leading: Icon(Icons.camera),
