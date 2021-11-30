@@ -675,7 +675,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                   )),
                               controller: background,
                               textInputAction: TextInputAction.done,
-                              maxLines: 8,
+                              maxLines: 3,
                             ),
                           ),
                         ),
