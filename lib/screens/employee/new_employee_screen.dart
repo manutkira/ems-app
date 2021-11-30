@@ -59,6 +59,14 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
 
   Future _getIdFromCamera() async {
     PickedFile? pickedFile = await ImagePicker()
+        .getImage(source: ImageSource.camera, maxHeight: 1080, maxWidth: 1080);
+    cropImage(pickedFile!.path);
+
+    // Navigator.pop(context);
+  }
+
+  Future _getIdFromGallery() async {
+    PickedFile? pickedFile = await ImagePicker()
         .getImage(source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
     cropImage(pickedFile!.path);
 
@@ -67,7 +75,17 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
 
   Future cropImage(filePath) async {
     File? cropped = await ImageCropper.cropImage(
-        sourcePath: filePath, maxHeight: 1080, maxWidth: 1080);
+        sourcePath: filePath,
+        maxHeight: 1080,
+        maxWidth: 1080,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        compressQuality: 100,
+        compressFormat: ImageCompressFormat.jpg,
+        androidUiSettings: AndroidUiSettings(
+            toolbarColor: Colors.deepOrange,
+            toolbarTitle: "RPS Cropper",
+            statusBarColor: Colors.deepOrange.shade900,
+            backgroundColor: Colors.white));
     if (cropped != null) {
       setState(() {
         _idFile = cropped;
@@ -734,7 +752,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                                 ),
                                                 ListTile(
                                                   onTap: () {
-                                                    _getIdFromCamera();
+                                                    _getIdFromGallery();
                                                     Navigator.of(context).pop();
                                                   },
                                                   leading: Icon(Icons.folder),
@@ -871,6 +889,9 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     request.files.add(http.MultipartFile('image',
         _pickedImage!.readAsBytes().asStream(), _pickedImage!.lengthSync(),
         filename: _pickedImage!.path.split('/').last));
+    request.files.add(http.MultipartFile(
+        'image_id', _idFile!.readAsBytes().asStream(), _idFile!.lengthSync(),
+        filename: _idFile!.path.split('/').last));
     request.files.add(http.MultipartFile.fromString('name', aName));
     request.files.add(http.MultipartFile.fromString('phone', aPhone));
     request.files.add(http.MultipartFile.fromString('email', aEmail));
