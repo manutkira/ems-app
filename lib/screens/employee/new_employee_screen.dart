@@ -96,9 +96,9 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   Future cropImage(filePath) async {
     File? cropped = await ImageCropper.cropImage(
         sourcePath: filePath,
-        maxHeight: 1080,
-        maxWidth: 1080,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        maxHeight: 500,
+        maxWidth: 700,
+        aspectRatio: CropAspectRatio(ratioX: 3, ratioY: 2),
         compressQuality: 100,
         compressFormat: ImageCompressFormat.jpg,
         androidUiSettings: AndroidUiSettings(
