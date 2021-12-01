@@ -156,6 +156,7 @@ class MyApp extends ConsumerWidget {
       ),
       scaffoldBackgroundColor: kBlue,
       appBarTheme: const AppBarTheme(
+        centerTitle: true,
         backgroundColor: kBlue,
         titleTextStyle: kHeadingThree,
         elevation: 0,
