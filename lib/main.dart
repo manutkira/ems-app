@@ -92,6 +92,21 @@ class MyApp extends ConsumerWidget {
         cursorColor: kWhite,
         selectionColor: kBlack.withOpacity(0.25),
       ),
+      timePickerTheme: TimePickerThemeData(
+        hourMinuteTextColor: kWhite,
+        hourMinuteColor: kDarkestBlue,
+        dayPeriodTextColor: MaterialStateColor.resolveWith(
+          (states) => states.contains(MaterialState.selected) ? kWhite : kBlue,
+        ),
+        dayPeriodColor: kDarkestBlue,
+        dialHandColor: kWhite.withOpacity(0.75),
+        dialBackgroundColor: kDarkestBlue,
+        dialTextColor: kWhite,
+        hourMinuteShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+        // helpTextStyle,
+      ),
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: kSubtitle.copyWith(color: kSubtitle.color!.withOpacity(0.5)),
         contentPadding: const EdgeInsets.all(15),

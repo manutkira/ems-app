@@ -1,20 +1,22 @@
 import 'package:ems/constants.dart';
 import 'package:ems/models/menu_options.dart';
-import 'package:ems/screens/overtime/individual_overtime_screen.dart';
+import 'package:ems/screens/overtime/add_overtime.dart';
+import 'package:ems/screens/overtime/delete_overtime.dart';
+import 'package:ems/screens/overtime/edit_overtime.dart';
+import 'package:ems/screens/overtime/view_overtime.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-import '../home_screen.dart';
-
-class OvertimeScreen extends StatefulWidget {
-  OvertimeScreen({Key? key}) : super(key: key);
+class IndividualOvertimeScreen extends StatefulWidget {
+  const IndividualOvertimeScreen({Key? key}) : super(key: key);
 
   @override
-  State<OvertimeScreen> createState() => _OvertimeScreenState();
+  State<IndividualOvertimeScreen> createState() =>
+      _IndividualOvertimeScreenState();
 }
 
-class _OvertimeScreenState extends State<OvertimeScreen> {
+class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
   String dropdownValue = 'Day';
   var dropdownItems = [
     'Day',
@@ -32,37 +34,69 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     MenuOptions.delete,
   ];
 
+  void addUser() {
+    showModalBottomSheet(
+      constraints: const BoxConstraints(maxHeight: 600, minHeight: 500),
+      backgroundColor: Colors.transparent,
+      isDismissible: false,
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return const AddOvertime();
+      },
+    );
+    print("add add add");
+  }
+
   void moreMenu(String value) {
     switch (value) {
       case "View":
         {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const HomeScreen(),
-            ),
+          showModalBottomSheet(
+            constraints: const BoxConstraints(maxHeight: 400, minHeight: 400),
+            backgroundColor: Colors.transparent,
+            // isDismissible: false,
+            context: context,
+            isScrollControlled: true,
+            builder: (BuildContext context) {
+              return const ViewOvertime();
+            },
           );
+          // Navigator.of(context).push(
+          //   MaterialPageRoute(
+          //     builder: (context) => const HomeScreen(),
+          //   ),
+          // );
           print("view view view");
         }
         break;
       case "Edit":
         {
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (context) =>
-          //         const HomeScreen(),
-          //   ),
-          // );
+          showModalBottomSheet(
+            constraints: const BoxConstraints(maxHeight: 600, minHeight: 500),
+            backgroundColor: Colors.transparent,
+            isDismissible: false,
+            context: context,
+            isScrollControlled: true,
+            builder: (BuildContext context) {
+              return const EditOvertime();
+            },
+          );
           print("edit edit edit");
         }
         break;
       case "Delete":
         {
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (context) =>
-          //         const HomeScreen(),
-          //   ),
-          // );
+          showModalBottomSheet(
+            constraints: const BoxConstraints(maxHeight: 400, minHeight: 400),
+            backgroundColor: Colors.transparent,
+            isDismissible: false,
+            context: context,
+            isScrollControlled: true,
+            builder: (BuildContext context) {
+              return const DeleteOvertime();
+            },
+          );
           print("delete delete delete");
         }
         break;
@@ -78,15 +112,21 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Overtime",
+          "Detailed Overtime",
         ),
+        actions: [
+          IconButton(
+            onPressed: addUser,
+            icon: const Icon(Icons.add),
+          )
+        ],
       ),
       body: SafeArea(
         bottom: false,
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -159,6 +199,63 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                 ],
               ),
               const SizedBox(height: 20),
+              Container(
+                padding: kPaddingAll,
+                width: MediaQuery.of(context).size.width * 0.9,
+                decoration: BoxDecoration(
+                  color: kDarkestBlue,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 30,
+                        ),
+                        const SizedBox(width: 10),
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'ID',
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Text(
+                                  'Name',
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: const [
+                                Text(
+                                  '[emp id]',
+                                  style: kParagraph,
+                                ),
+                                Text(
+                                  '[emp name]',
+                                  style: kParagraph,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 10),
+                    Text('6h30mn'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
               Expanded(
                 child: ListView.builder(
                   itemCount: 50,
@@ -174,27 +271,12 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                         children: [
                           Row(
                             children: [
-                              CircleAvatar(),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              GestureDetector(
-                                onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        IndividualOvertimeScreen(),
-                                  ),
-                                ),
-                                child: SizedBox(
-                                  width: 200,
-                                  child: Text(
-                                    'Employee Name',
-                                    style: kParagraph,
-                                    overflow: TextOverflow.fade,
-                                    softWrap: false,
-                                    maxLines: 1,
-                                  ),
-                                ),
+                              const SizedBox(width: 20),
+                              Text(
+                                DateFormat('dd/MM/yyyy')
+                                    .format(DateTime.now())
+                                    .toString(),
+                                style: kParagraph,
                               ),
                             ],
                           ),
@@ -218,6 +300,8 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                               ),
                               const SizedBox(width: 10),
                               PopupMenuButton<String>(
+                                padding: EdgeInsets.zero,
+                                elevation: 200,
                                 color: kDarkestBlue,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),

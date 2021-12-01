@@ -71,7 +71,7 @@ class MenuDrawer extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  "${currentUser != null ? currentUser.role : ""}",
+                                  "${currentUser!.role ?? ""}",
                                   style: kSubtitle,
                                 ),
                               ],
