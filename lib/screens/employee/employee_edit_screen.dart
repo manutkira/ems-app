@@ -798,15 +798,15 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     var aStatus = status;
     var aWorkrate = rate;
     var aBackground = backgroundController.text;
-    var request =
-        await http.MultipartRequest('PUT', Uri.parse("${url}/${widget.id}"));
+    var request = await http.MultipartRequest(
+        'POST', Uri.parse("$url/${widget.id}?_method=PUT"));
     Map<String, String> headers = {
       "Accept": "application/json",
       "Content": "charset-UTF-8",
     };
-    // request.files.add(http.MultipartFile('image',
-    //     _pickedImage!.readAsBytes().asStream(), _pickedImage!.lengthSync(),
-    //     filename: _pickedImage!.path.split('/').last));
+    request.files.add(http.MultipartFile('image',
+        _pickedImage!.readAsBytes().asStream(), _pickedImage!.lengthSync(),
+        filename: _pickedImage!.path.split('/').last));
     // request.files.add(http.MultipartFile(
     //     'image_id', _idFile!.readAsBytes().asStream(), _idFile!.lengthSync(),
     //     filename: _idFile!.path.split('/').last));
