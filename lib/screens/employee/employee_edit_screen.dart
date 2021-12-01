@@ -682,7 +682,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                 ),
                                 controller: backgroundController,
                                 textInputAction: TextInputAction.done,
-                                maxLines: 8,
+                                maxLines: 3,
                               ),
                             ),
                           ),
