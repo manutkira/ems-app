@@ -174,8 +174,8 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                         children: [
                           Row(
                             children: [
-                              CircleAvatar(),
-                              SizedBox(
+                              const CircleAvatar(),
+                              const SizedBox(
                                 width: 10,
                               ),
                               GestureDetector(
@@ -185,11 +185,11 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                         IndividualOvertimeScreen(),
                                   ),
                                 ),
-                                child: SizedBox(
+                                child: const SizedBox(
                                   width: 200,
                                   child: Text(
                                     'Employee Name',
-                                    style: kParagraph,
+                                    style: kSubtitle,
                                     overflow: TextOverflow.fade,
                                     softWrap: false,
                                     maxLines: 1,
@@ -213,7 +213,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                 ),
                                 child: Text(
                                   '1h',
-                                  style: kParagraph.copyWith(color: kGreenText),
+                                  style: kSubtitle.copyWith(color: kGreenText),
                                 ),
                               ),
                               const SizedBox(width: 10),

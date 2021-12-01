@@ -4,6 +4,7 @@ import 'package:ems/screens/overtime/add_overtime.dart';
 import 'package:ems/screens/overtime/delete_overtime.dart';
 import 'package:ems/screens/overtime/edit_overtime.dart';
 import 'package:ems/screens/overtime/view_overtime.dart';
+import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -26,6 +27,9 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     'All Time',
   ];
 
+  List<int> listOfOvertime = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  // List<int> listOfOvertime = [];
+
   DateTime selectedDate = DateTime.now();
 
   var options = [
@@ -34,68 +38,48 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     MenuOptions.delete,
   ];
 
-  void addUser() {
-    showModalBottomSheet(
-      constraints: const BoxConstraints(maxHeight: 600, minHeight: 500),
-      backgroundColor: Colors.transparent,
-      isDismissible: false,
+  void addUser() async {
+    await modalBottomSheetBuilder(
       context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return const AddOvertime();
-      },
+      maxHeight: 600,
+      minHeight: 500,
+      isDismissible: false,
+      child: const AddOvertime(),
     );
     print("add add add");
   }
 
-  void moreMenu(String value) {
+  void moreMenu(String value) async {
     switch (value) {
       case "View":
         {
-          showModalBottomSheet(
-            constraints: const BoxConstraints(maxHeight: 400, minHeight: 400),
-            backgroundColor: Colors.transparent,
-            // isDismissible: false,
+          await modalBottomSheetBuilder(
             context: context,
-            isScrollControlled: true,
-            builder: (BuildContext context) {
-              return const ViewOvertime();
-            },
+            minHeight: 430,
+            maxHeight: 430,
+            child: const ViewOvertime(),
           );
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (context) => const HomeScreen(),
-          //   ),
-          // );
           print("view view view");
         }
         break;
       case "Edit":
         {
-          showModalBottomSheet(
-            constraints: const BoxConstraints(maxHeight: 600, minHeight: 500),
-            backgroundColor: Colors.transparent,
-            isDismissible: false,
+          await modalBottomSheetBuilder(
             context: context,
-            isScrollControlled: true,
-            builder: (BuildContext context) {
-              return const EditOvertime();
-            },
+            maxHeight: 620,
+            minHeight: 520,
+            isDismissible: false,
+            child: const EditOvertime(),
           );
           print("edit edit edit");
         }
         break;
       case "Delete":
         {
-          showModalBottomSheet(
-            constraints: const BoxConstraints(maxHeight: 400, minHeight: 400),
-            backgroundColor: Colors.transparent,
-            isDismissible: false,
+          await modalBottomSheetBuilder(
             context: context,
-            isScrollControlled: true,
-            builder: (BuildContext context) {
-              return const DeleteOvertime();
-            },
+            isDismissible: false,
+            child: const DeleteOvertime(),
           );
           print("delete delete delete");
         }
@@ -133,28 +117,39 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                 children: [
                   Row(
                     children: [
-                      Text('Sort by'),
+                      const Text('Sort by', style: kParagraph),
                       const SizedBox(width: 5),
-                      DropdownButton(
-                        borderRadius: const BorderRadius.all(kBorderRadius),
-                        dropdownColor: kDarkestBlue,
-                        underline: Container(),
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        isDense: true,
-                        value: dropdownValue,
-                        icon: const Icon(Icons.keyboard_arrow_down),
-                        items: dropdownItems.map((String items) {
-                          return DropdownMenuItem(
-                            value: items,
-                            child: Text(items),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          if (dropdownValue == newValue) return;
-                          setState(() {
-                            dropdownValue = newValue as String;
-                          });
-                        },
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: kDarkestBlue,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: DropdownButton(
+                          borderRadius: const BorderRadius.all(kBorderRadius),
+                          dropdownColor: kDarkestBlue,
+                          underline: Container(),
+                          style:
+                              kParagraph.copyWith(fontWeight: FontWeight.bold),
+                          isDense: true,
+                          value: dropdownValue,
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          items: dropdownItems.map((String items) {
+                            return DropdownMenuItem(
+                              value: items,
+                              child: Text(items),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            if (dropdownValue == newValue) return;
+                            setState(() {
+                              dropdownValue = newValue as String;
+                            });
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -163,6 +158,10 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                     style: TextButton.styleFrom(
                       primary: Colors.white,
                       textStyle: kParagraph,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       backgroundColor: kDarkestBlue,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(kBorderRadius),
@@ -257,76 +256,94 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: ListView.builder(
-                  itemCount: 50,
-                  itemBuilder: (context, i) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 5,
+                child: listOfOvertime.isEmpty
+                    ? _noRecord
+                    : ListView.builder(
+                        itemCount: listOfOvertime.length,
+                        itemBuilder: (context, i) {
+                          return _buildListItem(i);
+                        },
                       ),
-                      color: i % 2 == 0 ? kDarkestBlue : kBlue,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              const SizedBox(width: 20),
-                              Text(
-                                DateFormat('dd/MM/yyyy')
-                                    .format(DateTime.now())
-                                    .toString(),
-                                style: kParagraph,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                width: 50,
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: kGreenBackground,
-                                  borderRadius: BorderRadius.circular(3),
-                                ),
-                                child: Text(
-                                  '1h',
-                                  style: kParagraph.copyWith(color: kGreenText),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              PopupMenuButton<String>(
-                                padding: EdgeInsets.zero,
-                                elevation: 200,
-                                color: kDarkestBlue,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                icon: const Icon(MdiIcons.dotsVertical),
-                                itemBuilder: (BuildContext context) =>
-                                    options.map((e) {
-                                  return PopupMenuItem<String>(
-                                    value: e,
-                                    child: Text(e),
-                                  );
-                                }).toList(),
-                                onSelected: moreMenu,
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget get _noRecord {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "🤷🏽‍",
+            style: kHeadingOne.copyWith(fontSize: 100),
+          ),
+          const Text('No Record Found.', style: kParagraph),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListItem(int i) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15,
+        vertical: 5,
+      ),
+      color: i % 2 == 0 ? kDarkestBlue : kBlue,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              const SizedBox(width: 20),
+              Text(
+                DateFormat('dd/MM/yyyy').format(DateTime.now()).toString(),
+                style: kSubtitle,
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Container(
+                width: 50,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: kGreenBackground,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: Text(
+                  '1h',
+                  style: kSubtitle.copyWith(color: kGreenText),
+                ),
+              ),
+              const SizedBox(width: 10),
+              PopupMenuButton<String>(
+                padding: EdgeInsets.zero,
+                elevation: 200,
+                color: kDarkestBlue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                icon: const Icon(MdiIcons.dotsVertical),
+                itemBuilder: (BuildContext context) => options.map((e) {
+                  return PopupMenuItem<String>(
+                    value: e,
+                    child: Text(e),
+                  );
+                }).toList(),
+                onSelected: moreMenu,
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

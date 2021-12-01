@@ -67,60 +67,46 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
     Size _size = MediaQuery.of(context).size;
     // deleteOvertime();
     return Container(
-      height: _size.height,
-      decoration: const BoxDecoration(
-        color: kBlue,
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(30),
-          topLeft: Radius.circular(30),
-        ),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Deleting Overtime',
-                      style: kHeadingTwo,
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        padding: kPadding.copyWith(top: 10, bottom: 10),
-                        primary: Colors.white,
-                        textStyle:
-                            kParagraph.copyWith(fontWeight: FontWeight.w700),
-                        backgroundColor: kBlack.withOpacity(0.3),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(kBorderRadius),
-                        ),
-                      ),
-                      onPressed: _closePanel,
-                      child: const Text('Close'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                Visibility(
-                    visible: hasError,
-                    child: const StatusError(text: 'Error deleting record')),
-                SizedBox(
-                  height: 250,
-                  child: Center(
-                    child: Visibility(
-                      visible: isLoading,
-                      child: const CircularProgressIndicator(color: kWhite),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Deleting Overtime',
+                style: kHeadingTwo,
+              ),
+              Visibility(
+                visible: !isLoading,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    padding: kPadding.copyWith(top: 10, bottom: 10),
+                    primary: Colors.white,
+                    textStyle: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                    backgroundColor: kBlack.withOpacity(0.3),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(kBorderRadius),
                     ),
                   ),
+                  onPressed: _closePanel,
+                  child: const Text('Close'),
                 ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 30),
+          Visibility(
+              visible: hasError,
+              child: const StatusError(text: 'Error deleting record')),
+          SizedBox(
+            height: 250,
+            child: Center(
+              child: Visibility(
+                visible: isLoading,
+                child: const CircularProgressIndicator(color: kWhite),
+              ),
             ),
           ),
         ],
