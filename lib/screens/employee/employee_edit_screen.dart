@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class EmployeeEditScreen extends StatefulWidget {
   final int id;
@@ -22,6 +23,7 @@ class EmployeeEditScreen extends StatefulWidget {
   final String ratee;
   final String background;
   final String? image;
+  final String? imageId;
 
   EmployeeEditScreen(
     this.id,
@@ -37,6 +39,7 @@ class EmployeeEditScreen extends StatefulWidget {
     this.ratee,
     this.background,
     this.image,
+    this.imageId,
   );
   static const routeName = '/employee-edit';
 
@@ -62,11 +65,9 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   final _form = GlobalKey<FormState>();
 
   File? _pickedImage;
+  File? _pickedNationalId;
   String? imageUrl = '';
-
-  // void _selectImage(File pickedImage) {
-  //   _pickedImage = pickedImage;
-  // }
+  String? idUrl = '';
 
   Future getImage() async {
     var image = await ImagePicker().getImage(source: ImageSource.gallery);
@@ -76,11 +77,43 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     });
   }
 
-  // void imageConvert() {
-  //   var image = _pickedImage!.readAsBytes().asStream();
-  //   var image1 = _pickedImage!.path;
-  //   var image2 = _pickedImage!.lengthSync();
-  // }
+  Future getIdFromCamera() async {
+    PickedFile? pickedFile = await ImagePicker()
+        .getImage(source: ImageSource.camera, maxHeight: 1080, maxWidth: 1080);
+    if (pickedFile == null) {
+      return;
+    }
+    cropImage(pickedFile.path);
+  }
+
+  Future getIdFromGallery() async {
+    PickedFile? pickedFile = await ImagePicker()
+        .getImage(source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
+    if (pickedFile == null) {
+      return;
+    }
+    cropImage(pickedFile.path);
+  }
+
+  Future cropImage(filePath) async {
+    File? cropped = await ImageCropper.cropImage(
+        sourcePath: filePath,
+        maxHeight: 500,
+        maxWidth: 700,
+        aspectRatio: CropAspectRatio(ratioX: 3, ratioY: 2),
+        compressQuality: 100,
+        compressFormat: ImageCompressFormat.jpg,
+        androidUiSettings: AndroidUiSettings(
+            toolbarColor: Colors.deepOrange,
+            toolbarTitle: "RPS Cropper",
+            statusBarColor: Colors.deepOrange.shade900,
+            backgroundColor: Colors.white));
+    if (cropped != null) {
+      setState(() {
+        _pickedNationalId = cropped;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -95,7 +128,8 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     role = widget.role;
     status = widget.status;
     rate = widget.ratee;
-    imageUrl = widget.image!;
+    imageUrl = widget.image;
+    idUrl = widget.imageId;
 
     super.initState();
   }
@@ -652,6 +686,107 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                           ),
                         ],
                       ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            width: 120,
+                            height: 80,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                              width: 1,
+                              color: Colors.white,
+                            )),
+                            child: _pickedNationalId != null
+                                ? ClipRRect(
+                                    child: Image.file(
+                                      _pickedNationalId!,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: 120,
+                                    ),
+                                  )
+                                : imageUrl != null
+                                    ? ClipRRect(
+                                        child: Image.network(
+                                          idUrl!,
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                        ),
+                                      )
+                                    : Image.asset(
+                                        'assets/images/profile-icon-png-910.png'),
+                            alignment: Alignment.center,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color.fromRGBO(255, 143, 158, 1),
+                                      Color.fromRGBO(255, 188, 143, 1),
+                                    ],
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(45.0),
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.red.withOpacity(0.2),
+                                      spreadRadius: 4,
+                                      blurRadius: 10,
+                                      offset: Offset(0, 3),
+                                    )
+                                  ]),
+                              child: RaisedButton.icon(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Container(
+                                          height: 150,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              ListTile(
+                                                onTap: () {
+                                                  getIdFromCamera();
+                                                  Navigator.of(context).pop();
+                                                },
+                                                leading: Icon(Icons.camera),
+                                                title: Text('Take a picture'),
+                                              ),
+                                              ListTile(
+                                                onTap: () {
+                                                  getIdFromGallery();
+                                                  Navigator.of(context).pop();
+                                                },
+                                                leading: Icon(Icons.folder),
+                                                title: Text('From library'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      });
+                                },
+                                elevation: 10,
+                                color: kBlue,
+                                // borderSide: BorderSide(color: Colors.black),
+                                icon: Icon(Icons.photo),
+                                label: Text('Upload an image'),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ],
                   ),
                   Container(
@@ -744,48 +879,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     );
   }
 
-  // updateData() async {
-  //   var aName = nameController.text;
-  //   var aPhone = phoneController.text;
-  //   var aEmail = emailController.text;
-  //   var aAddress = addressController.text;
-  //   var aPosition = positionController.text;
-  //   var aSkill = skillController.text;
-  //   var aSalary = salaryController.text;
-  //   var aBackground = backgroundController.text;
-  //   var aRole = role;
-  //   var aStatus = status;
-  //   var aRate = rate;
-
-  //   var data = json.encode({
-  //     "name": aName,
-  //     "phone": aPhone,
-  //     "email": aEmail,
-  //     "address": aAddress,
-  //     "position": aPosition,
-  //     "skill": aSkill,
-  //     "salary": aSalary,
-  //     "background": aBackground,
-  //     "role": aRole,
-  //     "status": aStatus,
-  //     "rate": aRate,
-  //     "image": _pickedImage!.readAsBytes().asStream().last,
-  //   });
-  //   var response = await http.put(Uri.parse("${url}/${widget.id}"),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "Accept": "application/json"
-  //       },
-  //       body: data);
-
-  //   if (response.statusCode == 200) {
-  //     Navigator.of(context).pushReplacement(
-  //         MaterialPageRoute(builder: (_) => EmployeeListScreen()));
-  //   } else {
-  //     print(response.statusCode);
-  //   }
-  // }
-
   uploadImage() async {
     var aName = nameController.text;
     var aPhone = phoneController.text;
@@ -807,9 +900,11 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     request.files.add(http.MultipartFile('image',
         _pickedImage!.readAsBytes().asStream(), _pickedImage!.lengthSync(),
         filename: _pickedImage!.path.split('/').last));
-    // request.files.add(http.MultipartFile(
-    //     'image_id', _idFile!.readAsBytes().asStream(), _idFile!.lengthSync(),
-    //     filename: _idFile!.path.split('/').last));
+    request.files.add(http.MultipartFile(
+        'image_id',
+        _pickedNationalId!.readAsBytes().asStream(),
+        _pickedNationalId!.lengthSync(),
+        filename: _pickedNationalId!.path.split('/').last));
     request.files.add(http.MultipartFile.fromString('name', aName));
     request.files.add(http.MultipartFile.fromString('phone', aPhone));
     request.files.add(http.MultipartFile.fromString('email', aEmail));
