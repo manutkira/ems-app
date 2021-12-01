@@ -30,6 +30,7 @@ class User {
     this.status,
     this.rate,
     this.image,
+    this.imageId,
     this.createdAt,
     this.updatedAt,
   });
@@ -68,6 +69,8 @@ class User {
   DateTime? updatedAt;
   @HiveField(16)
   String? image;
+  @HiveField(17)
+  String? imageId;
 
   bool get isEmpty {
     return id == null ||
@@ -100,6 +103,7 @@ class User {
             : DateTime.parse(json["email_verified_at"]),
         address: json["address"] == null ? null : json["address"],
         image: json["image"] == null ? null : json["image"],
+        imageId: json["image_id"] == null ? null : json["image_id"],
         position: json["position"] == null ? null : json["position"],
         skill: json["skill"] == null ? null : json["skill"],
         salary: json["salary"] == null ? null : json["salary"],
@@ -137,6 +141,7 @@ class User {
     String? status,
     String? rate,
     String? image,
+    String? imageId,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) =>
@@ -156,6 +161,7 @@ class User {
         status: status ?? this.status,
         rate: rate ?? this.rate,
         image: image ?? this.image,
+        imageId: imageId ?? this.imageId,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
       );
@@ -188,6 +194,7 @@ class User {
       "status": status == null ? null : status,
       "rate": rate == null ? null : rate,
       "image": image == null ? null : image,
+      "image_id": imageId == null ? null : imageId,
       "created_at": createdAt == null ? null : createdAt?.toIso8601String(),
       "updated_at": updatedAt == null ? null : updatedAt?.toIso8601String(),
     };

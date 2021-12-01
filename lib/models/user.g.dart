@@ -32,6 +32,7 @@ class UserAdapter extends TypeAdapter<User> {
       status: fields[12] as String?,
       rate: fields[13] as String?,
       image: fields[16] as String?,
+      imageId: fields[17] as String?,
       createdAt: fields[14] as DateTime?,
       updatedAt: fields[15] as DateTime?,
     );
@@ -40,7 +41,7 @@ class UserAdapter extends TypeAdapter<User> {
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -74,7 +75,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(15)
       ..write(obj.updatedAt)
       ..writeByte(16)
-      ..write(obj.image);
+      ..write(obj.image)
+      ..writeByte(17)
+      ..write(obj.imageId);
   }
 
   @override
