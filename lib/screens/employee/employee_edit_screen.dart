@@ -76,6 +76,12 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     });
   }
 
+  // void imageConvert() {
+  //   var image = _pickedImage!.readAsBytes().asStream();
+  //   var image1 = _pickedImage!.path;
+  //   var image2 = _pickedImage!.lengthSync();
+  // }
+
   @override
   void initState() {
     nameController.text = widget.name;
@@ -671,7 +677,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                             onPressed: () {
                                               if (_form.currentState!
                                                   .validate()) {
-                                                updateData();
+                                                uploadImage();
                                               }
                                               Navigator.of(context).pop();
                                             },
@@ -738,7 +744,49 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     );
   }
 
-  updateData() async {
+  // updateData() async {
+  //   var aName = nameController.text;
+  //   var aPhone = phoneController.text;
+  //   var aEmail = emailController.text;
+  //   var aAddress = addressController.text;
+  //   var aPosition = positionController.text;
+  //   var aSkill = skillController.text;
+  //   var aSalary = salaryController.text;
+  //   var aBackground = backgroundController.text;
+  //   var aRole = role;
+  //   var aStatus = status;
+  //   var aRate = rate;
+
+  //   var data = json.encode({
+  //     "name": aName,
+  //     "phone": aPhone,
+  //     "email": aEmail,
+  //     "address": aAddress,
+  //     "position": aPosition,
+  //     "skill": aSkill,
+  //     "salary": aSalary,
+  //     "background": aBackground,
+  //     "role": aRole,
+  //     "status": aStatus,
+  //     "rate": aRate,
+  //     "image": _pickedImage!.readAsBytes().asStream().last,
+  //   });
+  //   var response = await http.put(Uri.parse("${url}/${widget.id}"),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Accept": "application/json"
+  //       },
+  //       body: data);
+
+  //   if (response.statusCode == 200) {
+  //     Navigator.of(context).pushReplacement(
+  //         MaterialPageRoute(builder: (_) => EmployeeListScreen()));
+  //   } else {
+  //     print(response.statusCode);
+  //   }
+  // }
+
+  uploadImage() async {
     var aName = nameController.text;
     var aPhone = phoneController.text;
     var aEmail = emailController.text;
@@ -746,36 +794,43 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     var aPosition = positionController.text;
     var aSkill = skillController.text;
     var aSalary = salaryController.text;
-    var aBackground = backgroundController.text;
     var aRole = role;
     var aStatus = status;
-    var aRate = rate;
+    var aWorkrate = rate;
+    var aBackground = backgroundController.text;
+    var request =
+        await http.MultipartRequest('PUT', Uri.parse("${url}/${widget.id}"));
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Content": "charset-UTF-8",
+    };
+    // request.files.add(http.MultipartFile('image',
+    //     _pickedImage!.readAsBytes().asStream(), _pickedImage!.lengthSync(),
+    //     filename: _pickedImage!.path.split('/').last));
+    // request.files.add(http.MultipartFile(
+    //     'image_id', _idFile!.readAsBytes().asStream(), _idFile!.lengthSync(),
+    //     filename: _idFile!.path.split('/').last));
+    request.files.add(http.MultipartFile.fromString('name', aName));
+    request.files.add(http.MultipartFile.fromString('phone', aPhone));
+    request.files.add(http.MultipartFile.fromString('email', aEmail));
+    request.files.add(http.MultipartFile.fromString('address', aAddress));
+    request.files.add(http.MultipartFile.fromString('position', aPosition));
+    request.files.add(http.MultipartFile.fromString('skill', aSkill));
+    request.files.add(http.MultipartFile.fromString('salary', aSalary));
+    request.files.add(http.MultipartFile.fromString('role', aRole));
+    request.files.add(http.MultipartFile.fromString('status', aStatus));
+    // request.files.add(http.MultipartFile.fromString('password', apassword));
+    request.files.add(http.MultipartFile.fromString('rate', aWorkrate));
+    request.files.add(http.MultipartFile.fromString('background', aBackground));
+    request.headers.addAll(headers);
 
-    var data = json.encode({
-      "name": aName,
-      "phone": aPhone,
-      "email": aEmail,
-      "address": aAddress,
-      "position": aPosition,
-      "skill": aSkill,
-      "salary": aSalary,
-      "background": aBackground,
-      "role": aRole,
-      "status": aStatus,
-      "rate": aRate,
-    });
-    var response = await http.put(Uri.parse("${url}/${widget.id}"),
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: data);
-
-    if (response.statusCode == 200) {
+    var res = await request.send();
+    if (res.statusCode == 200) {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => EmployeeListScreen()));
-    } else {
-      print(response.statusCode);
+          MaterialPageRoute(builder: (ctx) => EmployeeListScreen()));
     }
+    res.stream.transform(utf8.decoder).listen((event) {
+      print(event);
+    });
   }
 }
