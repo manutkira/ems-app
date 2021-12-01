@@ -49,25 +49,63 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   //   _pickedImage = pickedImage;
   // }
 
-  Future getImage() async {
-    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+  Future getImageFromCamera() async {
+    var image = await ImagePicker().getImage(source: ImageSource.camera);
+    if (image == null) {
+      return;
+    }
 
     setState(() {
-      _pickedImage = File(image!.path);
+      _pickedImage = File(image.path);
+    });
+  }
+
+  Future getImage() async {
+    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+    if (image == null) {
+      return;
+    }
+
+    setState(() {
+      _pickedImage = File(image.path);
     });
   }
 
   Future _getIdFromCamera() async {
     PickedFile? pickedFile = await ImagePicker()
+        .getImage(source: ImageSource.camera, maxHeight: 1080, maxWidth: 1080);
+    if (pickedFile == null) {
+      return;
+    }
+    cropImage(pickedFile.path);
+
+    // Navigator.pop(context);
+  }
+
+  Future _getIdFromGallery() async {
+    PickedFile? pickedFile = await ImagePicker()
         .getImage(source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
-    cropImage(pickedFile!.path);
+    if (pickedFile == null) {
+      return;
+    }
+    cropImage(pickedFile.path);
 
     // Navigator.pop(context);
   }
 
   Future cropImage(filePath) async {
     File? cropped = await ImageCropper.cropImage(
-        sourcePath: filePath, maxHeight: 1080, maxWidth: 1080);
+        sourcePath: filePath,
+        maxHeight: 500,
+        maxWidth: 700,
+        aspectRatio: CropAspectRatio(ratioX: 3, ratioY: 2),
+        compressQuality: 100,
+        compressFormat: ImageCompressFormat.jpg,
+        androidUiSettings: AndroidUiSettings(
+            toolbarColor: Colors.deepOrange,
+            toolbarTitle: "RPS Cropper",
+            statusBarColor: Colors.deepOrange.shade900,
+            backgroundColor: Colors.white));
     if (cropped != null) {
       setState(() {
         _idFile = cropped;
@@ -186,7 +224,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                           children: [
                                             ListTile(
                                               onTap: () {
-                                                getImage();
+                                                getImageFromCamera();
                                                 Navigator.of(context).pop();
                                               },
                                               leading: Icon(Icons.camera),
@@ -657,7 +695,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                   )),
                               controller: background,
                               textInputAction: TextInputAction.done,
-                              maxLines: 8,
+                              maxLines: 3,
                             ),
                           ),
                         ),
@@ -734,7 +772,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                                 ),
                                                 ListTile(
                                                   onTap: () {
-                                                    _getIdFromCamera();
+                                                    _getIdFromGallery();
                                                     Navigator.of(context).pop();
                                                   },
                                                   leading: Icon(Icons.folder),
@@ -871,6 +909,9 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     request.files.add(http.MultipartFile('image',
         _pickedImage!.readAsBytes().asStream(), _pickedImage!.lengthSync(),
         filename: _pickedImage!.path.split('/').last));
+    request.files.add(http.MultipartFile(
+        'image_id', _idFile!.readAsBytes().asStream(), _idFile!.lengthSync(),
+        filename: _idFile!.path.split('/').last));
     request.files.add(http.MultipartFile.fromString('name', aName));
     request.files.add(http.MultipartFile.fromString('phone', aPhone));
     request.files.add(http.MultipartFile.fromString('email', aEmail));
