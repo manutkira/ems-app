@@ -130,6 +130,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     rate = widget.ratee;
     imageUrl = widget.image;
     idUrl = widget.imageId;
+    print(idUrl!.length == 4);
 
     super.initState();
   }
@@ -201,17 +202,18 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                   height: 120,
                                 ),
                               )
-                            : imageUrl != null
-                                ? ClipRRect(
+                            : imageUrl!.length == 4
+                                ? Image.asset(
+                                    'assets/images/profile-icon-png-910.png')
+                                : ClipRRect(
                                     borderRadius: BorderRadius.circular(150),
                                     child: Image.network(
-                                      imageUrl!,
+                                      imageUrl.toString(),
                                       fit: BoxFit.cover,
                                       width: double.infinity,
+                                      height: 120,
                                     ),
-                                  )
-                                : Image.asset(
-                                    'assets/images/profile-icon-png-910.png'),
+                                  ),
                         alignment: Alignment.center,
                       ),
                       SizedBox(
@@ -708,16 +710,16 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                       height: 120,
                                     ),
                                   )
-                                : imageUrl != null
-                                    ? ClipRRect(
+                                : idUrl!.length == 4
+                                    ? Text('No ID Image')
+                                    : ClipRRect(
                                         child: Image.network(
-                                          idUrl!,
+                                          idUrl.toString(),
                                           fit: BoxFit.cover,
                                           width: double.infinity,
+                                          height: 120,
                                         ),
-                                      )
-                                    : Image.asset(
-                                        'assets/images/profile-icon-png-910.png'),
+                                      ),
                             alignment: Alignment.center,
                           ),
                           SizedBox(
@@ -779,7 +781,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                 },
                                 elevation: 10,
                                 color: kBlue,
-                                // borderSide: BorderSide(color: Colors.black),
                                 icon: Icon(Icons.photo),
                                 label: Text('Upload an image'),
                               ),
@@ -897,14 +898,18 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
       "Accept": "application/json",
       "Content": "charset-UTF-8",
     };
-    request.files.add(http.MultipartFile('image',
-        _pickedImage!.readAsBytes().asStream(), _pickedImage!.lengthSync(),
-        filename: _pickedImage!.path.split('/').last));
-    request.files.add(http.MultipartFile(
-        'image_id',
-        _pickedNationalId!.readAsBytes().asStream(),
-        _pickedNationalId!.lengthSync(),
-        filename: _pickedNationalId!.path.split('/').last));
+    if (_pickedImage != null) {
+      request.files.add(http.MultipartFile('image',
+          _pickedImage!.readAsBytes().asStream(), _pickedImage!.lengthSync(),
+          filename: _pickedImage!.path.split('/').last));
+    }
+    if (_pickedNationalId != null) {
+      request.files.add(http.MultipartFile(
+          'image_id',
+          _pickedNationalId!.readAsBytes().asStream(),
+          _pickedNationalId!.lengthSync(),
+          filename: _pickedNationalId!.path.split('/').last));
+    }
     request.files.add(http.MultipartFile.fromString('name', aName));
     request.files.add(http.MultipartFile.fromString('phone', aPhone));
     request.files.add(http.MultipartFile.fromString('email', aEmail));
@@ -914,7 +919,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     request.files.add(http.MultipartFile.fromString('salary', aSalary));
     request.files.add(http.MultipartFile.fromString('role', aRole));
     request.files.add(http.MultipartFile.fromString('status', aStatus));
-    // request.files.add(http.MultipartFile.fromString('password', apassword));
     request.files.add(http.MultipartFile.fromString('rate', aWorkrate));
     request.files.add(http.MultipartFile.fromString('background', aBackground));
     request.headers.addAll(headers);

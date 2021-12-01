@@ -286,6 +286,7 @@ class _EmployeeListState extends State<EmployeeList> {
                             userDisplay[index].background.toString();
                         String image = userDisplay[index].image.toString();
                         String imageId = userDisplay[index].imageId.toString();
+                        print(imageId);
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (_) => EmployeeEditScreen(
                                 id,
