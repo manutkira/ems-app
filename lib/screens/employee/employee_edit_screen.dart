@@ -70,7 +70,12 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   String? idUrl = '';
 
   Future getImage() async {
-    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+    var image = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxHeight: 450,
+      maxWidth: 450,
+      imageQuality: 1,
+    );
 
     setState(() {
       _pickedImage = File(image!.path);
@@ -80,9 +85,9 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   Future getIdFromCamera() async {
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.camera,
-      maxHeight: 1080,
-      maxWidth: 1080,
-      imageQuality: 2,
+      maxHeight: 450,
+      maxWidth: 450,
+      imageQuality: 1,
     );
     if (pickedFile == null) {
       return;
@@ -93,9 +98,9 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   Future getIdFromGallery() async {
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.gallery,
-      maxHeight: 1080,
-      maxWidth: 1080,
-      imageQuality: 2,
+      maxHeight: 450,
+      maxWidth: 450,
+      imageQuality: 50,
     );
     if (pickedFile == null) {
       return;
