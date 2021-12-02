@@ -27,12 +27,19 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   List<Attendance> checkedDate = [];
   List<Attendance> users = [];
 
+  var _controller = TextEditingController();
+
+  void clearText() {
+    _controller.clear();
+  }
+
   @override
   void initState() {
     super.initState();
     _attendanceService.findMany().then((value) {
       setState(() {
         attendanceDisplay.addAll(value);
+        attendanceDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
       });
     });
     _userService.findMany().then((value) {
@@ -49,6 +56,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     setState(() {
       users = checkingDate.toList();
       checkedDate = users;
+      checkedDate.sort((a, b) => a.userId!.compareTo(b.userId as int));
     });
   }
 
@@ -246,11 +254,29 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
         children: [
           Flexible(
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
-                suffixIcon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
+                suffixIcon: _controller.text.isEmpty
+                    ? Icon(
+                        Icons.search,
+                        color: Colors.white,
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          setState(() {
+                            clearText();
+                            checkedDate = users.where((user) {
+                              var userName = user.users!.name!.toLowerCase();
+                              print(userName);
+                              return userName.contains(_controller.text);
+                            }).toList();
+                          });
+                        },
+                        icon: Icon(
+                          Icons.clear,
+                          color: Colors.white,
+                        ),
+                      ),
                 hintText: 'Search...',
                 errorStyle: TextStyle(
                   fontSize: 15,
@@ -267,6 +293,48 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                 });
               },
             ),
+          ),
+          PopupMenuButton(
+            color: kDarkestBlue,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            onSelected: (int selectedValue) {
+              if (selectedValue == 0) {
+                setState(() {
+                  checkedDate.sort((a, b) => a.users!.name!
+                      .toLowerCase()
+                      .compareTo(b.users!.name!.toLowerCase()));
+                });
+              }
+              if (selectedValue == 1) {
+                setState(() {
+                  checkedDate.sort((b, a) => a.users!.name!
+                      .toLowerCase()
+                      .compareTo(b.users!.name!.toLowerCase()));
+                });
+              }
+              if (selectedValue == 2) {
+                setState(() {
+                  checkedDate
+                      .sort((a, b) => a.userId!.compareTo(b.userId as int));
+                });
+              }
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text('From A-Z'),
+                value: 0,
+              ),
+              PopupMenuItem(
+                child: Text('From Z-A'),
+                value: 1,
+              ),
+              PopupMenuItem(
+                child: Text('by ID'),
+                value: 2,
+              ),
+            ],
+            icon: Icon(Icons.sort),
           ),
         ],
       ),
@@ -288,9 +356,25 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
         children: [
           Row(
             children: [
-              Image.asset(
-                'assets/images/profile-icon-png-910.png',
+              Container(
                 width: 75,
+                height: 75,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.white,
+                    )),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(150),
+                  child: checkedDate[index].users!.image == null
+                      ? Image.asset('assets/images/profile-icon-png-910.png')
+                      : Image.network(
+                          checkedDate[index].users!.image.toString(),
+                          fit: BoxFit.cover,
+                          height: 75,
+                        ),
+                ),
               ),
               SizedBox(
                 width: 20,

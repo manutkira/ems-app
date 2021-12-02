@@ -34,14 +34,19 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     _userService.findMany().then((value) {
       users.addAll(value);
       userDisplay = users;
+      userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
     });
   }
 
   DateTime? _selectDate;
   var _selectMonth;
   final yearController = TextEditingController();
-
+  var _controller = TextEditingController();
   var pickedYear;
+
+  void clearText() {
+    _controller.clear();
+  }
 
   @override
   void dispose() {
@@ -621,9 +626,38 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                             children: [
                                               Row(
                                                 children: [
-                                                  Image.asset(
-                                                    'assets/images/profile-icon-png-910.png',
-                                                    width: 65,
+                                                  Container(
+                                                    width: 75,
+                                                    height: 75,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    100)),
+                                                        border: Border.all(
+                                                          width: 1,
+                                                          color: Colors.white,
+                                                        )),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              150),
+                                                      child: userDisplay[index]
+                                                                  .image ==
+                                                              null
+                                                          ? Image.asset(
+                                                              'assets/images/profile-icon-png-910.png',
+                                                              width: 75,
+                                                            )
+                                                          : Image.network(
+                                                              userDisplay[index]
+                                                                  .image
+                                                                  .toString(),
+                                                              fit: BoxFit.cover,
+                                                              width: 65,
+                                                              height: 75,
+                                                            ),
+                                                    ),
                                                   ),
                                                   SizedBox(
                                                     width: 20,
@@ -865,11 +899,29 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
         children: [
           Flexible(
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
-                suffixIcon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
+                suffixIcon: _controller.text.isEmpty
+                    ? Icon(
+                        Icons.search,
+                        color: Colors.white,
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          setState(() {
+                            clearText();
+                            userDisplay = users.where((user) {
+                              var userName = user.name!.toLowerCase();
+                              print(userName);
+                              return userName.contains(_controller.text);
+                            }).toList();
+                          });
+                        },
+                        icon: Icon(
+                          Icons.clear,
+                          color: Colors.white,
+                        ),
+                      ),
                 hintText: 'Search...',
                 errorStyle: TextStyle(
                   fontSize: 15,
@@ -877,7 +929,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                 ),
               ),
               onChanged: (text) {
-                text = text.toLowerCase();
+                text = _controller.text.toLowerCase();
                 setState(() {
                   userDisplay = users.where((user) {
                     var userName = user.name!.toLowerCase();
@@ -887,6 +939,45 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                 });
               },
             ),
+          ),
+          PopupMenuButton(
+            color: kDarkestBlue,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            onSelected: (int selectedValue) {
+              if (selectedValue == 0) {
+                setState(() {
+                  userDisplay.sort((a, b) =>
+                      a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+                });
+              }
+              if (selectedValue == 1) {
+                setState(() {
+                  userDisplay.sort((b, a) =>
+                      a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+                });
+              }
+              if (selectedValue == 2) {
+                setState(() {
+                  userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+                });
+              }
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text('From A-Z'),
+                value: 0,
+              ),
+              PopupMenuItem(
+                child: Text('From Z-A'),
+                value: 1,
+              ),
+              PopupMenuItem(
+                child: Text('by ID'),
+                value: 2,
+              ),
+            ],
+            icon: Icon(Icons.sort),
           ),
         ],
       ),

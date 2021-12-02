@@ -50,7 +50,10 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   // }
 
   Future getImageFromCamera() async {
-    var image = await ImagePicker().getImage(source: ImageSource.camera);
+    var image = await ImagePicker().getImage(
+      source: ImageSource.camera,
+      imageQuality: 2,
+    );
     if (image == null) {
       return;
     }
@@ -61,7 +64,10 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   }
 
   Future getImage() async {
-    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+    var image = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      imageQuality: 2,
+    );
     if (image == null) {
       return;
     }
@@ -72,8 +78,12 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   }
 
   Future _getIdFromCamera() async {
-    PickedFile? pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.camera, maxHeight: 1080, maxWidth: 1080);
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.camera,
+      maxHeight: 1080,
+      maxWidth: 1080,
+      imageQuality: 2,
+    );
     if (pickedFile == null) {
       return;
     }
@@ -83,8 +93,12 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   }
 
   Future _getIdFromGallery() async {
-    PickedFile? pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxHeight: 1080,
+      maxWidth: 1080,
+      imageQuality: 2,
+    );
     if (pickedFile == null) {
       return;
     }
