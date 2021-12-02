@@ -1,9 +1,9 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/login_screen.dart';
-import 'package:ems/screens/your%20profile/your_profile_edit.dart';
-import 'package:ems/screens/your%20profile/your_profile_password.dart';
-import 'package:ems/screens/your%20profile/your_profile_view.dart';
+import 'package:ems/screens/your_profile/your_profile_edit.dart';
+import 'package:ems/screens/your_profile/your_profile_password.dart';
+import 'package:ems/screens/your_profile/your_profile_view.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -125,10 +125,12 @@ class MenuDrawer extends ConsumerWidget {
                           title: const Text('Change Password'),
                           onTap: () {
                             Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                    builder: (context) =>
-                                        const YourProfilePasswordScreen()));
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) =>
+                                    const YourProfilePasswordScreen(),
+                              ),
+                            );
                           },
                         ),
                       ),

@@ -1,7 +1,7 @@
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
-import 'package:ems/screens/your%20profile/your_profile_edit.dart';
+import 'package:ems/screens/your_profile/your_profile_edit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

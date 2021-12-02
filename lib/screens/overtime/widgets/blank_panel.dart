@@ -7,7 +7,7 @@ import '../../../constants.dart';
 /// returns Future<void>
 Future<void> modalBottomSheetBuilder({
   required BuildContext context,
-  double maxHeight = 400.0,
+  double maxHeight = 440.0,
   double minHeight = 400.0,
   bool isDismissible = true,
   required Widget child,

@@ -46,7 +46,7 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
     Future.delayed(Duration(seconds: 3), () {
       setState(() {
         isLoading = false;
-        _closePanel();
+        // _closePanel();
       });
     });
   }
@@ -98,7 +98,7 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
           ),
           const SizedBox(height: 30),
           Visibility(
-              visible: hasError,
+              visible: !isLoading && !hasError,
               child: const StatusError(text: 'Error deleting record')),
           SizedBox(
             height: 250,

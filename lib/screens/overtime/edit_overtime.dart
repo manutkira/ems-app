@@ -321,7 +321,7 @@ class _EditOvertimeState extends State<EditOvertime> {
           ),
           const SizedBox(height: 20),
           Visibility(
-            visible: _error.isNotEmpty,
+            visible: _error.isEmpty,
             child: Column(
               children: const [
                 StatusError(text: "Error"),

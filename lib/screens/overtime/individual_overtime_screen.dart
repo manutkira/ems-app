@@ -41,8 +41,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
   void addUser() async {
     await modalBottomSheetBuilder(
       context: context,
-      maxHeight: 600,
-      minHeight: 500,
+      maxHeight: 640,
       isDismissible: false,
       child: const AddOvertime(),
     );
@@ -55,8 +54,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
         {
           await modalBottomSheetBuilder(
             context: context,
-            minHeight: 430,
-            maxHeight: 430,
+            maxHeight: 460,
             child: const ViewOvertime(),
           );
           print("view view view");
