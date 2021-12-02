@@ -102,13 +102,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Appointment> getAppointments() {
     List<Appointment> meetings = <Appointment>[];
     attendanceDisplay.asMap().forEach((key, value) {
-      // if (value.type == 'check in') {
-      Appointment newAppointment = Appointment(
-          startTime: value.date as DateTime,
-          endTime: value.date as DateTime,
-          color: checkColor(value));
-      meetings.add(newAppointment);
-      // }
+      if (value.type != 'check out') {
+        Appointment newAppointment = Appointment(
+            startTime: value.date as DateTime,
+            endTime: value.date as DateTime,
+            color: checkColor(value));
+        meetings.add(newAppointment);
+      }
     });
     return meetings;
   }

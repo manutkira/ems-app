@@ -3,13 +3,10 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:ems/screens/employee/employee_list_screen.dart';
-import 'package:ems/widgets/image_input.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:path_provider/path_provider.dart' as syspaths;
-import 'package:path/path.dart' as path;
 
 import '../../constants.dart';
 
@@ -43,11 +40,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
 
   File? _pickedImage;
   File? _idFile;
-  var resJson;
-
-  // void _selectImage(File pickedImage) {
-  //   _pickedImage = pickedImage;
-  // }
 
   Future getImageFromCamera() async {
     var image = await ImagePicker().getImage(

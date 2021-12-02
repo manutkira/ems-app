@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:ems/screens/employee/employee_list_screen.dart';
-import 'package:ems/widgets/image_input.dart';
 import 'package:http/http.dart' as http;
 import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
