@@ -38,6 +38,12 @@ class _EmployeeListState extends State<EmployeeList> {
   bool _isLoading = true;
   bool order = false;
 
+  var _controller = TextEditingController();
+
+  void clearText() {
+    _controller.clear();
+  }
+
   @override
   void initState() {
     try {
@@ -139,11 +145,28 @@ class _EmployeeListState extends State<EmployeeList> {
         children: [
           Flexible(
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
-                suffixIcon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
+                suffixIcon: _controller.text.isEmpty
+                    ? Icon(
+                        Icons.search,
+                        color: Colors.white,
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          setState(() {
+                            clearText();
+                            userDisplay = user.where((user) {
+                              var userName = user.name!.toLowerCase();
+                              return userName.contains(_controller.text);
+                            }).toList();
+                          });
+                        },
+                        icon: Icon(
+                          Icons.clear,
+                          color: Colors.white,
+                        ),
+                      ),
                 hintText: 'Search...',
                 errorStyle: TextStyle(
                   fontSize: 15,

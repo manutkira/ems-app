@@ -21,6 +21,11 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
   List<User> user = [];
   bool _isLoading = true;
   bool order = false;
+  var _controller = TextEditingController();
+
+  void clearText() {
+    _controller.clear();
+  }
 
   @override
   void initState() {
@@ -174,11 +179,28 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
         children: [
           Flexible(
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
-                suffixIcon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
+                suffixIcon: _controller.text.isEmpty
+                    ? Icon(
+                        Icons.search,
+                        color: Colors.white,
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          setState(() {
+                            clearText();
+                            userDisplay = user.where((user) {
+                              var userName = user.name!.toLowerCase();
+                              print(userName);
+                              return userName.contains(_controller.text);
+                            }).toList();
+                          });
+                        },
+                        icon: Icon(
+                          Icons.clear,
+                          color: Colors.white,
+                        )),
                 hintText: 'Search...',
                 errorStyle: TextStyle(
                   fontSize: 15,
@@ -186,7 +208,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                 ),
               ),
               onChanged: (text) {
-                text = text.toLowerCase();
+                text = _controller.text.toLowerCase();
                 setState(() {
                   // fetchData(text);
                   userDisplay = user.where((user) {
@@ -224,12 +246,14 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                   )),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(150),
-                child: Image.network(
-                  userDisplay[index].image!,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: 75,
-                ),
+                child: userDisplay[index].image == null
+                    ? Image.asset('assets/images/profile-icon-png-910.png')
+                    : Image.network(
+                        userDisplay[index].image!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 75,
+                      ),
               ),
             ),
             SizedBox(

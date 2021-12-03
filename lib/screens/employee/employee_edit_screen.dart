@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:ems/screens/employee/employee_list_screen.dart';
-import 'package:ems/widgets/image_input.dart';
 import 'package:http/http.dart' as http;
 import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +69,12 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   String? idUrl = '';
 
   Future getImage() async {
-    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+    var image = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxHeight: 450,
+      maxWidth: 450,
+      imageQuality: 1,
+    );
 
     setState(() {
       _pickedImage = File(image!.path);
@@ -78,8 +82,12 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   }
 
   Future getIdFromCamera() async {
-    PickedFile? pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.camera, maxHeight: 1080, maxWidth: 1080);
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.camera,
+      maxHeight: 450,
+      maxWidth: 450,
+      imageQuality: 1,
+    );
     if (pickedFile == null) {
       return;
     }
@@ -87,8 +95,12 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   }
 
   Future getIdFromGallery() async {
-    PickedFile? pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxHeight: 450,
+      maxWidth: 450,
+      imageQuality: 50,
+    );
     if (pickedFile == null) {
       return;
     }

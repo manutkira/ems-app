@@ -26,6 +26,12 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
 
+  var _controller = TextEditingController();
+
+  void clearText() {
+    _controller.clear();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -35,7 +41,6 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
         setState(() {
           _isLoading = false;
           attendancedisplay.addAll(userFromServer);
-          // attendancedisplay.sort((a, b) => a.id!.compareTo(b.id as int));
         });
       });
       _userService.findMany().then((value) {
@@ -43,15 +48,9 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
           _isLoading = false;
           users.addAll(value);
           userDisplay = users;
+          userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
           var pc = _attendanceService
               .countPresent(int.parse(users.map((e) => e.id).toString()));
-          //     .then((value) {
-          //   setState(() {
-          //     _isLoading = false;
-          //     print(value);
-          //     // countPresent = value;
-          //   });
-          // });
           if (mounted) {
             setState(() {
               countPresent = pc;
@@ -192,9 +191,27 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              child: Image.asset(
-                'assets/images/profile-icon-png-910.png',
-                width: 65,
+              width: 75,
+              height: 75,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.white,
+                  )),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(150),
+                child: userDisplay[index].image == null
+                    ? Image.asset(
+                        'assets/images/profile-icon-png-910.png',
+                        width: 75,
+                      )
+                    : Image.network(
+                        userDisplay[index].image.toString(),
+                        fit: BoxFit.cover,
+                        width: 65,
+                        height: 75,
+                      ),
               ),
             ),
             SizedBox(
@@ -334,11 +351,29 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
         children: [
           Flexible(
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
-                suffixIcon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
+                suffixIcon: _controller.text.isEmpty
+                    ? Icon(
+                        Icons.search,
+                        color: Colors.white,
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          setState(() {
+                            clearText();
+                            userDisplay = users.where((user) {
+                              var userName = user.name!.toLowerCase();
+                              print(userName);
+                              return userName.contains(_controller.text);
+                            }).toList();
+                          });
+                        },
+                        icon: Icon(
+                          Icons.clear,
+                          color: Colors.white,
+                        ),
+                      ),
                 hintText: 'Search...',
                 errorStyle: TextStyle(
                   fontSize: 15,
