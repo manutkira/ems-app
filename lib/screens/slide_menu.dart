@@ -60,18 +60,37 @@ class MenuDrawer extends ConsumerWidget {
                             },
                             child: Column(
                               children: [
-                                Image.asset(
-                                  'assets/images/bigprofile.png',
-                                  fit: BoxFit.cover,
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  height: 200,
+                                  width: 200,
+                                  decoration: const BoxDecoration(
+                                    color: kBlue,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(1000),
+                                    child: Image.network(
+                                      "${currentUser!.image}",
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (BuildContext _, Object __,
+                                          StackTrace? ___) {
+                                        return Image.asset(
+                                          "assets/images/bigprofile.png",
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  "${currentUser?.name}",
+                                  "${currentUser.name}",
                                   style: kHeadingThree,
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  "${currentUser!.role ?? ""}",
+                                  currentUser.role ?? "",
                                   style: kSubtitle,
                                 ),
                               ],

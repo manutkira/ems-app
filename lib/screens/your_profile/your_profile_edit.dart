@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
+import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/widgets/statuses/error.dart';
@@ -8,6 +11,7 @@ import 'package:ems/widgets/textbox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class YourProfileEditScreen extends ConsumerStatefulWidget {
@@ -21,6 +25,10 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   String password = '';
   String oldPassword = '';
   String error = "";
+
+  final ImagePicker _picker = ImagePicker();
+
+  File? _photo;
 
   late User _user;
   final AuthService _authService = AuthService.instance;
@@ -75,6 +83,30 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
+  void uploadPicture() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    print('jodjsklf');
+    if (image != null) {
+      setState(() {
+        _photo = File(image.path);
+      });
+
+      print('hihihi');
+
+      User newUser = await _userService.uploadImage(
+        user: _user,
+        image: File(image.path),
+      );
+
+      print(newUser.phone);
+
+      ref.read(currentUserProvider).setUser(user: newUser.copyWith());
+      print("11asdfas1df");
+      // print(image.path);
+      ref.refresh(currentUserProvider).user;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -107,12 +139,33 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
           child: Column(
             children: [
               Center(
-                child: CircleAvatar(
-                  backgroundColor: kDarkestBlue,
-                  radius: 75,
-                  child: Image.asset(
-                    'assets/images/bigprofile.png',
-                    fit: BoxFit.cover,
+                child: ProfileAvatar(
+                  source: _photo,
+                  isDarkBackground: false,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Center(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: kDarkestBlue,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  ),
+                  onPressed: uploadPicture,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.camera,
+                        size: 30,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Change',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                    ],
                   ),
                 ),
               ),

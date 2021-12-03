@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ems/models/user.dart';
 import 'package:http/http.dart';
@@ -57,6 +58,78 @@ class UserService extends BaseService {
     } catch (e) {
       throw UserException(code: _code);
     }
+  }
+
+  Future<User> uploadImage({required File image, required User user}) async {
+    User newUser = user;
+    var request =
+        MultipartRequest('POST', Uri.parse("$baseUrl/users/${user.id}"));
+    request.headers.addAll({
+      "Accept": "application/json",
+      "Content": "charset-UTF-8",
+    });
+    print('hih');
+    request.files.add(
+      MultipartFile(
+        'image',
+        image.readAsBytes().asStream(),
+        image.lengthSync(),
+        filename: image.path.split('/').last,
+      ),
+    );
+    //
+    request.fields['name'] = user.name as String;
+    request.fields['phone'] = user.phone as String;
+
+    // to update
+    request.fields['_method'] = "PUT";
+    StreamedResponse res = await request.send();
+    // print('hihi');
+    // var result = await Response.fromStream(res);
+
+    // print(result.body);
+    // Map<String, dynamic> _user = {};
+    //
+    // var _user = user.toJson();
+    // var keys = _user.keys.toList();
+    // var values = _user.values.toList();
+    // print(keys);
+    // print(values);
+    //
+    // keys.map((e) {
+    //   if (_user[e] != null) {
+    //     if (e == 'image') {
+    //       request.files.add(
+    //         MultipartFile(
+    //           'image',
+    //           image.readAsBytes().asStream(),
+    //           image.lengthSync(),
+    //           filename: image.path.split('/').last,
+    //         ),
+    //       );
+    //     } else if (e == 'id') {
+    //       //
+    //     } else {
+    //       request.fields[e] = _user[e] as String;
+    //     }
+    //   }
+    // }).toList();
+
+    // print(request.fields['user']);
+    // StreamedResponse res = await request.send();
+    //
+    // var result = await Response.fromStream(res);
+    //
+    // print(result.body);
+    //
+
+    res.stream.transform(utf8.decoder).listen((result) {
+      print(result);
+      var jsondata = json.decode(result);
+      newUser = User.fromJson(jsondata['user']);
+    });
+    // print(newUser);
+    return newUser;
   }
 
   Future<User> createOne({required User user}) async {
