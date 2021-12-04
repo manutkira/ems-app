@@ -1,3 +1,4 @@
+import 'package:ems/screens/card/card.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -38,7 +39,19 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
         body: FutureBuilder(
           future: fetchData(),
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Fetching Data'),
+                    const CircularProgressIndicator(
+                      color: kWhite,
+                    ),
+                  ],
+                ),
+              );
+            } else {
               return SingleChildScrollView(
                 child: Column(
                   children: [
@@ -71,12 +84,17 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                       )),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(150),
-                                    child: Image.network(
-                                      (snapshot.data as dynamic)['image'],
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      height: 75,
-                                    ),
+                                    child: (snapshot.data
+                                                as dynamic)['image'] ==
+                                            null
+                                        ? Image.asset(
+                                            'assets/images/profile-icon-png-910.png')
+                                        : Image.network(
+                                            (snapshot.data as dynamic)['image'],
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                            height: 75,
+                                          ),
                                   ),
                                 ),
                               ),
@@ -143,8 +161,30 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                         ),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text('view'),
+                          IconButton(
+                              onPressed: () {
+                                int id =
+                                    (snapshot.data as dynamic)['id'] as int;
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => NationalIdScreen(
+                                      id: id.toString(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: Icon(Icons.credit_card)),
+                        ],
+                      ),
+                    ),
                     Container(
-                      margin: EdgeInsets.only(top: 28),
+                      margin: EdgeInsets.only(top: 0),
                       width: double.infinity,
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -263,6 +303,19 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                               const EdgeInsets.only(top: 20),
                                           child: Text(
                                             'Work-Rate ',
+                                            style: kParagraph.copyWith(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Text(
+                                            'Phone ',
                                             style: kParagraph.copyWith(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold),
@@ -394,6 +447,18 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                                   fontWeight: FontWeight.bold),
                                             ),
                                           ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 25, left: 30),
+                                            child: Text(
+                                              (snapshot.data
+                                                      as dynamic)['phone']
+                                                  .toString(),
+                                              style: kParagraph.copyWith(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -473,17 +538,6 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                 ),
               );
             }
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Fetching Data'),
-                  const CircularProgressIndicator(
-                    color: kWhite,
-                  ),
-                ],
-              ),
-            );
           },
         ));
   }

@@ -108,7 +108,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
         sourcePath: filePath,
         maxHeight: 500,
         maxWidth: 700,
-        aspectRatio: CropAspectRatio(ratioX: 3, ratioY: 2),
+        aspectRatio: CropAspectRatio(ratioX: 3.375, ratioY: 2.125),
         compressQuality: 100,
         compressFormat: ImageCompressFormat.jpg,
         androidUiSettings: AndroidUiSettings(
