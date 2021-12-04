@@ -1,15 +1,15 @@
 import 'exception_handler.dart';
 
 class UserException extends IBaseException {
-  UserException({required this.code, this.message = "User error."})
-      : super(message);
+  UserException({this.code, this.message = "User error."}) : super(message);
 
-  final int code;
+  final int? code;
 
   String message;
 
   @override
   String toString() {
+    print('code code code $code');
     switch (code) {
       case 1:
         {

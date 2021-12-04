@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ems/models/user.dart';
 import 'package:http/http.dart';
@@ -19,9 +20,6 @@ class UserService extends BaseService {
         _code = response.statusCode;
         throw UserException(code: _code);
       }
-
-      // var jsondata = json.decode(response.body);
-      // var user = User.fromJson(jsondata);
       return int.parse(response.body);
     } catch (e) {
       throw UserException(code: _code);
@@ -54,6 +52,58 @@ class UserService extends BaseService {
       var jsondata = json.decode(response.body);
       var users = usersFromJson(jsondata);
       return users;
+    } catch (e) {
+      throw UserException(code: _code);
+    }
+  }
+
+  Future<User> uploadImage({
+    required String field,
+    required File image,
+    required User user,
+  }) async {
+    if (field.isEmpty) {
+      throw UserException(code: 2);
+    }
+
+    try {
+      var request = MultipartRequest(
+        'POST',
+        Uri.parse("$baseUrl/users/${user.id}"),
+      );
+      request.headers.addAll(headers);
+      request.files.add(
+        MultipartFile(
+          field,
+          image.readAsBytes().asStream(),
+          image.lengthSync(),
+          filename: image.path.split('/').last,
+        ),
+      );
+
+      // // loop to add all request fields
+      // var userMap = user.toJson();
+      // userMap.keys.toList().map((e) {
+      //   if (userMap[e] != null) {
+      //     return request.fields['$e'] = "${userMap['$e']}";
+      //   }
+      // }).toList();
+
+      request.fields['name'] = user.name.toString();
+      request.fields['phone'] = user.phone.toString();
+      // to update
+      request.fields['_method'] = "PUT";
+      print('sending');
+      StreamedResponse res = await request.send();
+      print('done');
+
+      var result = await Response.fromStream(res);
+      _code = result.statusCode;
+      var jsonData = json.decode(result.body);
+      User newUser = User.fromJson(jsonData['user']);
+      return newUser;
+    } on UserException catch (e) {
+      throw UserException(code: e.code);
     } catch (e) {
       throw UserException(code: _code);
     }

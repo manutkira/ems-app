@@ -1,7 +1,8 @@
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
-import 'package:ems/screens/your%20profile/your_profile_edit.dart';
+import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
+import 'package:ems/screens/your_profile/your_profile_edit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,17 +51,12 @@ class YourProfileViewScreen extends ConsumerWidget {
                   Center(
                     child: Stack(
                       children: [
-                        CircleAvatar(
-                          backgroundColor: kDarkestBlue,
-                          radius: 75,
-                          child: Image.asset(
-                            'assets/images/bigprofile.png',
-                            fit: BoxFit.cover,
-                          ),
+                        ProfileAvatar(
+                          isDarkBackground: false,
                         ),
                         Positioned(
-                          bottom: 0,
-                          right: 10,
+                          bottom: 20,
+                          right: 20,
                           child: Container(
                             width: 25,
                             height: 25,
