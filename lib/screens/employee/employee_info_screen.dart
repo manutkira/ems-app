@@ -166,7 +166,19 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text('view'),
+                          InkWell(
+                              onTap: () {
+                                int id =
+                                    (snapshot.data as dynamic)['id'] as int;
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => NationalIdScreen(
+                                      id: id.toString(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Text('view')),
                           IconButton(
                               onPressed: () {
                                 int id =
