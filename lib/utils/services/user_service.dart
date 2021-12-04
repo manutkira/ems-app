@@ -20,9 +20,6 @@ class UserService extends BaseService {
         _code = response.statusCode;
         throw UserException(code: _code);
       }
-
-      // var jsondata = json.decode(response.body);
-      // var user = User.fromJson(jsondata);
       return int.parse(response.body);
     } catch (e) {
       throw UserException(code: _code);
@@ -60,76 +57,56 @@ class UserService extends BaseService {
     }
   }
 
-  Future<User> uploadImage({required File image, required User user}) async {
-    User newUser = user;
-    var request =
-        MultipartRequest('POST', Uri.parse("$baseUrl/users/${user.id}"));
-    request.headers.addAll({
-      "Accept": "application/json",
-      "Content": "charset-UTF-8",
-    });
-    print('hih');
-    request.files.add(
-      MultipartFile(
-        'image',
-        image.readAsBytes().asStream(),
-        image.lengthSync(),
-        filename: image.path.split('/').last,
-      ),
-    );
-    //
-    request.fields['name'] = user.name as String;
-    request.fields['phone'] = user.phone as String;
+  Future<User> uploadImage({
+    required String field,
+    required File image,
+    required User user,
+  }) async {
+    if (field.isEmpty) {
+      throw UserException(code: 2);
+    }
 
-    // to update
-    request.fields['_method'] = "PUT";
-    StreamedResponse res = await request.send();
-    // print('hihi');
-    // var result = await Response.fromStream(res);
+    try {
+      var request = MultipartRequest(
+        'POST',
+        Uri.parse("$baseUrl/users/${user.id}"),
+      );
+      request.headers.addAll(headers);
+      request.files.add(
+        MultipartFile(
+          field,
+          image.readAsBytes().asStream(),
+          image.lengthSync(),
+          filename: image.path.split('/').last,
+        ),
+      );
 
-    // print(result.body);
-    // Map<String, dynamic> _user = {};
-    //
-    // var _user = user.toJson();
-    // var keys = _user.keys.toList();
-    // var values = _user.values.toList();
-    // print(keys);
-    // print(values);
-    //
-    // keys.map((e) {
-    //   if (_user[e] != null) {
-    //     if (e == 'image') {
-    //       request.files.add(
-    //         MultipartFile(
-    //           'image',
-    //           image.readAsBytes().asStream(),
-    //           image.lengthSync(),
-    //           filename: image.path.split('/').last,
-    //         ),
-    //       );
-    //     } else if (e == 'id') {
-    //       //
-    //     } else {
-    //       request.fields[e] = _user[e] as String;
-    //     }
-    //   }
-    // }).toList();
+      // // loop to add all request fields
+      // var userMap = user.toJson();
+      // userMap.keys.toList().map((e) {
+      //   if (userMap[e] != null) {
+      //     return request.fields['$e'] = "${userMap['$e']}";
+      //   }
+      // }).toList();
 
-    // print(request.fields['user']);
-    // StreamedResponse res = await request.send();
-    //
-    // var result = await Response.fromStream(res);
-    //
-    // print(result.body);
-    //
+      request.fields['name'] = user.name.toString();
+      request.fields['phone'] = user.phone.toString();
+      // to update
+      request.fields['_method'] = "PUT";
+      print('sending');
+      StreamedResponse res = await request.send();
+      print('done');
 
-    res.stream.transform(utf8.decoder).listen((result) {
-      print(result);
-      var jsondata = json.decode(result);
-      newUser = User.fromJson(jsondata['user']);
-    });
-    // print(newUser);
-    return newUser;
+      var result = await Response.fromStream(res);
+      _code = result.statusCode;
+      var jsonData = json.decode(result.body);
+      User newUser = User.fromJson(jsonData['user']);
+      return newUser;
+    } on UserException catch (e) {
+      throw UserException(code: e.code);
+    } catch (e) {
+      throw UserException(code: _code);
+    }
   }
 
   Future<User> createOne({required User user}) async {

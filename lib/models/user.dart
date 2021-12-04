@@ -12,6 +12,11 @@ List<User> usersFromJson(List<dynamic> list) {
 String usersToJson(List<User> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+class UserImageType {
+  static String get profile => "image";
+  static String get id => "image_id";
+}
+
 @HiveType(typeId: 0)
 class User {
   User({
@@ -102,7 +107,12 @@ class User {
             ? null
             : DateTime.parse(json["email_verified_at"]),
         address: json["address"] == null ? null : json["address"],
-        image: json["image"] == null ? null : json["image"],
+        image: json["image"] == null
+            ? null
+            : json['image'].runtimeType ==
+                    '_InternalLinkedHashMap<String, dynamic>'
+                ? null
+                : json["image"],
         imageId: json["image_id"] == null ? null : json["image_id"],
         position: json["position"] == null ? null : json["position"],
         skill: json["skill"] == null ? null : json["skill"],
@@ -120,7 +130,6 @@ class User {
       );
       return user;
     } catch (e, stk) {
-      print(stk);
       throw UserException(code: 1);
     }
   }

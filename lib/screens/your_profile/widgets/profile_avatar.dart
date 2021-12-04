@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
@@ -11,11 +9,9 @@ class ProfileAvatar extends ConsumerWidget {
   ProfileAvatar({
     Key? key,
     this.radius = 200,
-    this.source,
     required this.isDarkBackground,
   }) : super(key: key);
 
-  File? source;
   final double? radius;
   final bool isDarkBackground;
 
@@ -36,25 +32,13 @@ class ProfileAvatar extends ConsumerWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(1000),
-            child: Image.network("sdfdsf${_user.image}", fit: BoxFit.cover,
+            child: Image.network("${_user.image}", fit: BoxFit.cover,
                 errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
               return Image.asset(
                 "assets/images/bigprofile.png",
                 fit: BoxFit.cover,
               );
             }),
-            // child: source == null
-            //     ? Image.network("sdfdsf${_user.image}", fit: BoxFit.cover,
-            //         errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
-            //         return Image.asset(
-            //           "assets/images/bigprofile.png",
-            //           fit: BoxFit.cover,
-            //         );
-            //       })
-            //     : Image.file(
-            //         source as File,
-            //         fit: BoxFit.cover,
-            //       ),
           ),
         );
       },

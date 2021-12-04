@@ -1,6 +1,7 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/login_screen.dart';
+import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
 import 'package:ems/screens/your_profile/your_profile_edit.dart';
 import 'package:ems/screens/your_profile/your_profile_password.dart';
 import 'package:ems/screens/your_profile/your_profile_view.dart';
@@ -60,37 +61,15 @@ class MenuDrawer extends ConsumerWidget {
                             },
                             child: Column(
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.all(10),
-                                  height: 200,
-                                  width: 200,
-                                  decoration: const BoxDecoration(
-                                    color: kBlue,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(1000),
-                                    child: Image.network(
-                                      "${currentUser!.image}",
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (BuildContext _, Object __,
-                                          StackTrace? ___) {
-                                        return Image.asset(
-                                          "assets/images/bigprofile.png",
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
+                                ProfileAvatar(isDarkBackground: true),
                                 const SizedBox(height: 10),
                                 Text(
-                                  "${currentUser.name}",
+                                  "${currentUser?.name}",
                                   style: kHeadingThree,
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  currentUser.role ?? "",
+                                  currentUser?.role ?? "",
                                   style: kSubtitle,
                                 ),
                               ],

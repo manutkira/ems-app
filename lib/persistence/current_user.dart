@@ -59,15 +59,20 @@ class CurrentUserStore {
 
   /// Sets current user to local data
   void setUser({required User user}) async {
+    print('hi from persistence');
     final box = Hive.box<User>(currentUserBoxName);
+    // print("1 ${box.values.toList()[0].image}");
     if (user.isNotEmpty) {
       await box.put(
         currentUserBoxName,
         user.copyWith(
+          image: user.image.runtimeType != String ? null : user.image,
           role: user.role ?? "Employee",
           status: user.status ?? "Active",
         ),
       );
+
+      print("2 ${box.values.toList()[0].image}");
     }
   }
 
