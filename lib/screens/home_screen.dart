@@ -43,20 +43,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   getTime() async {
-    if (!mounted) {
-      return;
-    }
-
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        time = DateFormat('jm').format(DateTime.now());
+    if (mounted) {
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        setState(() {
+          time = DateFormat('jm').format(DateTime.now());
+        });
       });
-    });
+    }
   }
 
   @override
   void initState() {
-    // "It's ${DateFormat('jm').format(DateTime.now())} on ${DateFormat('dd-MM-yyyy').format(DateTime.now())}",
     super.initState();
     getCount();
     getTime();
@@ -64,7 +61,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _timer.cancel();
   }
@@ -200,7 +196,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Container(
                 padding: kPaddingAll,
                 width: double.infinity,
-                height: _size.height * .60,
+                height: _size.height * .6,
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
