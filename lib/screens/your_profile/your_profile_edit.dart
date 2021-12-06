@@ -86,41 +86,38 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   Future<File?> cropImage(
       {required String filePath, required String field}) async {
     File? cropped = await ImageCropper.cropImage(
-        sourcePath: filePath,
-        maxHeight: 500,
-        maxWidth: 700,
-        aspectRatio: field == UserImageType.id
-            ? const CropAspectRatio(ratioX: 3.375, ratioY: 2.125)
-            : const CropAspectRatio(ratioX: 1, ratioY: 1),
-        compressQuality: 100,
-        compressFormat: ImageCompressFormat.jpg,
-        androidUiSettings: AndroidUiSettings(
-          toolbarColor: Colors.deepOrange,
-          toolbarTitle: "Cropper Image",
-          statusBarColor: Colors.deepOrange.shade900,
-          backgroundColor: Colors.white,
-        ));
+      sourcePath: filePath,
+      maxHeight: 500,
+      maxWidth: 700,
+      aspectRatio: field == UserImageType.id
+          ? const CropAspectRatio(ratioX: 3.375, ratioY: 2.125)
+          : const CropAspectRatio(ratioX: 1, ratioY: 1),
+      compressQuality: 100,
+      compressFormat: ImageCompressFormat.jpg,
+      androidUiSettings: const AndroidUiSettings(
+        toolbarColor: kBlue,
+        toolbarTitle: "Crop the image",
+        toolbarWidgetColor: kWhite,
+        statusBarColor: kBlue,
+        backgroundColor: kBlue,
+        dimmedLayerColor: kBlack,
+        activeControlsWidgetColor: kWhite,
+      ),
+    );
     if (cropped != null) {
       return cropped;
     }
   }
 
   void uploadPicture({required String field, required String type}) async {
-    var img = type == 'gallery'
-        ? await ImagePicker().getImage(
-            source: ImageSource.gallery,
-          )
-        : type == 'camera'
-            ? await ImagePicker().getImage(
-                source: ImageSource.camera,
-              )
-            : null;
+    var img = await ImagePicker().getImage(
+      source: type == 'camera' ? ImageSource.camera : ImageSource.gallery,
+    );
+
     if (img != null) {
       File? cropped = await cropImage(filePath: img.path, field: field);
 
       if (cropped != null) {
-        File image = cropped;
-
         User newUser = _user.copyWith();
         setState(() {
           error = '';
@@ -133,7 +130,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
         });
         try {
           newUser = await _userService.uploadImage(
-              field: field, image: image, user: _user);
+              field: field, image: cropped, user: _user);
           ref.read(currentUserProvider).setUser(user: newUser.copyWith());
         } catch (err) {
           // write error handling here
@@ -144,12 +141,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
       }
     }
     setState(() {
-      if (field == UserImageType.profile) {
-        isUploadingProfile = false;
-      }
-      if (field == UserImageType.id) {
-        isUploadingID = false;
-      }
+      isUploadingProfile = false;
+      isUploadingID = false;
     });
   }
 
@@ -296,113 +289,55 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                     "Basic Info",
                     style: kHeadingThree.copyWith(fontWeight: FontWeight.w400),
                   ),
-                  const SizedBox(
-                    height: 20,
+                  const SizedBox(height: 20),
+                  RowWithInput(
+                    size: _size,
+                    defaultText: _user.name,
+                    label: 'Name',
+                    textHint: 'username',
+                    getValue: (value) {
+                      setState(() {
+                        _user.name = "$value";
+                      });
+                    },
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Name",
-                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        //
-                        constraints:
-                            BoxConstraints(maxWidth: _size.width * 0.6),
-
-                        child: TextBoxCustom(
-                          textHint: 'username',
-                          getValue: (value) {
-                            setState(() {
-                              _user.name = "$value";
-                            });
-                          },
-                          defaultText: "${_user.name ?? ""}",
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 20),
+                  RowWithInput(
+                    size: _size,
+                    defaultText: _user.phone,
+                    label: 'Phone',
+                    textHint: 'Phone Number',
+                    getValue: (value) {
+                      setState(() {
+                        _user.phone = "$value";
+                      });
+                    },
                   ),
-                  const SizedBox(
-                    height: 20,
+                  const SizedBox(height: 20),
+                  RowWithInput(
+                    size: _size,
+                    defaultText: _user.email,
+                    label: 'Email',
+                    textHint: 'Email',
+                    getValue: (value) {
+                      setState(() {
+                        _user.email = "$value";
+                      });
+                    },
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Phone",
-                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        //
-                        constraints:
-                            BoxConstraints(maxWidth: _size.width * 0.6),
-
-                        child: TextBoxCustom(
-                          textHint: 'Phone Number',
-                          getValue: (value) {
-                            setState(() {
-                              _user.phone = value;
-                            });
-                          },
-                          defaultText: "${_user.phone ?? ""}",
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 20),
+                  RowWithInput(
+                    size: _size,
+                    defaultText: _user.address,
+                    label: 'Address',
+                    textHint: 'Phnom Penh',
+                    getValue: (value) {
+                      setState(() {
+                        _user.address = "$value";
+                      });
+                    },
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Email",
-                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        constraints:
-                            BoxConstraints(maxWidth: _size.width * 0.6),
-                        child: TextBoxCustom(
-                          defaultText: "${_user.email ?? ""}",
-                          textHint: 'email',
-                          getValue: (value) {
-                            setState(() {
-                              _user.email = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Address",
-                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        constraints:
-                            BoxConstraints(maxWidth: _size.width * 0.6),
-                        child: TextBoxCustom(
-                          defaultText: "${_user.address ?? ""}",
-                          textHint: 'address',
-                          getValue: (value) {
-                            setState(() {
-                              _user.address = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -422,174 +357,24 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                             builder: (BuildContext context, Box<User> box,
                                 Widget? child) {
                               User _user = box.values.toList()[0];
+                              bool isImageIDNotEmpty = _user.imageId == null ||
+                                      _user.imageId!.isEmpty ||
+                                      _user.imageId.runtimeType != String
+                                  ? false
+                                  : true;
 
-                              return _user.imageId != null
-                                  ? Stack(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: Image.network(
-                                              "${_user.imageId}",
-                                              fit: BoxFit.contain, errorBuilder:
-                                                  (BuildContext _, Object __,
-                                                      StackTrace? ___) {
-                                            return const Center(
-                                              child: Text('No ID'),
-                                            );
-                                          }),
-                                        ),
-                                        Positioned(
-                                          right: 5,
-                                          bottom: 5,
-                                          child: isUploadingID
-                                              ? const SizedBox(
-                                                  height: 16,
-                                                  width: 16,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: kWhite,
-                                                    strokeWidth: 2,
-                                                  ),
-                                                )
-                                              : Row(
-                                                  children: [
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        uploadPicture(
-                                                          field:
-                                                              UserImageType.id,
-                                                          type: 'camera',
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(10),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: kDarkestBlue,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                        ),
-                                                        child: const Icon(
-                                                          MdiIcons
-                                                              .cameraOutline,
-                                                          size: 24,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(width: 5),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        uploadPicture(
-                                                          field:
-                                                              UserImageType.id,
-                                                          type: 'gallery',
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(10),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: kDarkestBlue,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                        ),
-                                                        child: const Icon(
-                                                          MdiIcons.image,
-                                                          size: 24,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                        ),
-                                      ],
-                                    )
+                              return isImageIDNotEmpty
+                                  ? _buildDisplayID(_user)
                                   : isUploadingID
-                                      ? SizedBox(
-                                          height: 16,
-                                          width: 16,
-                                          child: CircularProgressIndicator(
-                                            color: kWhite,
-                                            strokeWidth: 2,
-                                          ),
-                                        )
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text('No ID'),
-                                            Row(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    uploadPicture(
-                                                      field: UserImageType.id,
-                                                      type: 'camera',
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            10),
-                                                    decoration: BoxDecoration(
-                                                      color: kDarkestBlue,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                    child: const Icon(
-                                                      MdiIcons.cameraOutline,
-                                                      size: 24,
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 5),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    uploadPicture(
-                                                      field: UserImageType.id,
-                                                      type: 'gallery',
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            10),
-                                                    decoration: BoxDecoration(
-                                                      color: kDarkestBlue,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                    child: const Icon(
-                                                      MdiIcons.image,
-                                                      size: 24,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        );
+                                      ? _buildUploadID
+                                      : _buildNoID;
                             }),
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
                 ],
               ),
-              const SizedBox(
-                height: 40,
-              ),
+              const SizedBox(height: 40),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -600,148 +385,257 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Position",
-                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        //
-                        constraints:
-                            BoxConstraints(maxWidth: _size.width * 0.6),
-
-                        child: TextBoxCustom(
-                          textHint: 'position',
-                          getValue: (value) {
-                            setState(() {
-                              _user.position = value;
-                            });
-                          },
-                          defaultText: "${_user.position ?? ""}",
-                        ),
-                      ),
-                    ],
+                  RowWithInput(
+                    size: _size,
+                    defaultText: _user.position,
+                    label: 'Position',
+                    textHint: 'Employee',
+                    getValue: (value) {
+                      setState(() {
+                        _user.position = "$value";
+                      });
+                    },
                   ),
-                  const SizedBox(
-                    height: 20,
+                  const SizedBox(height: 20),
+                  RowWithInput(
+                    size: _size,
+                    defaultText: _user.skill,
+                    label: 'Skill',
+                    textHint: 'design...',
+                    getValue: (value) {
+                      setState(() {
+                        _user.skill = "$value";
+                      });
+                    },
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Skill",
-                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        //
-                        constraints:
-                            BoxConstraints(maxWidth: _size.width * 0.6),
-
-                        child: TextBoxCustom(
-                          textHint: 'skill',
-                          getValue: (value) {
-                            setState(() {
-                              _user.skill = value;
-                            });
-                          },
-                          defaultText: "${_user.skill ?? ""}",
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 20),
+                  RowWithInput(
+                    size: _size,
+                    icon: MdiIcons.currencyUsd,
+                    defaultText: _user.salary,
+                    label: 'Salary',
+                    textHint: '999',
+                    getValue: (value) {
+                      setState(() {
+                        _user.salary = "$value";
+                      });
+                    },
                   ),
-                  const SizedBox(
-                    height: 20,
+                  const SizedBox(height: 20),
+                  RowWithInput(
+                    size: _size,
+                    defaultText: _user.status,
+                    label: 'Status',
+                    textHint: 'Active',
+                    getValue: (value) {
+                      setState(() {
+                        _user.status = "$value";
+                      });
+                    },
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Salary",
-                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        constraints:
-                            BoxConstraints(maxWidth: _size.width * 0.6),
-                        child: TextBoxCustom(
-                          prefixIcon: const Icon(
-                            MdiIcons.currencyUsd,
-                            color: kWhite,
-                          ),
-                          defaultText: "${_user.salary ?? ""}",
-                          textHint: 'salary',
-                          getValue: (value) {
-                            setState(() {
-                              _user.salary = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 20),
+                  RowWithInput(
+                    size: _size,
+                    defaultText: _user.rate,
+                    label: 'Rate',
+                    textHint: 'Good',
+                    getValue: (value) {
+                      setState(() {
+                        _user.rate = "$value";
+                      });
+                    },
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Status",
-                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        constraints:
-                            BoxConstraints(maxWidth: _size.width * 0.6),
-                        child: TextBoxCustom(
-                          defaultText: "${_user.status ?? ""}",
-                          textHint: 'status',
-                          getValue: (value) {
-                            setState(() {
-                              _user.status = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Rate",
-                        style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                      Container(
-                        constraints:
-                            BoxConstraints(maxWidth: _size.width * 0.6),
-                        child: TextBoxCustom(
-                          defaultText: "${_user.rate ?? ""}",
-                          textHint: 'rate',
-                          getValue: (value) {
-                            setState(() {
-                              _user.rate = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                 ],
               ), // Employment Info
-              const SizedBox(
-                height: 40,
-              ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  /// generates a label + input
+  Widget RowWithInput(
+      {required Size size,
+      required String label,
+      required String textHint,
+      required String? defaultText,
+      required Function getValue,
+      IconData? icon}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "$label",
+          style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+        ),
+        Container(
+          //
+          constraints: BoxConstraints(maxWidth: size.width * 0.6),
+
+          child: TextBoxCustom(
+            prefixIcon: icon != null
+                ? Icon(
+                    icon,
+                    color: kWhite,
+                  )
+                : null,
+            textHint: '$textHint',
+            getValue: getValue,
+            defaultText: "${defaultText ?? ""}",
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// displays id, also handle error if the image is deleted or can't be fetched
+  ///
+  /// @Params User user => User object used to get user.imageId
+  Widget _buildDisplayID(User user) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: 120),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network("${user.imageId}", fit: BoxFit.contain,
+                errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
+              return Visibility(
+                visible: !isUploadingID,
+                child: const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 40),
+                    child: Text('Error fetching the ID image.'),
+                  ),
+                ),
+              );
+            }),
+          ),
+          Positioned(
+            right: 5,
+            bottom: 5,
+            child: isUploadingID
+                ? const SizedBox(
+                    height: 16,
+                    width: 16,
+                    child: CircularProgressIndicator(
+                      color: kWhite,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : Row(
+                    children: [
+                      CustomIconButton(
+                        onTap: () {
+                          uploadPicture(
+                            field: UserImageType.id,
+                            type: 'camera',
+                          );
+                        },
+                        icon: MdiIcons.cameraOutline,
+                      ),
+                      const SizedBox(width: 5),
+                      CustomIconButton(
+                        onTap: () {
+                          uploadPicture(
+                            field: UserImageType.id,
+                            type: 'gallery',
+                          );
+                        },
+                        icon: MdiIcons.image,
+                      ),
+                    ],
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// generate a custom icon button for id upload display
+  Widget CustomIconButton(
+      {required VoidCallback onTap, required IconData icon}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: kDarkestBlue,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(
+          icon,
+          size: 20,
+        ),
+      ),
+    );
+  }
+
+  /// loading circle when national ID is uploading
+  Widget get _buildUploadID {
+    return const SizedBox(
+      height: 16,
+      width: 16,
+      child: CircularProgressIndicator(
+        color: kWhite,
+        strokeWidth: 3,
+      ),
+    );
+  }
+
+  /// generate No ID with buttons to upload ID images
+  Widget get _buildNoID {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text('No ID', style: kParagraph),
+        Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                uploadPicture(
+                  field: UserImageType.id,
+                  type: 'camera',
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: kDarkestBlue,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  MdiIcons.cameraOutline,
+                  size: 24,
+                ),
+              ),
+            ),
+            const SizedBox(width: 5),
+            GestureDetector(
+              onTap: () {
+                uploadPicture(
+                  field: UserImageType.id,
+                  type: 'gallery',
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: kDarkestBlue,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  MdiIcons.image,
+                  size: 24,
+                ),
+              ),
+            ),
+          ],
+        )
+      ],
     );
   }
 
