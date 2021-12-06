@@ -81,21 +81,11 @@ class UserService extends BaseService {
         ),
       );
 
-      // // loop to add all request fields
-      // var userMap = user.toJson();
-      // userMap.keys.toList().map((e) {
-      //   if (userMap[e] != null) {
-      //     return request.fields['$e'] = "${userMap['$e']}";
-      //   }
-      // }).toList();
-
       request.fields['name'] = user.name.toString();
       request.fields['phone'] = user.phone.toString();
       // to update
       request.fields['_method'] = "PUT";
-      print('sending');
       StreamedResponse res = await request.send();
-      print('done');
 
       var result = await Response.fromStream(res);
       _code = result.statusCode;
@@ -132,7 +122,6 @@ class UserService extends BaseService {
 
   Future<User> updateOne({required User user}) async {
     int? userid = user.id;
-    print(user.toRawJson());
 
     if (userid!.isNaN || userid.isNegative || userid == 0) {
       throw Exception("Incorrect id");

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 class ProfileAvatar extends ConsumerWidget {
-  ProfileAvatar({
+  const ProfileAvatar({
     Key? key,
     this.radius = 200,
     required this.isDarkBackground,
@@ -32,13 +32,16 @@ class ProfileAvatar extends ConsumerWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(1000),
-            child: Image.network("${_user.image}", fit: BoxFit.cover,
-                errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
-              return Image.asset(
-                "assets/images/bigprofile.png",
-                fit: BoxFit.cover,
-              );
-            }),
+            child: Image.network(
+              "${_user.image}",
+              fit: BoxFit.cover,
+              errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
+                return Image.asset(
+                  "assets/images/bigprofile.png",
+                  fit: BoxFit.cover,
+                );
+              },
+            ),
           ),
         );
       },

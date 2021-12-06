@@ -91,178 +91,112 @@ class YourProfileViewScreen extends ConsumerWidget {
                   const SizedBox(
                     height: 40,
                   ),
+                  // basic info
                   Text(
                     "Basic Info",
                     style: _sectionTitleStyle,
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Name",
-                              style: _labelStyle,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "Phone Number",
-                              style: _labelStyle,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "Email",
-                              style: _labelStyle,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "Address",
-                              style: _labelStyle,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "Account Type",
-                              style: _labelStyle,
-                            ),
-                          ],
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: 200,
+                    child: GridView.count(
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: 2,
+                      childAspectRatio: 4.5,
+                      children: [
+                        Text(
+                          "Name",
+                          style: _labelStyle,
                         ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _currentUser?.name ?? "Not Available",
-                              style: kParagraph,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              _currentUser?.phone ?? "Not Available",
-                              style: kParagraph,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              _currentUser?.email ?? "Not Available",
-                              style: kParagraph,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              _currentUser?.address ?? "Not Available",
-                              style: kParagraph,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              _currentUser?.role ?? "Employee",
-                              style: kParagraph,
-                            ),
-                          ],
+                        Text(
+                          _currentUser?.name ?? "Not Available",
+                          style: kParagraph,
                         ),
-                      ),
-                    ],
+                        Text(
+                          "Phone Number",
+                          style: _labelStyle,
+                        ),
+                        Text(
+                          _currentUser?.phone ?? "Not Available",
+                          style: kParagraph,
+                        ),
+                        Text(
+                          "Email",
+                          style: _labelStyle,
+                        ),
+                        Text(
+                          _currentUser?.email ?? "Not Available",
+                          style: kParagraph,
+                        ),
+                        Text(
+                          "Address",
+                          style: _labelStyle,
+                        ),
+                        Text(
+                          _currentUser?.address ?? "Not Available",
+                          style: kParagraph,
+                        ),
+                        Text(
+                          "Account Type",
+                          style: _labelStyle,
+                        ),
+                        Text(
+                          _currentUser?.role ?? "Not Available",
+                          style: kParagraph,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(
-                    height: 40,
-                  ),
+                  const SizedBox(height: 30),
+                  // employee info
                   Text(
                     "Employee Info",
                     style: _sectionTitleStyle,
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Position",
-                              style: _labelStyle,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "Skill",
-                              style: _labelStyle,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "Salary",
-                              style: _labelStyle,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "Rate",
-                              style: _labelStyle,
-                            ),
-                          ],
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: 160,
+                    child: GridView.count(
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: 2,
+                      childAspectRatio: 4.5,
+                      children: [
+                        Text(
+                          "Position",
+                          style: _labelStyle,
                         ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _currentUser?.position ?? "Not Available",
-                              style: kParagraph,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              _currentUser?.skill ?? "Not Available",
-                              style: kParagraph,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              _currentUser?.salary != null
-                                  ? "\$${_currentUser?.salary}"
-                                  : "Not Available",
-                              style: kParagraph,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              _currentUser?.rate ?? "Not Available",
-                              style: kParagraph,
-                            ),
-                          ],
+                        Text(
+                          _currentUser?.position ?? "Not Available",
+                          style: kParagraph,
                         ),
-                      ),
-                    ],
+                        Text(
+                          "Skill",
+                          style: _labelStyle,
+                        ),
+                        Text(
+                          _currentUser?.skill ?? "Not Available",
+                          style: kParagraph,
+                        ),
+                        Text(
+                          "Salary",
+                          style: _labelStyle,
+                        ),
+                        Text(
+                          _currentUser?.salary ?? "Not Available",
+                          style: kParagraph,
+                        ),
+                        Text(
+                          "Rate",
+                          style: _labelStyle,
+                        ),
+                        Text(
+                          _currentUser?.rate ?? "Not Available",
+                          style: kParagraph,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -271,7 +205,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                         style: _labelStyle,
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 15,
                       ),
                       Text(
                         _currentUser?.background ?? "Not Available",
