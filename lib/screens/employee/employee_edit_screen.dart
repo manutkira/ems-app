@@ -350,7 +350,10 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                         child: Flexible(
                           child: TextFormField(
                             decoration: InputDecoration(
-                              prefixIcon: Icon(MdiIcons.currencyUsd),
+                              prefixIcon: const Icon(
+                                MdiIcons.currencyUsd,
+                                color: kWhite,
+                              ),
                               hintText: 'Enter Salary',
                               errorStyle: TextStyle(
                                 fontSize: 15,

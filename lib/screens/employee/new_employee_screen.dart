@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../constants.dart';
 
@@ -353,6 +354,10 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           child: Flexible(
                             child: TextFormField(
                               decoration: InputDecoration(
+                                  prefixIcon: const Icon(
+                                    MdiIcons.currencyUsd,
+                                    color: kWhite,
+                                  ),
                                   hintText: 'Enter Salary',
                                   errorStyle: TextStyle(
                                     fontSize: 15,
