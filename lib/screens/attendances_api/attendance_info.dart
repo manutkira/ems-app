@@ -23,6 +23,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   bool _isLoading = true;
   bool order = false;
   List<Appointment>? _appointment;
+  final color = const Color(0xff05445E);
+  final color1 = const Color(0xff3982A0);
 
   getPresent() async {
     var pc = await _attendanceService.countPresent(widget.id);
@@ -164,7 +166,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                   children: [
                     Container(
                       margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-                      height: 130,
+                      height: 150,
                       width: double.infinity,
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -173,246 +175,240 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                         color: kLightBlue,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10),
-                          child: Row(
+                          child: Column(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Container(
-                                  width: 75,
-                                  height: 75,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(100)),
-                                      border: Border.all(
-                                        width: 1,
-                                        color: Colors.white,
-                                      )),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(150),
-                                    child: Image.network(
-                                      attendanceDisplay[0].users!.image!,
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 10, top: 30),
+                                    child: Container(
+                                      width: 75,
                                       height: 75,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(100)),
+                                          border: Border.all(
+                                            width: 1,
+                                            color: Colors.white,
+                                          )),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(150),
+                                        child: Image.network(
+                                          attendanceDisplay[0].users!.image!,
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: 75,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  Container(
+                                    height: 50,
+                                    margin: EdgeInsets.only(left: 25, top: 35),
+                                    child: Expanded(
+                                      flex: 7,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'ID: ',
+                                                style: kParagraph.copyWith(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(
+                                                width: 45,
+                                              ),
+                                              Text(
+                                                attendanceDisplay[0]
+                                                    .users!
+                                                    .id
+                                                    .toString(),
+                                                style: kParagraph.copyWith(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Name: ',
+                                                style: kParagraph.copyWith(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Text(
+                                                attendanceDisplay[0]
+                                                    .users!
+                                                    .name
+                                                    .toString(),
+                                                style: kParagraph.copyWith(
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
-                              Container(
-                                height: 50,
-                                margin: EdgeInsets.only(left: 25),
-                                child: Expanded(
-                                  flex: 7,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'ID: ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.black),
-                                          ),
-                                          SizedBox(
-                                            width: 45,
-                                          ),
-                                          Text(
-                                            attendanceDisplay[0]
-                                                .users!
-                                                .id
-                                                .toString(),
-                                            style: kParagraph.copyWith(
-                                                color: Colors.black),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'Name: ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.black),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Text(
-                                            attendanceDisplay[0]
-                                                .users!
-                                                .name
-                                                .toString(),
-                                            style: kParagraph.copyWith(
-                                                color: Colors.black),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
                             ],
                           ),
                         ),
                       ),
                     ),
-                    Container(
-                      padding: kPaddingAll,
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height * .60,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30)),
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(top: 10),
-                            height: 110,
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              color: kLightBlue,
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 40,
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.only(top: 20),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 20),
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                'Present: ',
-                                                style: kHeadingFour.copyWith(
-                                                    color: kBlack),
-                                              ),
-                                              Text(
-                                                countPresent.toString(),
-                                                style: kHeadingFour.copyWith(
-                                                    color: kBlack),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Row(
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                            gradient: LinearGradient(
+                              colors: [
+                                color1,
+                                color,
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            )),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 50,
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(top: 45),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 20),
+                                        child: Row(
                                           children: [
                                             Text(
-                                              'Absent: ',
+                                              'Present: ',
                                               style: kHeadingFour.copyWith(
-                                                  color: kBlack),
+                                                  color: kWhite),
                                             ),
                                             Text(
-                                              countAbsent.toString(),
+                                              countPresent.toString(),
                                               style: kHeadingFour.copyWith(
-                                                  color: kBlack),
+                                                  color: kWhite),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Absent: ',
+                                            style: kHeadingFour.copyWith(
+                                                color: kWhite),
+                                          ),
+                                          Text(
+                                            countAbsent.toString(),
+                                            style: kHeadingFour.copyWith(
+                                                color: kWhite),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 60,
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(top: 45),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 20),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Permission: ',
+                                              style: kHeadingFour.copyWith(
+                                                  color: kWhite),
+                                            ),
+                                            Text(
+                                              countPermission.toString(),
+                                              style: kHeadingFour.copyWith(
+                                                  color: kWhite),
                                             ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 60,
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.only(top: 20),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 20),
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                'Permission: ',
-                                                style: kHeadingFour.copyWith(
-                                                    color: kBlack),
-                                              ),
-                                              Text(
-                                                countPermission.toString(),
-                                                style: kHeadingFour.copyWith(
-                                                    color: kBlack),
-                                              ),
-                                            ],
-                                          ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 0),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Late: ',
+                                              style: kHeadingFour.copyWith(
+                                                  color: kWhite),
+                                            ),
+                                            Text(
+                                              countLate.toString(),
+                                              style: kHeadingFour.copyWith(
+                                                  color: kWhite),
+                                            ),
+                                          ],
                                         ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 20),
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                'Late: ',
-                                                style: kHeadingFour.copyWith(
-                                                    color: kBlack),
-                                              ),
-                                              Text(
-                                                countLate.toString(),
-                                                style: kHeadingFour.copyWith(
-                                                    color: kBlack),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        // Row(
-                                        //   children: [
-                                        //     Text(
-                                        //       'Left Early: ',
-                                        //       style: kHeadingFour.copyWith(
-                                        //           color: kBlack),
-                                        //     ),
-                                        //     Text(
-                                        //       attendanceDisplay
-                                        //           .where((element) =>
-                                        //               // element.date!.hour < 8 &&
-                                        //               element.date!.hour < 16 &&
-                                        //               element.type ==
-                                        //                   'check out')
-                                        //           .toList()
-                                        //           .length
-                                        //           .toString(),
-                                        //       style: kHeadingFour.copyWith(
-                                        //           color: kBlack),
-                                        //     ),
-                                        //   ],
-                                        // ),
-                                      ],
-                                    ),
-                                  )
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            Container(
+                              margin: EdgeInsets.all(20),
+                              padding:
+                                  const EdgeInsets.only(top: 40, right: 10),
+                              child: SfCalendar(
+                                view: CalendarView.month,
+                                dataSource:
+                                    MeetingDataSource(getAppointments()),
+                                todayHighlightColor: Colors.grey,
+                                headerHeight: 25,
+                                cellBorderColor: Colors.grey,
+                                allowedViews: [
+                                  CalendarView.month,
+                                  CalendarView.schedule,
                                 ],
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 44, right: 10),
-                            child: SfCalendar(
-                              view: CalendarView.month,
-                              dataSource: MeetingDataSource(getAppointments()),
-                              todayHighlightColor: Colors.grey,
-                              headerHeight: 22,
-                              cellBorderColor: Colors.grey,
-                              allowedViews: [
-                                CalendarView.month,
-                                CalendarView.schedule,
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ],

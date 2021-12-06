@@ -7,6 +7,7 @@ import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class EmployeeEditScreen extends StatefulWidget {
   final int id;
@@ -69,16 +70,17 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   String? idUrl = '';
 
   Future getImage() async {
-    var image = await ImagePicker().getImage(
+    PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.gallery,
       maxHeight: 450,
       maxWidth: 450,
       imageQuality: 1,
     );
 
-    setState(() {
-      _pickedImage = File(image!.path);
-    });
+    if (pickedFile == null) {
+      return;
+    }
+    cropImage(pickedFile.path);
   }
 
   Future getIdFromCamera() async {
@@ -499,6 +501,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                         child: Flexible(
                           child: TextFormField(
                             decoration: InputDecoration(
+                              prefixIcon: Icon(MdiIcons.currencyUsd),
                               hintText: 'Enter Salary',
                               errorStyle: TextStyle(
                                 fontSize: 15,
