@@ -51,7 +51,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                   Center(
                     child: Stack(
                       children: [
-                        ProfileAvatar(
+                        const ProfileAvatar(
                           isDarkBackground: false,
                         ),
                         Positioned(

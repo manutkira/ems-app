@@ -18,7 +18,7 @@ class _EditOvertimeState extends State<EditOvertime> {
   TimeOfDay endedTime = TimeOfDay.now();
   final TextEditingController _noteController = TextEditingController();
   bool isLoading = false;
-  String _error = '';
+  String error = '';
 
   void _closePanel() {
     if (!isLoading) {
@@ -42,8 +42,6 @@ class _EditOvertimeState extends State<EditOvertime> {
   }
 
   void _updateOvertime() async {
-    print("${_noteController.text} $selectedDate $startedTime $endedTime");
-
     if (!isLoading) {
       setState(() {
         isLoading = true;
@@ -321,7 +319,7 @@ class _EditOvertimeState extends State<EditOvertime> {
           ),
           const SizedBox(height: 20),
           Visibility(
-            visible: _error.isEmpty,
+            visible: error.isEmpty,
             child: Column(
               children: const [
                 StatusError(text: "Error"),

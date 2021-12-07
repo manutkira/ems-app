@@ -115,7 +115,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   onTap: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (_) => OvertimeScreen(),
+                                        builder: (_) => const OvertimeScreen(),
                                       ),
                                     );
                                   },

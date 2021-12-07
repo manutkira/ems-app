@@ -1,12 +1,12 @@
 import 'exception_handler.dart';
 
 class AttendanceException extends IBaseException {
-  AttendanceException({required this.code, this.message = "Attendance error."})
-      : super(message);
+  AttendanceException({required this.code, this.message}) : super(message);
 
   final int code;
 
-  String message;
+  @override
+  String? message = "Attendance error.";
 
   @override
   String toString() {
@@ -33,7 +33,7 @@ class AttendanceException extends IBaseException {
 
       default:
         {
-          return message;
+          return message.toString();
         }
     }
   }

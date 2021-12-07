@@ -24,7 +24,7 @@ class ViewOvertime extends StatefulWidget {
 }
 
 class _ViewOvertimeState extends State<ViewOvertime> {
-  String _error = "";
+  String error = "";
 
   void _closePanel() {
     Navigator.of(context).pop();
@@ -199,7 +199,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
           Text(Overtime.note, style: kParagraph),
           const SizedBox(height: 20),
           Visibility(
-            visible: _error.isEmpty,
+            visible: error.isEmpty,
             child: Column(
               children: const [
                 StatusError(text: "Error"),
