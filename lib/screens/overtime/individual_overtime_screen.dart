@@ -45,7 +45,6 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
       isDismissible: false,
       child: const AddOvertime(),
     );
-    print("add add add");
   }
 
   void moreMenu(String value) async {
@@ -57,7 +56,6 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
             maxHeight: 460,
             child: const ViewOvertime(),
           );
-          print("view view view");
         }
         break;
       case "Edit":
@@ -69,7 +67,6 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
             isDismissible: false,
             child: const EditOvertime(),
           );
-          print("edit edit edit");
         }
         break;
       case "Delete":
@@ -79,7 +76,6 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
             isDismissible: false,
             child: const DeleteOvertime(),
           );
-          print("delete delete delete");
         }
         break;
       default:
@@ -248,7 +244,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                       ],
                     ),
                     const SizedBox(width: 10),
-                    Text('6h30mn'),
+                    const Text('6h30mn'),
                   ],
                 ),
               ),

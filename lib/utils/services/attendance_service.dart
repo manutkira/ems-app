@@ -16,7 +16,6 @@ class AttendanceService extends BaseService {
       Response response = await get(Uri.parse('$baseUrl/attendances/$id'));
       _code = response.statusCode;
       var jsondata = json.decode(response.body);
-      print(response.body);
       var attendance = Attendance.fromJson(jsondata);
       return attendance;
     } catch (e) {
@@ -45,8 +44,6 @@ class AttendanceService extends BaseService {
         throw AttendanceException(code: _code);
       }
 
-      // var jsondata = json.decode(response.body);
-      // var user = User.fromJson(jsondata);
       return int.parse(response.body);
     } catch (e) {
       throw AttendanceException(code: _code);
@@ -62,8 +59,6 @@ class AttendanceService extends BaseService {
         throw AttendanceException(code: _code);
       }
 
-      // var jsondata = json.decode(response.body);
-      // var user = User.fromJson(jsondata);
       return int.parse(response.body);
     } catch (e) {
       throw AttendanceException(code: _code);
@@ -79,8 +74,6 @@ class AttendanceService extends BaseService {
         throw AttendanceException(code: _code);
       }
 
-      // var jsondata = json.decode(response.body);
-      // var user = User.fromJson(jsondata);
       return int.parse(response.body);
     } catch (e) {
       throw AttendanceException(code: _code);
@@ -97,8 +90,6 @@ class AttendanceService extends BaseService {
         throw AttendanceException(code: _code);
       }
 
-      // var jsondata = json.decode(response.body);
-      // var user = User.fromJson(jsondata);
       return int.parse(response.body);
     } catch (e) {
       throw AttendanceException(code: _code);
@@ -110,7 +101,7 @@ class AttendanceService extends BaseService {
       Response response = await get(Uri.parse('$baseUrl/showAll'));
       _code = response.statusCode;
       List<dynamic> jsondata = json.decode(response.body);
-      List<Attendance> att = [];
+      // List<Attendance> att = [];
 
       // jsondata.asMap().forEach((key, value) {
       //   User _user = User.fromJson(value);
@@ -132,7 +123,6 @@ class AttendanceService extends BaseService {
       // List<Attendance> attendances = [Attendance(), Attendance()];
       return jsondata;
     } catch (e) {
-      print(e);
       throw AttendanceException(code: _code);
     }
   }
@@ -176,7 +166,6 @@ class AttendanceService extends BaseService {
         body: json.encode(jsons),
       );
       _code = response.statusCode;
-      print(response.body);
       var jsondata = json.decode(response.body);
       var attendance = Attendance.fromJson(jsondata);
       return attendance;
@@ -197,7 +186,7 @@ class AttendanceService extends BaseService {
     try {
       Response response = await put(
         Uri.parse(
-          '$baseUrl/attendances/${attId}',
+          '$baseUrl/attendances/$attId',
         ),
         headers: headers,
         body: json.encode(jsons),

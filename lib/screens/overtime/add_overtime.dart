@@ -18,7 +18,7 @@ class _AddOvertimeState extends State<AddOvertime> {
   TimeOfDay endedTime = TimeOfDay.now();
   final TextEditingController _noteController = TextEditingController();
   bool isLoading = false;
-  String _error = "";
+  String error = "";
 
   void _closePanel() {
     if (!isLoading) {
@@ -27,15 +27,12 @@ class _AddOvertimeState extends State<AddOvertime> {
   }
 
   void _addOvertime() async {
-    print(
-        "${_noteController.text} ${selectedDate} ${startedTime} ${endedTime}");
-
     if (!isLoading) {
       setState(() {
         isLoading = true;
       });
 
-      Future.delayed(Duration(seconds: 3), () {
+      Future.delayed(const Duration(seconds: 3), () {
         setState(() {
           isLoading = false;
         });
@@ -84,7 +81,7 @@ class _AddOvertimeState extends State<AddOvertime> {
               ),
               Visibility(
                 visible: isLoading,
-                child: CircularProgressIndicator(color: kWhite),
+                child: const CircularProgressIndicator(color: kWhite),
               ),
             ],
           ),
@@ -92,7 +89,7 @@ class _AddOvertimeState extends State<AddOvertime> {
           Container(
             height: 60,
             width: _size.width,
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             decoration: BoxDecoration(
               color: kDarkestBlue,
               borderRadius: BorderRadius.circular(6),
@@ -295,7 +292,7 @@ class _AddOvertimeState extends State<AddOvertime> {
           ),
           const SizedBox(height: 20),
           Visibility(
-            visible: _error.isEmpty,
+            visible: error.isEmpty,
             child: Column(
               children: const [
                 StatusError(text: "Error"),

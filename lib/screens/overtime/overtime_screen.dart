@@ -8,7 +8,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../home_screen.dart';
 
 class OvertimeScreen extends StatefulWidget {
-  OvertimeScreen({Key? key}) : super(key: key);
+  const OvertimeScreen({Key? key}) : super(key: key);
 
   @override
   State<OvertimeScreen> createState() => _OvertimeScreenState();
@@ -41,7 +41,6 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
               builder: (context) => const HomeScreen(),
             ),
           );
-          print("view view view");
         }
         break;
       case "Edit":
@@ -52,7 +51,6 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
           //         const HomeScreen(),
           //   ),
           // );
-          print("edit edit edit");
         }
         break;
       case "Delete":
@@ -63,7 +61,6 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
           //         const HomeScreen(),
           //   ),
           // );
-          print("delete delete delete");
         }
         break;
       default:
@@ -83,7 +80,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
       ),
       body: SafeArea(
         bottom: false,
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +90,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                 children: [
                   Row(
                     children: [
-                      Text('Sort by'),
+                      const Text('Sort by'),
                       const SizedBox(width: 5),
                       DropdownButton(
                         borderRadius: const BorderRadius.all(kBorderRadius),
@@ -182,7 +179,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                 onTap: () => Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        IndividualOvertimeScreen(),
+                                        const IndividualOvertimeScreen(),
                                   ),
                                 ),
                                 child: const SizedBox(

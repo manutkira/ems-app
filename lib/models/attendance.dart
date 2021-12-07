@@ -66,12 +66,12 @@ class Attendance {
   String toRawJson() => json.encode(toJson());
 
   factory Attendance.fromJson(Map<String, dynamic> json) => Attendance(
-        id: json["id"] == null ? null : json["id"],
-        userId: json["user_id"] == null ? null : json["user_id"],
+        id: json["id"],
+        userId: json["user_id"],
         date: json["date"] == null ? null : DateTime.parse(json["date"]),
-        type: json["type"] == null ? null : json["type"],
-        note: json["note"] == null ? null : json["note"],
-        code: json["code"] == null ? null : json["code"],
+        type: json["type"],
+        note: json["note"],
+        code: json["code"],
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
@@ -85,14 +85,14 @@ class Attendance {
     // user object is not necessary.
 
     return {
-      "id": id ?? null,
-      "user_id": userId ?? null,
-      "date": date == null ? null : date?.toIso8601String(),
-      "type": type ?? null,
-      "note": note ?? null,
-      "code": code ?? null,
-      "created_at": createdAt == null ? null : createdAt?.toIso8601String(),
-      "updated_at": updatedAt == null ? null : updatedAt?.toIso8601String(),
+      "id": id,
+      "user_id": userId,
+      "date": date?.toIso8601String(),
+      "type": type,
+      "note": note,
+      "code": code,
+      "created_at": createdAt?.toIso8601String(),
+      "updated_at": updatedAt?.toIso8601String(),
     };
   }
 }

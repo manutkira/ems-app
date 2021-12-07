@@ -74,7 +74,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
       );
       ref.read(currentUserProvider).setUser(user: user.copyWith());
     } catch (err) {
-      print(err);
+      //
     }
   }
 
@@ -110,7 +110,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   }
 
   void uploadPicture({required String field, required String type}) async {
-    var img = await ImagePicker().getImage(
+    var img = await ImagePicker().pickImage(
       source: type == 'camera' ? ImageSource.camera : ImageSource.gallery,
     );
 
@@ -180,7 +180,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              Center(
+              const Center(
                 child: ProfileAvatar(
                   isDarkBackground: false,
                 ),
@@ -457,18 +457,19 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   }
 
   /// generates a label + input
-  Widget RowWithInput(
-      {required Size size,
-      required String label,
-      required String textHint,
-      required String? defaultText,
-      required Function getValue,
-      IconData? icon}) {
+  Widget RowWithInput({
+    required Size size,
+    required String label,
+    required String textHint,
+    required String? defaultText,
+    required Function getValue,
+    IconData? icon,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          "$label",
+          label.toString(),
           style: kParagraph.copyWith(fontWeight: FontWeight.w700),
         ),
         Container(
@@ -496,7 +497,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   /// @Params User user => User object used to get user.imageId
   Widget _buildDisplayID(User user) {
     return ConstrainedBox(
-      constraints: BoxConstraints(minHeight: 120),
+      constraints: const BoxConstraints(minHeight: 120),
       child: Stack(
         children: [
           ClipRRect(
@@ -721,10 +722,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                       }
                       var isVerified = await confirmPassword();
                       if (isVerified) {
-                        print('verified');
                         // update info here
                         await updateProfile();
-                        print('updated');
                         // if success, close. else stay open
                         closePage();
                       } else {

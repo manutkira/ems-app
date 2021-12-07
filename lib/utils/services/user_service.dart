@@ -130,7 +130,7 @@ class UserService extends BaseService {
     try {
       Response response = await put(
         Uri.parse(
-          '$baseUrl/users/${userid}',
+          '$baseUrl/users/$userid',
         ),
         headers: headers,
         body: json.encode(jsons),

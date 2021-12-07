@@ -99,28 +99,23 @@ class User {
 
     try {
       user = User(
-        id: json["id"] == null ? null : json["id"],
-        name: json["name"] == null ? null : json["name"],
-        phone: json["phone"] == null ? null : json["phone"],
-        email: json["email"] == null ? null : json["email"],
+        id: json["id"],
+        name: json["name"],
+        phone: json["phone"],
+        email: json["email"],
         emailVerifiedAt: json["email_verified_at"] == null
             ? null
             : DateTime.parse(json["email_verified_at"]),
-        address: json["address"] == null ? null : json["address"],
-        image: json["image"] == null
-            ? null
-            : json['image'].runtimeType ==
-                    '_InternalLinkedHashMap<String, dynamic>'
-                ? null
-                : json["image"],
-        imageId: json["image_id"] == null ? null : json["image_id"],
-        position: json["position"] == null ? null : json["position"],
-        skill: json["skill"] == null ? null : json["skill"],
-        salary: json["salary"] == null ? null : json["salary"],
-        role: json["role"] == null ? null : json["role"],
-        background: json["background"] == null ? null : json["background"],
-        status: json["status"] == null ? null : json["status"],
-        rate: json["rate"] == null ? null : json["rate"],
+        address: json["address"],
+        image: json["image"],
+        imageId: json["image_id"],
+        position: json["position"],
+        skill: json["skill"],
+        salary: json["salary"],
+        role: json["role"],
+        background: json["background"],
+        status: json["status"],
+        rate: json["rate"],
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
@@ -129,7 +124,7 @@ class User {
             : DateTime.parse(json["updated_at"]),
       );
       return user;
-    } catch (e, stk) {
+    } catch (e) {
       throw UserException(code: 1);
     }
   }
@@ -187,25 +182,24 @@ class User {
     }
 
     return {
-      "id": id == null ? null : id,
-      "name": name == null ? null : name,
-      "phone": phone == null ? null : phone,
-      "email": email == null ? null : email,
-      "email_verified_at":
-          emailVerifiedAt == null ? null : emailVerifiedAt?.toIso8601String(),
-      "password": password == null ? null : password,
-      "address": address == null ? null : address,
-      "position": position == null ? null : position,
-      "skill": skill == null ? null : skill,
-      "salary": salary == null ? null : salary,
-      "role": role == null ? null : role,
-      "background": background == null ? null : background,
-      "status": status == null ? null : status,
-      "rate": rate == null ? null : rate,
-      "image": image == null ? null : image,
-      "image_id": imageId == null ? null : imageId,
-      "created_at": createdAt == null ? null : createdAt?.toIso8601String(),
-      "updated_at": updatedAt == null ? null : updatedAt?.toIso8601String(),
+      "id": id,
+      "name": name,
+      "phone": phone,
+      "email": email,
+      "email_verified_at": emailVerifiedAt?.toIso8601String(),
+      "password": password,
+      "address": address,
+      "position": position,
+      "skill": skill,
+      "salary": salary,
+      "role": role,
+      "background": background,
+      "status": status,
+      "rate": rate,
+      "image": image,
+      "image_id": imageId,
+      "created_at": createdAt?.toIso8601String(),
+      "updated_at": updatedAt?.toIso8601String(),
     };
   }
 }

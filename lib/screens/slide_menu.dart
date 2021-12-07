@@ -61,7 +61,7 @@ class MenuDrawer extends ConsumerWidget {
                             },
                             child: Column(
                               children: [
-                                ProfileAvatar(isDarkBackground: true),
+                                const ProfileAvatar(isDarkBackground: true),
                                 const SizedBox(height: 10),
                                 Text(
                                   "${currentUser?.name}",

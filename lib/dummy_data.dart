@@ -1,9 +1,6 @@
-import 'package:ems/models/attendance.dart';
-import 'package:flutter/material.dart';
-import 'dart:math';
 import './models/employee.dart';
 
-const indiEmployee = const [
+const indiEmployee = [
   Employee(
       name: 'Manut',
       id: '1',

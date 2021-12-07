@@ -33,7 +33,7 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
       isLoading = true;
     });
 
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () {
       setState(() {
         isLoading = false;
       });
@@ -43,7 +43,7 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
       isLoading = true;
     });
 
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () {
       setState(() {
         isLoading = false;
         // _closePanel();
@@ -64,7 +64,6 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
 
   @override
   Widget build(BuildContext context) {
-    Size _size = MediaQuery.of(context).size;
     // deleteOvertime();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
