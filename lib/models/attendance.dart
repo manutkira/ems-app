@@ -21,6 +21,7 @@ class Attendance {
     this.date,
     this.type,
     this.note,
+    this.code,
     this.createdAt,
     this.updatedAt,
     this.users,
@@ -31,6 +32,7 @@ class Attendance {
   DateTime? date;
   String? type;
   String? note;
+  String? code;
   DateTime? createdAt;
   DateTime? updatedAt;
   User? users;
@@ -41,6 +43,7 @@ class Attendance {
     DateTime? date,
     String? type,
     String? note,
+    String? code,
     DateTime? createdAt,
     DateTime? updatedAt,
     User? users,
@@ -51,6 +54,7 @@ class Attendance {
         date: date ?? this.date,
         type: type ?? this.type,
         note: note ?? this.note,
+        code: code ?? this.code,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
         users: users == null ? this.users : users.copyWith(),
@@ -67,6 +71,7 @@ class Attendance {
         date: json["date"] == null ? null : DateTime.parse(json["date"]),
         type: json["type"] == null ? null : json["type"],
         note: json["note"] == null ? null : json["note"],
+        code: json["code"] == null ? null : json["code"],
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
@@ -85,6 +90,7 @@ class Attendance {
       "date": date == null ? null : date?.toIso8601String(),
       "type": type ?? null,
       "note": note ?? null,
+      "code": code ?? null,
       "created_at": createdAt == null ? null : createdAt?.toIso8601String(),
       "updated_at": updatedAt == null ? null : updatedAt?.toIso8601String(),
     };

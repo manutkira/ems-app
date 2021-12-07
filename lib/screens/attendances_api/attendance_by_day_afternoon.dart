@@ -8,12 +8,13 @@ import '../../constants.dart';
 import '../../models/attendance.dart';
 import '../../utils/services/attendance_service.dart';
 
-class AttendanceByDayScreen extends StatefulWidget {
+class AttendanceByDayAfternoonScreen extends StatefulWidget {
   @override
   _AttendanceByDayScreenState createState() => _AttendanceByDayScreenState();
 }
 
-class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
+class _AttendanceByDayScreenState
+    extends State<AttendanceByDayAfternoonScreen> {
   AttendanceService _attendanceService = AttendanceService.instance;
   UserService _userService = UserService.instance;
 
@@ -53,7 +54,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
         element.date!.month == pick.month &&
         element.date!.year == pick.year &&
         element.type != 'checkout' &&
-        element.code == 'cin1');
+        element.code == 'cin2');
     setState(() {
       users = checkingDate.toList();
       checkedDate = users;

@@ -3,6 +3,7 @@ import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/attendance_info.dart';
 import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
+import 'package:ems/screens/attendances_api/tap_screen.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 
@@ -344,7 +345,7 @@ void onSelected(BuildContext context, int item) {
     case 0:
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => AttendanceByDayScreen(),
+          builder: (_) => TapScreen(),
         ),
       );
       break;
