@@ -261,7 +261,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                               Text(attendancedisplay
                                   .where((element) =>
                                       element.userId == userDisplay[index].id &&
-                                      element.type == 'check in' &&
+                                      element.type == 'checkin' &&
                                       element.date!.hour < 9)
                                   .length
                                   .toString()),
@@ -295,7 +295,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                               Text(attendancedisplay
                                   .where((element) =>
                                       element.userId == userDisplay[index].id &&
-                                      element.type == 'check in' &&
+                                      element.type == 'checkin' &&
                                       element.date!.hour > 8)
                                   .length
                                   .toString()),
@@ -310,7 +310,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                               Text(attendancedisplay
                                   .where((element) =>
                                       element.userId == userDisplay[index].id &&
-                                      element.type == 'check out' &&
+                                      element.type == 'checkout' &&
                                       element.date!.hour > 8 &&
                                       element.date!.hour < 17)
                                   .length

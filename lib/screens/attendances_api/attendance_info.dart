@@ -91,10 +91,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     if (attendance.type == 'permission') {
       return Colors.blue;
     }
-    if (attendance.type == 'check out') {
+    if (attendance.type == 'checkout') {
       return Colors.lightGreen;
     }
-    if (attendance.date!.hour >= 9 && attendance.type == 'check in') {
+    if (attendance.date!.hour >= 9 && attendance.type == 'checkin') {
       return Colors.yellow;
     } else {
       return Colors.green;
@@ -104,7 +104,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Appointment> getAppointments() {
     List<Appointment> meetings = <Appointment>[];
     attendanceDisplay.asMap().forEach((key, value) {
-      if (value.type != 'check out') {
+      if (value.type != 'checkout') {
         Appointment newAppointment = Appointment(
             startTime: value.date as DateTime,
             endTime: value.date as DateTime,
@@ -165,7 +165,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
               : Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      margin:
+                          const EdgeInsets.only(top: 5, left: 10, right: 10),
                       height: 150,
                       width: double.infinity,
                       child: Card(
