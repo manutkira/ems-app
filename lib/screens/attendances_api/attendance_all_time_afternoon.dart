@@ -8,13 +8,14 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 import '../../utils/services/attendance_service.dart';
 
-class AttendanceAllTimeScreen extends StatefulWidget {
+class AttendanceAllTimeScreenAfternoon extends StatefulWidget {
   @override
   _AttendanceAllTimeScreenState createState() =>
       _AttendanceAllTimeScreenState();
 }
 
-class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
+class _AttendanceAllTimeScreenState
+    extends State<AttendanceAllTimeScreenAfternoon> {
   AttendanceService _attendanceService = AttendanceService.instance;
   UserService _userService = UserService.instance;
   dynamic countPresent = '';
@@ -32,36 +33,58 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
     _controller.clear();
   }
 
+  getAtt() async {
+    attendancedisplay = await _attendanceService.findMany();
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  getUser() async {
+    users = await _userService.findMany();
+    userDisplay = users;
+    if (mounted) {
+      setState(() {
+        userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
-    try {
-      _attendanceService.findMany().then((userFromServer) {
-        setState(() {
-          _isLoading = false;
-          attendancedisplay.addAll(userFromServer);
-        });
-      });
-      _userService.findMany().then((value) {
-        setState(() {
-          _isLoading = false;
-          users.addAll(value);
-          userDisplay = users;
-          userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-          var pc = _attendanceService
-              .countPresent(int.parse(users.map((e) => e.id).toString()));
-          if (mounted) {
-            setState(() {
-              countPresent = pc;
-              print(countPresent);
-            });
-          }
-        });
-      });
-    } catch (err) {
-      print(err);
-    }
+    getAtt();
+    getUser();
+
+    // try {
+    //   _attendanceService.findMany().then((userFromServer) {
+    //     setState(() {
+    //       _isLoading = false;
+    //       attendancedisplay.addAll(userFromServer);
+    //     });
+    //   });
+    //   _userService.findMany().then((value) {
+    //     setState(() {
+    //       _isLoading = false;
+    //       users.addAll(value);
+    //       userDisplay = users;
+    //       userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+    //       var pc = _attendanceService
+    //           .countPresent(int.parse(users.map((e) => e.id).toString()));
+    //       if (mounted) {
+    //         setState(() {
+    //           countPresent = pc;
+    //           print(countPresent);
+    //         });
+    //       }
+    //     });
+    //   });
+    // } catch (err) {
+    //   print(err);
+    // }
   }
 
   @override
@@ -262,7 +285,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                   .where((element) =>
                                       element.userId == userDisplay[index].id &&
                                       element.type == 'checkin' &&
-                                      element.code == 'cin1' &&
+                                      element.code == 'cin2' &&
                                       element.date!.hour < 9)
                                   .length
                                   .toString()),
@@ -279,7 +302,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                     .where((element) =>
                                         element.userId ==
                                             userDisplay[index].id &&
-                                        element.code == 'cin1' &&
+                                        element.code == 'cin2' &&
                                         element.type == 'absent')
                                     .length
                                     .toString(),
@@ -300,8 +323,8 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                               Text(attendancedisplay
                                   .where((element) =>
                                       element.userId == userDisplay[index].id &&
-                                      element.code == 'cin1' &&
                                       element.type == 'checkin' &&
+                                      element.code == 'cin2' &&
                                       element.date!.hour > 8)
                                   .length
                                   .toString()),
@@ -317,7 +340,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                   .where((element) =>
                                       element.userId == userDisplay[index].id &&
                                       element.type == 'checkout' &&
-                                      element.code == 'cin1' &&
+                                      element.code == 'cin2' &&
                                       element.date!.hour > 8 &&
                                       element.date!.hour < 17)
                                   .length
@@ -332,8 +355,8 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                               Text('PM:'),
                               Text(attendancedisplay
                                   .where((element) =>
+                                      element.code == 'cin2' &&
                                       element.userId == userDisplay[index].id &&
-                                      element.code == 'cin1' &&
                                       element.type == 'permission')
                                   .length
                                   .toString()),

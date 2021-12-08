@@ -8,13 +8,14 @@ import '../../screens/attendances_api/attendance_all_time.dart';
 import '../../screens/attendances_api/attendance_by_day_screen.dart';
 import '../../utils/services/attendance_service.dart';
 
-class AttendancesByMonthScreen extends StatefulWidget {
+class AttendancesByMonthScreenAfternoon extends StatefulWidget {
   @override
   _AttendancesByMonthScreenState createState() =>
       _AttendancesByMonthScreenState();
 }
 
-class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
+class _AttendancesByMonthScreenState
+    extends State<AttendancesByMonthScreenAfternoon> {
   AttendanceService _attendanceService = AttendanceService.instance;
   UserService _userService = UserService.instance;
 
@@ -734,7 +735,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                       element.type ==
                                                                           'checkin' &&
                                                                       element.code ==
-                                                                          'cin1' &&
+                                                                          'cin2' &&
                                                                       element.date
                                                                               .hour <
                                                                           8 &&
@@ -769,7 +770,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                             .month ==
                                                                         _selectMonth &&
                                                                     element.code ==
-                                                                        'cin1' &&
+                                                                        'cin2' &&
                                                                     element.type ==
                                                                         'absent' &&
                                                                     element.date
@@ -806,7 +807,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                             .month ==
                                                                         _selectMonth &&
                                                                     element.code ==
-                                                                        'cin1' &&
+                                                                        'cin2' &&
                                                                     element.type ==
                                                                         'checkin' &&
                                                                     element.date
@@ -839,7 +840,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                             .month ==
                                                                         _selectMonth &&
                                                                     element.code ==
-                                                                        'cin1' &&
+                                                                        'cin2' &&
                                                                     element.type ==
                                                                         'check out' &&
                                                                     element.date
@@ -868,7 +869,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                                 index]
                                                                             .id &&
                                                                     element.code ==
-                                                                        'cin1' &&
+                                                                        'cin2' &&
                                                                     element
                                                                             .date
                                                                             .month ==

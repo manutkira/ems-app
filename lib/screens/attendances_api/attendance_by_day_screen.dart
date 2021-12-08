@@ -232,7 +232,6 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                                 : Column(
                                     children: [
                                       _searchBar(),
-                                      Text('Morning'),
                                       Expanded(
                                         child: ListView.builder(
                                           itemBuilder: (ctx, index) {
