@@ -2,6 +2,8 @@ import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
+import 'package:ems/screens/attendances_api/tap_screen.dart';
+import 'package:ems/screens/attendances_api/tap_screen_month.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 
@@ -448,14 +450,14 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
       case 0:
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => AttendancesByMonthScreen(),
+            builder: (context) => TapScreenMonth(),
           ),
         );
         break;
       case 1:
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => AttendanceByDayScreen(),
+            builder: (context) => TapScreen(),
           ),
         );
         break;

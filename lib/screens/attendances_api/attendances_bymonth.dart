@@ -1,3 +1,5 @@
+import 'package:ems/screens/attendances_api/tap_screen.dart';
+import 'package:ems/screens/attendances_api/tap_screen_alltime.dart';
 import 'package:intl/intl.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/user_service.dart';
@@ -1003,14 +1005,14 @@ void onSelected(BuildContext context, int item) {
     case 0:
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => AttendanceByDayScreen(),
+          builder: (_) => TapScreen(),
         ),
       );
       break;
     case 1:
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => AttendanceAllTimeScreen(),
+          builder: (context) => TapScreenAlltime(),
         ),
       );
       break;
