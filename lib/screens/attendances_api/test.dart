@@ -14,6 +14,7 @@ class Testscreen extends StatefulWidget {
 class _TestscreenState extends State<Testscreen> {
   OvertimeAttendance overtimes = new OvertimeAttendance();
   UserService _userService = UserService.instance;
+  List<OvertimeAttendance> _overtimeDisplay = [];
   List<User> users = [];
 
   getOvertime() async {
@@ -29,7 +30,6 @@ class _TestscreenState extends State<Testscreen> {
     var attendences = jsonData['data']['attendances'];
 
     attendences.forEach((key, value) {
-      // print(value[0]);
       OvertimeAttendance overtimeModel = new OvertimeAttendance();
       overtimes = OvertimeAttendance(
         checkin: OvertimeCheckin.fromMap(
@@ -56,20 +56,49 @@ class _TestscreenState extends State<Testscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-      children: [
-        Container(
-          child: Text(users[0].name!),
-        ),
-        ListView.builder(
-          itemBuilder: (ctx, index) {
-            return Container(
-              child: Text(overtimes.checkout!.overtime!),
-            );
-          },
-          itemCount: overtimes.checkout!.overtime!.length,
-        ),
-      ],
-    ));
+      body: overtimes.checkout == null
+          ? Container(
+              padding: EdgeInsets.only(top: 300),
+              child: Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'fetching data',
+                      style: TextStyle(fontSize: 30),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    CircularProgressIndicator(
+                      backgroundColor: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Center(
+              child: Container(
+                padding: EdgeInsets.only(top: 300),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Name: '),
+                        Text(users[0].name!),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Overtime: '),
+                        Text(overtimes.checkout!.overtime!),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+    );
   }
 }
