@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:ems/models/overtime.dart';
+import 'package:ems/models/user.dart';
+import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
@@ -10,7 +12,9 @@ class Testscreen extends StatefulWidget {
 }
 
 class _TestscreenState extends State<Testscreen> {
-  List<OvertimeAttendance> overtimes = [];
+  OvertimeAttendance overtimes = new OvertimeAttendance();
+  UserService _userService = UserService.instance;
+  List<User> users = [];
 
   getOvertime() async {
     var url =
@@ -27,7 +31,7 @@ class _TestscreenState extends State<Testscreen> {
     attendences.forEach((key, value) {
       // print(value[0]);
       OvertimeAttendance overtimeModel = new OvertimeAttendance();
-      overtimeModel = OvertimeAttendance(
+      overtimes = OvertimeAttendance(
         checkin: OvertimeCheckin.fromMap(
           value[0],
         ),
@@ -35,7 +39,6 @@ class _TestscreenState extends State<Testscreen> {
           value[1],
         ),
       );
-      print(overtimeModel.checkout!.overtime);
     });
 
     setState(() {});
@@ -45,10 +48,28 @@ class _TestscreenState extends State<Testscreen> {
   void initState() {
     getOvertime();
     super.initState();
+    _userService.findOne(1).then((value) {
+      users.add(value);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+        body: Column(
+      children: [
+        Container(
+          child: Text(users[0].name!),
+        ),
+        ListView.builder(
+          itemBuilder: (ctx, index) {
+            return Container(
+              child: Text(overtimes.checkout!.overtime!),
+            );
+          },
+          itemCount: overtimes.checkout!.overtime!.length,
+        ),
+      ],
+    ));
   }
 }
