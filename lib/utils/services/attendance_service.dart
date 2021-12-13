@@ -134,10 +134,10 @@ class AttendanceService extends BaseService {
       _code = response.statusCode;
       var jsondata = json.decode(response.body);
       // get the user object
-      User _user = User.fromJson(jsondata["users"]);
+      User _user = User.fromJson(jsondata);
       // attendance object without user object
       List<Attendance> _attendances =
-          attendancesFromJson(jsondata["users"]["attendances"]);
+          attendancesFromJson(jsondata["attendances"]);
 
       //adding user object to the attendances
       List<Attendance> attendances = _attendances.map((attendance) {
