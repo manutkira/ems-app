@@ -1,5 +1,3 @@
-import 'package:ems/models/attendance.dart';
-
 // class Overtime extends Attendance {
 //   Overtime({
 //     this.overtime,
@@ -85,79 +83,123 @@ import 'package:ems/models/attendance.dart';
 //     };
 //   }
 // }
+//
+// class OvertimeUser {
+//   int? id;
+//   String? name;
+//   String? phone;
+//   String? email;
+//   DateTime? emailVerifiedAt;
+//   String? address;
+//   String? password;
+//   String? position;
+//   String? skill;
+//   String? salary;
+//   String? role;
+//   String? background;
+//   String? status;
+//   String? rate;
+//   DateTime? createdAt;
+//   DateTime? updatedAt;
+//   String? image;
+//   String? imageId;
+//
+//   OvertimeUser({
+//     this.id,
+//     this.name,
+//     this.phone,
+//     this.email,
+//     this.emailVerifiedAt,
+//     this.address,
+//     this.password,
+//     this.position,
+//     this.skill,
+//     this.salary,
+//     this.role,
+//     this.background,
+//     this.status,
+//     this.rate,
+//     this.image,
+//     this.imageId,
+//     this.createdAt,
+//     this.updatedAt,
+//   });
+//
+//   factory OvertimeUser.fromMap(Map<String, dynamic> jsonData) {
+//     return OvertimeUser(
+//       name: jsonData['name'],
+//       phone: jsonData['phone'],
+//       email: jsonData['email'],
+//       emailVerifiedAt: jsonData['emailVerifiedAt'],
+//       address: jsonData['address'],
+//       password: jsonData['password'],
+//       position: jsonData['position'],
+//       skill: jsonData['skill'],
+//       salary: jsonData['salary'],
+//       role: jsonData['role'],
+//       background: jsonData['background'],
+//       status: jsonData['status'],
+//       rate: jsonData['rate'],
+//       createdAt: jsonData['createdAt'],
+//       updatedAt: jsonData['updatedAt'],
+//       image: jsonData['updatedAt'],
+//       imageId: jsonData['imageId'],
+//     );
+//   }
+// }
 
-class OvertimeUser {
-  int? id;
-  String? name;
-  String? phone;
-  String? email;
-  DateTime? emailVerifiedAt;
-  String? address;
-  String? password;
-  String? position;
-  String? skill;
-  String? salary;
-  String? role;
-  String? background;
-  String? status;
-  String? rate;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  String? image;
-  String? imageId;
+import 'package:ems/models/user.dart';
 
-  OvertimeUser({
-    this.id,
-    this.name,
-    this.phone,
-    this.email,
-    this.emailVerifiedAt,
-    this.address,
-    this.password,
-    this.position,
-    this.skill,
-    this.salary,
-    this.role,
-    this.background,
-    this.status,
-    this.rate,
-    this.image,
-    this.imageId,
-    this.createdAt,
-    this.updatedAt,
+List<OvertimeAttendance> overtimesFromJson(dynamic list) {
+  // print('$list');
+
+  List<OvertimeAttendance> _overtimeWithoutUser = [];
+  list.forEach((key, value) {
+    _overtimeWithoutUser.add(OvertimeAttendance(
+      checkin: OvertimeCheckin.fromMap(value[0]),
+      checkout: OvertimeCheckout.fromMap(value[1]),
+    ));
   });
 
-  factory OvertimeUser.fromMap(Map<String, dynamic> jsonData) {
-    return OvertimeUser(
-      name: jsonData['name'],
-      phone: jsonData['phone'],
-      email: jsonData['email'],
-      emailVerifiedAt: jsonData['emailVerifiedAt'],
-      address: jsonData['address'],
-      password: jsonData['password'],
-      position: jsonData['position'],
-      skill: jsonData['skill'],
-      salary: jsonData['salary'],
-      role: jsonData['role'],
-      background: jsonData['background'],
-      status: jsonData['status'],
-      rate: jsonData['rate'],
-      createdAt: jsonData['createdAt'],
-      updatedAt: jsonData['updatedAt'],
-      image: jsonData['updatedAt'],
-      imageId: jsonData['imageId'],
-    );
-  }
+  return _overtimeWithoutUser;
+
+  return List<OvertimeAttendance>.from(
+    list.map((x) {
+      print(x);
+      // att.forEach((key, value) {
+      //   _overtimeWithoutUser.add(overtimesFromJson(value));
+      //   ;
+      // });
+    }
+        // (x) => OvertimeAttendance(
+        //   checkin: OvertimeCheckin.fromMap(x[0]),
+        //   checkout: OvertimeCheckout.fromMap(x[1]),
+        // ),
+        ),
+  );
 }
 
 class OvertimeAttendance {
   OvertimeCheckin? checkin;
   OvertimeCheckout? checkout;
+  User? user;
 
   OvertimeAttendance({
+    this.user,
     this.checkin,
     this.checkout,
   });
+
+  OvertimeAttendance copyWith({
+    OvertimeCheckin? checkin,
+    OvertimeCheckout? checkout,
+    User? user,
+  }) =>
+      OvertimeAttendance(
+        checkin: checkin ?? this.checkin,
+        checkout: checkout ?? this.checkout,
+        user: user ?? this.user,
+      );
 }
 
 class OvertimeCheckin {
@@ -239,22 +281,22 @@ class OvertimeCheckout {
 //     image,
 //     imageId,
 //   }) : super(
-          // name: name,
-          // phone: phone,
-          // email: email,
-          // emailVerifiedAt: emailVerifiedAt,
-          // address: address,
-          // password: password,
-          // position: position,
-          // skill: skill,
-          // salary: salary,
-          // role: role,
-          // background: background,
-          // status: status,
-          // rate: rate,
-          // createdAt: createdAt,
-          // updatedAt: updatedAt,
-          // image: image,
-          // imageId: imageId,
+// name: name,
+// phone: phone,
+// email: email,
+// emailVerifiedAt: emailVerifiedAt,
+// address: address,
+// password: password,
+// position: position,
+// skill: skill,
+// salary: salary,
+// role: role,
+// background: background,
+// status: status,
+// rate: rate,
+// createdAt: createdAt,
+// updatedAt: updatedAt,
+// image: image,
+// imageId: imageId,
 //         );
 // }
