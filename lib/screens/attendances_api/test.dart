@@ -1,4 +1,5 @@
 import 'package:ems/constants.dart';
+import 'package:ems/models/attendance_no_s.dart';
 import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/overtime_service.dart';
@@ -15,6 +16,8 @@ class _TestscreenState extends State<Testscreen> {
   List<OvertimeAttendance> _overtimeDisplay = [];
   List<User> users = [];
   OvertimeService _overtimeAttendance = OvertimeService.instance;
+  AttendanceByIdService _overtimeService = AttendanceByIdService.instance;
+  List<AttendanceById> _attendanceDisplay = [];
 
   // getOvertime() async {
   //   var url =
@@ -57,11 +60,27 @@ class _TestscreenState extends State<Testscreen> {
     }
   }
 
+  fetchAttendance() async {
+    try {
+      List<AttendanceById> attendanceDisplay =
+          await _overtimeService.findByUserId(userId: 1);
+      // print('abc $attendanceDisplay');
+      setState(() {
+        _attendanceDisplay = attendanceDisplay;
+      });
+      // print('froms $_attendanceDisplay');
+      print(_attendanceDisplay.map((e) => e.checkin1!.type));
+    } catch (e) {
+      print('hehe $e');
+    }
+  }
+
   @override
   void initState() {
     // getOvertime();
     super.initState();
     fetchOvertime();
+    fetchAttendance();
   }
   //
   // TimeOfDay _startTime = ;
