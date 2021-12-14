@@ -1,3 +1,5 @@
+import 'package:ems/models/overtime.dart';
+import 'package:ems/models/user.dart';
 import 'package:ems/screens/overtime/delete_overtime.dart';
 import 'package:ems/screens/overtime/edit_overtime.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
@@ -7,17 +9,18 @@ import 'package:intl/intl.dart';
 
 import '../../constants.dart';
 
-class Overtime {
-  static get uid => 1;
-  static get name => "Kim Song";
-  static get date => DateTime.now();
-  static get startedTime => TimeOfDay.now();
-  static get endedTime => TimeOfDay.now();
-  static get note => "finish the project";
-}
+// class Overtime {
+//   static get uid => 1;
+//   static get name => "Kim Song";
+//   static get date => DateTime.now();
+//   static get startedTime => TimeOfDay.now();
+//   static get endedTime => TimeOfDay.now();
+//   static get note => "finish the project";
+// }
 
 class ViewOvertime extends StatefulWidget {
-  const ViewOvertime({Key? key}) : super(key: key);
+  const ViewOvertime({Key? key, required this.record}) : super(key: key);
+  final OvertimeAttendance record;
 
   @override
   _ViewOvertimeState createState() => _ViewOvertimeState();
@@ -61,6 +64,14 @@ class _ViewOvertimeState extends State<ViewOvertime> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+    OvertimeAttendance record = widget.record;
+    OvertimeCheckin? checkIn = record.checkin;
+    OvertimeCheckout? checkOut = record.checkout;
+    TimeOfDay _time = TimeOfDay(
+      hour: int.parse(checkOut!.overtime!.split(":")[0]),
+      minute: int.parse(checkOut.overtime!.split(":")[1]),
+    );
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
@@ -89,64 +100,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
             ],
           ),
           const SizedBox(height: 30),
-          Container(
-            height: 60,
-            width: _size.width,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            decoration: BoxDecoration(
-              color: kDarkestBlue,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const CircleAvatar(),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'ID',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        const SizedBox(width: 5),
-                        const Text(
-                          '[emp id]',
-                          style: kParagraph,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          'Name',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        const SizedBox(width: 5),
-                        const SizedBox(
-                          width: 200,
-                          child: Text(
-                            '[emp name]dfasfdasfsdafdsaf asdfadsfhjasdkfhadsf',
-                            style: kParagraph,
-                            overflow: TextOverflow.fade,
-                            softWrap: false,
-                            maxLines: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 10),
-              ],
-            ),
-          ),
+          _buildUserInfo(_size),
           const SizedBox(height: 30),
           Row(
             children: [
@@ -158,7 +112,9 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                 width: 20,
               ),
               Text(
-                DateFormat('dd/MM/yyyy').format(Overtime.date).toString(),
+                DateFormat('dd/MM/yyyy')
+                    .format(checkIn?.date as DateTime)
+                    .toString(),
                 style: kParagraph,
               ),
             ],
@@ -174,7 +130,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                 width: 20,
               ),
               Text(
-                "${Overtime.startedTime.hour.toString().padLeft(2, '0')}:${Overtime.startedTime.minute.toString().padLeft(2, '0')}",
+                "${checkIn?.date?.hour.toString().padLeft(2, '0')}:${Overtime.startedTime.minute.toString().padLeft(2, '0')}",
                 style: kParagraph,
               ),
               const SizedBox(
@@ -188,18 +144,31 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                 width: 20,
               ),
               Text(
-                "${Overtime.endedTime.hour.toString().padLeft(2, '0')}:${Overtime.endedTime.minute.toString().padLeft(2, '0')}",
+                "${checkOut.date?.hour.toString().padLeft(2, '0')}:${Overtime.endedTime.minute.toString().padLeft(2, '0')}",
                 style: kParagraph,
               ),
             ],
           ),
           const SizedBox(height: 10),
+          Row(
+            children: [
+              Text(
+                "Total",
+                style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              Text("${_time.hour}h ${_time.minute}mn", style: kParagraph),
+            ],
+          ),
+          const SizedBox(height: 10),
           Text('Note', style: kParagraph.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 10),
-          Text(Overtime.note, style: kParagraph),
+          Text("${checkIn?.note ?? "No note"}", style: kParagraph),
           const SizedBox(height: 20),
           Visibility(
-            visible: error.isEmpty,
+            visible: error.isNotEmpty,
             child: Column(
               children: const [
                 StatusError(text: "Error"),
@@ -239,6 +208,72 @@ class _ViewOvertimeState extends State<ViewOvertime> {
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserInfo(Size _size) {
+    OvertimeAttendance record = widget.record;
+    User? user = record.user;
+
+    return Container(
+      height: 60,
+      width: _size.width,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: kDarkestBlue,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            backgroundImage: NetworkImage("${user?.image}"),
+            radius: 24,
+          ),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'ID',
+                    style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    '${user?.id ?? ""}',
+                    style: kParagraph,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    'Name',
+                    style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(width: 5),
+                  SizedBox(
+                    width: 200,
+                    child: Text(
+                      user?.name ?? "",
+                      style: kParagraph,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(width: 10),
         ],
       ),
     );

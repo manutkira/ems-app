@@ -1,10 +1,13 @@
 import 'package:ems/constants.dart';
 import 'package:ems/models/menu_options.dart';
+import 'package:ems/models/overtime.dart';
+import 'package:ems/models/user.dart';
 import 'package:ems/screens/overtime/add_overtime.dart';
 import 'package:ems/screens/overtime/delete_overtime.dart';
 import 'package:ems/screens/overtime/edit_overtime.dart';
 import 'package:ems/screens/overtime/view_overtime.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
+import 'package:ems/utils/services/overtime_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -18,6 +21,7 @@ class IndividualOvertimeScreen extends StatefulWidget {
 }
 
 class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
+  final OvertimeService _overtimeService = OvertimeService.instance;
   String dropdownValue = 'Day';
   var dropdownItems = [
     'Day',
@@ -27,8 +31,8 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     'All Time',
   ];
 
-  List<int> listOfOvertime = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  // List<int> listOfOvertime = [];
+  List<OvertimeAttendance> overtimeRecords = [];
+  bool isFetching = false;
 
   DateTime selectedDate = DateTime.now();
 
@@ -47,14 +51,16 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     );
   }
 
-  void moreMenu(String value) async {
+  void moreMenu(String value, OvertimeAttendance record) async {
     switch (value) {
       case "View":
         {
           await modalBottomSheetBuilder(
             context: context,
             maxHeight: 460,
-            child: const ViewOvertime(),
+            child: ViewOvertime(
+              record: record,
+            ),
           );
         }
         break;
@@ -83,6 +89,31 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
           return;
         }
     }
+  }
+
+  void fetchOvertimeRecord() async {
+    setState(() {
+      isFetching = true;
+    });
+    try {
+      List<OvertimeAttendance> records =
+          await _overtimeService.findManyByUserId(userId: 1);
+      setState(() {
+        overtimeRecords = records;
+        isFetching = false;
+      });
+    } catch (err) {
+      setState(() {
+        isFetching = false;
+      });
+      //
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchOvertimeRecord();
   }
 
   @override
@@ -199,61 +230,28 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                   color: kDarkestBlue,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const CircleAvatar(
-                          radius: 30,
-                        ),
-                        const SizedBox(width: 10),
-                        Row(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'ID',
-                                  style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                Text(
-                                  'Name',
-                                  style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  '[emp id]',
-                                  style: kParagraph,
-                                ),
-                                Text(
-                                  '[emp name]',
-                                  style: kParagraph,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: 10),
-                    const Text('6h30mn'),
-                  ],
-                ),
+                child: _buildUserInfo,
               ),
               const SizedBox(height: 20),
+              Visibility(
+                visible: isFetching,
+                child: Flexible(
+                  child: Column(
+                    children: const [
+                      CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                      SizedBox(height: 10),
+                      Text('Fetching overtime records...'),
+                    ],
+                  ),
+                ),
+              ),
               Expanded(
-                child: listOfOvertime.isEmpty
+                child: overtimeRecords.isEmpty && !isFetching
                     ? _noRecord
                     : ListView.builder(
-                        itemCount: listOfOvertime.length,
+                        itemCount: overtimeRecords.length,
                         itemBuilder: (context, i) {
                           return _buildListItem(i);
                         },
@@ -282,6 +280,14 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
   }
 
   Widget _buildListItem(int i) {
+    OvertimeAttendance record = overtimeRecords[i];
+    OvertimeCheckin? checkIn = record.checkin;
+    OvertimeCheckout? checkout = record.checkout;
+    TimeOfDay _time = TimeOfDay(
+      hour: int.parse(checkout!.overtime!.split(":")[0]),
+      minute: int.parse(checkout.overtime!.split(":")[1]),
+    );
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 15,
@@ -295,7 +301,9 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
             children: [
               const SizedBox(width: 20),
               Text(
-                DateFormat('dd/MM/yyyy').format(DateTime.now()).toString(),
+                DateFormat('dd/MM/yyyy')
+                    .format(checkIn?.date as DateTime)
+                    .toString(),
                 style: kSubtitle,
               ),
             ],
@@ -303,7 +311,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
           Row(
             children: [
               Container(
-                width: 50,
+                width: 80,
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -314,7 +322,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                   borderRadius: BorderRadius.circular(3),
                 ),
                 child: Text(
-                  '1h',
+                  '${_time.hour}h ${_time.minute}mn',
                   style: kSubtitle.copyWith(color: kGreenText),
                 ),
               ),
@@ -333,12 +341,75 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                     child: Text(e),
                   );
                 }).toList(),
-                onSelected: moreMenu,
+                onSelected: (selected) => moreMenu(selected, record),
               ),
             ],
           )
         ],
       ),
+    );
+  }
+
+  Widget get _buildUserInfo {
+    User? user = overtimeRecords.isNotEmpty ? overtimeRecords[0].user : null;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Visibility(
+              visible: user != null,
+              child: CircleAvatar(
+                backgroundImage: NetworkImage("${user?.image}"),
+                radius: 30,
+              ),
+            ),
+            Visibility(
+              visible: user == null,
+              child: const CircleAvatar(
+                backgroundColor: kBlue,
+                radius: 30,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'ID',
+                      style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      'Name',
+                      style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${user?.id ?? ""}',
+                      style: kParagraph,
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      user?.name ?? "",
+                      style: kParagraph,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(width: 10),
+        const Text('6h30mn'),
+      ],
     );
   }
 }
