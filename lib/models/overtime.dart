@@ -151,8 +151,6 @@
 import 'package:ems/models/user.dart';
 
 List<OvertimeAttendance> overtimesFromJson(dynamic list) {
-  // print('$list');
-
   List<OvertimeAttendance> _overtimeWithoutUser = [];
   list.forEach((key, value) {
     _overtimeWithoutUser.add(OvertimeAttendance(
@@ -162,21 +160,6 @@ List<OvertimeAttendance> overtimesFromJson(dynamic list) {
   });
 
   return _overtimeWithoutUser;
-
-  // return List<OvertimeAttendance>.from(
-  //   list.map((x) {
-  //     print(x);
-  //     // att.forEach((key, value) {
-  //     //   _overtimeWithoutUser.add(overtimesFromJson(value));
-  //     //   ;
-  //     // });
-  //   }
-  //       // (x) => OvertimeAttendance(
-  //       //   checkin: OvertimeCheckin.fromMap(x[0]),
-  //       //   checkout: OvertimeCheckout.fromMap(x[1]),
-  //       // ),
-  //       ),
-  // );
 }
 
 class OvertimeAttendance {
@@ -208,6 +191,7 @@ class OvertimeCheckin {
   DateTime? date;
   String? type;
   String? code;
+  String? note;
   String? overtime;
 
   OvertimeCheckin({
@@ -216,6 +200,7 @@ class OvertimeCheckin {
     this.date,
     this.type,
     this.code,
+    this.note,
     this.overtime,
   });
 
@@ -227,6 +212,7 @@ class OvertimeCheckin {
             jsonData["date"] == null ? null : DateTime.parse(jsonData["date"]),
         type: jsonData["type"] ?? '',
         code: jsonData["code"] ?? '',
+        note: jsonData["note"] ?? '',
         overtime: jsonData["overtime"] ?? '',
       );
 }
@@ -237,6 +223,7 @@ class OvertimeCheckout {
   DateTime? date;
   String? type;
   String? code;
+  String? note;
   String? overtime;
 
   OvertimeCheckout({
@@ -245,6 +232,7 @@ class OvertimeCheckout {
     this.date,
     this.type,
     this.code,
+    this.note,
     this.overtime,
   });
 
@@ -256,6 +244,7 @@ class OvertimeCheckout {
             jsonData["date"] == null ? null : DateTime.parse(jsonData["date"]),
         type: jsonData["type"] ?? '',
         code: jsonData["code"] ?? '',
+        note: jsonData["note"] ?? '',
         overtime: jsonData["overtime"] ?? '',
       );
 }
