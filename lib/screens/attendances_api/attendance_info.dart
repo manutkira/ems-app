@@ -1,3 +1,6 @@
+import 'package:ems/models/attendance_no_s.dart';
+import 'package:ems/models/overtime.dart';
+import 'package:ems/utils/services/overtime_service.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -16,6 +19,10 @@ class AttendancesInfoScreen extends StatefulWidget {
 class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   AttendanceService _attendanceService = AttendanceService.instance;
   List<Attendance> attendanceDisplay = [];
+
+  AttendanceByIdService _overtimeService = AttendanceByIdService.instance;
+  List<AttendanceById> _attendanceDisplay = [];
+
   dynamic countPresent = '';
   dynamic countLate = '';
   dynamic countAbsent = '';
@@ -25,6 +32,21 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Appointment>? _appointment;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
+
+  fetchAttendance() async {
+    try {
+      List<AttendanceById> attendanceDisplay =
+          await _overtimeService.findByUserId(userId: 1);
+      // print('abc $attendanceDisplay');
+      setState(() {
+        _attendanceDisplay = attendanceDisplay;
+      });
+      // print('froms $_attendanceDisplay');
+      print(_attendanceDisplay.map((e) => e.checkin1!.type));
+    } catch (e) {
+      print('hehe $e');
+    }
+  }
 
   getPresent() async {
     var pc = await _attendanceService.countPresent(widget.id);
@@ -71,6 +93,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       getLate();
       getAbsent();
       getPermission();
+      fetchAttendance();
       _attendanceService
           .findManyByUserId(userId: widget.id)
           .then((usersFromServer) {
@@ -84,18 +107,45 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
-  Color checkColor(Attendance attendance) {
-    if (attendance.type == 'absent') {
+  Color checkColor(AttendanceById attendance) {
+    if (attendance.checkin1!.type == 'absent') {
       return Colors.red;
     }
-    if (attendance.type == 'permission') {
+    if (attendance.checkin1!.type == 'permission') {
       return Colors.blue;
     }
-    if (attendance.type == 'checkout') {
+    if (attendance.checkin1!.type == 'checkout') {
       return Colors.lightGreen;
     }
-    if (attendance.date!.hour >= 9 && attendance.type == 'checkin') {
+    if (attendance.checkin1!.date!.hour >= 9 &&
+        attendance.checkin1!.type == 'checkin') {
       return Colors.yellow;
+    }
+    if (attendance.checkin1!.date!.hour <= 9 &&
+        attendance.checkin1!.type == 'checkin') {
+      return Colors.green;
+    } else {
+      return Colors.green;
+    }
+  }
+
+  Color checkColor2(AttendanceById attendance) {
+    if (attendance.checkin2!.type == 'absent') {
+      return Colors.red;
+    }
+    if (attendance.checkin2!.type == 'permission') {
+      return Colors.blue;
+    }
+    if (attendance.checkin2!.type == 'checkout') {
+      return Colors.lightGreen;
+    }
+    if (attendance.checkin2!.date!.hour >= 9 &&
+        attendance.checkin2!.type == 'checkin') {
+      return Colors.yellow;
+    }
+    if (attendance.checkin2!.date!.hour <= 9 &&
+        attendance.checkin2!.type == 'checkin') {
+      return Colors.green;
     } else {
       return Colors.green;
     }
@@ -103,14 +153,17 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
   List<Appointment> getAppointments() {
     List<Appointment> meetings = <Appointment>[];
-    attendanceDisplay.asMap().forEach((key, value) {
-      if (value.type != 'checkout') {
-        Appointment newAppointment = Appointment(
-            startTime: value.date as DateTime,
-            endTime: value.date as DateTime,
-            color: checkColor(value));
-        meetings.add(newAppointment);
-      }
+    _attendanceDisplay.asMap().forEach((key, value) {
+      Appointment newAppointment = Appointment(
+          startTime: value.checkin1!.date as DateTime,
+          endTime: value.checkout1!.date as DateTime,
+          color: checkColor(value));
+      Appointment newAppointment1 = Appointment(
+          startTime: value.checkin2!.date as DateTime,
+          endTime: value.checkout2!.date as DateTime,
+          color: checkColor2(value));
+      meetings.add(newAppointment);
+      meetings.add(newAppointment1);
     });
     return meetings;
   }
@@ -279,6 +332,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                     Padding(
                       padding: const EdgeInsets.only(top: 20),
                       child: Container(
+                        height: 550,
                         width: double.infinity,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
@@ -401,6 +455,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     MeetingDataSource(getAppointments()),
                                 todayHighlightColor: Colors.grey,
                                 headerHeight: 25,
+                                scheduleViewSettings: ScheduleViewSettings(
+                                    appointmentTextStyle:
+                                        TextStyle(color: Colors.black)),
                                 cellBorderColor: Colors.grey,
                                 allowedViews: [
                                   CalendarView.month,
