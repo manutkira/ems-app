@@ -67,7 +67,6 @@ class AttendanceByIdService extends BaseService {
 
       return overtimeWithUser;
     } catch (e) {
-      print(e);
       throw AttendanceException(code: _code);
     }
   }

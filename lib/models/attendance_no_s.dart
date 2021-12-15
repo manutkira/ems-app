@@ -1,20 +1,30 @@
 import 'package:ems/models/user.dart';
 
-List<AttendanceById> attendanceByIdFromJson(dynamic list) {
+List<AttendanceById> attendanceByIdFromJson(Map<String, dynamic> list) {
   // print('$list');
 
   List<AttendanceById> _overtimeWithoutUser = [];
   list.forEach((key, value) {
-    // for (var i = 0; i < 6; i++) {
-    _overtimeWithoutUser.add(AttendanceById(
-      checkin1: OvertimeCheckin1.fromMap(value[0]),
-      checkin2: OvertimeCheckin2.fromMap(value[2]),
-      // checkin3: OvertimeCheckin3.fromMap(value[2]),
-      checkout1: OvertimeCheckout1.fromMap(value[1]),
-      checkout2: OvertimeCheckout2.fromMap(value[3]),
-      // checkout3: OvertimeCheckout3.fromMap(value[5]),
-    ));
-    // }
+    for (int i = 0; i < value.length; i += 2) {
+      var checkIn;
+      var checkOut;
+      if (value[i]['type'] == 'checkin' ||
+          value[i]['type'] == 'absent' ||
+          value[i]['type'] == 'permission') {
+        checkIn = value[i];
+      }
+      if (value[i + 1]['type'] == 'checkout') {
+        checkOut = value[i + 1];
+      }
+      _overtimeWithoutUser.add(AttendanceById(
+        checkin1: OvertimeCheckin1.fromMap(checkIn),
+        // checkin2: OvertimeCheckin2.fromMap(checkIn2),
+        // checkin3: OvertimeCheckin3.fromMap(value[2]),
+        checkout1: OvertimeCheckout1.fromMap(checkOut),
+        // checkout2: OvertimeCheckout2.fromMap(checkOut2 ?? checkIn2),
+        // checkout3: OvertimeCheckout3.fromMap(value[5]),
+      ));
+    }
   });
 
   return _overtimeWithoutUser;

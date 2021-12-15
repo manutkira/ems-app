@@ -36,13 +36,12 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   fetchAttendance() async {
     try {
       List<AttendanceById> attendanceDisplay =
-          await _overtimeService.findByUserId(userId: 1);
+          await _overtimeService.findByUserId(userId: widget.id);
       // print('abc $attendanceDisplay');
       setState(() {
         _attendanceDisplay = attendanceDisplay;
       });
       // print('froms $_attendanceDisplay');
-      print(_attendanceDisplay.map((e) => e.checkin1!.type));
     } catch (e) {
       print('hehe $e');
     }
@@ -129,41 +128,45 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
-  Color checkColor2(AttendanceById attendance) {
-    if (attendance.checkin2!.type == 'absent') {
-      return Colors.red;
-    }
-    if (attendance.checkin2!.type == 'permission') {
-      return Colors.blue;
-    }
-    if (attendance.checkin2!.type == 'checkout') {
-      return Colors.lightGreen;
-    }
-    if (attendance.checkin2!.date!.hour >= 9 &&
-        attendance.checkin2!.type == 'checkin') {
-      return Colors.yellow;
-    }
-    if (attendance.checkin2!.date!.hour <= 9 &&
-        attendance.checkin2!.type == 'checkin') {
-      return Colors.green;
-    } else {
-      return Colors.green;
-    }
-  }
+  // Color checkColor2(AttendanceById attendance) {
+  //   if (attendance.checkin2!.type == 'absent') {
+  //     return Colors.red;
+  //   }
+  //   if (attendance.checkin2!.type == 'permission') {
+  //     return Colors.blue;
+  //   }
+  //   if (attendance.checkin2!.type == 'checkout') {
+  //     return Colors.lightGreen;
+  //   }
+  //   if (attendance.checkin2!.date!.hour >= 9 &&
+  //       attendance.checkin2!.type == 'checkin') {
+  //     return Colors.yellow;
+  //   }
+  //   if (attendance.checkin2!.date!.hour <= 9 &&
+  //       attendance.checkin2!.type == 'checkin') {
+  //     return Colors.green;
+  //   } else {
+  //     return Colors.green;
+  //   }
+  // }
 
   List<Appointment> getAppointments() {
     List<Appointment> meetings = <Appointment>[];
+    DateTime? startTime;
+    DateTime? endTime;
     _attendanceDisplay.asMap().forEach((key, value) {
       Appointment newAppointment = Appointment(
           startTime: value.checkin1!.date as DateTime,
-          endTime: value.checkout1!.date as DateTime,
+          endTime: value.checkout1!.date == null
+              ? value.checkin1!.date as DateTime
+              : value.checkout1!.date as DateTime,
           color: checkColor(value));
-      Appointment newAppointment1 = Appointment(
-          startTime: value.checkin2!.date as DateTime,
-          endTime: value.checkout2!.date as DateTime,
-          color: checkColor2(value));
+      // Appointment newAppointment1 = Appointment(
+      //     startTime: value.checkin2!.date as DateTime,
+      //     endTime: value.checkout2!.date as DateTime,
+      //     color: checkColor2(value));
       meetings.add(newAppointment);
-      meetings.add(newAppointment1);
+      // meetings.add(newAppointment1);
     });
     return meetings;
   }
