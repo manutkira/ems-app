@@ -162,6 +162,13 @@ List<OvertimeAttendance> overtimesFromJson(dynamic list) {
   return _overtimeWithoutUser;
 }
 
+class OvertimeListWithTotal {
+  String total;
+  List<OvertimeAttendance> listOfOvertime;
+
+  OvertimeListWithTotal({required this.total, required this.listOfOvertime});
+}
+
 class OvertimeAttendance {
   OvertimeCheckin? checkin;
   OvertimeCheckout? checkout;

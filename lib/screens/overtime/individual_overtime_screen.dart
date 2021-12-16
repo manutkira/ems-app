@@ -2,39 +2,45 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/menu_options.dart';
 import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
-import 'package:ems/screens/overtime/add_overtime.dart';
 import 'package:ems/screens/overtime/delete_overtime.dart';
 import 'package:ems/screens/overtime/edit_overtime.dart';
 import 'package:ems/screens/overtime/view_overtime.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/utils/services/overtime_service.dart';
+import 'package:ems/widgets/custom_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class IndividualOvertimeScreen extends StatefulWidget {
-  const IndividualOvertimeScreen({Key? key}) : super(key: key);
+import 'add_overtime.dart';
 
+class IndividualOvertimeScreen extends StatefulWidget {
+  const IndividualOvertimeScreen({Key? key, required this.user})
+      : super(key: key);
+  final User user;
   @override
   State<IndividualOvertimeScreen> createState() =>
       _IndividualOvertimeScreenState();
 }
 
 class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
+  late User user;
+
+  String total = '00:00:00';
   final OvertimeService _overtimeService = OvertimeService.instance;
-  String dropdownValue = 'Day';
+  String sortByValue = 'All Time';
   var dropdownItems = [
     'Day',
-    'Week',
-    'Month',
-    'Year',
+    'Multiple Days',
     'All Time',
   ];
 
   List<OvertimeAttendance> overtimeRecords = [];
   bool isFetching = false;
+  bool isFilterExpanded = false;
 
-  DateTime selectedDate = DateTime.now();
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
 
   var options = [
     MenuOptions.view,
@@ -92,14 +98,47 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
   }
 
   void fetchOvertimeRecord() async {
+    int userId = widget.user.id ?? 0;
     setState(() {
+      total = '00:00:00';
       isFetching = true;
+      isFilterExpanded = false;
+      overtimeRecords = [];
     });
+    OvertimeListWithTotal records;
     try {
-      List<OvertimeAttendance> records =
-          await _overtimeService.findManyByUserId(userId: 1);
+      switch (sortByValue) {
+        case 'Day':
+          {
+            records = await _overtimeService.findManyByUserId(
+              userId: userId,
+              start: startDate,
+              end: startDate,
+            );
+            break;
+          }
+        case 'Multiple Days':
+          {
+            records = await _overtimeService.findManyByUserId(
+              userId: userId,
+              start: startDate,
+              end: endDate,
+            );
+            break;
+          }
+        default:
+          {
+            records = await _overtimeService.findManyByUserId(userId: userId);
+            break;
+          }
+      }
+
       setState(() {
-        overtimeRecords = records;
+        total = records.total;
+        overtimeRecords = records.listOfOvertime;
+        if (overtimeRecords.isNotEmpty) {
+          user = overtimeRecords[0].user as User;
+        }
         isFetching = false;
       });
     } catch (err) {
@@ -110,9 +149,16 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     }
   }
 
+  void _toggleFilter() {
+    setState(() {
+      isFilterExpanded = !isFilterExpanded;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    user = widget.user;
     fetchOvertimeRecord();
   }
 
@@ -137,92 +183,235 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      const Text('Sort by', style: kParagraph),
-                      const SizedBox(width: 5),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: kDarkestBlue,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: DropdownButton(
-                          borderRadius: const BorderRadius.all(kBorderRadius),
-                          dropdownColor: kDarkestBlue,
-                          underline: Container(),
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.bold),
-                          isDense: true,
-                          value: dropdownValue,
-                          icon: const Icon(Icons.keyboard_arrow_down),
-                          items: dropdownItems.map((String items) {
-                            return DropdownMenuItem(
-                              value: items,
-                              child: Text(items),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            if (dropdownValue == newValue) return;
-                            setState(() {
-                              dropdownValue = newValue as String;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 10),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      primary: Colors.white,
-                      textStyle: kParagraph,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      backgroundColor: kDarkestBlue,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(kBorderRadius),
+              /// Filter
+              Container(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: _toggleFilter,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Filter',
+                            style: kParagraph.copyWith(
+                              fontSize: 20,
+                            ),
+                          ),
+                          Icon(
+                              isFilterExpanded
+                                  ? MdiIcons.chevronUp
+                                  : MdiIcons.chevronDown,
+                              size: 22),
+                        ],
                       ),
                     ),
-                    onPressed: () async {
-                      final DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: selectedDate,
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2025),
-                        locale: const Locale('km'),
-                        helpText: "Pick a date",
-                        errorFormatText: 'Enter valid date',
-                        errorInvalidText: 'Enter date in valid range',
-                        fieldLabelText: 'Date',
-                        fieldHintText: 'Date/Month/Year',
-                      );
-                      if (picked != null && picked != selectedDate) {
-                        setState(() {
-                          selectedDate = picked;
-                        });
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(DateFormat('dd/MM/yyyy').format(selectedDate)),
-                        const SizedBox(width: 10),
-                        const Icon(MdiIcons.calendar),
-                      ],
+                    Visibility(
+                      visible: isFilterExpanded,
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+
+                          /// SORT FILTER
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Sort by', style: kParagraph),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: kDarkestBlue,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: DropdownButton(
+                                  borderRadius:
+                                      const BorderRadius.all(kBorderRadius),
+                                  dropdownColor: kDarkestBlue,
+                                  underline: Container(),
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.bold),
+                                  isDense: true,
+                                  value: sortByValue,
+                                  icon: const Icon(Icons.keyboard_arrow_down),
+                                  items: dropdownItems.map((String items) {
+                                    return DropdownMenuItem(
+                                      value: items,
+                                      child: Text(items),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    if (sortByValue == newValue) return;
+                                    setState(() {
+                                      sortByValue = newValue as String;
+                                    });
+                                    print('$sortByValue ${dropdownItems[0]}');
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+
+                          /// FROM FILTER
+                          Visibility(
+                            visible: sortByValue != 'All Time',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  sortByValue == 'Day' ? "Date" : 'From',
+                                  style: kParagraph,
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    primary: Colors.white,
+                                    textStyle: kParagraph,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
+                                    ),
+                                    backgroundColor: kDarkestBlue,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(kBorderRadius),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    final DateTime? picked =
+                                        await showDatePicker(
+                                      context: context,
+                                      initialDate: startDate,
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime(2025),
+                                      locale: const Locale('km'),
+                                      helpText: "Pick a date",
+                                      errorFormatText: 'Enter valid date',
+                                      errorInvalidText:
+                                          'Enter date in valid range',
+                                      fieldLabelText: 'Date',
+                                      fieldHintText: 'Date/Month/Year',
+                                    );
+                                    if (picked != null && picked != startDate) {
+                                      setState(() {
+                                        startDate = picked;
+                                      });
+                                    }
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(DateFormat('dd/MM/yyyy')
+                                          .format(startDate)),
+                                      const SizedBox(width: 10),
+                                      const Icon(MdiIcons.calendar),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          /// TO FILTER
+                          Visibility(
+                            visible: sortByValue == 'Multiple Days',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('To', style: kParagraph),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                    primary: Colors.white,
+                                    textStyle: kParagraph,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
+                                    ),
+                                    backgroundColor: kDarkestBlue,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(kBorderRadius),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    final DateTime? picked =
+                                        await showDatePicker(
+                                      context: context,
+                                      initialDate: endDate,
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime(2025),
+                                      locale: const Locale('km'),
+                                      helpText: "Pick a date",
+                                      errorFormatText: 'Enter valid date',
+                                      errorInvalidText:
+                                          'Enter date in valid range',
+                                      fieldLabelText: 'Date',
+                                      fieldHintText: 'Date/Month/Year',
+                                    );
+                                    if (picked != null && picked != endDate) {
+                                      setState(() {
+                                        endDate = picked;
+                                      });
+                                    }
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(DateFormat('dd/MM/yyyy')
+                                          .format(endDate)),
+                                      const SizedBox(width: 10),
+                                      const Icon(MdiIcons.calendar),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 16),
+                                  primary: Colors.white,
+                                  textStyle: kParagraph,
+                                  backgroundColor: Colors.black38,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(kBorderRadius),
+                                  ),
+                                ),
+                                onPressed: fetchOvertimeRecord,
+                                child: Row(
+                                  children: [
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'Go',
+                                      style: kParagraph.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    Icon(MdiIcons.chevronRight)
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const SizedBox(height: 20),
               Container(
                 padding: kPaddingAll,
                 width: MediaQuery.of(context).size.width * 0.9,
@@ -247,15 +436,17 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                   ),
                 ),
               ),
+              Visibility(
+                visible: overtimeRecords.isEmpty && !isFetching,
+                child: _noRecord,
+              ),
               Expanded(
-                child: overtimeRecords.isEmpty && !isFetching
-                    ? _noRecord
-                    : ListView.builder(
-                        itemCount: overtimeRecords.length,
-                        itemBuilder: (context, i) {
-                          return _buildListItem(i);
-                        },
-                      ),
+                child: ListView.builder(
+                  itemCount: overtimeRecords.length,
+                  itemBuilder: (context, i) {
+                    return _buildListItem(i);
+                  },
+                ),
               ),
             ],
           ),
@@ -351,25 +542,19 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
   }
 
   Widget get _buildUserInfo {
-    User? user = overtimeRecords.isNotEmpty ? overtimeRecords[0].user : null;
+    String placeholder = isFetching ? "loading..." : "---";
+    TimeOfDay _time = TimeOfDay(
+      hour: int.parse(total.split(":")[0]),
+      minute: int.parse(total.split(":")[1]),
+    );
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
-            Visibility(
-              visible: user != null,
-              child: CircleAvatar(
-                backgroundImage: NetworkImage("${user?.image}"),
-                radius: 30,
-              ),
-            ),
-            Visibility(
-              visible: user == null,
-              child: const CircleAvatar(
-                backgroundColor: kBlue,
-                radius: 30,
-              ),
+            UserAvatar(
+              user: user,
             ),
             const SizedBox(width: 10),
             Row(
@@ -393,12 +578,12 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${user?.id ?? ""}',
+                      '${user.id ?? placeholder}',
                       style: kParagraph,
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      user?.name ?? "",
+                      user.name ?? placeholder,
                       style: kParagraph,
                     ),
                   ],
@@ -408,7 +593,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
           ],
         ),
         const SizedBox(width: 10),
-        const Text('6h30mn'),
+        Text('${_time.hour}h ${_time.minute}mn'),
       ],
     );
   }
