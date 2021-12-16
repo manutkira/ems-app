@@ -37,7 +37,22 @@ class AttendanceService extends BaseService {
 
   Future<int> countLate(int id) async {
     try {
-      Response response = await get(Uri.parse('$baseUrl/a-count?late=$id'));
+      Response response = await get(Uri.parse('$baseUrl/a-count?lcin1=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countLateNoon(int id) async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/a-count?lcin2=$id'));
 
       if (response.statusCode != 200) {
         _code = response.statusCode;
@@ -52,7 +67,22 @@ class AttendanceService extends BaseService {
 
   Future<int> countPresent(int id) async {
     try {
-      Response response = await get(Uri.parse('$baseUrl/a-count?present=$id'));
+      Response response = await get(Uri.parse('$baseUrl/a-count?prcin1=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countPresentNoon(int id) async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/a-count?prcin2=$id'));
 
       if (response.statusCode != 200) {
         _code = response.statusCode;
@@ -67,7 +97,22 @@ class AttendanceService extends BaseService {
 
   Future<int> countAbsent(int id) async {
     try {
-      Response response = await get(Uri.parse('$baseUrl/a-count?absent=$id'));
+      Response response = await get(Uri.parse('$baseUrl/a-count?acin1=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countAbsentNoon(int id) async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/a-count?acin2=$id'));
 
       if (response.statusCode != 200) {
         _code = response.statusCode;
@@ -82,8 +127,22 @@ class AttendanceService extends BaseService {
 
   Future<int> countPermission(int id) async {
     try {
-      Response response =
-          await get(Uri.parse('$baseUrl/a-count?permission=$id'));
+      Response response = await get(Uri.parse('$baseUrl/a-count?pcin1=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countPermissionNoon(int id) async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/a-count?pcin2=$id'));
 
       if (response.statusCode != 200) {
         _code = response.statusCode;
