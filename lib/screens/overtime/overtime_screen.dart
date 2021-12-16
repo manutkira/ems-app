@@ -1,5 +1,6 @@
 import 'package:ems/constants.dart';
 import 'package:ems/models/menu_options.dart';
+import 'package:ems/models/user.dart';
 import 'package:ems/screens/overtime/individual_overtime_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -179,7 +180,9 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                 onTap: () => Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const IndividualOvertimeScreen(),
+                                        IndividualOvertimeScreen(
+                                      user: User(id: 1, name: 'Kira Manut'),
+                                    ),
                                   ),
                                 ),
                                 child: const SizedBox(
