@@ -1,13 +1,10 @@
 import 'package:ems/screens/attendances_api/tap_screen.dart';
 import 'package:ems/screens/attendances_api/tap_screen_alltime.dart';
-import 'package:intl/intl.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
-import '../../screens/attendances_api/attendance_all_time.dart';
-import '../../screens/attendances_api/attendance_by_day_screen.dart';
 import '../../utils/services/attendance_service.dart';
 
 class AttendancesByMonthScreen extends StatefulWidget {
@@ -98,15 +95,15 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Attendance'),
+        title: const Text('Attendance'),
         actions: [
           PopupMenuButton(
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               color: Color(0xff43c3c52),
               onSelected: (item) => onSelected(context, item as int),
               icon: Icon(Icons.filter_list),
-              itemBuilder: (_) => [
+              itemBuilder: (_) => const [
                     PopupMenuItem(
                       child: Text(
                         'By Day',
@@ -133,12 +130,12 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
       body: Form(
         key: _formKey,
         child: Container(
-          margin: EdgeInsets.only(top: 5),
+          margin: const EdgeInsets.only(top: 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.only(left: 20, bottom: 10),
+                margin: const EdgeInsets.only(left: 20, bottom: 10),
                 child: Row(
                   children: [
                     Text(
@@ -147,7 +144,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                           : 'Date: $_selectMonth/$pickedYear',
                       style: kHeadingFour,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     OutlineButton(
@@ -155,7 +152,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                         showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
-                            shape: RoundedRectangleBorder(
+                            shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.0))),
                             title: Text('Pick a month'),
@@ -175,7 +172,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                             hintText: 'Enter year'),
                                         controller: yearController,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 10,
                                       ),
                                       Row(
@@ -205,7 +202,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -224,7 +221,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Feb'),
+                                            child: const Text('Feb'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -232,7 +229,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -259,7 +256,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           )
@@ -284,7 +281,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Apr'),
+                                            child: const Text('Apr'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -292,7 +289,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -311,7 +308,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('May'),
+                                            child: const Text('May'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -319,7 +316,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -338,7 +335,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Jun'),
+                                            child: const Text('Jun'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -346,7 +343,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           )
@@ -371,7 +368,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Jul'),
+                                            child: const Text('Jul'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -379,7 +376,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -398,7 +395,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Aug'),
+                                            child: const Text('Aug'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -406,7 +403,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -425,7 +422,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Sep'),
+                                            child: const Text('Sep'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -433,7 +430,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           )
@@ -458,7 +455,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Oct'),
+                                            child: const Text('Oct'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -466,7 +463,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -485,7 +482,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Nov'),
+                                            child: const Text('Nov'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -493,7 +490,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -512,7 +509,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Dec'),
+                                            child: const Text('Dec'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -520,7 +517,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           )
@@ -534,15 +531,15 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                           ),
                         );
                       },
-                      child: Text('Pick A Month'),
-                      borderSide: BorderSide(color: Colors.green),
+                      child: const Text('Pick A Month'),
+                      borderSide: const BorderSide(color: Colors.green),
                     ),
                   ],
                 ),
               ),
               yearController.text.isEmpty
                   ? Container(
-                      padding: EdgeInsets.only(top: 150, left: 70),
+                      padding: const EdgeInsets.only(top: 150, left: 70),
                       child: Column(
                         children: [
                           Text(
@@ -552,7 +549,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                               color: Colors.black,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
                           Image.asset(
@@ -567,7 +564,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
+                            borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20),
                             ),
@@ -584,7 +581,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                 children: [
                                   _searchBar(),
                                   Container(
-                                    padding: EdgeInsets.only(top: 150),
+                                    padding: const EdgeInsets.only(top: 150),
                                     child: Column(
                                       children: [
                                         Text(
@@ -594,7 +591,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                             color: Colors.black,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 30,
                                         ),
                                         Image.asset(
@@ -615,9 +612,10 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                       itemCount: userDisplay.length,
                                       itemBuilder: (context, index) {
                                         return Container(
-                                          padding: EdgeInsets.only(bottom: 20),
-                                          margin: EdgeInsets.all(20),
-                                          decoration: BoxDecoration(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 20),
+                                          margin: const EdgeInsets.all(20),
+                                          decoration: const BoxDecoration(
                                               border: Border(
                                                   bottom: BorderSide(
                                                       color: Colors.black,
@@ -633,7 +631,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     height: 75,
                                                     decoration: BoxDecoration(
                                                         borderRadius:
-                                                            BorderRadius.all(
+                                                            const BorderRadius
+                                                                    .all(
                                                                 Radius.circular(
                                                                     100)),
                                                         border: Border.all(
@@ -661,7 +660,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                             ),
                                                     ),
                                                   ),
-                                                  SizedBox(
+                                                  const SizedBox(
                                                     width: 20,
                                                   ),
                                                   Column(
@@ -671,7 +670,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          Text(
+                                                          const Text(
                                                             'Name: ',
                                                             style: TextStyle(
                                                                 fontWeight:
@@ -695,7 +694,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       ),
                                                       Row(
                                                         children: [
-                                                          Text(
+                                                          const Text(
                                                             'ID: ',
                                                             style: TextStyle(
                                                                 fontWeight:
@@ -719,7 +718,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          Text('P:'),
+                                                          const Text('P:'),
                                                           Text(
                                                             attendanceDisplay
                                                                 .where(
@@ -753,12 +752,12 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                           ),
                                                         ],
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: 10,
                                                       ),
                                                       Row(
                                                         children: [
-                                                          Text('A:'),
+                                                          const Text('A:'),
                                                           Text(
                                                             attendanceDisplay
                                                                 .where((element) => (element
@@ -785,7 +784,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       ),
                                                     ],
                                                   ),
-                                                  SizedBox(
+                                                  const SizedBox(
                                                     width: 15,
                                                   ),
                                                   Column(
@@ -795,7 +794,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          Text('L:'),
+                                                          const Text('L:'),
                                                           Text(
                                                             attendanceDisplay
                                                                 .where((element) => (element
@@ -823,7 +822,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                           ),
                                                         ],
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: 10,
                                                       ),
                                                       Row(
@@ -856,7 +855,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                           ),
                                                         ],
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: 10,
                                                       ),
                                                       Row(
@@ -909,7 +908,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
 
   _searchBar() {
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Row(
         children: [
           Flexible(
@@ -917,7 +916,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
               controller: _controller,
               decoration: InputDecoration(
                 suffixIcon: _controller.text.isEmpty
-                    ? Icon(
+                    ? const Icon(
                         Icons.search,
                         color: Colors.white,
                       )
@@ -927,18 +926,17 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                             clearText();
                             userDisplay = users.where((user) {
                               var userName = user.name!.toLowerCase();
-                              print(userName);
                               return userName.contains(_controller.text);
                             }).toList();
                           });
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.clear,
                           color: Colors.white,
                         ),
                       ),
                 hintText: 'Search...',
-                errorStyle: TextStyle(
+                errorStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
@@ -948,7 +946,6 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                 setState(() {
                   userDisplay = users.where((user) {
                     var userName = user.name!.toLowerCase();
-                    print(userName);
                     return userName.contains(text);
                   }).toList();
                 });
@@ -957,7 +954,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
           ),
           PopupMenuButton(
             color: kDarkestBlue,
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             onSelected: (int selectedValue) {
               if (selectedValue == 0) {
@@ -978,7 +975,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                 });
               }
             },
-            itemBuilder: (_) => [
+            itemBuilder: (_) => const [
               PopupMenuItem(
                 child: Text('From A-Z'),
                 value: 0,
@@ -992,7 +989,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                 value: 2,
               ),
             ],
-            icon: Icon(Icons.sort),
+            icon: const Icon(Icons.sort),
           ),
         ],
       ),
