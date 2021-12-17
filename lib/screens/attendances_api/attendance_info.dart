@@ -161,15 +161,34 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     if (attendance.checkin1!.type == 'checkout') {
       return Colors.lightGreen;
     }
-    if (attendance.checkin1!.date!.hour >= 9 &&
+    if (attendance.checkin1!.date!.hour >= 7 &&
+        attendance.checkin1!.date!.minute >= 16 &&
+        attendance.checkin1!.code == 'cin1' &&
         attendance.checkin1!.type == 'checkin') {
       return Colors.yellow;
     }
-    if (attendance.checkin1!.date!.hour <= 9 &&
+    if (attendance.checkin1!.date!.hour >= 13 &&
+        attendance.checkin1!.date!.minute >= 16 &&
+        attendance.checkin1!.code == 'cin2' &&
+        attendance.checkin1!.type == 'checkin') {
+      return Colors.yellow;
+    }
+    if (attendance.checkin1!.date!.hour == 7 &&
+        attendance.checkin1!.date!.minute <= 15 &&
+        attendance.checkin1!.code == 'cin1' &&
+        attendance.checkin1!.type == 'checkin') {
+      return Colors.green;
+    }
+    if (attendance.checkin1!.code == 'cin3') {
+      return Color(0xffd4d2bc);
+    }
+    if (attendance.checkin1!.date!.hour == 13 &&
+        attendance.checkin1!.date!.minute <= 15 &&
+        attendance.checkin1!.code == 'cin2' &&
         attendance.checkin1!.type == 'checkin') {
       return Colors.green;
     } else {
-      return Colors.green;
+      return Colors.red;
     }
   }
 
@@ -184,12 +203,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
               ? value.checkin1!.date as DateTime
               : value.checkout1!.date as DateTime,
           color: checkColor(value));
-      // Appointment newAppointment1 = Appointment(
-      //     startTime: value.checkin2!.date as DateTime,
-      //     endTime: value.checkout2!.date as DateTime,
-      //     color: checkColor2(value));
       meetings.add(newAppointment);
-      // meetings.add(newAppointment1);
     });
     return meetings;
   }

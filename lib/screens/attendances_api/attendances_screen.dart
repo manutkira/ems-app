@@ -1,6 +1,9 @@
 import 'package:ems/models/user.dart';
+import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/attendance_info.dart';
+import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
+import 'package:ems/screens/attendances_api/tap_screen.dart';
 import 'package:ems/screens/attendances_api/tap_screen_alltime.dart';
 import 'package:ems/screens/attendances_api/tap_screen_month.dart';
 import 'package:ems/screens/attendances_api/test.dart';
@@ -345,21 +348,21 @@ void onSelected(BuildContext context, int item) {
     case 0:
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => Testscreen(),
+          builder: (_) => AttendanceByDayScreen(),
         ),
       );
       break;
     case 1:
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => TapScreenAlltime(),
+          builder: (context) => AttendanceAllTimeScreen(),
         ),
       );
       break;
     case 2:
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => TapScreenMonth(),
+          builder: (context) => AttendancesByMonthScreen(),
         ),
       );
       break;

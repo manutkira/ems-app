@@ -1,7 +1,11 @@
+import 'package:ems/models/attendance.dart';
+import 'package:ems/screens/attendances_api/attendance_all_time.dart';
+import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/tap_screen.dart';
 import 'package:ems/screens/attendances_api/tap_screen_alltime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/widgets/attendance/attendacne_all_time_list.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
@@ -42,6 +46,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
   final yearController = TextEditingController();
   var _controller = TextEditingController();
   var pickedYear;
+  String dropDownValue = 'Morning';
+  bool afternoon = false;
 
   void clearText() {
     _controller.clear();
@@ -137,17 +143,16 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
               Container(
                 margin: const EdgeInsets.only(left: 20, bottom: 10),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
                       _selectMonth == null
                           ? 'Pick a Month'
                           : 'Date: $_selectMonth/$pickedYear',
-                      style: kHeadingFour,
+                      style: kParagraph.copyWith(fontSize: 14),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    OutlineButton(
+                    FlatButton(
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -531,8 +536,52 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                           ),
                         );
                       },
-                      child: const Text('Pick A Month'),
-                      borderSide: const BorderSide(color: Colors.green),
+                      child: const Text(
+                        'Pick A Month',
+                        style: kParagraph,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: kDarkestBlue,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: DropdownButton(
+                        underline: Container(),
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                        isDense: true,
+                        borderRadius: const BorderRadius.all(kBorderRadius),
+                        dropdownColor: kDarkestBlue,
+                        icon: const Icon(Icons.expand_more),
+                        value: dropDownValue,
+                        onChanged: (String? newValue) {
+                          if (newValue == 'Afternoon') {
+                            setState(() {
+                              afternoon = true;
+                              dropDownValue = newValue!;
+                            });
+                          }
+                          if (newValue == 'Morning') {
+                            setState(() {
+                              afternoon = false;
+                              dropDownValue = newValue!;
+                            });
+                          }
+                        },
+                        items: <String>[
+                          'Morning',
+                          'Afternoon',
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ],
                 ),
@@ -719,37 +768,51 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       Row(
                                                         children: [
                                                           const Text('P:'),
-                                                          Text(
-                                                            attendanceDisplay
-                                                                .where(
-                                                                    (element) {
-                                                                  return element
-                                                                              .userId ==
-                                                                          userDisplay[
-                                                                                  index]
-                                                                              .id &&
-                                                                      element
-                                                                              .date
-                                                                              .month ==
-                                                                          _selectMonth &&
-                                                                      element.type ==
-                                                                          'checkin' &&
-                                                                      element.code ==
-                                                                          'cin1' &&
-                                                                      element.date
-                                                                              .hour <
-                                                                          8 &&
-                                                                      element.date
-                                                                              .minute <
-                                                                          21 &&
-                                                                      element.date
-                                                                              .year ==
-                                                                          int.parse(
-                                                                              pickedYear);
-                                                                })
-                                                                .length
-                                                                .toString(),
-                                                          ),
+                                                          afternoon
+                                                              ? Text(attendanceDisplay
+                                                                  .where((element) {
+                                                                    return element
+                                                                                .userId ==
+                                                                            userDisplay[index]
+                                                                                .id &&
+                                                                        element.date
+                                                                                .month ==
+                                                                            _selectMonth &&
+                                                                        element.type ==
+                                                                            'checkin' &&
+                                                                        element.code ==
+                                                                            'cin2' &&
+                                                                        element.date
+                                                                                .hour ==
+                                                                            13 &&
+                                                                        element.date.minute <=
+                                                                            15 &&
+                                                                        element.date.year ==
+                                                                            int.parse(pickedYear);
+                                                                  })
+                                                                  .length
+                                                                  .toString())
+                                                              : Text(
+                                                                  attendanceDisplay
+                                                                      .where(
+                                                                          (element) {
+                                                                        return element.userId == userDisplay[index].id &&
+                                                                            element.date.month ==
+                                                                                _selectMonth &&
+                                                                            element.type ==
+                                                                                'checkin' &&
+                                                                            element.code ==
+                                                                                'cin1' &&
+                                                                            element.date.hour ==
+                                                                                7 &&
+                                                                            element.date.minute <=
+                                                                                15 &&
+                                                                            element.date.year ==
+                                                                                int.parse(pickedYear);
+                                                                      })
+                                                                      .length
+                                                                      .toString(),
+                                                                ),
                                                         ],
                                                       ),
                                                       const SizedBox(
@@ -758,28 +821,35 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       Row(
                                                         children: [
                                                           const Text('A:'),
-                                                          Text(
-                                                            attendanceDisplay
-                                                                .where((element) => (element
-                                                                            .userId ==
-                                                                        userDisplay[
-                                                                                index]
-                                                                            .id &&
-                                                                    element
-                                                                            .date
-                                                                            .month ==
-                                                                        _selectMonth &&
-                                                                    element.code ==
-                                                                        'cin1' &&
-                                                                    element.type ==
-                                                                        'absent' &&
-                                                                    element.date
-                                                                            .year ==
-                                                                        int.parse(
-                                                                            pickedYear)))
-                                                                .length
-                                                                .toString(),
-                                                          ),
+                                                          afternoon
+                                                              ? Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.code ==
+                                                                              'cin2' &&
+                                                                          element.type ==
+                                                                              'absent' &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                )
+                                                              : Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.code ==
+                                                                              'cin1' &&
+                                                                          element.type ==
+                                                                              'absent' &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                ),
                                                         ],
                                                       ),
                                                     ],
@@ -795,94 +865,113 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       Row(
                                                         children: [
                                                           const Text('L:'),
-                                                          Text(
-                                                            attendanceDisplay
-                                                                .where((element) => (element
-                                                                            .userId ==
-                                                                        userDisplay[
-                                                                                index]
-                                                                            .id &&
-                                                                    element
-                                                                            .date
-                                                                            .month ==
-                                                                        _selectMonth &&
-                                                                    element.code ==
-                                                                        'cin1' &&
-                                                                    element.type ==
-                                                                        'checkin' &&
-                                                                    element.date
-                                                                            .hour >
-                                                                        8 &&
-                                                                    element.date
-                                                                            .year ==
-                                                                        int.parse(
-                                                                            pickedYear)))
-                                                                .length
-                                                                .toString(),
-                                                          ),
+                                                          afternoon
+                                                              ? Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.code ==
+                                                                              'cin2' &&
+                                                                          element.type ==
+                                                                              'checkin' &&
+                                                                          element.date.hour ==
+                                                                              13 &&
+                                                                          element.date.minute >=
+                                                                              16 &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                )
+                                                              : Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.code ==
+                                                                              'cin1' &&
+                                                                          element.type ==
+                                                                              'checkin' &&
+                                                                          element.date.hour >=
+                                                                              7 &&
+                                                                          element.date.minute >=
+                                                                              16 &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                ),
                                                         ],
                                                       ),
                                                       const SizedBox(
                                                         height: 10,
                                                       ),
-                                                      Row(
-                                                        children: [
-                                                          Text('E:'),
-                                                          Text(
-                                                            attendanceDisplay
-                                                                .where((element) => (element
-                                                                            .userId ==
-                                                                        userDisplay[
-                                                                                index]
-                                                                            .id &&
-                                                                    element
-                                                                            .date
-                                                                            .month ==
-                                                                        _selectMonth &&
-                                                                    element.code ==
-                                                                        'cin1' &&
-                                                                    element.type ==
-                                                                        'check out' &&
-                                                                    element.date
-                                                                            .hour <
-                                                                        17 &&
-                                                                    element.date
-                                                                            .year ==
-                                                                        int.parse(
-                                                                            pickedYear)))
-                                                                .length
-                                                                .toString(),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
+                                                      // Row(
+                                                      //   children: [
+                                                      //     Text('E:'),
+                                                      //     Text(
+                                                      //       attendanceDisplay
+                                                      //           .where((element) => (element
+                                                      //                       .userId ==
+                                                      //                   userDisplay[
+                                                      //                           index]
+                                                      //                       .id &&
+                                                      //               element
+                                                      //                       .date
+                                                      //                       .month ==
+                                                      //                   _selectMonth &&
+                                                      //               element.code ==
+                                                      //                   'cin1' &&
+                                                      //               element.type ==
+                                                      //                   'check out' &&
+                                                      //               element.date
+                                                      //                       .hour <
+                                                      //                   17 &&
+                                                      //               element.date
+                                                      //                       .year ==
+                                                      //                   int.parse(
+                                                      //                       pickedYear)))
+                                                      //           .length
+                                                      //           .toString(),
+                                                      //     ),
+                                                      //   ],
+                                                      // ),
+                                                      // const SizedBox(
+                                                      //   height: 10,
+                                                      // ),
                                                       Row(
                                                         children: [
                                                           Text('PM:'),
-                                                          Text(
-                                                            attendanceDisplay
-                                                                .where((element) => (element
-                                                                            .userId ==
-                                                                        userDisplay[
-                                                                                index]
-                                                                            .id &&
-                                                                    element.code ==
-                                                                        'cin1' &&
-                                                                    element
-                                                                            .date
-                                                                            .month ==
-                                                                        _selectMonth &&
-                                                                    element.type ==
-                                                                        'permission' &&
-                                                                    element.date
-                                                                            .year ==
-                                                                        int.parse(
-                                                                            pickedYear)))
-                                                                .length
-                                                                .toString(),
-                                                          ),
+                                                          afternoon
+                                                              ? Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.code ==
+                                                                              'cin2' &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.type ==
+                                                                              'permission' &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                )
+                                                              : Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.code ==
+                                                                              'cin1' &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.type ==
+                                                                              'permission' &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                ),
                                                         ],
                                                       ),
                                                     ],
@@ -1002,14 +1091,14 @@ void onSelected(BuildContext context, int item) {
     case 0:
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => TapScreen(),
+          builder: (_) => AttendanceByDayScreen(),
         ),
       );
       break;
     case 1:
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => TapScreenAlltime(),
+          builder: (context) => AttendanceAllTimeScreen(),
         ),
       );
       break;
