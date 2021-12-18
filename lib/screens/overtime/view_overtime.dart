@@ -3,6 +3,8 @@ import 'package:ems/models/user.dart';
 import 'package:ems/screens/overtime/delete_overtime.dart';
 import 'package:ems/screens/overtime/edit_overtime.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
+import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -67,10 +69,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
     OvertimeAttendance record = widget.record;
     OvertimeCheckin? checkIn = record.checkin;
     OvertimeCheckout? checkOut = record.checkout;
-    TimeOfDay _time = TimeOfDay(
-      hour: int.parse(checkOut!.overtime!.split(":")[0]),
-      minute: int.parse(checkOut.overtime!.split(":")[1]),
-    );
+    TimeOfDay _time = getTimeOfDayFromString(checkOut?.overtime);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -144,7 +143,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                 width: 20,
               ),
               Text(
-                "${checkOut.date?.hour.toString().padLeft(2, '0')}:${Overtime.endedTime.minute.toString().padLeft(2, '0')}",
+                "${checkOut?.date?.hour.toString().padLeft(2, '0')}:${Overtime.endedTime.minute.toString().padLeft(2, '0')}",
                 style: kParagraph,
               ),
             ],
@@ -165,7 +164,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
           const SizedBox(height: 10),
           Text('Note', style: kParagraph.copyWith(fontWeight: FontWeight.w700)),
           const SizedBox(height: 10),
-          Text("${checkIn?.note ?? "No note"}", style: kParagraph),
+          Text(checkIn?.note ?? "No note", style: kParagraph),
           const SizedBox(height: 20),
           Visibility(
             visible: error.isNotEmpty,
@@ -230,9 +229,9 @@ class _ViewOvertimeState extends State<ViewOvertime> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircleAvatar(
-            backgroundImage: NetworkImage("${user?.image}"),
-            radius: 24,
+          CustomCircleAvatar(
+            imageUrl: "${user?.image}",
+            size: 50,
           ),
           const SizedBox(width: 10),
           Column(

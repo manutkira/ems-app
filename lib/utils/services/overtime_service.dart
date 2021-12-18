@@ -28,11 +28,7 @@ class OvertimeService extends BaseService {
         ? '$baseUrl/users/$userId/overtimes'
         : '$baseUrl/users/$userId/overtimes?start=$startDate&end=$endDate';
     try {
-      Response response = await get(
-        Uri.parse(
-          url,
-        ),
-      );
+      Response response = await get(Uri.parse(url));
       _code = response.statusCode;
       var jsondata = json.decode(response.body);
 
@@ -56,6 +52,42 @@ class OvertimeService extends BaseService {
     } catch (e) {
       throw AttendanceException(code: _code);
     }
+  }
+
+  Future<List<OvertimeByDay>> finalMany() async {
+    try {
+      Response response = await get(
+        Uri.parse('$baseUrl/overtimes'),
+      );
+
+      _code = response.statusCode;
+      Map<String, dynamic> jsondata = json.decode(response.body);
+      List<OvertimeByDay> listOfOvertimeByDay =
+          overtimesByDayFromJson(jsondata);
+      // print(jsondata.length);
+      // List<OvertimeAttendance> list = [];
+      // jsondata.forEach((key, value) {
+      //   Map<String, dynamic> val = value;
+      //   DateTime date = DateTime.parse(key);
+      //   List<OvertimeAttendance> overtimes = [];
+      //   val.forEach((key, value) {
+      //     list[0] = OvertimeAttendance(
+      //       user: value[0]['user'],
+      //       checkin: value[0],
+      //       checkout: value[1],
+      //     );
+      //     overtimes.add(value);
+      //   });
+      //
+      //   print(value);
+      // });
+      // print(list);
+      // print(jsondata);
+      return listOfOvertimeByDay;
+    } catch (e) {
+      //
+    }
+    return [];
   }
 }
 

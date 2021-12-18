@@ -7,7 +7,8 @@ import 'package:ems/screens/overtime/edit_overtime.dart';
 import 'package:ems/screens/overtime/view_overtime.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/utils/services/overtime_service.dart';
-import 'package:ems/widgets/custom_avatar.dart';
+import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -134,6 +135,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
       }
 
       setState(() {
+        print('from setstate ${records.total}');
         total = records.total;
         overtimeRecords = records.listOfOvertime;
         if (overtimeRecords.isNotEmpty) {
@@ -474,10 +476,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     OvertimeAttendance record = overtimeRecords[i];
     OvertimeCheckin? checkIn = record.checkin;
     OvertimeCheckout? checkout = record.checkout;
-    TimeOfDay _time = TimeOfDay(
-      hour: int.parse(checkout!.overtime!.split(":")[0]),
-      minute: int.parse(checkout.overtime!.split(":")[1]),
-    );
+    TimeOfDay _time = getTimeOfDayFromString(checkout!.overtime);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -502,7 +501,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
           Row(
             children: [
               Container(
-                width: 80,
+                width: 82,
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -543,18 +542,16 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
 
   Widget get _buildUserInfo {
     String placeholder = isFetching ? "loading..." : "---";
-    TimeOfDay _time = TimeOfDay(
-      hour: int.parse(total.split(":")[0]),
-      minute: int.parse(total.split(":")[1]),
-    );
+    TimeOfDay _time = getTimeOfDayFromString(total);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
-            UserAvatar(
-              user: user,
+            CustomCircleAvatar(
+              imageUrl: "${user.image}",
+              size: 60,
             ),
             const SizedBox(width: 10),
             Row(
