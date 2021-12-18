@@ -198,11 +198,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     DateTime? endTime;
     _attendanceDisplay.asMap().forEach((key, value) {
       Appointment newAppointment = Appointment(
-          startTime: value.checkin1!.date as DateTime,
-          endTime: value.checkout1!.date == null
-              ? value.checkin1!.date as DateTime
-              : value.checkout1!.date as DateTime,
-          color: checkColor(value));
+        startTime: value.checkin1?.date as DateTime,
+        endTime: value.checkout1?.date as DateTime,
+        color: checkColor(value),
+      );
       meetings.add(newAppointment);
     });
     return meetings;
