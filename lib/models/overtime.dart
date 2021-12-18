@@ -152,14 +152,98 @@ import 'package:ems/models/user.dart';
 
 List<OvertimeAttendance> overtimesFromJson(dynamic list) {
   List<OvertimeAttendance> _overtimeWithoutUser = [];
+
   list.forEach((key, value) {
     _overtimeWithoutUser.add(OvertimeAttendance(
       checkin: OvertimeCheckin.fromMap(value[0]),
-      checkout: OvertimeCheckout.fromMap(value[1]),
+      checkout: OvertimeCheckout.fromMap(
+        value.length == 2 ? value[1] : value[0],
+      ),
     ));
   });
 
   return _overtimeWithoutUser;
+}
+
+// List<OvertimeByDay> overtimesByDayFromJson(dynamic list) {
+//   List<OvertimeByDay> _overtimeWithoutUser = [];
+//
+//   list.forEach((key, value){
+//     print(value);
+//     // _overtimeWithoutUser.add(value);
+//   });
+//
+//   return _overtimeWithoutUser;
+// }
+
+List<OvertimeByDay> overtimesByDayFromJson(Map<String, dynamic> list) {
+  List<OvertimeByDay> lists = [];
+
+  // list.forEach((key, value) {
+  //   // print('hihih $key');
+  //   // OvertimeByDay.fromMap(value);
+  // });
+  list.forEach((key, value) {
+    // print(value);
+    // print(lists);
+    var over = OvertimeByDay.fromMap(key, value);
+    // print(over);
+    lists.add(
+      over,
+    );
+  });
+
+  /// lists here to send back to service.
+  // print(lists);
+  return lists;
+  // return List<OvertimeByDay>.from(
+  //   list.map(
+  //     (x) => OvertimeByDay.fromMap(x),
+  //   ),
+  // );
+}
+
+class OvertimeByDay {
+  DateTime date;
+  List<OvertimeAttendance> overtimes;
+
+  OvertimeByDay({required this.date, required this.overtimes});
+
+  factory OvertimeByDay.fromMap(key, value) {
+    // print('hi from map $value');
+    List<OvertimeAttendance> otAttendances = [];
+    value.forEach((key, value) {
+      print('key ${value}');
+      // if () {
+      otAttendances.add(
+        OvertimeAttendance(
+          user: User.fromJson(value[0]['users']),
+          checkin: OvertimeCheckin.fromMap(value[0]),
+          checkout: OvertimeCheckout.fromMap(
+            value.length == 2 ? value[1] : value[0],
+          ),
+        ),
+      );
+      // }
+      // print(otAttendances);
+      // print(ot.user?.name);
+      //0 in 1 out
+      // print(value[1]);
+    });
+    // print(jsonData);
+    // jsonData.forEach((key, value) {
+    //   print(key);
+    // });
+    return OvertimeByDay(
+      date: DateTime.parse(key),
+      overtimes: otAttendances,
+    );
+  }
+
+  @override
+  String toString() {
+    return "${date.toIso8601String()} emp: ${overtimes[0].user?.name} overtime: ${overtimes[0].checkout?.overtime}";
+  }
 }
 
 class OvertimeListWithTotal {
