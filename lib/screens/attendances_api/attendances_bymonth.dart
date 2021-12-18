@@ -1,13 +1,14 @@
+import 'package:ems/models/attendance.dart';
+import 'package:ems/screens/attendances_api/attendance_all_time.dart';
+import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/tap_screen.dart';
 import 'package:ems/screens/attendances_api/tap_screen_alltime.dart';
-import 'package:intl/intl.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/widgets/attendance/attendacne_all_time_list.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
-import '../../screens/attendances_api/attendance_all_time.dart';
-import '../../screens/attendances_api/attendance_by_day_screen.dart';
 import '../../utils/services/attendance_service.dart';
 
 class AttendancesByMonthScreen extends StatefulWidget {
@@ -45,6 +46,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
   final yearController = TextEditingController();
   var _controller = TextEditingController();
   var pickedYear;
+  String dropDownValue = 'Morning';
+  bool afternoon = false;
 
   void clearText() {
     _controller.clear();
@@ -98,15 +101,15 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Attendance'),
+        title: const Text('Attendance'),
         actions: [
           PopupMenuButton(
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               color: Color(0xff43c3c52),
               onSelected: (item) => onSelected(context, item as int),
               icon: Icon(Icons.filter_list),
-              itemBuilder: (_) => [
+              itemBuilder: (_) => const [
                     PopupMenuItem(
                       child: Text(
                         'By Day',
@@ -133,29 +136,28 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
       body: Form(
         key: _formKey,
         child: Container(
-          margin: EdgeInsets.only(top: 5),
+          margin: const EdgeInsets.only(top: 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.only(left: 20, bottom: 10),
+                margin: const EdgeInsets.only(left: 20, bottom: 10),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
                       _selectMonth == null
                           ? 'Pick a Month'
                           : 'Date: $_selectMonth/$pickedYear',
-                      style: kHeadingFour,
+                      style: kParagraph.copyWith(fontSize: 14),
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    OutlineButton(
+                    FlatButton(
                       onPressed: () {
                         showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
-                            shape: RoundedRectangleBorder(
+                            shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.0))),
                             title: Text('Pick a month'),
@@ -175,7 +177,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                             hintText: 'Enter year'),
                                         controller: yearController,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 10,
                                       ),
                                       Row(
@@ -205,7 +207,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -224,7 +226,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Feb'),
+                                            child: const Text('Feb'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -232,7 +234,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -259,7 +261,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           )
@@ -284,7 +286,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Apr'),
+                                            child: const Text('Apr'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -292,7 +294,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -311,7 +313,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('May'),
+                                            child: const Text('May'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -319,7 +321,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -338,7 +340,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Jun'),
+                                            child: const Text('Jun'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -346,7 +348,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           )
@@ -371,7 +373,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Jul'),
+                                            child: const Text('Jul'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -379,7 +381,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -398,7 +400,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Aug'),
+                                            child: const Text('Aug'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -406,7 +408,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -425,7 +427,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Sep'),
+                                            child: const Text('Sep'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -433,7 +435,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           )
@@ -458,7 +460,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Oct'),
+                                            child: const Text('Oct'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -466,7 +468,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -485,7 +487,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Nov'),
+                                            child: const Text('Nov'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -493,7 +495,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           ),
@@ -512,7 +514,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Dec'),
+                                            child: const Text('Dec'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -520,7 +522,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10.0),
-                                                        side: BorderSide(
+                                                        side: const BorderSide(
                                                             color: Colors.teal,
                                                             width: 2.0)))),
                                           )
@@ -534,15 +536,59 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                           ),
                         );
                       },
-                      child: Text('Pick A Month'),
-                      borderSide: BorderSide(color: Colors.green),
+                      child: const Text(
+                        'Pick A Month',
+                        style: kParagraph,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: kDarkestBlue,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: DropdownButton(
+                        underline: Container(),
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                        isDense: true,
+                        borderRadius: const BorderRadius.all(kBorderRadius),
+                        dropdownColor: kDarkestBlue,
+                        icon: const Icon(Icons.expand_more),
+                        value: dropDownValue,
+                        onChanged: (String? newValue) {
+                          if (newValue == 'Afternoon') {
+                            setState(() {
+                              afternoon = true;
+                              dropDownValue = newValue!;
+                            });
+                          }
+                          if (newValue == 'Morning') {
+                            setState(() {
+                              afternoon = false;
+                              dropDownValue = newValue!;
+                            });
+                          }
+                        },
+                        items: <String>[
+                          'Morning',
+                          'Afternoon',
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ],
                 ),
               ),
               yearController.text.isEmpty
                   ? Container(
-                      padding: EdgeInsets.only(top: 150, left: 70),
+                      padding: const EdgeInsets.only(top: 150, left: 70),
                       child: Column(
                         children: [
                           Text(
@@ -552,7 +598,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                               color: Colors.black,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
                           Image.asset(
@@ -567,7 +613,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
+                            borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20),
                             ),
@@ -584,7 +630,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                 children: [
                                   _searchBar(),
                                   Container(
-                                    padding: EdgeInsets.only(top: 150),
+                                    padding: const EdgeInsets.only(top: 150),
                                     child: Column(
                                       children: [
                                         Text(
@@ -594,7 +640,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                             color: Colors.black,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 30,
                                         ),
                                         Image.asset(
@@ -615,9 +661,10 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                       itemCount: userDisplay.length,
                                       itemBuilder: (context, index) {
                                         return Container(
-                                          padding: EdgeInsets.only(bottom: 20),
-                                          margin: EdgeInsets.all(20),
-                                          decoration: BoxDecoration(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 20),
+                                          margin: const EdgeInsets.all(20),
+                                          decoration: const BoxDecoration(
                                               border: Border(
                                                   bottom: BorderSide(
                                                       color: Colors.black,
@@ -633,7 +680,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     height: 75,
                                                     decoration: BoxDecoration(
                                                         borderRadius:
-                                                            BorderRadius.all(
+                                                            const BorderRadius
+                                                                    .all(
                                                                 Radius.circular(
                                                                     100)),
                                                         border: Border.all(
@@ -661,7 +709,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                             ),
                                                     ),
                                                   ),
-                                                  SizedBox(
+                                                  const SizedBox(
                                                     width: 20,
                                                   ),
                                                   Column(
@@ -671,7 +719,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          Text(
+                                                          const Text(
                                                             'Name: ',
                                                             style: TextStyle(
                                                                 fontWeight:
@@ -695,7 +743,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       ),
                                                       Row(
                                                         children: [
-                                                          Text(
+                                                          const Text(
                                                             'ID: ',
                                                             style: TextStyle(
                                                                 fontWeight:
@@ -719,73 +767,94 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          Text('P:'),
-                                                          Text(
-                                                            attendanceDisplay
-                                                                .where(
-                                                                    (element) {
-                                                                  return element
-                                                                              .userId ==
-                                                                          userDisplay[
-                                                                                  index]
-                                                                              .id &&
-                                                                      element
-                                                                              .date
-                                                                              .month ==
-                                                                          _selectMonth &&
-                                                                      element.type ==
-                                                                          'checkin' &&
-                                                                      element.code ==
-                                                                          'cin1' &&
-                                                                      element.date
-                                                                              .hour <
-                                                                          8 &&
-                                                                      element.date
-                                                                              .minute <
-                                                                          21 &&
-                                                                      element.date
-                                                                              .year ==
-                                                                          int.parse(
-                                                                              pickedYear);
-                                                                })
-                                                                .length
-                                                                .toString(),
-                                                          ),
+                                                          const Text('P:'),
+                                                          afternoon
+                                                              ? Text(attendanceDisplay
+                                                                  .where((element) {
+                                                                    return element
+                                                                                .userId ==
+                                                                            userDisplay[index]
+                                                                                .id &&
+                                                                        element.date
+                                                                                .month ==
+                                                                            _selectMonth &&
+                                                                        element.type ==
+                                                                            'checkin' &&
+                                                                        element.code ==
+                                                                            'cin2' &&
+                                                                        element.date
+                                                                                .hour ==
+                                                                            13 &&
+                                                                        element.date.minute <=
+                                                                            15 &&
+                                                                        element.date.year ==
+                                                                            int.parse(pickedYear);
+                                                                  })
+                                                                  .length
+                                                                  .toString())
+                                                              : Text(
+                                                                  attendanceDisplay
+                                                                      .where(
+                                                                          (element) {
+                                                                        return element.userId == userDisplay[index].id &&
+                                                                            element.date.month ==
+                                                                                _selectMonth &&
+                                                                            element.type ==
+                                                                                'checkin' &&
+                                                                            element.code ==
+                                                                                'cin1' &&
+                                                                            element.date.hour ==
+                                                                                7 &&
+                                                                            element.date.minute <=
+                                                                                15 &&
+                                                                            element.date.year ==
+                                                                                int.parse(pickedYear);
+                                                                      })
+                                                                      .length
+                                                                      .toString(),
+                                                                ),
                                                         ],
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: 10,
                                                       ),
                                                       Row(
                                                         children: [
-                                                          Text('A:'),
-                                                          Text(
-                                                            attendanceDisplay
-                                                                .where((element) => (element
-                                                                            .userId ==
-                                                                        userDisplay[
-                                                                                index]
-                                                                            .id &&
-                                                                    element
-                                                                            .date
-                                                                            .month ==
-                                                                        _selectMonth &&
-                                                                    element.code ==
-                                                                        'cin1' &&
-                                                                    element.type ==
-                                                                        'absent' &&
-                                                                    element.date
-                                                                            .year ==
-                                                                        int.parse(
-                                                                            pickedYear)))
-                                                                .length
-                                                                .toString(),
-                                                          ),
+                                                          const Text('A:'),
+                                                          afternoon
+                                                              ? Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.code ==
+                                                                              'cin2' &&
+                                                                          element.type ==
+                                                                              'absent' &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                )
+                                                              : Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.code ==
+                                                                              'cin1' &&
+                                                                          element.type ==
+                                                                              'absent' &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                ),
                                                         ],
                                                       ),
                                                     ],
                                                   ),
-                                                  SizedBox(
+                                                  const SizedBox(
                                                     width: 15,
                                                   ),
                                                   Column(
@@ -795,95 +864,114 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          Text('L:'),
-                                                          Text(
-                                                            attendanceDisplay
-                                                                .where((element) => (element
-                                                                            .userId ==
-                                                                        userDisplay[
-                                                                                index]
-                                                                            .id &&
-                                                                    element
-                                                                            .date
-                                                                            .month ==
-                                                                        _selectMonth &&
-                                                                    element.code ==
-                                                                        'cin1' &&
-                                                                    element.type ==
-                                                                        'checkin' &&
-                                                                    element.date
-                                                                            .hour >
-                                                                        8 &&
-                                                                    element.date
-                                                                            .year ==
-                                                                        int.parse(
-                                                                            pickedYear)))
-                                                                .length
-                                                                .toString(),
-                                                          ),
+                                                          const Text('L:'),
+                                                          afternoon
+                                                              ? Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.code ==
+                                                                              'cin2' &&
+                                                                          element.type ==
+                                                                              'checkin' &&
+                                                                          element.date.hour ==
+                                                                              13 &&
+                                                                          element.date.minute >=
+                                                                              16 &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                )
+                                                              : Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.code ==
+                                                                              'cin1' &&
+                                                                          element.type ==
+                                                                              'checkin' &&
+                                                                          element.date.hour >=
+                                                                              7 &&
+                                                                          element.date.minute >=
+                                                                              16 &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                ),
                                                         ],
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: 10,
                                                       ),
-                                                      Row(
-                                                        children: [
-                                                          Text('E:'),
-                                                          Text(
-                                                            attendanceDisplay
-                                                                .where((element) => (element
-                                                                            .userId ==
-                                                                        userDisplay[
-                                                                                index]
-                                                                            .id &&
-                                                                    element
-                                                                            .date
-                                                                            .month ==
-                                                                        _selectMonth &&
-                                                                    element.code ==
-                                                                        'cin1' &&
-                                                                    element.type ==
-                                                                        'check out' &&
-                                                                    element.date
-                                                                            .hour <
-                                                                        17 &&
-                                                                    element.date
-                                                                            .year ==
-                                                                        int.parse(
-                                                                            pickedYear)))
-                                                                .length
-                                                                .toString(),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
+                                                      // Row(
+                                                      //   children: [
+                                                      //     Text('E:'),
+                                                      //     Text(
+                                                      //       attendanceDisplay
+                                                      //           .where((element) => (element
+                                                      //                       .userId ==
+                                                      //                   userDisplay[
+                                                      //                           index]
+                                                      //                       .id &&
+                                                      //               element
+                                                      //                       .date
+                                                      //                       .month ==
+                                                      //                   _selectMonth &&
+                                                      //               element.code ==
+                                                      //                   'cin1' &&
+                                                      //               element.type ==
+                                                      //                   'check out' &&
+                                                      //               element.date
+                                                      //                       .hour <
+                                                      //                   17 &&
+                                                      //               element.date
+                                                      //                       .year ==
+                                                      //                   int.parse(
+                                                      //                       pickedYear)))
+                                                      //           .length
+                                                      //           .toString(),
+                                                      //     ),
+                                                      //   ],
+                                                      // ),
+                                                      // const SizedBox(
+                                                      //   height: 10,
+                                                      // ),
                                                       Row(
                                                         children: [
                                                           Text('PM:'),
-                                                          Text(
-                                                            attendanceDisplay
-                                                                .where((element) => (element
-                                                                            .userId ==
-                                                                        userDisplay[
-                                                                                index]
-                                                                            .id &&
-                                                                    element.code ==
-                                                                        'cin1' &&
-                                                                    element
-                                                                            .date
-                                                                            .month ==
-                                                                        _selectMonth &&
-                                                                    element.type ==
-                                                                        'permission' &&
-                                                                    element.date
-                                                                            .year ==
-                                                                        int.parse(
-                                                                            pickedYear)))
-                                                                .length
-                                                                .toString(),
-                                                          ),
+                                                          afternoon
+                                                              ? Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.code ==
+                                                                              'cin2' &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.type ==
+                                                                              'permission' &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                )
+                                                              : Text(
+                                                                  attendanceDisplay
+                                                                      .where((element) => (element.userId == userDisplay[index].id &&
+                                                                          element.code ==
+                                                                              'cin1' &&
+                                                                          element.date.month ==
+                                                                              _selectMonth &&
+                                                                          element.type ==
+                                                                              'permission' &&
+                                                                          element.date.year ==
+                                                                              int.parse(pickedYear)))
+                                                                      .length
+                                                                      .toString(),
+                                                                ),
                                                         ],
                                                       ),
                                                     ],
@@ -909,7 +997,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
 
   _searchBar() {
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Row(
         children: [
           Flexible(
@@ -917,7 +1005,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
               controller: _controller,
               decoration: InputDecoration(
                 suffixIcon: _controller.text.isEmpty
-                    ? Icon(
+                    ? const Icon(
                         Icons.search,
                         color: Colors.white,
                       )
@@ -927,18 +1015,17 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                             clearText();
                             userDisplay = users.where((user) {
                               var userName = user.name!.toLowerCase();
-                              print(userName);
                               return userName.contains(_controller.text);
                             }).toList();
                           });
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.clear,
                           color: Colors.white,
                         ),
                       ),
                 hintText: 'Search...',
-                errorStyle: TextStyle(
+                errorStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
@@ -948,7 +1035,6 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                 setState(() {
                   userDisplay = users.where((user) {
                     var userName = user.name!.toLowerCase();
-                    print(userName);
                     return userName.contains(text);
                   }).toList();
                 });
@@ -957,7 +1043,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
           ),
           PopupMenuButton(
             color: kDarkestBlue,
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             onSelected: (int selectedValue) {
               if (selectedValue == 0) {
@@ -978,7 +1064,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                 });
               }
             },
-            itemBuilder: (_) => [
+            itemBuilder: (_) => const [
               PopupMenuItem(
                 child: Text('From A-Z'),
                 value: 0,
@@ -992,7 +1078,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                 value: 2,
               ),
             ],
-            icon: Icon(Icons.sort),
+            icon: const Icon(Icons.sort),
           ),
         ],
       ),
@@ -1005,14 +1091,14 @@ void onSelected(BuildContext context, int item) {
     case 0:
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => TapScreen(),
+          builder: (_) => AttendanceByDayScreen(),
         ),
       );
       break;
     case 1:
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => TapScreenAlltime(),
+          builder: (context) => AttendanceAllTimeScreen(),
         ),
       );
       break;

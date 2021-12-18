@@ -27,7 +27,10 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   DateTime testdate = DateTime(10, 11, 2021);
   bool noData = true;
   List<Attendance> checkedDate = [];
+  List<Attendance> checkedDateNoon = [];
   List<Attendance> users = [];
+  String dropDownValue = 'Morning';
+  bool afternoon = false;
 
   var _controller = TextEditingController();
 
@@ -54,13 +57,73 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
         element.date!.day == pick.day &&
         element.date!.month == pick.month &&
         element.date!.year == pick.year &&
-        element.type != 'checkout' &&
-        element.code == 'cin1');
+        element.code == 'cin1' &&
+        element.type != 'checkout');
     setState(() {
       users = checkingDate.toList();
       checkedDate = users;
       checkedDate.sort((a, b) => a.userId!.compareTo(b.userId as int));
     });
+  }
+
+  void checkDateNoon(DateTime pick) {
+    var checkingDate = attendanceDisplay.where((element) =>
+        element.date!.day == pick.day &&
+        element.date!.month == pick.month &&
+        element.date!.year == pick.year &&
+        element.code == 'cin2' &&
+        element.type != 'checkout');
+    setState(() {
+      users = checkingDate.toList();
+      checkedDateNoon = users;
+      checkedDateNoon.sort((a, b) => a.userId!.compareTo(b.userId as int));
+    });
+  }
+
+  String checkAttendance(Attendance attendance) {
+    if (attendance.type == 'checkin' &&
+        attendance.date!.hour == 7 &&
+        attendance.date!.minute <= 15 &&
+        attendance.code == 'cin1') {
+      return 'Present';
+    }
+    if (attendance.type == 'checkin' &&
+        attendance.date!.hour >= 7 &&
+        attendance.date!.minute >= 16 &&
+        attendance.code == 'cin1') {
+      return 'Late';
+    }
+    if (attendance.type == 'permission' && attendance.code == 'cin1') {
+      return 'Permission';
+    }
+    if (attendance.type == 'absent' && attendance.code == 'cin1') {
+      return 'Absent';
+    } else {
+      return '';
+    }
+  }
+
+  String checkAttendanceNoon(Attendance attendance) {
+    if (attendance.type == 'checkin' &&
+        attendance.date!.hour == 13 &&
+        attendance.date!.minute <= 15 &&
+        attendance.code == 'cin2') {
+      return 'Present';
+    }
+    if (attendance.type == 'checkin' &&
+        attendance.date!.hour >= 13 &&
+        attendance.date!.minute >= 16 &&
+        attendance.code == 'cin2') {
+      return 'Late';
+    }
+    if (attendance.type == 'permission' && attendance.code == 'cin2') {
+      return 'Permission';
+    }
+    if (attendance.type == 'absent' && attendance.code == 'cin2') {
+      return 'Absent';
+    } else {
+      return '';
+    }
   }
 
   DateTime? _selectDate;
@@ -77,6 +140,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
         return;
       }
       checkDate(picked);
+      checkDateNoon(picked);
       setState(() {
         _selectDate = picked;
 
@@ -146,23 +210,69 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                   Padding(
                     padding: const EdgeInsets.only(left: 15),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           _selectDate == null
                               ? 'Pick a Date'
                               : 'Date: ${DateFormat.yMd().format(_selectDate as DateTime)}',
-                          style: kHeadingFour,
+                          style: kParagraph.copyWith(fontSize: 14),
                         ),
                         FlatButton(
-                            onPressed: () {
-                              setState(() {
-                                _byDayDatePicker();
-                              });
+                          onPressed: () {
+                            setState(() {
+                              _byDayDatePicker();
+                            });
+                          },
+                          child: Text(
+                            'Choose Date',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: kDarkestBlue,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: DropdownButton(
+                            underline: Container(),
+                            style: kParagraph.copyWith(
+                                fontWeight: FontWeight.bold),
+                            isDense: true,
+                            borderRadius: const BorderRadius.all(kBorderRadius),
+                            dropdownColor: kDarkestBlue,
+                            icon: const Icon(Icons.expand_more),
+                            value: dropDownValue,
+                            onChanged: (String? newValue) {
+                              if (newValue == 'Afternoon') {
+                                setState(() {
+                                  afternoon = true;
+                                  dropDownValue = newValue!;
+                                });
+                              }
+                              if (newValue == 'Morning') {
+                                setState(() {
+                                  afternoon = false;
+                                  dropDownValue = newValue!;
+                                });
+                              }
                             },
-                            child: Text(
-                              'Choose Date',
-                              style: kParagraph,
-                            ))
+                            items: <String>[
+                              'Morning',
+                              'Afternoon',
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -239,7 +349,9 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                                           itemBuilder: (ctx, index) {
                                             return _listItem(index);
                                           },
-                                          itemCount: checkedDate.length,
+                                          itemCount: afternoon
+                                              ? checkedDateNoon.length
+                                              : checkedDate.length,
                                         ),
                                       ),
                                     ],
@@ -407,44 +519,83 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
               padding: EdgeInsets.all(3),
               width: 80,
               alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: checkedDate[index].type == 'checkin' &&
-                          checkedDate[index].date!.hour < 8 &&
-                          checkedDate[index].date!.minute < 21
-                      ? Color(0xff9CE29B)
-                      : checkedDate[index].type == 'checkin' &&
-                              checkedDate[index].date!.hour > 7
-                          ? Color(0xffF3FDB6)
-                          : checkedDate[index].type == 'absent'
-                              ? Color(0xffFFCBCE)
-                              : Color(0xff77B1C9),
-                  borderRadius: BorderRadius.circular(10)),
-              child: Text(
-                checkedDate[index].type == 'checkin' &&
-                        checkedDate[index].date!.hour < 8 &&
-                        checkedDate[index].date!.minute < 21
-                    ? 'Present'
-                    : checkedDate[index].type == 'checkin' &&
-                            checkedDate[index].date!.hour > 7
-                        // checkedDate[index].date!.minute > 20
-                        ? 'Late'
-                        : checkedDate[index].type == 'absent'
-                            ? 'Absent'
-                            : checkedDate[index].type == 'permission'
-                                ? 'Permission'
-                                : '',
-                style: TextStyle(
-                  color: checkedDate[index].type == 'checkin' &&
-                          checkedDate[index].date!.hour < 9
-                      ? Color(0xff334732)
-                      : checkedDate[index].type == 'checkin' &&
-                              checkedDate[index].date!.hour > 8
-                          ? Color(0xff5A5E45)
-                          : checkedDate[index].type == 'absent'
-                              ? Color(0xffA03E3E)
-                              : Color(0xff313B3F),
-                ),
-              ),
+              decoration: afternoon
+                  ? BoxDecoration(
+                      color: checkedDateNoon[index].type == 'checkin' &&
+                              checkedDateNoon[index].date!.hour == 13 &&
+                              checkedDateNoon[index].date!.minute <= 15 &&
+                              checkedDateNoon[index].code == 'cin2'
+                          ? Color(0xff9CE29B)
+                          : checkedDateNoon[index].type == 'checkin' &&
+                                  checkedDateNoon[index].date!.hour >= 13 &&
+                                  checkedDateNoon[index].date!.minute >= 16 &&
+                                  checkedDateNoon[index].code == 'cin2'
+                              ? Color(0xffF3FDB6)
+                              : checkedDateNoon[index].type == 'absent' &&
+                                      checkedDateNoon[index].code == 'cin2'
+                                  ? Color(0xffFFCBCE)
+                                  : Color(0xff77B1C9),
+                      borderRadius: BorderRadius.circular(10))
+                  : BoxDecoration(
+                      color: checkedDate[index].type == 'checkin' &&
+                              checkedDate[index].date!.hour == 7 &&
+                              checkedDate[index].date!.minute <= 15 &&
+                              checkedDate[index].code == 'cin1'
+                          ? Color(0xff9CE29B)
+                          : checkedDate[index].type == 'checkin' &&
+                                  checkedDate[index].date!.hour >= 7 &&
+                                  checkedDate[index].date!.minute >= 16 &&
+                                  checkedDate[index].code == 'cin1'
+                              ? Color(0xffF3FDB6)
+                              : checkedDate[index].type == 'absent' &&
+                                      checkedDate[index].code == 'cin1'
+                                  ? Color(0xffFFCBCE)
+                                  : Color(0xff77B1C9),
+                      borderRadius: BorderRadius.circular(10)),
+              child: afternoon
+                  ? Text(
+                      checkAttendanceNoon(checkedDateNoon[index]),
+                      style: TextStyle(
+                        color: checkedDateNoon[index].type == 'checkin' &&
+                                checkedDateNoon[index].date!.hour == 13 &&
+                                checkedDateNoon[index].date!.minute <= 15 &&
+                                checkedDateNoon[index].code == 'cin2'
+                            ? Color(0xff334732)
+                            : checkedDateNoon[index].type == 'checkin' &&
+                                    checkedDateNoon[index].code == 'cin2' &&
+                                    checkedDateNoon[index].date!.hour >= 13 &&
+                                    checkedDateNoon[index].date!.minute >= 16
+                                ? Color(0xff5A5E45)
+                                : checkedDateNoon[index].type == 'absent' &&
+                                        checkedDateNoon[index].code == 'cin2'
+                                    ? Color(0xffA03E3E)
+                                    : checkedDateNoon[index].type ==
+                                                'permission' &&
+                                            checkedDateNoon[index].code ==
+                                                'cin2'
+                                        ? Color(0xff313B3F)
+                                        : Color(0xff313B3F),
+                      ),
+                    )
+                  : Text(
+                      checkAttendance(checkedDate[index]),
+                      style: TextStyle(
+                        color: checkedDate[index].type == 'checkin' &&
+                                checkedDate[index].date!.hour == 7 &&
+                                checkedDate[index].date!.minute <= 15 &&
+                                checkedDate[index].code == 'cin1'
+                            ? Color(0xff334732)
+                            : checkedDate[index].type == 'checkin' &&
+                                    checkedDate[index].date!.hour >= 7 &&
+                                    checkedDate[index].date!.minute >= 16 &&
+                                    checkedDate[index].code == 'cin1'
+                                ? Color(0xff5A5E45)
+                                : checkedDate[index].type == 'absent' &&
+                                        checkedDate[index].code == 'cin1'
+                                    ? Color(0xffA03E3E)
+                                    : Color(0xff313B3F),
+                      ),
+                    ),
             ),
           ),
         ],
@@ -457,14 +608,14 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
       case 0:
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => TapScreenMonth(),
+            builder: (context) => AttendancesByMonthScreen(),
           ),
         );
         break;
       case 1:
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => TapScreenAlltime(),
+            builder: (context) => AttendanceAllTimeScreen(),
           ),
         );
         break;

@@ -27,6 +27,8 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   bool _isLoading = true;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
+  String dropDownValue = 'Morning';
+  bool afternoon = false;
 
   var _controller = TextEditingController();
 
@@ -259,15 +261,31 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           Row(
                             children: [
                               Text('P:'),
-                              // Text(countPresent.toString())
-                              Text(attendancedisplay
-                                  .where((element) =>
-                                      element.userId == userDisplay[index].id &&
-                                      element.type == 'checkin' &&
-                                      element.code == 'cin1' &&
-                                      element.date!.hour < 9)
-                                  .length
-                                  .toString()),
+                              afternoon
+                                  ? Text(attendancedisplay
+                                      .where(
+                                        (element) =>
+                                            element.userId ==
+                                                userDisplay[index].id &&
+                                            element.type == 'checkin' &&
+                                            element.code == 'cin2' &&
+                                            element.date!.hour == 13 &&
+                                            element.date!.minute <= 15,
+                                      )
+                                      .length
+                                      .toString())
+                                  : Text(attendancedisplay
+                                      .where(
+                                        (element) =>
+                                            element.userId ==
+                                                userDisplay[index].id &&
+                                            element.type == 'checkin' &&
+                                            element.code == 'cin1' &&
+                                            element.date!.hour == 7 &&
+                                            element.date!.minute <= 15,
+                                      )
+                                      .length
+                                      .toString()),
                             ],
                           ),
                           SizedBox(
@@ -276,16 +294,27 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           Row(
                             children: [
                               Text('A:'),
-                              Text(
-                                attendancedisplay
-                                    .where((element) =>
-                                        element.userId ==
-                                            userDisplay[index].id &&
-                                        element.code == 'cin1' &&
-                                        element.type == 'absent')
-                                    .length
-                                    .toString(),
-                              ),
+                              afternoon
+                                  ? Text(
+                                      attendancedisplay
+                                          .where((element) =>
+                                              element.userId ==
+                                                  userDisplay[index].id &&
+                                              element.code == 'cin2' &&
+                                              element.type == 'absent')
+                                          .length
+                                          .toString(),
+                                    )
+                                  : Text(
+                                      attendancedisplay
+                                          .where((element) =>
+                                              element.userId ==
+                                                  userDisplay[index].id &&
+                                              element.code == 'cin1' &&
+                                              element.type == 'absent')
+                                          .length
+                                          .toString(),
+                                    ),
                             ],
                           ),
                         ],
@@ -299,46 +328,69 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           Row(
                             children: [
                               Text('L:'),
-                              Text(attendancedisplay
-                                  .where((element) =>
-                                      element.userId == userDisplay[index].id &&
-                                      element.code == 'cin1' &&
-                                      element.type == 'checkin' &&
-                                      element.date!.hour > 8)
-                                  .length
-                                  .toString()),
+                              afternoon
+                                  ? Text(attendancedisplay
+                                      .where((element) =>
+                                          element.userId ==
+                                              userDisplay[index].id &&
+                                          element.code == 'cin2' &&
+                                          element.type == 'checkin' &&
+                                          element.date!.hour == 13 &&
+                                          element.date!.minute <= 15)
+                                      .length
+                                      .toString())
+                                  : Text(attendancedisplay
+                                      .where((element) =>
+                                          element.userId ==
+                                              userDisplay[index].id &&
+                                          element.code == 'cin1' &&
+                                          element.type == 'checkin' &&
+                                          element.date!.hour == 7 &&
+                                          element.date!.minute <= 15)
+                                      .length
+                                      .toString()),
                             ],
                           ),
                           SizedBox(
                             height: 10,
                           ),
-                          Row(
-                            children: [
-                              Text('E:'),
-                              Text(attendancedisplay
-                                  .where((element) =>
-                                      element.userId == userDisplay[index].id &&
-                                      element.type == 'checkout' &&
-                                      element.code == 'cin1' &&
-                                      element.date!.hour > 8 &&
-                                      element.date!.hour < 17)
-                                  .length
-                                  .toString()),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
+                          // Row(
+                          //   children: [
+                          //     Text('E:'),
+                          //     Text(attendancedisplay
+                          //         .where((element) =>
+                          //             element.userId == userDisplay[index].id &&
+                          //             element.type == 'checkout' &&
+                          //             element.code == 'cin1' &&
+                          //             element.date!.hour > 8 &&
+                          //             element.date!.hour < 17)
+                          //         .length
+                          //         .toString()),
+                          //   ],
+                          // ),
+                          // SizedBox(
+                          //   height: 10,
+                          // ),
                           Row(
                             children: [
                               Text('PM:'),
-                              Text(attendancedisplay
-                                  .where((element) =>
-                                      element.userId == userDisplay[index].id &&
-                                      element.code == 'cin1' &&
-                                      element.type == 'permission')
-                                  .length
-                                  .toString()),
+                              afternoon
+                                  ? Text(attendancedisplay
+                                      .where((element) =>
+                                          element.userId ==
+                                              userDisplay[index].id &&
+                                          element.code == 'cin2' &&
+                                          element.type == 'permission')
+                                      .length
+                                      .toString())
+                                  : Text(attendancedisplay
+                                      .where((element) =>
+                                          element.userId ==
+                                              userDisplay[index].id &&
+                                          element.code == 'cin1' &&
+                                          element.type == 'permission')
+                                      .length
+                                      .toString()),
                             ],
                           ),
                         ],
@@ -401,6 +453,51 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
               },
             ),
           ),
+          SizedBox(
+            width: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 5,
+              vertical: 3,
+            ),
+            decoration: BoxDecoration(
+              color: kDarkestBlue,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: DropdownButton(
+              underline: Container(),
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+              isDense: true,
+              borderRadius: const BorderRadius.all(kBorderRadius),
+              dropdownColor: kDarkestBlue,
+              icon: const Icon(Icons.expand_more),
+              value: dropDownValue,
+              onChanged: (String? newValue) {
+                if (newValue == 'Afternoon') {
+                  setState(() {
+                    afternoon = true;
+                    dropDownValue = newValue!;
+                  });
+                }
+                if (newValue == 'Morning') {
+                  setState(() {
+                    afternoon = false;
+                    dropDownValue = newValue!;
+                  });
+                }
+              },
+              items: <String>[
+                'Morning',
+                'Afternoon',
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
         ],
       ),
     );
@@ -411,14 +508,14 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
       case 0:
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => TapScreenMonth(),
+            builder: (context) => AttendancesByMonthScreen(),
           ),
         );
         break;
       case 1:
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => TapScreen(),
+            builder: (context) => AttendanceByDayScreen(),
           ),
         );
         break;

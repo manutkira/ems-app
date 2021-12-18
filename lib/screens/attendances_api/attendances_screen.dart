@@ -57,16 +57,16 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: Text('Attendance'),
+          title: const Text('Attendance'),
           actions: [
             PopupMenuButton(
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
-                color: Color(0xff43c3c52),
+                color: const Color(0xff43c3c52),
                 onSelected: (item) => onSelected(context, item as int),
-                icon: Icon(Icons.filter_list),
+                icon: const Icon(Icons.filter_list),
                 itemBuilder: (_) => [
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         child: Text(
                           'By Day',
                           style: TextStyle(
@@ -76,7 +76,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                         ),
                         value: 0,
                       ),
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         child: Text(
                           'By All-Time',
                           style: TextStyle(
@@ -86,7 +86,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                         ),
                         value: 1,
                       ),
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         child: Text(
                           'By Month',
                           style: TextStyle(
@@ -102,7 +102,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
         body: Container(
           width: double.infinity,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
@@ -116,17 +116,17 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
               )),
           child: _isLoading
               ? Container(
-                  padding: EdgeInsets.only(top: 320),
+                  padding: const EdgeInsets.only(top: 320),
                   alignment: Alignment.center,
                   child: Center(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
+                      children: const [
                         Text('Fetching Data'),
                         SizedBox(
                           height: 10,
                         ),
-                        const CircularProgressIndicator(
+                        CircularProgressIndicator(
                           color: kWhite,
                         ),
                       ],
@@ -138,7 +138,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                       children: [
                         _searchBar(),
                         Container(
-                          padding: EdgeInsets.only(top: 150),
+                          padding: const EdgeInsets.only(top: 150),
                           child: Column(
                             children: [
                               Text(
@@ -148,7 +148,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                                   color: Colors.black,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 30,
                               ),
                               Image.asset(
@@ -178,7 +178,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
 
   _searchBar() {
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Row(
         children: [
           Flexible(
@@ -186,7 +186,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
               controller: _controller,
               decoration: InputDecoration(
                 suffixIcon: _controller.text.isEmpty
-                    ? Icon(
+                    ? const Icon(
                         Icons.search,
                         color: Colors.white,
                       )
@@ -196,17 +196,16 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                             clearText();
                             userDisplay = user.where((user) {
                               var userName = user.name!.toLowerCase();
-                              print(userName);
                               return userName.contains(_controller.text);
                             }).toList();
                           });
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.clear,
                           color: Colors.white,
                         )),
                 hintText: 'Search...',
-                errorStyle: TextStyle(
+                errorStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
@@ -232,8 +231,8 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(bottom: 20),
-      margin: EdgeInsets.all(20),
-      decoration: BoxDecoration(
+      margin: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.black, width: 2))),
       child: Container(
         width: double.infinity,
@@ -260,7 +259,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                       ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Container(
@@ -273,7 +272,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                     children: [
                       Row(
                         children: [
-                          Text('Name: '),
+                          const Text('Name: '),
                           Text(
                             userDisplay[index].name.toString(),
                           ),
@@ -281,7 +280,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                       ),
                       Row(
                         children: [
-                          Text('ID: '),
+                          const Text('ID: '),
                           Text(userDisplay[index].id.toString()),
                         ],
                       )
@@ -289,7 +288,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                   ),
                   PopupMenuButton(
                     color: kDarkestBlue,
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     onSelected: (int selectedValue) {
                       if (selectedValue == 0) {
@@ -305,8 +304,9 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                         showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
-                            title: Text('Are you sure?'),
-                            content: Text('This action cannot be undone!'),
+                            title: const Text('Are you sure?'),
+                            content:
+                                const Text('This action cannot be undone!'),
                             actions: [
                               OutlineButton(
                                 onPressed: () {},
@@ -326,12 +326,12 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                       }
                     },
                     itemBuilder: (_) => [
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         child: Text('att Info'),
                         value: 0,
                       ),
                     ],
-                    icon: Icon(Icons.more_vert),
+                    icon: const Icon(Icons.more_vert),
                   )
                 ],
               ),
@@ -348,21 +348,21 @@ void onSelected(BuildContext context, int item) {
     case 0:
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => Testscreen(),
+          builder: (_) => AttendanceByDayScreen(),
         ),
       );
       break;
     case 1:
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => TapScreenAlltime(),
+          builder: (context) => AttendanceAllTimeScreen(),
         ),
       );
       break;
     case 2:
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => TapScreenMonth(),
+          builder: (context) => AttendancesByMonthScreen(),
         ),
       );
       break;

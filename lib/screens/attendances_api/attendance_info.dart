@@ -22,11 +22,16 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
   AttendanceByIdService _overtimeService = AttendanceByIdService.instance;
   List<AttendanceById> _attendanceDisplay = [];
-
+  String dropDownValue = 'Morning';
+  bool afternoon = false;
   dynamic countPresent = '';
+  dynamic countPresentNoon = '';
   dynamic countLate = '';
+  dynamic countLateNoon = '';
   dynamic countAbsent = '';
+  dynamic countAbsentNoon = '';
   dynamic countPermission = '';
+  dynamic countPermissionNoon = '';
   bool _isLoading = true;
   bool order = false;
   List<Appointment>? _appointment;
@@ -56,11 +61,29 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
+  getPresentNoon() async {
+    var pc = await _attendanceService.countPresentNoon(widget.id);
+    if (mounted) {
+      setState(() {
+        countPresentNoon = pc;
+      });
+    }
+  }
+
   getLate() async {
     var pc = await _attendanceService.countLate(widget.id);
     if (mounted) {
       setState(() {
         countLate = pc;
+      });
+    }
+  }
+
+  getLateNoon() async {
+    var pc = await _attendanceService.countLateNoon(widget.id);
+    if (mounted) {
+      setState(() {
+        countLateNoon = pc;
       });
     }
   }
@@ -74,11 +97,29 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
+  getAbsentNoon() async {
+    var pc = await _attendanceService.countAbsentNoon(widget.id);
+    if (mounted) {
+      setState(() {
+        countAbsentNoon = pc;
+      });
+    }
+  }
+
   getPermission() async {
     var pc = await _attendanceService.countPermission(widget.id);
     if (mounted) {
       setState(() {
         countPermission = pc;
+      });
+    }
+  }
+
+  getPermissionNoon() async {
+    var pc = await _attendanceService.countPermissionNoon(widget.id);
+    if (mounted) {
+      setState(() {
+        countPermissionNoon = pc;
       });
     }
   }
@@ -89,9 +130,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
     try {
       getPresent();
+      getPresentNoon();
       getLate();
+      getLateNoon();
       getAbsent();
+      getAbsentNoon();
       getPermission();
+      getPermissionNoon();
       fetchAttendance();
       _attendanceService
           .findManyByUserId(userId: widget.id)
@@ -116,39 +161,36 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     if (attendance.checkin1!.type == 'checkout') {
       return Colors.lightGreen;
     }
-    if (attendance.checkin1!.date!.hour >= 9 &&
+    if (attendance.checkin1!.date!.hour >= 7 &&
+        attendance.checkin1!.date!.minute >= 16 &&
+        attendance.checkin1!.code == 'cin1' &&
         attendance.checkin1!.type == 'checkin') {
       return Colors.yellow;
     }
-    if (attendance.checkin1!.date!.hour <= 9 &&
+    if (attendance.checkin1!.date!.hour >= 13 &&
+        attendance.checkin1!.date!.minute >= 16 &&
+        attendance.checkin1!.code == 'cin2' &&
+        attendance.checkin1!.type == 'checkin') {
+      return Colors.yellow;
+    }
+    if (attendance.checkin1!.date!.hour == 7 &&
+        attendance.checkin1!.date!.minute <= 15 &&
+        attendance.checkin1!.code == 'cin1' &&
+        attendance.checkin1!.type == 'checkin') {
+      return Colors.green;
+    }
+    if (attendance.checkin1!.code == 'cin3') {
+      return Color(0xffd4d2bc);
+    }
+    if (attendance.checkin1!.date!.hour == 13 &&
+        attendance.checkin1!.date!.minute <= 15 &&
+        attendance.checkin1!.code == 'cin2' &&
         attendance.checkin1!.type == 'checkin') {
       return Colors.green;
     } else {
-      return Colors.green;
+      return Colors.red;
     }
   }
-
-  // Color checkColor2(AttendanceById attendance) {
-  //   if (attendance.checkin2!.type == 'absent') {
-  //     return Colors.red;
-  //   }
-  //   if (attendance.checkin2!.type == 'permission') {
-  //     return Colors.blue;
-  //   }
-  //   if (attendance.checkin2!.type == 'checkout') {
-  //     return Colors.lightGreen;
-  //   }
-  //   if (attendance.checkin2!.date!.hour >= 9 &&
-  //       attendance.checkin2!.type == 'checkin') {
-  //     return Colors.yellow;
-  //   }
-  //   if (attendance.checkin2!.date!.hour <= 9 &&
-  //       attendance.checkin2!.type == 'checkin') {
-  //     return Colors.green;
-  //   } else {
-  //     return Colors.green;
-  //   }
-  // }
 
   List<Appointment> getAppointments() {
     List<Appointment> meetings = <Appointment>[];
@@ -156,17 +198,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     DateTime? endTime;
     _attendanceDisplay.asMap().forEach((key, value) {
       Appointment newAppointment = Appointment(
-          startTime: value.checkin1!.date as DateTime,
-          endTime: value.checkout1!.date == null
-              ? value.checkin1!.date as DateTime
-              : value.checkout1!.date as DateTime,
-          color: checkColor(value));
-      // Appointment newAppointment1 = Appointment(
-      //     startTime: value.checkin2!.date as DateTime,
-      //     endTime: value.checkout2!.date as DateTime,
-      //     color: checkColor2(value));
+        startTime: value.checkin1?.date as DateTime,
+        endTime: value.checkout1?.date as DateTime,
+        color: checkColor(value),
+      );
       meetings.add(newAppointment);
-      // meetings.add(newAppointment1);
     });
     return meetings;
   }
@@ -175,21 +211,21 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Attendance'),
+        title: const Text('Attendance'),
       ),
       body: _isLoading
           ? Container(
-              padding: EdgeInsets.only(top: 320),
+              padding: const EdgeInsets.only(top: 320),
               alignment: Alignment.center,
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
+                  children: const [
                     Text('Fetching Data'),
                     SizedBox(
                       height: 10,
                     ),
-                    const CircularProgressIndicator(
+                    CircularProgressIndicator(
                       color: kWhite,
                     ),
                   ],
@@ -198,7 +234,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             )
           : attendanceDisplay.isEmpty
               ? Container(
-                  padding: EdgeInsets.only(top: 200, left: 40),
+                  padding: const EdgeInsets.only(top: 200, left: 40),
                   child: Column(
                     children: [
                       Text(
@@ -208,7 +244,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
                       Image.asset(
@@ -243,7 +279,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                       width: 75,
                                       height: 75,
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
+                                          borderRadius: const BorderRadius.all(
                                               Radius.circular(100)),
                                           border: Border.all(
                                             width: 1,
@@ -263,7 +299,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   ),
                                   Container(
                                     height: 50,
-                                    margin: EdgeInsets.only(left: 25, top: 35),
+                                    margin: const EdgeInsets.only(
+                                        left: 25, top: 35),
                                     child: Expanded(
                                       flex: 7,
                                       child: Column(
@@ -279,7 +316,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 45,
                                               ),
                                               Text(
@@ -294,7 +331,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                               ),
                                             ],
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 10,
                                           ),
                                           Row(
@@ -306,7 +343,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 20,
                                               ),
                                               Text(
@@ -338,7 +375,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                         height: 550,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
+                            borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20),
                             ),
@@ -352,13 +389,58 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             )),
                         child: Column(
                           children: [
+                            Container(
+                              margin: const EdgeInsets.only(top: 10),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: kDarkestBlue,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: DropdownButton(
+                                underline: Container(),
+                                style: kParagraph.copyWith(
+                                    fontWeight: FontWeight.bold),
+                                isDense: true,
+                                borderRadius:
+                                    const BorderRadius.all(kBorderRadius),
+                                dropdownColor: kDarkestBlue,
+                                icon: const Icon(Icons.expand_more),
+                                value: dropDownValue,
+                                onChanged: (String? newValue) {
+                                  if (newValue == 'Afternoon') {
+                                    setState(() {
+                                      afternoon = true;
+                                      dropDownValue = newValue!;
+                                    });
+                                  }
+                                  if (newValue == 'Morning') {
+                                    setState(() {
+                                      afternoon = false;
+                                      dropDownValue = newValue!;
+                                    });
+                                  }
+                                },
+                                items: <String>[
+                                  'Morning',
+                                  'Afternoon',
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
                             Row(
                               children: [
-                                SizedBox(
+                                const SizedBox(
                                   width: 50,
                                 ),
                                 Container(
-                                  padding: EdgeInsets.only(top: 45),
+                                  padding: const EdgeInsets.only(top: 30),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -374,10 +456,60 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                   color: kWhite),
                                             ),
                                             Text(
-                                              countPresent.toString(),
+                                              afternoon
+                                                  ? countPresentNoon.toString()
+                                                  : countPresent.toString(),
                                               style: kHeadingFour.copyWith(
                                                   color: kWhite),
                                             )
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Permission: ',
+                                            style: kHeadingFour.copyWith(
+                                                color: kWhite),
+                                          ),
+                                          Text(
+                                            afternoon
+                                                ? countPermissionNoon.toString()
+                                                : countPermission.toString(),
+                                            style: kHeadingFour.copyWith(
+                                                color: kWhite),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 60,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.only(top: 30),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 20),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Late: ',
+                                              style: kHeadingFour.copyWith(
+                                                  color: kWhite),
+                                            ),
+                                            Text(
+                                              afternoon
+                                                  ? countLateNoon.toString()
+                                                  : countLate.toString(),
+                                              style: kHeadingFour.copyWith(
+                                                  color: kWhite),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -389,7 +521,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                 color: kWhite),
                                           ),
                                           Text(
-                                            countAbsent.toString(),
+                                            afternoon
+                                                ? countAbsentNoon.toString()
+                                                : countAbsent.toString(),
                                             style: kHeadingFour.copyWith(
                                                 color: kWhite),
                                           ),
@@ -397,59 +531,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                       ),
                                     ],
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 60,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(top: 45),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 20),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'Permission: ',
-                                              style: kHeadingFour.copyWith(
-                                                  color: kWhite),
-                                            ),
-                                            Text(
-                                              countPermission.toString(),
-                                              style: kHeadingFour.copyWith(
-                                                  color: kWhite),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 0),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'Late: ',
-                                              style: kHeadingFour.copyWith(
-                                                  color: kWhite),
-                                            ),
-                                            Text(
-                                              countLate.toString(),
-                                              style: kHeadingFour.copyWith(
-                                                  color: kWhite),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                                 )
                               ],
                             ),
                             Container(
-                              margin: EdgeInsets.all(20),
+                              margin: const EdgeInsets.all(20),
                               padding:
                                   const EdgeInsets.only(top: 40, right: 10),
                               child: SfCalendar(
@@ -458,11 +544,12 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     MeetingDataSource(getAppointments()),
                                 todayHighlightColor: Colors.grey,
                                 headerHeight: 25,
-                                scheduleViewSettings: ScheduleViewSettings(
-                                    appointmentTextStyle:
-                                        TextStyle(color: Colors.black)),
+                                scheduleViewSettings:
+                                    const ScheduleViewSettings(
+                                        appointmentTextStyle:
+                                            TextStyle(color: Colors.black)),
                                 cellBorderColor: Colors.grey,
-                                allowedViews: [
+                                allowedViews: const [
                                   CalendarView.month,
                                   CalendarView.schedule,
                                 ],
