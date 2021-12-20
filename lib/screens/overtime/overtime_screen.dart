@@ -46,42 +46,40 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
       isFilterExpanded = false;
       // overtimeRecords = [];
     });
-    // OvertimeListWithTotal records;
+    List<OvertimeByDay> records = [];
     try {
       switch (sortByValue) {
         case 'Day':
           {
-            // records = await _overtimeService.findManyByUserId(
-            //   userId: userId,
-            //   start: startDate,
-            //   end: startDate,
-            // );
+            records = await _overtimeService.findMany(
+              start: startDate,
+              end: startDate,
+            );
             break;
           }
         case 'Multiple Days':
           {
-            // records = await _overtimeService.findManyByUserId(
-            //   userId: userId,
-            //   start: startDate,
-            //   end: endDate,
-            // );
+            records = await _overtimeService.findMany(
+              start: startDate,
+              end: endDate,
+            );
             break;
           }
         default:
           {
-            // records = await _overtimeService.findManyByUserId(userId: userId);
+            records = await _overtimeService.findMany();
             break;
           }
       }
 
-      List<OvertimeByDay> list = await _overtimeService.finalMany();
-      list.forEach((e) {
-        // print(e.date);
-        print(e.toString());
-      });
+      // List<OvertimeByDay> list = await _overtimeService.findMany();
+      // list.forEach((e) {
+      //   // print(e.date);
+      //   print(e.toString());
+      // });
 
       setState(() {
-        overtimeRecords = list;
+        overtimeRecords = records;
         // total = records.total;
         // overtimeRecords = records.listOfOvertime;
         // if (overtimeRecords.isNotEmpty) {

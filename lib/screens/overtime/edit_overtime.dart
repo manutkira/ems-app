@@ -1,3 +1,6 @@
+import 'package:ems/models/overtime.dart';
+import 'package:ems/models/user.dart';
+import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,7 +9,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../../constants.dart';
 
 class EditOvertime extends StatefulWidget {
-  const EditOvertime({Key? key}) : super(key: key);
+  const EditOvertime({Key? key, required this.record}) : super(key: key);
+  final OvertimeAttendance record;
 
   @override
   _EditOvertimeState createState() => _EditOvertimeState();
@@ -19,6 +23,11 @@ class _EditOvertimeState extends State<EditOvertime> {
   final TextEditingController _noteController = TextEditingController();
   bool isLoading = false;
   String error = '';
+
+  late OvertimeAttendance record;
+  late User? user;
+  late OvertimeCheckin? checkIn;
+  late OvertimeCheckout? checkOut;
 
   void _closePanel() {
     if (!isLoading) {
@@ -56,9 +65,30 @@ class _EditOvertimeState extends State<EditOvertime> {
     }
   }
 
+  void setUpScreen() {
+    setState(() {
+      record = widget.record.copyWith();
+      user = record.user;
+      checkIn = record.checkin;
+      checkOut = record.checkout;
+      int checkInHour = checkIn?.date?.hour as int;
+      int checkInMinute = checkIn?.date?.minute as int;
+      int checkOutHour = checkOut?.date?.hour as int;
+      int checkOutMinute = checkOut?.date?.minute as int;
+      selectedDate = checkIn?.date as DateTime;
+      // selectedDate = selectedDate.copyWith(
+      //   day: 18,
+      // );
+      startedTime = TimeOfDay(hour: checkInHour, minute: checkInMinute);
+      endedTime = TimeOfDay(hour: checkOutHour, minute: checkOutMinute);
+      _noteController.text = "${checkIn?.note}";
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    setUpScreen();
   }
 
   @override
@@ -125,7 +155,10 @@ class _EditOvertimeState extends State<EditOvertime> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const CircleAvatar(),
+                CustomCircleAvatar(
+                  imageUrl: "${user?.image}",
+                  size: 50,
+                ),
                 const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,8 +172,8 @@ class _EditOvertimeState extends State<EditOvertime> {
                               kParagraph.copyWith(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(width: 5),
-                        const Text(
-                          '[emp id]',
+                        Text(
+                          "${user?.id}",
                           style: kParagraph,
                         ),
                       ],
@@ -153,10 +186,10 @@ class _EditOvertimeState extends State<EditOvertime> {
                               kParagraph.copyWith(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(width: 5),
-                        const SizedBox(
+                        SizedBox(
                           width: 200,
                           child: Text(
-                            '[emp name]dfasfdasfsdafdsaf asdfadsfhjasdkfhadsf',
+                            '${user?.name}',
                             style: kParagraph,
                             overflow: TextOverflow.fade,
                             softWrap: false,
