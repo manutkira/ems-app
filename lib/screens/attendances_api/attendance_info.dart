@@ -1,7 +1,10 @@
 import 'package:ems/models/attendance_no_s.dart';
 import 'package:ems/models/overtime.dart';
+import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/utils/services/overtime_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import '../../constants.dart';
@@ -20,8 +23,12 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   AttendanceService _attendanceService = AttendanceService.instance;
   List<Attendance> attendanceDisplay = [];
 
+  AttendanceService _attendanceAllService = AttendanceService.instance;
+  List<Attendance> attendanceAllDisplay = [];
+
   AttendanceByIdService _overtimeService = AttendanceByIdService.instance;
   List<AttendanceById> _attendanceDisplay = [];
+
   String dropDownValue = 'Morning';
   bool afternoon = false;
   dynamic countPresent = '';
@@ -37,6 +44,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Appointment>? _appointment;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
+  List<Attendance>? isToday;
+  bool now = true;
 
   fetchAttendance() async {
     try {
@@ -138,17 +147,69 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       getPermission();
       getPermissionNoon();
       fetchAttendance();
-      _attendanceService
-          .findManyByUserId(userId: widget.id)
-          .then((usersFromServer) {
+      _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
         setState(() {
+          attendanceAllDisplay.addAll(value);
           _isLoading = false;
-          attendanceDisplay.addAll(usersFromServer);
+          var now = DateTime.now();
+          var today = attendanceAllDisplay
+              .where((element) =>
+                  element.date?.day == now.day &&
+                  element.date?.month == now.month &&
+                  element.date?.year == now.year)
+              .toList();
+          isToday = today.toList();
         });
       });
+      // _attendanceService
+      //     .findManyByUserId(userId: widget.id)
+      //     .then((usersFromServer) {
+      //   setState(() {
+      //     attendanceDisplay.addAll(usersFromServer);
+      //     _isLoading = false;
+      //   });
+      // });
     } catch (err) {
       //
     }
+  }
+
+  List<Attendance> checkedDate = [];
+  List<Attendance> users = [];
+
+  void checkDate(DateTime pick) {
+    var checkingDate = attendanceAllDisplay.where((element) =>
+        element.date?.day == pick.day &&
+        element.date?.month == pick.month &&
+        element.date?.year == pick.year);
+    setState(() {
+      users = checkingDate.toList();
+      checkedDate = users;
+      print(checkingDate.map((e) => e.date));
+    });
+  }
+
+  void checkToday(DateTime pick) {}
+
+  DateTime? _selectDate;
+
+  void _byDayDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1990),
+      lastDate: DateTime.now(),
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+    ).then((picked) {
+      if (picked == null) {
+        return;
+      }
+      checkDate(picked);
+      setState(() {
+        _selectDate = picked;
+        now = false;
+      });
+    });
   }
 
   Color checkColor(AttendanceById attendance) {
@@ -207,6 +268,29 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     return meetings;
   }
 
+  // sheet() async {
+
+  //   await showModalBottomSheet(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return Column(
+  //         children: [
+  //           Row(
+  //             children: [
+  //               Text('data'),
+  //               Flexible(
+  //                 child: TextField(
+  //                   controller: ,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -232,7 +316,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                 ),
               ),
             )
-          : attendanceDisplay.isEmpty
+          : attendanceAllDisplay.isEmpty
               ? Container(
                   padding: const EdgeInsets.only(top: 200, left: 40),
                   child: Column(
@@ -289,7 +373,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                         borderRadius:
                                             BorderRadius.circular(150),
                                         child: Image.network(
-                                          attendanceDisplay[0].users!.image!,
+                                          attendanceAllDisplay[0].users!.image!,
                                           fit: BoxFit.cover,
                                           width: double.infinity,
                                           height: 75,
@@ -320,7 +404,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                 width: 45,
                                               ),
                                               Text(
-                                                attendanceDisplay[0]
+                                                attendanceAllDisplay[0]
                                                     .users!
                                                     .id
                                                     .toString(),
@@ -347,7 +431,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                 width: 20,
                                               ),
                                               Text(
-                                                attendanceDisplay[0]
+                                                attendanceAllDisplay[0]
                                                     .users!
                                                     .name
                                                     .toString(),
@@ -447,7 +531,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     children: [
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(bottom: 20),
+                                            const EdgeInsets.only(bottom: 10),
                                         child: Row(
                                           children: [
                                             Text(
@@ -495,7 +579,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     children: [
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(bottom: 20),
+                                            const EdgeInsets.only(bottom: 10),
                                         child: Row(
                                           children: [
                                             Text(
@@ -534,27 +618,173 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                 )
                               ],
                             ),
-                            Container(
-                              margin: const EdgeInsets.all(20),
-                              padding:
-                                  const EdgeInsets.only(top: 40, right: 10),
-                              child: SfCalendar(
-                                view: CalendarView.month,
-                                dataSource:
-                                    MeetingDataSource(getAppointments()),
-                                todayHighlightColor: Colors.grey,
-                                headerHeight: 25,
-                                scheduleViewSettings:
-                                    const ScheduleViewSettings(
-                                        appointmentTextStyle:
-                                            TextStyle(color: Colors.black)),
-                                cellBorderColor: Colors.grey,
-                                allowedViews: const [
-                                  CalendarView.month,
-                                  CalendarView.schedule,
+                            // Container(
+                            //   margin: const EdgeInsets.all(20),
+                            //   padding:
+                            //       const EdgeInsets.only(top: 40, right: 10),
+                            //   child: SfCalendar(
+                            //     view: CalendarView.month,
+                            //     dataSource:
+                            //         MeetingDataSource(getAppointments()),
+                            //     todayHighlightColor: Colors.grey,
+                            //     headerHeight: 25,
+                            //     scheduleViewSettings:
+                            //         const ScheduleViewSettings(
+                            //             appointmentTextStyle:
+                            //                 TextStyle(color: Colors.black)),
+                            //     cellBorderColor: Colors.grey,
+                            //     allowedViews: const [
+                            //       CalendarView.month,
+                            //       CalendarView.schedule,
+                            //     ],
+                            //   ),
+                            // ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    _selectDate == null
+                                        ? 'Pick a Date'
+                                        : 'Date: ${DateFormat.yMd().format(_selectDate as DateTime)}',
+                                    style: kParagraph.copyWith(fontSize: 14),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  OutlineButton.icon(
+                                    onPressed: () {
+                                      setState(() {
+                                        _byDayDatePicker();
+                                      });
+                                    },
+                                    icon: Icon(Icons.calendar_today),
+                                    label: Text('Choose Date'),
+                                  ),
                                 ],
                               ),
                             ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 15),
+                                child: ListView.builder(
+                                  itemBuilder: (ctx, index) {
+                                    return now
+                                        ? Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 15,
+                                            ),
+                                            color: index % 2 == 0
+                                                ? kDarkestBlue
+                                                : kBlue,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  DateFormat('dd/MM/yyyy HH:mm')
+                                                      .format(isToday?[index]
+                                                          .date as DateTime),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(isToday![index].type!),
+                                                    PopupMenuButton(
+                                                      color: Colors.red,
+                                                      shape: const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      onSelected:
+                                                          (int selectedValue) {
+                                                        if (selectedValue ==
+                                                            0) {
+                                                          final int userId =
+                                                              isToday![index]
+                                                                  .userId!;
+                                                          final int id =
+                                                              isToday![index]
+                                                                  .id!;
+                                                          final String type =
+                                                              isToday![index]
+                                                                  .type!;
+                                                          final DateTime date =
+                                                              isToday![index]
+                                                                  .date!;
+                                                          print(type);
+                                                          Navigator.of(context)
+                                                              .push(
+                                                            MaterialPageRoute(
+                                                              builder: (ctx) =>
+                                                                  AttedancesEdit(
+                                                                id: id,
+                                                                userId: userId,
+                                                                type: type,
+                                                                date: date,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                      itemBuilder: (_) => [
+                                                        const PopupMenuItem(
+                                                          child: Text('Edit'),
+                                                          value: 0,
+                                                        ),
+                                                      ],
+                                                      icon: const Icon(
+                                                          Icons.more_vert),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 15,
+                                            ),
+                                            color: index % 2 == 0
+                                                ? kDarkestBlue
+                                                : kBlue,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  DateFormat('dd/MM/yyyy HH:mm')
+                                                      .format(checkedDate[index]
+                                                          .date!),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(checkedDate[index]
+                                                        .type!),
+                                                    IconButton(
+                                                        onPressed: () {},
+                                                        icon: Icon(
+                                                            Icons.more_vert))
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                  },
+                                  itemCount: now
+                                      ? isToday?.length
+                                      : checkedDate.length,
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       ),

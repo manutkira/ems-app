@@ -12,46 +12,24 @@ List<AttendanceById> attendanceByIdFromJson(Map<String, dynamic> list) {
           value[i]['type'] == 'absent' ||
           value[i]['type'] == 'permission') {
         checkIn = value[i];
-        print('check in $checkIn');
       }
       if (i + 1 > value.length) {
-        checkOut = value[i];
-        print('check out $checkOut');
+        checkOut = value[i + 1];
       }
       if (i + 1 < value.length && value[i + 1]['type'] == 'checkout') {
         if (value[i + 1]['type'] == 'checkout') {
           checkOut = value[i + 1];
-          print('check out $checkOut');
         }
       }
 
       _overtimeWithoutUser.add(AttendanceById(
         checkin1: OvertimeCheckin1.fromMap(checkIn),
-        // checkin2: OvertimeCheckin2.fromMap(checkIn2),
-        // checkin3: OvertimeCheckin3.fromMap(value[2]),
         checkout1: OvertimeCheckout1.fromMap(checkOut ?? checkIn),
-        // checkout2: OvertimeCheckout2.fromMap(checkOut2 ?? checkIn2),
-        // checkout3: OvertimeCheckout3.fromMap(value[5]),
       ));
     }
   });
 
   return _overtimeWithoutUser;
-
-  // return List<OvertimeAttendance>.from(
-  //   list.map((x) {
-  //     print(x);
-  //     // att.forEach((key, value) {
-  //     //   _overtimeWithoutUser.add(overtimesFromJson(value));
-  //     //   ;
-  //     // });
-  //   }
-  //       // (x) => OvertimeAttendance(
-  //       //   checkin: OvertimeCheckin.fromMap(x[0]),
-  //       //   checkout: OvertimeCheckout.fromMap(x[1]),
-  //       // ),
-  //       ),
-  // );
 }
 
 class AttendanceById {
