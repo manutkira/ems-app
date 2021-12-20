@@ -14,6 +14,34 @@ extension StringCasingExtension on String {
       .join(" ");
 }
 
+/// a copyWith function to easily set hour and minute. used in overtime section
+///
+/// https://stackoverflow.com/a/61111352
+///
+extension MyDateUtils on DateTime {
+  DateTime copyWith({
+    int? year,
+    int? month,
+    int? day,
+    int? hour,
+    int? minute,
+    int? second,
+    int? millisecond,
+    int? microsecond,
+  }) {
+    return DateTime(
+      year ?? this.year,
+      month ?? this.month,
+      day ?? this.day,
+      hour ?? this.hour,
+      minute ?? this.minute,
+      second ?? this.second,
+      millisecond ?? this.millisecond,
+      microsecond ?? this.microsecond,
+    );
+  }
+}
+
 /// Generates a TimeOfDay object from string
 ///
 /// Form of string supported is hh:mm:ss i.e 12:40:21

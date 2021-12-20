@@ -54,12 +54,22 @@ class OvertimeService extends BaseService {
     }
   }
 
-  Future<List<OvertimeByDay>> finalMany() async {
-    try {
-      Response response = await get(
-        Uri.parse('$baseUrl/overtimes'),
-      );
+  Future<List<OvertimeByDay>> findMany({
+    DateTime? start,
+    DateTime? end,
+  }) async {
+    String startDate = start != null ? DateFormat('y-M-d').format(start) : '';
+    String endDate = end != null ? DateFormat('y-M-d').format(end) : '';
 
+    bool noStartOrEndDate =
+        start == null || end == null || startDate.isEmpty || endDate.isEmpty;
+
+    String url = noStartOrEndDate
+        ? '$baseUrl/overtimes'
+        : '$baseUrl/overtimes?start=$startDate&end=$endDate';
+
+    try {
+      Response response = await get(Uri.parse(url));
       _code = response.statusCode;
       Map<String, dynamic> jsondata = json.decode(response.body);
       List<OvertimeByDay> listOfOvertimeByDay =
@@ -85,7 +95,7 @@ class OvertimeService extends BaseService {
       // print(jsondata);
       return listOfOvertimeByDay;
     } catch (e) {
-      //
+      throw AttendanceException(code: _code);
     }
     return [];
   }

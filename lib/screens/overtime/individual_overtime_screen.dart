@@ -78,7 +78,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
             maxHeight: 620,
             minHeight: 520,
             isDismissible: false,
-            child: const EditOvertime(),
+            child: EditOvertime(record: record),
           );
         }
         break;

@@ -41,7 +41,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
       maxHeight: 600,
       minHeight: 500,
       isDismissible: false,
-      child: const EditOvertime(),
+      child: EditOvertime(record: widget.record),
     );
   }
 
