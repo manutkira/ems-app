@@ -216,6 +216,7 @@ class AttendanceService extends BaseService {
     }
     var jsons =
         attendance.copyWith(date: attendance.date ?? DateTime.now()).toJson();
+    print(jsons);
     try {
       Response response = await post(
         Uri.parse(
@@ -227,6 +228,7 @@ class AttendanceService extends BaseService {
       _code = response.statusCode;
       var jsondata = json.decode(response.body);
       var attendance = Attendance.fromJson(jsondata);
+      print("create $jsondata");
       return attendance;
     } catch (e) {
       throw AttendanceException(code: _code);
@@ -242,6 +244,7 @@ class AttendanceService extends BaseService {
 
     int? attId = attendance.id;
     var jsons = attendance.toJson();
+    print(jsons);
     try {
       Response response = await put(
         Uri.parse(
@@ -250,11 +253,16 @@ class AttendanceService extends BaseService {
         headers: headers,
         body: json.encode(jsons),
       );
-      _code = response.statusCode;
-      var jsondata = json.decode(response.body);
-      var attendance = Attendance.fromJson(jsondata);
-      return attendance;
+      if (response.statusCode == 200) {
+        var jsondata = json.decode(response.body);
+        var attendance = Attendance.fromJson(jsondata);
+        return attendance;
+      } else {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
     } catch (e) {
+      print('from error');
       throw AttendanceException(code: _code);
     }
   }

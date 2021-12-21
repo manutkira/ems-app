@@ -13,8 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-import 'add_overtime.dart';
-
 class IndividualOvertimeScreen extends StatefulWidget {
   const IndividualOvertimeScreen({Key? key, required this.user})
       : super(key: key);
@@ -49,14 +47,14 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     MenuOptions.delete,
   ];
 
-  void addUser() async {
-    await modalBottomSheetBuilder(
-      context: context,
-      maxHeight: 640,
-      isDismissible: false,
-      child: const AddOvertime(),
-    );
-  }
+  // void addUser() async {
+  //   await modalBottomSheetBuilder(
+  //     context: context,
+  //     maxHeight: 640,
+  //     isDismissible: false,
+  //     child: const AddOvertime(),
+  //   );
+  // }
 
   void moreMenu(String value, OvertimeAttendance record) async {
     switch (value) {
@@ -64,7 +62,8 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
         {
           await modalBottomSheetBuilder(
             context: context,
-            maxHeight: 460,
+            maxHeight: MediaQuery.of(context).size.height * 0.55,
+            minHeight: MediaQuery.of(context).size.height * 0.3,
             child: ViewOvertime(
               record: record,
             ),
@@ -75,11 +74,12 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
         {
           await modalBottomSheetBuilder(
             context: context,
-            maxHeight: 620,
-            minHeight: 520,
+            maxHeight: MediaQuery.of(context).size.height * 0.7,
+            minHeight: MediaQuery.of(context).size.height * 0.6,
             isDismissible: false,
             child: EditOvertime(record: record),
           );
+          fetchOvertimeRecord();
         }
         break;
       case "Delete":
@@ -87,8 +87,9 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
           await modalBottomSheetBuilder(
             context: context,
             isDismissible: false,
-            child: const DeleteOvertime(),
+            child: DeleteOvertime(record: record),
           );
+          fetchOvertimeRecord();
         }
         break;
       default:
@@ -135,7 +136,6 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
       }
 
       setState(() {
-        print('from setstate ${records.total}');
         total = records.total;
         overtimeRecords = records.listOfOvertime;
         if (overtimeRecords.isNotEmpty) {
@@ -171,12 +171,12 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
         title: const Text(
           "Detailed Overtime",
         ),
-        actions: [
-          IconButton(
-            onPressed: addUser,
-            icon: const Icon(Icons.add),
-          )
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: addUser,
+        //     icon: const Icon(Icons.add),
+        //   )
+        // ],
       ),
       body: SafeArea(
         bottom: false,
@@ -446,6 +446,8 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                 child: ListView.builder(
                   itemCount: overtimeRecords.length,
                   itemBuilder: (context, i) {
+                    print(
+                        'in ${overtimeRecords[i].checkin?.id}\nout ${overtimeRecords[i].checkout?.id}');
                     return _buildListItem(i);
                   },
                 ),
