@@ -1,4 +1,3 @@
-import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomCircleAvatar extends StatelessWidget {
@@ -14,18 +13,19 @@ class CustomCircleAvatar extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(50),
         child: Image.network(
-          imageUrl,
+          "${imageUrl}",
+          fit: BoxFit.cover,
           errorBuilder: (context, err, stk) {
             return Image.asset('assets/images/bigprofile.png');
           },
-          loadingBuilder: (context, err, stk) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: kWhite,
-                strokeWidth: 2.5,
-              ),
-            );
-          },
+          // loadingBuilder: (context, err, stk) {
+          //   return const Center(
+          //     child: CircularProgressIndicator(
+          //       color: kWhite,
+          //       strokeWidth: 2.5,
+          //     ),
+          //   );
+          // },
         ),
       ),
     );

@@ -43,14 +43,16 @@ class _ViewOvertimeState extends State<ViewOvertime> {
       isDismissible: false,
       child: EditOvertime(record: widget.record),
     );
+    _closePanel();
   }
 
   void _deleteOvertime() async {
     await modalBottomSheetBuilder(
       context: context,
       isDismissible: false,
-      child: const DeleteOvertime(),
+      child: DeleteOvertime(record: widget.record),
     );
+    _closePanel();
   }
 
   @override
@@ -215,11 +217,11 @@ class _ViewOvertimeState extends State<ViewOvertime> {
   Widget _buildUserInfo(Size _size) {
     OvertimeAttendance record = widget.record;
     User? user = record.user;
-
+    print(user?.image);
     return Container(
       height: 60,
       width: _size.width,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      // padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: kDarkestBlue,
         borderRadius: BorderRadius.circular(6),
@@ -259,7 +261,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                   ),
                   const SizedBox(width: 5),
                   SizedBox(
-                    width: 200,
+                    width: _size.width * 0.5,
                     child: Text(
                       user?.name ?? "",
                       style: kParagraph,

@@ -1,5 +1,8 @@
+import 'package:ems/models/attendance.dart';
 import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
+import 'package:ems/utils/services/attendance_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +20,7 @@ class EditOvertime extends StatefulWidget {
 }
 
 class _EditOvertimeState extends State<EditOvertime> {
+  final AttendanceService _attendanceService = AttendanceService.instance;
   DateTime selectedDate = DateTime.now();
   TimeOfDay startedTime = TimeOfDay.now();
   TimeOfDay endedTime = TimeOfDay.now();
@@ -55,13 +59,63 @@ class _EditOvertimeState extends State<EditOvertime> {
       setState(() {
         isLoading = true;
       });
+      print('checkin ${checkIn?.id} checkout ${checkOut?.id}');
+      try {
+        Attendance checkInAttendance = Attendance(
+          id: checkIn?.id,
+          userId: user?.id,
+          date: selectedDate.copyWith(
+            hour: startedTime.hour,
+            minute: startedTime.minute,
+          ),
+          type: AttendanceType.typeCheckIn,
+          note: _noteController.text,
+          code: 'cin3',
+        );
+        Attendance checkOutAttendance = Attendance(
+          id: checkOut?.id,
+          userId: user?.id,
+          date: selectedDate.copyWith(
+            hour: endedTime.hour,
+            minute: endedTime.minute,
+          ),
+          type: AttendanceType.typeCheckOut,
+          note: _noteController.text,
+          code: 'cout3',
+        );
 
-      Future.delayed(const Duration(seconds: 3), () {
+        bool sameTime =
+            checkIn?.date?.compareTo(checkOut?.date as DateTime) == 0;
+
+        await _attendanceService.updateOne(checkInAttendance);
+        if (sameTime) {
+          print('true');
+          Attendance checkOutAttendance = Attendance(
+            userId: user?.id,
+            date: selectedDate.copyWith(
+              hour: endedTime.hour,
+              minute: endedTime.minute,
+            ),
+            type: AttendanceType.typeCheckOut,
+            note: _noteController.text,
+            code: 'cout3',
+          );
+          await _attendanceService.createOne(attendance: checkOutAttendance);
+        } else {
+          print('false');
+          await _attendanceService.updateOne(checkOutAttendance);
+        }
         setState(() {
           isLoading = false;
         });
         _closePanel();
-      });
+      } catch (err, stk) {
+        print(stk);
+        setState(() {
+          isLoading = false;
+          error = err.toString();
+        });
+      }
     }
   }
 
@@ -76,9 +130,7 @@ class _EditOvertimeState extends State<EditOvertime> {
       int checkOutHour = checkOut?.date?.hour as int;
       int checkOutMinute = checkOut?.date?.minute as int;
       selectedDate = checkIn?.date as DateTime;
-      // selectedDate = selectedDate.copyWith(
-      //   day: 18,
-      // );
+
       startedTime = TimeOfDay(hour: checkInHour, minute: checkInMinute);
       endedTime = TimeOfDay(hour: checkOutHour, minute: checkOutMinute);
       _noteController.text = "${checkIn?.note}";
@@ -142,7 +194,7 @@ class _EditOvertimeState extends State<EditOvertime> {
                     ),
             ],
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 30),
           Container(
             height: 60,
             width: _size.width,
@@ -187,7 +239,7 @@ class _EditOvertimeState extends State<EditOvertime> {
                         ),
                         const SizedBox(width: 5),
                         SizedBox(
-                          width: 200,
+                          width: _size.width * 0.45,
                           child: Text(
                             '${user?.name}',
                             style: kParagraph,
@@ -352,11 +404,11 @@ class _EditOvertimeState extends State<EditOvertime> {
           ),
           const SizedBox(height: 20),
           Visibility(
-            visible: error.isEmpty,
+            visible: error.isNotEmpty,
             child: Column(
-              children: const [
-                StatusError(text: "Error"),
-                SizedBox(height: 20),
+              children: [
+                StatusError(text: "Error: $error"),
+                const SizedBox(height: 16),
               ],
             ),
           ),

@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+import 'delete_overtime.dart';
+import 'edit_overtime.dart';
 import 'individual_overtime_screen.dart';
 
 class OvertimeScreen extends StatefulWidget {
@@ -44,7 +46,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     setState(() {
       isFetching = true;
       isFilterExpanded = false;
-      // overtimeRecords = [];
+      overtimeRecords = [];
     });
     List<OvertimeByDay> records = [];
     try {
@@ -80,12 +82,17 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
 
       setState(() {
         overtimeRecords = records;
+        // print(jsonEncode(records));
         // total = records.total;
         // overtimeRecords = records.listOfOvertime;
         // if (overtimeRecords.isNotEmpty) {
         //   user = overtimeRecords[0].user as User;
         // }
         isFetching = false;
+        // if (overtimeRecords.length < 1) {
+        //   print('hi');
+        //   isFilterExpanded = true;
+        // }
       });
     } catch (err) {
       setState(() {
@@ -102,14 +109,15 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     MenuOptions.edit,
     MenuOptions.delete,
   ];
-
   void moreMenu(String value, OvertimeAttendance record) async {
+    // print(record.checkin.);
     switch (value) {
       case "View":
         {
           await modalBottomSheetBuilder(
             context: context,
-            maxHeight: 460,
+            maxHeight: MediaQuery.of(context).size.height * 0.55,
+            minHeight: MediaQuery.of(context).size.height * 0.4,
             child: ViewOvertime(
               record: record,
             ),
@@ -118,22 +126,24 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
         break;
       case "Edit":
         {
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (context) =>
-          //         const HomeScreen(),
-          //   ),
-          // );
+          await modalBottomSheetBuilder(
+            context: context,
+            maxHeight: MediaQuery.of(context).size.height * 0.7,
+            minHeight: MediaQuery.of(context).size.height * 0.6,
+            isDismissible: false,
+            child: EditOvertime(record: record),
+          );
+          fetchOvertimeRecord();
         }
         break;
       case "Delete":
         {
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (context) =>
-          //         const HomeScreen(),
-          //   ),
-          // );
+          await modalBottomSheetBuilder(
+            context: context,
+            isDismissible: false,
+            child: DeleteOvertime(record: record),
+          );
+          fetchOvertimeRecord();
         }
         break;
       default:
@@ -142,6 +152,45 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
         }
     }
   }
+  // void moreMenu(String value, OvertimeAttendance record) async {
+  //   switch (value) {
+  //     case "View":
+  //       {
+  //         await modalBottomSheetBuilder(
+  //           context: context,
+  //           maxHeight: 460,
+  //           child: ViewOvertime(
+  //             record: record,
+  //           ),
+  //         );
+  //       }
+  //       break;
+  //     case "Edit":
+  //       {
+  //         // Navigator.of(context).push(
+  //         //   MaterialPageRoute(
+  //         //     builder: (context) =>
+  //         //         const HomeScreen(),
+  //         //   ),
+  //         // );
+  //       }
+  //       break;
+  //     case "Delete":
+  //       {
+  //         // Navigator.of(context).push(
+  //         //   MaterialPageRoute(
+  //         //     builder: (context) =>
+  //         //         const HomeScreen(),
+  //         //   ),
+  //         // );
+  //       }
+  //       break;
+  //     default:
+  //       {
+  //         return;
+  //       }
+  //   }
+  // }
 
   @override
   void initState() {
@@ -573,6 +622,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                             itemBuilder: (context, i) {
                               OvertimeAttendance overtime = record.overtimes[i];
                               User user = overtime.user as User;
+                              print(overtime.checkin?.id);
 
                               TimeOfDay overtimeTotal = getTimeOfDayFromString(
                                 overtime.checkout!.overtime,
@@ -693,96 +743,3 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     );
   }
 }
-
-// ListView.builder(
-// shrinkWrap: true,
-// physics: ClampingScrollPhysics(),
-// itemCount: record.overtimes.length,
-// itemBuilder: (context, i) {
-// return Container(
-// padding: const EdgeInsets.symmetric(
-// horizontal: 15,
-// vertical: 5,
-// ),
-// color: i % 2 == 0 ? kDarkestBlue : kBlue,
-// child: Row(
-// mainAxisAlignment:
-// MainAxisAlignment.spaceBetween,
-// children: [
-// Row(
-// children: [
-// const CircleAvatar(),
-// const SizedBox(
-// width: 10,
-// ),
-// GestureDetector(
-// onTap: () =>
-// Navigator.of(context).push(
-// MaterialPageRoute(
-// builder: (context) =>
-// IndividualOvertimeScreen(
-// user: User(
-// id: 1,
-// name: 'Kira Manut'),
-// ),
-// ),
-// ),
-// child: const SizedBox(
-// width: 200,
-// child: Text(
-// 'Employee Name',
-// style: kSubtitle,
-// overflow: TextOverflow.fade,
-// softWrap: false,
-// maxLines: 1,
-// ),
-// ),
-// ),
-// ],
-// ),
-// Row(
-// children: [
-// Container(
-// width: 50,
-// alignment: Alignment.center,
-// padding:
-// const EdgeInsets.symmetric(
-// horizontal: 10,
-// vertical: 2,
-// ),
-// decoration: BoxDecoration(
-// color: kGreenBackground,
-// borderRadius:
-// BorderRadius.circular(3),
-// ),
-// child: Text(
-// '1h',
-// style: kSubtitle.copyWith(
-// color: kGreenText),
-// ),
-// ),
-// const SizedBox(width: 10),
-// PopupMenuButton<String>(
-// color: kDarkestBlue,
-// shape: RoundedRectangleBorder(
-// borderRadius:
-// BorderRadius.circular(10),
-// ),
-// icon: const Icon(
-// MdiIcons.dotsVertical),
-// itemBuilder:
-// (BuildContext context) =>
-// options.map((e) {
-// return PopupMenuItem<String>(
-// value: e,
-// child: Text(e),
-// );
-// }).toList(),
-// onSelected: moreMenu,
-// ),
-// ],
-// )
-// ],
-// ),
-// );
-// })

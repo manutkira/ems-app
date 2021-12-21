@@ -1,3 +1,5 @@
+import 'package:ems/models/overtime.dart';
+import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +15,8 @@ class Overtime {
 }
 
 class DeleteOvertime extends StatefulWidget {
-  const DeleteOvertime({Key? key}) : super(key: key);
+  const DeleteOvertime({Key? key, required this.record}) : super(key: key);
+  final OvertimeAttendance record;
 
   @override
   _DeleteOvertimeState createState() => _DeleteOvertimeState();
@@ -22,7 +25,9 @@ class DeleteOvertime extends StatefulWidget {
 class _DeleteOvertimeState extends State<DeleteOvertime> {
   bool isLoading = false;
   bool hasError = false;
-
+  String error = "";
+  final AttendanceService _attendanceService = AttendanceService.instance;
+  late OvertimeAttendance record;
   void _closePanel() {
     Navigator.of(context).pop();
   }
@@ -33,27 +38,29 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
       isLoading = true;
     });
 
-    Future.delayed(const Duration(seconds: 3), () {
+    try {
+      await _attendanceService.deleteOne(int.parse("${record.checkin?.id}"));
+      if (record.checkin?.id != record.checkout?.id) {
+        await _attendanceService.deleteOne(int.parse("${record.checkout?.id}"));
+      }
+    } catch (e) {
       setState(() {
         isLoading = false;
+        hasError = true;
+        error = e.toString();
       });
-    });
+    }
 
     setState(() {
-      isLoading = true;
-    });
-
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        isLoading = false;
-        // _closePanel();
-      });
+      isLoading = false;
+      _closePanel();
     });
   }
 
   @override
   void initState() {
     super.initState();
+    record = widget.record;
     deleteOvertime();
   }
 
@@ -97,8 +104,9 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
           ),
           const SizedBox(height: 30),
           Visibility(
-              visible: !isLoading && !hasError,
-              child: const StatusError(text: 'Error deleting record')),
+            visible: !isLoading && hasError,
+            child: const StatusError(text: 'Error deleting record'),
+          ),
           SizedBox(
             height: 250,
             child: Center(

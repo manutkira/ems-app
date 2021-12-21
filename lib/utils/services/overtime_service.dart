@@ -31,7 +31,7 @@ class OvertimeService extends BaseService {
       Response response = await get(Uri.parse(url));
       _code = response.statusCode;
       var jsondata = json.decode(response.body);
-
+      print(jsondata);
       List<OvertimeAttendance> _overtimeWithoutUser =
           overtimesFromJson(jsondata['data']['attendances']);
 
@@ -93,6 +93,7 @@ class OvertimeService extends BaseService {
       // });
       // print(list);
       // print(jsondata);
+      print(jsondata);
       return listOfOvertimeByDay;
     } catch (e) {
       throw AttendanceException(code: _code);
