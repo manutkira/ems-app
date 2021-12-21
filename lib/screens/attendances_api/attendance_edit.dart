@@ -37,12 +37,14 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
   String? _hour, _minute, _time;
   DateTime? dateTime;
+  String type = 'checkin';
 
   bool pick = false;
   late DateTime? _selectDate;
 
   @override
   void initState() {
+    type = widget.type;
     id.text = widget.id.toString();
     _selectDate = widget.date;
     selectedTime = TimeOfDay(
@@ -99,6 +101,38 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Attendance'),
+        //   leading: IconButton(
+        //       onPressed: () {
+        //         showDialog(
+        //             context: context,
+        //             builder: (ctx) => AlertDialog(
+        //                   title: Text('Are you Sure?'),
+        //                   content: Text('Your changes will be lost.'),
+        //                   actions: [
+        //                     OutlineButton(
+        //                       onPressed: () async {
+        //                         Navigator.of(context).pop();
+        //                         await Navigator.of(context).pushReplacement(
+        //                           MaterialPageRoute(
+        //                             builder: (_) =>
+        //                                 AttendancesInfoScreen(widget.userId),
+        //                           ),
+        //                         );
+        //                       },
+        //                       child: Text('Yes'),
+        //                       borderSide: BorderSide(color: Colors.green),
+        //                     ),
+        //                     OutlineButton(
+        //                       onPressed: () {
+        //                         Navigator.of(context).pop();
+        //                       },
+        //                       child: Text('No'),
+        //                       borderSide: BorderSide(color: Colors.red),
+        //                     )
+        //                   ],
+        //                 ));
+        //       },
+        //       icon: Icon(Icons.arrow_back)),
       ),
       body: Container(
         padding: EdgeInsets.all(20),
@@ -177,22 +211,30 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   width: 20,
                 ),
                 Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.6),
-                  child: Flexible(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Enter Name',
-                        errorStyle: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      controller: typeController,
-                      textInputAction: TextInputAction.next,
-                    ),
+                  width: 233,
+                  child: DropdownButtonFormField(
+                    icon: Icon(Icons.expand_more),
+                    value: type,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        type = newValue!;
+                      });
+                      widget.type;
+                    },
+                    items: <String>[
+                      'checkin',
+                      'checkout',
+                      'absent',
+                      'permission'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                          ));
+                    }).toList(),
                   ),
-                ),
+                )
               ],
             ),
             SizedBox(
@@ -292,6 +334,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                                       child: Text('Yes'),
                                       onPressed: () {
                                         uploadImage();
+                                        Navigator.pop(context);
                                       },
                                     ),
                                     OutlineButton(
@@ -352,7 +395,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
 
   uploadImage() async {
     var aUserId = idController.text;
-    var aType = typeController.text;
+    var aType = type;
     DateTime aDate = _selectDate?.copyWith(
         hour: selectedTime.hour,
         minute: selectedTime.minute,
@@ -371,8 +414,9 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     request.headers.addAll(headers);
 
     var res = await request.send();
+    print(res.statusCode);
     if (res.statusCode == 200) {
-      Navigator.of(context).pop();
+      Navigator.pop(context);
     }
     res.stream.transform(utf8.decoder).listen((event) {
       print(event);

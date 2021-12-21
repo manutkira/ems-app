@@ -185,7 +185,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     setState(() {
       users = checkingDate.toList();
       checkedDate = users;
-      print(checkingDate.map((e) => e.date));
     });
   }
 
@@ -656,6 +655,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     width: 20,
                                   ),
                                   OutlineButton.icon(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: Colors.grey,
+                                    ),
                                     onPressed: () {
                                       setState(() {
                                         _byDayDatePicker();
@@ -675,11 +678,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     return now
                                         ? Container(
                                             padding: const EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 15,
+                                              horizontal: 25,
+                                              vertical: 8,
                                             ),
                                             color: index % 2 == 0
-                                                ? kDarkestBlue
+                                                ? Color(0xff177d9c)
                                                 : kBlue,
                                             child: Row(
                                               mainAxisAlignment:
@@ -693,17 +696,18 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                 ),
                                                 Row(
                                                   children: [
-                                                    Text(isToday![index].type!),
+                                                    Text(isToday![index].type!,
+                                                        style: kParagraph),
                                                     PopupMenuButton(
-                                                      color: Colors.red,
+                                                      color: Colors.black,
                                                       shape: const RoundedRectangleBorder(
                                                           borderRadius:
                                                               BorderRadius.all(
                                                                   Radius
                                                                       .circular(
                                                                           10))),
-                                                      onSelected:
-                                                          (int selectedValue) {
+                                                      onSelected: (int
+                                                          selectedValue) async {
                                                         if (selectedValue ==
                                                             0) {
                                                           final int userId =
@@ -718,8 +722,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                           final DateTime date =
                                                               isToday![index]
                                                                   .date!;
-                                                          print(type);
-                                                          Navigator.of(context)
+                                                          await Navigator.of(
+                                                                  context)
                                                               .push(
                                                             MaterialPageRoute(
                                                               builder: (ctx) =>
@@ -731,11 +735,45 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                               ),
                                                             ),
                                                           );
+                                                          attendanceAllDisplay =
+                                                              [];
+                                                          _attendanceAllService
+                                                              .findManyByUserId(
+                                                                  userId:
+                                                                      widget.id)
+                                                              .then((value) {
+                                                            setState(() {
+                                                              attendanceAllDisplay
+                                                                  .addAll(
+                                                                      value);
+                                                              _isLoading =
+                                                                  false;
+                                                              var now = DateTime
+                                                                  .now();
+                                                              var today = attendanceAllDisplay
+                                                                  .where((element) =>
+                                                                      element.date?.day == now.day &&
+                                                                      element.date
+                                                                              ?.month ==
+                                                                          now
+                                                                              .month &&
+                                                                      element.date
+                                                                              ?.year ==
+                                                                          now.year)
+                                                                  .toList();
+                                                              isToday = today
+                                                                  .toList();
+                                                            });
+                                                          });
                                                         }
                                                       },
                                                       itemBuilder: (_) => [
-                                                        const PopupMenuItem(
-                                                          child: Text('Edit'),
+                                                        PopupMenuItem(
+                                                          child: Text('Edit',
+                                                              style: kParagraph.copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
                                                           value: 0,
                                                         ),
                                                       ],
@@ -749,12 +787,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                           )
                                         : Container(
                                             padding: const EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 15,
+                                              horizontal: 25,
+                                              vertical: 8,
                                             ),
-                                            color: index % 2 == 0
-                                                ? kDarkestBlue
-                                                : kBlue,
+                                            color:
+                                                index % 2 == 0 ? color : color1,
                                             child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -767,12 +804,99 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                 ),
                                                 Row(
                                                   children: [
-                                                    Text(checkedDate[index]
-                                                        .type!),
-                                                    IconButton(
-                                                        onPressed: () {},
-                                                        icon: Icon(
-                                                            Icons.more_vert))
+                                                    Text(
+                                                        checkedDate[index]
+                                                            .type!,
+                                                        style: kParagraph),
+                                                    PopupMenuButton(
+                                                      color: Colors.black,
+                                                      shape: const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      onSelected: (int
+                                                          selectedValue) async {
+                                                        if (selectedValue ==
+                                                            0) {
+                                                          final int userId =
+                                                              checkedDate[index]
+                                                                  .userId!;
+                                                          final int id =
+                                                              checkedDate[index]
+                                                                  .id!;
+                                                          final String type =
+                                                              checkedDate[index]
+                                                                  .type!;
+                                                          final DateTime date =
+                                                              checkedDate[index]
+                                                                  .date!;
+                                                          await Navigator.of(
+                                                                  context)
+                                                              .push(
+                                                            MaterialPageRoute(
+                                                              builder: (ctx) =>
+                                                                  AttedancesEdit(
+                                                                id: id,
+                                                                userId: userId,
+                                                                type: type,
+                                                                date: date,
+                                                              ),
+                                                            ),
+                                                          );
+                                                          attendanceAllDisplay =
+                                                              [];
+                                                          checkedDate = [];
+                                                          users = [];
+                                                          _attendanceAllService
+                                                              .findManyByUserId(
+                                                                  userId:
+                                                                      widget.id)
+                                                              .then((value) {
+                                                            setState(() {
+                                                              attendanceAllDisplay
+                                                                  .addAll(
+                                                                      value);
+                                                              _isLoading =
+                                                                  false;
+                                                              var checkingDate = attendanceAllDisplay.where((element) =>
+                                                                  element.date?.day == _selectDate?.day &&
+                                                                  element.date
+                                                                          ?.month ==
+                                                                      _selectDate
+                                                                          ?.month &&
+                                                                  element.date
+                                                                          ?.year ==
+                                                                      _selectDate
+                                                                          ?.year);
+                                                              setState(() {
+                                                                users =
+                                                                    checkingDate
+                                                                        .toList();
+                                                                checkedDate =
+                                                                    users;
+                                                              });
+                                                            });
+                                                          });
+                                                        }
+                                                      },
+                                                      itemBuilder: (_) => [
+                                                        PopupMenuItem(
+                                                          child: Text(
+                                                            'Edit',
+                                                            style: kParagraph
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                          ),
+                                                          value: 0,
+                                                        ),
+                                                      ],
+                                                      icon: const Icon(
+                                                          Icons.more_vert),
+                                                    )
                                                   ],
                                                 ),
                                               ],
