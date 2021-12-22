@@ -19,21 +19,29 @@ class _EmployeeListState extends State<EmployeeList> {
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
   final UserService _userService = UserService.instance;
+  List<User> userDisplay = [];
+  List<User> user = [];
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
   Future deleteData(int id) async {
     final response = await http.delete(Uri.parse("$url/$id"));
     if (response.statusCode == 200) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => EmployeeListScreen()));
+      userDisplay = [];
+      user = [];
+      _userService.findMany().then((usersFromServer) {
+        setState(() {
+          _isLoading = false;
+          user.addAll(usersFromServer);
+          userDisplay = user;
+
+          userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+        });
+      });
     } else {
       return false;
     }
   }
-
-  List<User> userDisplay = [];
-  List<User> user = [];
 
   bool _isLoading = true;
   bool order = false;
