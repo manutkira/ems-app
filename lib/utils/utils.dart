@@ -63,6 +63,39 @@ TimeOfDay getTimeOfDayFromString(String? str) {
   }
 }
 
-getStringFromDateTime(DateTime datetime) {
-  return DateFormat('dd/MM/yyyy').format(datetime).toString();
+/// returns the date as string
+getDateStringFromDateTime(DateTime datetime, {String format = 'dd/MM/yyyy'}) {
+  return DateFormat(format).format(datetime).toString();
+}
+
+/// date picker dialog
+Future<DateTime?> buildDateTimePicker({
+  required BuildContext context,
+  required DateTime date,
+}) async {
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: date,
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2025),
+    locale: const Locale('km'),
+    helpText: "Pick a date",
+    errorFormatText: 'Enter valid date',
+    errorInvalidText: 'Enter date in valid range',
+    fieldLabelText: 'Date',
+    fieldHintText: 'Date/Month/Year',
+  );
+  return picked;
+}
+
+/// time picker dialog
+Future<TimeOfDay?> buildTimePicker({
+  required BuildContext context,
+  required TimeOfDay time,
+}) async {
+  return await showTimePicker(
+    context: context,
+    initialEntryMode: TimePickerEntryMode.input,
+    initialTime: time,
+  );
 }
