@@ -1,17 +1,17 @@
 import 'package:ems/models/attendance_no_s.dart';
-import 'package:ems/models/overtime.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/utils/services/overtime_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:http/http.dart' as http;
 
 import '../../constants.dart';
 import '../../models/attendance.dart';
 import '../../utils/services/attendance_service.dart';
 
 class AttendancesInfoScreen extends StatefulWidget {
+  static const routeName = '/attendances-info';
   final int id;
 
   AttendancesInfoScreen(this.id);
@@ -51,13 +51,63 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     try {
       List<AttendanceById> attendanceDisplay =
           await _overtimeService.findByUserId(userId: widget.id);
-      // print('abc $attendanceDisplay');
       setState(() {
         _attendanceDisplay = attendanceDisplay;
       });
-      // print('froms $_attendanceDisplay');
     } catch (e) {
       print('hehe $e');
+    }
+  }
+
+  String url = "http://rest-api-laravel-flutter.herokuapp.com/api/attendances";
+
+  Future deleteData(int id) async {
+    final response = await http.delete(Uri.parse("$url/$id"));
+    if (response.statusCode == 200) {
+      _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
+        setState(() {
+          attendanceAllDisplay = [];
+          attendanceAllDisplay.addAll(value);
+          _isLoading = false;
+          var now = DateTime.now();
+          var today = attendanceAllDisplay
+              .where((element) =>
+                  element.date?.day == now.day &&
+                  element.date?.month == now.month &&
+                  element.date?.year == now.year)
+              .toList();
+          isToday = today.toList();
+          isToday?.sort((a, b) => a.id!.compareTo(b.id!));
+        });
+      });
+    } else {
+      return false;
+    }
+  }
+
+  Future deleteData1(int id) async {
+    final response = await http.delete(Uri.parse("$url/$id"));
+    if (response.statusCode == 200) {
+      attendanceAllDisplay = [];
+      checkedDate = [];
+      users = [];
+      _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
+        setState(() {
+          attendanceAllDisplay.addAll(value);
+          _isLoading = false;
+          var checkingDate = attendanceAllDisplay.where((element) =>
+              element.date?.day == _selectDate?.day &&
+              element.date?.month == _selectDate?.month &&
+              element.date?.year == _selectDate?.year);
+          setState(() {
+            users = checkingDate.toList();
+            checkedDate = users;
+            checkedDate.sort((a, b) => a.id!.compareTo(b.id!));
+          });
+        });
+      });
+    } else {
+      return false;
     }
   }
 
@@ -159,19 +209,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                   element.date?.year == now.year)
               .toList();
           isToday = today.toList();
+          isToday?.sort((a, b) => a.id!.compareTo(b.id!));
         });
       });
-      // _attendanceService
-      //     .findManyByUserId(userId: widget.id)
-      //     .then((usersFromServer) {
-      //   setState(() {
-      //     attendanceDisplay.addAll(usersFromServer);
-      //     _isLoading = false;
-      //   });
-      // });
-    } catch (err) {
-      //
-    }
+    } catch (err) {}
   }
 
   List<Attendance> checkedDate = [];
@@ -185,6 +226,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     setState(() {
       users = checkingDate.toList();
       checkedDate = users;
+      checkedDate.sort((a, b) => a.id!.compareTo(b.id!));
     });
   }
 
@@ -267,29 +309,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     return meetings;
   }
 
-  // sheet() async {
-
-  //   await showModalBottomSheet(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return Column(
-  //         children: [
-  //           Row(
-  //             children: [
-  //               Text('data'),
-  //               Flexible(
-  //                 child: TextField(
-  //                   controller: ,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -342,7 +361,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                     Container(
                       margin:
                           const EdgeInsets.only(top: 5, left: 10, right: 10),
-                      height: 150,
+                      height: 120,
                       width: double.infinity,
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -357,7 +376,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        left: 10, top: 30),
+                                        left: 10, top: 20),
                                     child: Container(
                                       width: 75,
                                       height: 75,
@@ -383,7 +402,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   Container(
                                     height: 50,
                                     margin: const EdgeInsets.only(
-                                        left: 25, top: 35),
+                                        left: 25, top: 25),
                                     child: Expanded(
                                       flex: 7,
                                       child: Column(
@@ -523,7 +542,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   width: 50,
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.only(top: 30),
+                                  padding: const EdgeInsets.only(top: 15),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -571,7 +590,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   width: 60,
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.only(top: 30),
+                                  padding: const EdgeInsets.only(top: 15),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -639,7 +658,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             //   ),
                             // ),
                             SizedBox(
-                              height: 20,
+                              height: 40,
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 15),
@@ -763,8 +782,60 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                   .toList();
                                                               isToday = today
                                                                   .toList();
+                                                              isToday?.sort((a,
+                                                                      b) =>
+                                                                  a.id!.compareTo(
+                                                                      b.id!));
                                                             });
                                                           });
+                                                        }
+                                                        if (selectedValue ==
+                                                            1) {
+                                                          print(isToday?[index]
+                                                              .id);
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (ctx) =>
+                                                                AlertDialog(
+                                                              title: Text(
+                                                                  'Are you sure?'),
+                                                              content: Text(
+                                                                  'This action cannot be undone!'),
+                                                              actions: [
+                                                                OutlineButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                    deleteData(
+                                                                        isToday?[index].id
+                                                                            as int);
+                                                                  },
+                                                                  child: Text(
+                                                                      'Yes'),
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          color:
+                                                                              Colors.green),
+                                                                ),
+                                                                OutlineButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          color:
+                                                                              Colors.red),
+                                                                  child: Text(
+                                                                      'No'),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          );
                                                         }
                                                       },
                                                       itemBuilder: (_) => [
@@ -775,6 +846,14 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                       FontWeight
                                                                           .bold)),
                                                           value: 0,
+                                                        ),
+                                                        PopupMenuItem(
+                                                          child: Text('Delete',
+                                                              style: kParagraph.copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                          value: 1,
                                                         ),
                                                       ],
                                                       icon: const Icon(
@@ -876,9 +955,62 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                         .toList();
                                                                 checkedDate =
                                                                     users;
+                                                                checkedDate.sort((a,
+                                                                        b) =>
+                                                                    a.id!.compareTo(
+                                                                        b.id!));
                                                               });
                                                             });
                                                           });
+                                                        }
+                                                        if (selectedValue ==
+                                                            1) {
+                                                          print(
+                                                              checkedDate[index]
+                                                                  .id);
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (ctx) =>
+                                                                AlertDialog(
+                                                              title: Text(
+                                                                  'Are you sure?'),
+                                                              content: Text(
+                                                                  'This action cannot be undone!'),
+                                                              actions: [
+                                                                OutlineButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                    deleteData1(
+                                                                        checkedDate[index].id
+                                                                            as int);
+                                                                  },
+                                                                  child: Text(
+                                                                      'Yes'),
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          color:
+                                                                              Colors.green),
+                                                                ),
+                                                                OutlineButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          color:
+                                                                              Colors.red),
+                                                                  child: Text(
+                                                                      'No'),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          );
                                                         }
                                                       },
                                                       itemBuilder: (_) => [
@@ -893,10 +1025,21 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                           ),
                                                           value: 0,
                                                         ),
+                                                        PopupMenuItem(
+                                                          child: Text(
+                                                            'Delete',
+                                                            style: kParagraph
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                          ),
+                                                          value: 1,
+                                                        ),
                                                       ],
                                                       icon: const Icon(
                                                           Icons.more_vert),
-                                                    )
+                                                    ),
                                                   ],
                                                 ),
                                               ],

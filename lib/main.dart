@@ -1,5 +1,6 @@
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendance/individual_attendance.dart';
+import 'package:ems/screens/attendances_api/attendance_info.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/home_screen.dart';
 import 'package:ems/screens/login_screen.dart';

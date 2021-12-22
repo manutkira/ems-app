@@ -77,9 +77,10 @@ class _AttedancesEditState extends State<AttedancesEdit> {
 
   void _selectTime() async {
     showTimePicker(
-      context: context,
-      initialTime: selectedTime,
-    ).then((picked) {
+            context: context,
+            initialTime: selectedTime,
+            initialEntryMode: TimePickerEntryMode.input)
+        .then((picked) {
       if (picked != null) {
         setState(() {
           selectedTime = picked;
@@ -99,48 +100,14 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Edit Attendance'),
-        //   leading: IconButton(
-        //       onPressed: () {
-        //         showDialog(
-        //             context: context,
-        //             builder: (ctx) => AlertDialog(
-        //                   title: Text('Are you Sure?'),
-        //                   content: Text('Your changes will be lost.'),
-        //                   actions: [
-        //                     OutlineButton(
-        //                       onPressed: () async {
-        //                         Navigator.of(context).pop();
-        //                         await Navigator.of(context).pushReplacement(
-        //                           MaterialPageRoute(
-        //                             builder: (_) =>
-        //                                 AttendancesInfoScreen(widget.userId),
-        //                           ),
-        //                         );
-        //                       },
-        //                       child: Text('Yes'),
-        //                       borderSide: BorderSide(color: Colors.green),
-        //                     ),
-        //                     OutlineButton(
-        //                       onPressed: () {
-        //                         Navigator.of(context).pop();
-        //                       },
-        //                       child: Text('No'),
-        //                       borderSide: BorderSide(color: Colors.red),
-        //                     )
-        //                   ],
-        //                 ));
-        //       },
-        //       icon: Icon(Icons.arrow_back)),
       ),
       body: Container(
         padding: EdgeInsets.all(20),
         child: Column(
           children: [
-            // SizedBox(
-            //   height: 30,
-            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -225,7 +192,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                       'checkin',
                       'checkout',
                       'absent',
-                      'permission'
+                      'permission',
                     ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                           value: value,
@@ -244,7 +211,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Name ',
+                  'Date ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
@@ -282,7 +249,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Name ',
+                  'Time ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
@@ -353,33 +320,30 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                                title: Text('Are you Sure?'),
-                                content: Text('Your changes will be lost.'),
-                                actions: [
-                                  OutlineButton(
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                      await Navigator.of(context)
-                                          .pushReplacementNamed(
-                                        AttendancesInfoScreen(widget.id)
-                                            .toString(),
-                                      );
-                                    },
-                                    child: Text('Yes'),
-                                    borderSide: BorderSide(color: Colors.green),
-                                  ),
-                                  OutlineButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('No'),
-                                    borderSide: BorderSide(color: Colors.red),
-                                  )
-                                ],
-                              ));
+                      Navigator.pop(context);
+                      // showDialog(
+                      //     context: context,
+                      //     builder: (ctx) => AlertDialog(
+                      //           title: Text('Are you Sure?'),
+                      //           content: Text('Your changes will be lost.'),
+                      //           actions: [
+                      //             OutlineButton(
+                      //               onPressed: () async {
+                      //                 Navigator.of(context).pop();
+                      //                 await Navigator.of(context).pop;
+                      //               },
+                      //               child: Text('Yes'),
+                      //               borderSide: BorderSide(color: Colors.green),
+                      //             ),
+                      //             OutlineButton(
+                      //               onPressed: () {
+                      //                 Navigator.of(context).pop();
+                      //               },
+                      //               child: Text('No'),
+                      //               borderSide: BorderSide(color: Colors.red),
+                      //             )
+                      //           ],
+                      //         ));
                     },
                     child: Text('Cancel'),
                     color: Colors.red,
