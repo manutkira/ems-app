@@ -9,8 +9,8 @@ import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/utils/services/overtime_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
+import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class IndividualOvertimeScreen extends StatefulWidget {
@@ -24,7 +24,7 @@ class IndividualOvertimeScreen extends StatefulWidget {
 
 class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
   late User user;
-
+  String error = '';
   String total = '00:00:00';
   final OvertimeService _overtimeService = OvertimeService.instance;
   String sortByValue = 'All Time';
@@ -47,22 +47,14 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     MenuOptions.delete,
   ];
 
-  // void addUser() async {
-  //   await modalBottomSheetBuilder(
-  //     context: context,
-  //     maxHeight: 640,
-  //     isDismissible: false,
-  //     child: const AddOvertime(),
-  //   );
-  // }
-
+  /// loads the panels
   void moreMenu(String value, OvertimeAttendance record) async {
     switch (value) {
       case "View":
         {
           await modalBottomSheetBuilder(
             context: context,
-            maxHeight: MediaQuery.of(context).size.height * 0.55,
+            maxHeight: MediaQuery.of(context).size.height * 0.5,
             minHeight: MediaQuery.of(context).size.height * 0.3,
             child: ViewOvertime(
               record: record,
@@ -99,12 +91,15 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     }
   }
 
+  /// fetching data from service
   void fetchOvertimeRecord() async {
     int userId = widget.user.id ?? 0;
     setState(() {
-      total = '00:00:00';
       isFetching = true;
       isFilterExpanded = false;
+      // resetting
+      error = '';
+      total = '00:00:00';
       overtimeRecords = [];
     });
     OvertimeListWithTotal records;
@@ -145,16 +140,35 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
       });
     } catch (err) {
       setState(() {
+        error = err.toString();
         isFetching = false;
       });
-      //
     }
   }
 
+  /// show/hide filter
   void _toggleFilter() {
     setState(() {
       isFilterExpanded = !isFilterExpanded;
     });
+  }
+
+  /// show filtered date range
+  String filterRange() {
+    switch (sortByValue) {
+      case 'Day':
+        {
+          return "from ${getDateStringFromDateTime(startDate)}";
+        }
+      case 'Multiple Days':
+        {
+          return "from ${getDateStringFromDateTime(startDate)} to ${getDateStringFromDateTime(endDate)}";
+        }
+      default:
+        {
+          return "all records";
+        }
+    }
   }
 
   @override
@@ -185,7 +199,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              /// Filter
+              // filter
               Container(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -204,10 +218,11 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                             ),
                           ),
                           Icon(
-                              isFilterExpanded
-                                  ? MdiIcons.chevronUp
-                                  : MdiIcons.chevronDown,
-                              size: 22),
+                            isFilterExpanded
+                                ? MdiIcons.chevronUp
+                                : MdiIcons.chevronDown,
+                            size: 22,
+                          ),
                         ],
                       ),
                     ),
@@ -252,7 +267,6 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                                     setState(() {
                                       sortByValue = newValue as String;
                                     });
-                                    print('$sortByValue ${dropdownItems[0]}');
                                   },
                                 ),
                               ),
@@ -286,18 +300,9 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                                   ),
                                   onPressed: () async {
                                     final DateTime? picked =
-                                        await showDatePicker(
+                                        await buildDateTimePicker(
                                       context: context,
-                                      initialDate: startDate,
-                                      firstDate: DateTime(2000),
-                                      lastDate: DateTime(2025),
-                                      locale: const Locale('km'),
-                                      helpText: "Pick a date",
-                                      errorFormatText: 'Enter valid date',
-                                      errorInvalidText:
-                                          'Enter date in valid range',
-                                      fieldLabelText: 'Date',
-                                      fieldHintText: 'Date/Month/Year',
+                                      date: startDate,
                                     );
                                     if (picked != null && picked != startDate) {
                                       setState(() {
@@ -309,8 +314,9 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(DateFormat('dd/MM/yyyy')
-                                          .format(startDate)),
+                                      Text(
+                                        getDateStringFromDateTime(startDate),
+                                      ),
                                       const SizedBox(width: 10),
                                       const Icon(MdiIcons.calendar),
                                     ],
@@ -343,18 +349,9 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                                   ),
                                   onPressed: () async {
                                     final DateTime? picked =
-                                        await showDatePicker(
+                                        await buildDateTimePicker(
                                       context: context,
-                                      initialDate: endDate,
-                                      firstDate: DateTime(2000),
-                                      lastDate: DateTime(2025),
-                                      locale: const Locale('km'),
-                                      helpText: "Pick a date",
-                                      errorFormatText: 'Enter valid date',
-                                      errorInvalidText:
-                                          'Enter date in valid range',
-                                      fieldLabelText: 'Date',
-                                      fieldHintText: 'Date/Month/Year',
+                                      date: endDate,
                                     );
                                     if (picked != null && picked != endDate) {
                                       setState(() {
@@ -366,8 +363,9 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(DateFormat('dd/MM/yyyy')
-                                          .format(endDate)),
+                                      Text(
+                                        getDateStringFromDateTime(endDate),
+                                      ),
                                       const SizedBox(width: 10),
                                       const Icon(MdiIcons.calendar),
                                     ],
@@ -376,6 +374,8 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                               ],
                             ),
                           ),
+
+                          /// GO BUTTON
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -394,7 +394,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                                 onPressed: fetchOvertimeRecord,
                                 child: Row(
                                   children: [
-                                    SizedBox(width: 8),
+                                    const SizedBox(width: 8),
                                     Text(
                                       'Go',
                                       style: kParagraph.copyWith(
@@ -402,7 +402,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                                         fontSize: 14,
                                       ),
                                     ),
-                                    Icon(MdiIcons.chevronRight)
+                                    const Icon(MdiIcons.chevronRight)
                                   ],
                                 ),
                               ),
@@ -414,6 +414,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                   ],
                 ),
               ),
+              // user info card
               Container(
                 padding: kPaddingAll,
                 width: MediaQuery.of(context).size.width * 0.9,
@@ -423,12 +424,49 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                 ),
                 child: _buildUserInfo,
               ),
-              const SizedBox(height: 20),
+              // date range card
+              Visibility(
+                visible: !isFetching && error.isEmpty,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: kDarkestBlue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Showing ${filterRange()}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Text(
+                        'Tap on date to show/hide the record.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              //loading
               Visibility(
                 visible: isFetching,
                 child: Flexible(
                   child: Column(
                     children: const [
+                      SizedBox(height: 20),
                       CircularProgressIndicator(
                         color: Colors.white,
                       ),
@@ -438,16 +476,30 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                   ),
                 ),
               ),
+              // error
+              Visibility(
+                visible: error.isNotEmpty && !isFetching,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 22),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      StatusError(text: error),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+              ),
+              // no record
               Visibility(
                 visible: overtimeRecords.isEmpty && !isFetching,
                 child: _noRecord,
               ),
+              // results
               Expanded(
                 child: ListView.builder(
                   itemCount: overtimeRecords.length,
                   itemBuilder: (context, i) {
-                    print(
-                        'in ${overtimeRecords[i].checkin?.id}\nout ${overtimeRecords[i].checkout?.id}');
                     return _buildListItem(i);
                   },
                 ),
@@ -459,6 +511,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     );
   }
 
+  /// no record
   Widget get _noRecord {
     return Center(
       child: Column(
@@ -474,6 +527,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     );
   }
 
+  /// result widget
   Widget _buildListItem(int i) {
     OvertimeAttendance record = overtimeRecords[i];
     OvertimeCheckin? checkIn = record.checkin;
@@ -493,9 +547,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
             children: [
               const SizedBox(width: 20),
               Text(
-                DateFormat('dd/MM/yyyy')
-                    .format(checkIn?.date as DateTime)
-                    .toString(),
+                getDateStringFromDateTime(checkIn?.date as DateTime),
                 style: kSubtitle,
               ),
             ],
@@ -527,11 +579,8 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 icon: const Icon(MdiIcons.dotsVertical),
-                itemBuilder: (BuildContext context) => options.map((e) {
-                  return PopupMenuItem<String>(
-                    value: e,
-                    child: Text(e),
-                  );
+                itemBuilder: (BuildContext context) => options.map((option) {
+                  return _buildMoreMenu(option);
                 }).toList(),
                 onSelected: (selected) => moreMenu(selected, record),
               ),
@@ -542,6 +591,24 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
     );
   }
 
+  /// more menu
+  PopupMenuEntry<String> _buildMoreMenu(String option) {
+    return PopupMenuItem<String>(
+      height: 24,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+      ),
+      value: option,
+      child: Text(
+        option,
+        style: const TextStyle(
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+
+  /// user info card
   Widget get _buildUserInfo {
     String placeholder = isFetching ? "loading..." : "---";
     TimeOfDay _time = getTimeOfDayFromString(total);

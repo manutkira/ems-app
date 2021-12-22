@@ -13,31 +13,44 @@ class OvertimeService extends BaseService {
   static OvertimeService get instance => OvertimeService();
   int _code = 0;
 
+  String _formatDate(DateTime? date) {
+    return date != null ? DateFormat('y-M-d').format(date) : '';
+  }
+
   Future<OvertimeListWithTotal> findManyByUserId({
     required int userId,
     DateTime? start,
     DateTime? end,
   }) async {
-    String startDate = start != null ? DateFormat('y-M-d').format(start) : '';
-    String endDate = end != null ? DateFormat('y-M-d').format(end) : '';
+    String startDate = _formatDate(start);
+    String endDate = _formatDate(end);
 
-    bool noStartOrEndDate =
+    bool hasNoStartOrEndDate =
         start == null || end == null || startDate.isEmpty || endDate.isEmpty;
 
-    String url = noStartOrEndDate
+    String url = hasNoStartOrEndDate
         ? '$baseUrl/users/$userId/overtimes'
         : '$baseUrl/users/$userId/overtimes?start=$startDate&end=$endDate';
     try {
       Response response = await get(Uri.parse(url));
       _code = response.statusCode;
+
       var jsondata = json.decode(response.body);
-      print(jsondata);
+
+      // if no result found
+      if (jsondata['data']['attendances'].length == 0) {
+        return OvertimeListWithTotal(
+          total: '00:00:00',
+          listOfOvertime: [],
+        );
+      }
+
+      // attendance object without user object
       List<OvertimeAttendance> _overtimeWithoutUser =
           overtimesFromJson(jsondata['data']['attendances']);
 
       // get the user object
       User _user = User.fromJson(jsondata["data"]["user"]);
-      // attendance object without user object
 
       //adding user object to the overtime object
       List<OvertimeAttendance> overtimeWithUser =
@@ -58,47 +71,33 @@ class OvertimeService extends BaseService {
     DateTime? start,
     DateTime? end,
   }) async {
-    String startDate = start != null ? DateFormat('y-M-d').format(start) : '';
-    String endDate = end != null ? DateFormat('y-M-d').format(end) : '';
+    String startDate = _formatDate(start);
+    String endDate = _formatDate(end);
 
-    bool noStartOrEndDate =
+    bool hasNoStartOrEndDate =
         start == null || end == null || startDate.isEmpty || endDate.isEmpty;
 
-    String url = noStartOrEndDate
+    // url
+    String url = hasNoStartOrEndDate
         ? '$baseUrl/overtimes'
         : '$baseUrl/overtimes?start=$startDate&end=$endDate';
 
     try {
       Response response = await get(Uri.parse(url));
       _code = response.statusCode;
+
+      // if no result found
+      if (jsonDecode(response.body).length == 0) {
+        return [];
+      }
+
       Map<String, dynamic> jsondata = json.decode(response.body);
       List<OvertimeByDay> listOfOvertimeByDay =
           overtimesByDayFromJson(jsondata);
-      // print(jsondata.length);
-      // List<OvertimeAttendance> list = [];
-      // jsondata.forEach((key, value) {
-      //   Map<String, dynamic> val = value;
-      //   DateTime date = DateTime.parse(key);
-      //   List<OvertimeAttendance> overtimes = [];
-      //   val.forEach((key, value) {
-      //     list[0] = OvertimeAttendance(
-      //       user: value[0]['user'],
-      //       checkin: value[0],
-      //       checkout: value[1],
-      //     );
-      //     overtimes.add(value);
-      //   });
-      //
-      //   print(value);
-      // });
-      // print(list);
-      // print(jsondata);
-      print(jsondata);
       return listOfOvertimeByDay;
     } catch (e) {
       throw AttendanceException(code: _code);
     }
-    return [];
   }
 }
 

@@ -7,8 +7,8 @@ import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/utils/services/overtime_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
+import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'delete_overtime.dart';
@@ -31,26 +31,46 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     'Multiple Days',
     'All Time',
   ];
+
+  var options = [
+    MenuOptions.view,
+    MenuOptions.edit,
+    MenuOptions.delete,
+  ];
+
+  String error = '';
   bool isFetching = false;
   bool isFilterExpanded = false;
 
+  /// initializing dates
+  DateTime selectedDate = DateTime.now();
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
+
+  /// toggles filter section
   void _toggleFilter() {
     setState(() {
       isFilterExpanded = !isFilterExpanded;
     });
   }
 
+  /// fetches data from overtime service, set the received data to overtime record
   void fetchOvertimeRecord() async {
     setState(() {
+      // shows loading
       isFetching = true;
+      // closes filter
       isFilterExpanded = false;
+      // reset overtime records
       overtimeRecords = [];
+      // reset error
+      error = '';
     });
     List<OvertimeByDay> records = [];
     try {
+      // reads the sort filter condition
       switch (sortByValue) {
+        // one day data
         case 'Day':
           {
             records = await _overtimeService.findMany(
@@ -59,6 +79,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
             );
             break;
           }
+        // multiple days data
         case 'Multiple Days':
           {
             records = await _overtimeService.findMany(
@@ -67,6 +88,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
             );
             break;
           }
+        // anything else, which in this case is All Time option
         default:
           {
             records = await _overtimeService.findMany();
@@ -74,43 +96,41 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
           }
       }
 
-      // List<OvertimeByDay> list = await _overtimeService.findMany();
-      // list.forEach((e) {
-      //   // print(e.date);
-      //   print(e.toString());
-      // });
-
       setState(() {
+        // set newly received data to as overtime records
         overtimeRecords = records;
-        // print(jsonEncode(records));
-        // total = records.total;
-        // overtimeRecords = records.listOfOvertime;
-        // if (overtimeRecords.isNotEmpty) {
-        //   user = overtimeRecords[0].user as User;
-        // }
+        // stop loading
         isFetching = false;
-        // if (overtimeRecords.length < 1) {
-        //   print('hi');
-        //   isFilterExpanded = true;
-        // }
       });
     } catch (err) {
       setState(() {
+        error = err.toString();
         isFetching = false;
       });
       //
     }
   }
 
-  DateTime selectedDate = DateTime.now();
+  /// show filtered date range
+  String filterRange() {
+    switch (sortByValue) {
+      case 'Day':
+        {
+          return "from ${getDateStringFromDateTime(startDate)}";
+        }
+      case 'Multiple Days':
+        {
+          return "from ${getDateStringFromDateTime(startDate)} to ${getDateStringFromDateTime(endDate)}";
+        }
+      default:
+        {
+          return "all records";
+        }
+    }
+  }
 
-  var options = [
-    MenuOptions.view,
-    MenuOptions.edit,
-    MenuOptions.delete,
-  ];
+  /// more menu
   void moreMenu(String value, OvertimeAttendance record) async {
-    // print(record.checkin.);
     switch (value) {
       case "View":
         {
@@ -152,45 +172,6 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
         }
     }
   }
-  // void moreMenu(String value, OvertimeAttendance record) async {
-  //   switch (value) {
-  //     case "View":
-  //       {
-  //         await modalBottomSheetBuilder(
-  //           context: context,
-  //           maxHeight: 460,
-  //           child: ViewOvertime(
-  //             record: record,
-  //           ),
-  //         );
-  //       }
-  //       break;
-  //     case "Edit":
-  //       {
-  //         // Navigator.of(context).push(
-  //         //   MaterialPageRoute(
-  //         //     builder: (context) =>
-  //         //         const HomeScreen(),
-  //         //   ),
-  //         // );
-  //       }
-  //       break;
-  //     case "Delete":
-  //       {
-  //         // Navigator.of(context).push(
-  //         //   MaterialPageRoute(
-  //         //     builder: (context) =>
-  //         //         const HomeScreen(),
-  //         //   ),
-  //         // );
-  //       }
-  //       break;
-  //     default:
-  //       {
-  //         return;
-  //       }
-  //   }
-  // }
 
   @override
   void initState() {
@@ -203,7 +184,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Overtime",
+          "Overtime Manager",
         ),
       ),
       body: SafeArea(
@@ -213,7 +194,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Filter
+              // Filter
               Container(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -232,10 +213,11 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                             ),
                           ),
                           Icon(
-                              isFilterExpanded
-                                  ? MdiIcons.chevronUp
-                                  : MdiIcons.chevronDown,
-                              size: 22),
+                            isFilterExpanded
+                                ? MdiIcons.chevronUp
+                                : MdiIcons.chevronDown,
+                            size: 22,
+                          ),
                         ],
                       ),
                     ),
@@ -259,30 +241,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                   color: kDarkestBlue,
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: DropdownButton(
-                                  borderRadius:
-                                      const BorderRadius.all(kBorderRadius),
-                                  dropdownColor: kDarkestBlue,
-                                  underline: Container(),
-                                  style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.bold),
-                                  isDense: true,
-                                  value: sortByValue,
-                                  icon: const Icon(Icons.keyboard_arrow_down),
-                                  items: dropdownItems.map((String items) {
-                                    return DropdownMenuItem(
-                                      value: items,
-                                      child: Text(items),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    if (sortByValue == newValue) return;
-                                    setState(() {
-                                      sortByValue = newValue as String;
-                                    });
-                                    print('$sortByValue ${dropdownItems[0]}');
-                                  },
-                                ),
+                                child: _buildDropdownMenu,
                               ),
                             ],
                           ),
@@ -313,20 +272,9 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                     ),
                                   ),
                                   onPressed: () async {
-                                    final DateTime? picked =
-                                        await showDatePicker(
-                                      context: context,
-                                      initialDate: startDate,
-                                      firstDate: DateTime(2000),
-                                      lastDate: DateTime(2025),
-                                      locale: const Locale('km'),
-                                      helpText: "Pick a date",
-                                      errorFormatText: 'Enter valid date',
-                                      errorInvalidText:
-                                          'Enter date in valid range',
-                                      fieldLabelText: 'Date',
-                                      fieldHintText: 'Date/Month/Year',
-                                    );
+                                    DateTime? picked =
+                                        await buildDateTimePicker(
+                                            context: context, date: startDate);
                                     if (picked != null && picked != startDate) {
                                       setState(() {
                                         startDate = picked;
@@ -337,8 +285,8 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(DateFormat('dd/MM/yyyy')
-                                          .format(startDate)),
+                                      Text(
+                                          getDateStringFromDateTime(startDate)),
                                       const SizedBox(width: 10),
                                       const Icon(MdiIcons.calendar),
                                     ],
@@ -370,19 +318,10 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                     ),
                                   ),
                                   onPressed: () async {
-                                    final DateTime? picked =
-                                        await showDatePicker(
+                                    DateTime? picked =
+                                        await buildDateTimePicker(
                                       context: context,
-                                      initialDate: endDate,
-                                      firstDate: DateTime(2000),
-                                      lastDate: DateTime(2025),
-                                      locale: const Locale('km'),
-                                      helpText: "Pick a date",
-                                      errorFormatText: 'Enter valid date',
-                                      errorInvalidText:
-                                          'Enter date in valid range',
-                                      fieldLabelText: 'Date',
-                                      fieldHintText: 'Date/Month/Year',
+                                      date: endDate,
                                     );
                                     if (picked != null && picked != endDate) {
                                       setState(() {
@@ -394,8 +333,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(DateFormat('dd/MM/yyyy')
-                                          .format(endDate)),
+                                      Text(getDateStringFromDateTime(endDate)),
                                       const SizedBox(width: 10),
                                       const Icon(MdiIcons.calendar),
                                     ],
@@ -422,7 +360,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                 onPressed: fetchOvertimeRecord,
                                 child: Row(
                                   children: [
-                                    SizedBox(width: 8),
+                                    const SizedBox(width: 8),
                                     Text(
                                       'Go',
                                       style: kParagraph.copyWith(
@@ -430,7 +368,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                         fontSize: 14,
                                       ),
                                     ),
-                                    Icon(MdiIcons.chevronRight)
+                                    const Icon(MdiIcons.chevronRight)
                                   ],
                                 ),
                               ),
@@ -442,6 +380,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                   ],
                 ),
               ),
+              // Loading
               Visibility(
                 visible: isFetching,
                 child: Container(
@@ -462,112 +401,14 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                   ),
                 ),
               ),
+              // date range card
               Visibility(
-                visible: overtimeRecords.isEmpty && !isFetching,
-                child: _noRecord,
-              ),
-              // Visibility(
-              //   visible: overtimeRecords.isNotEmpty,
-              //   child: Expanded(
-              //     child: ListView.builder(
-              //       itemCount: overtimeRecords.length,
-              //       itemBuilder: (context, i) {
-              //         OvertimeByDay record = overtimeRecords[i];
-              //         return Container(
-              //           child: Text('hi'),
-              //         );
-              //       },
-              //     ),
-              //   ),
-              //   // return Container(
-              //   //   padding: const EdgeInsets.symmetric(
-              //   //     horizontal: 15,
-              //   //     vertical: 5,
-              //   //   ),
-              //   //   color: i % 2 == 0 ? kDarkestBlue : kBlue,
-              //   //   child: Row(
-              //   //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   //     children: [
-              //   //       Row(
-              //   //         children: [
-              //   //           const CircleAvatar(),
-              //   //           const SizedBox(
-              //   //             width: 10,
-              //   //           ),
-              //   //           GestureDetector(
-              //   //             onTap: () => Navigator.of(context).push(
-              //   //               MaterialPageRoute(
-              //   //                 builder: (context) =>
-              //   //                     IndividualOvertimeScreen(
-              //   //                   user: User(id: 1, name: 'Kira Manut'),
-              //   //                 ),
-              //   //               ),
-              //   //             ),
-              //   //             child: const SizedBox(
-              //   //               width: 200,
-              //   //               child: Text(
-              //   //                 'Employee Name',
-              //   //                 style: kSubtitle,
-              //   //                 overflow: TextOverflow.fade,
-              //   //                 softWrap: false,
-              //   //                 maxLines: 1,
-              //   //               ),
-              //   //             ),
-              //   //           ),
-              //   //         ],
-              //   //       ),
-              //   //       Row(
-              //   //         children: [
-              //   //           Container(
-              //   //             width: 50,
-              //   //             alignment: Alignment.center,
-              //   //             padding: const EdgeInsets.symmetric(
-              //   //               horizontal: 10,
-              //   //               vertical: 2,
-              //   //             ),
-              //   //             decoration: BoxDecoration(
-              //   //               color: kGreenBackground,
-              //   //               borderRadius: BorderRadius.circular(3),
-              //   //             ),
-              //   //             child: Text(
-              //   //               '1h',
-              //   //               style:
-              //   //                   kSubtitle.copyWith(color: kGreenText),
-              //   //             ),
-              //   //           ),
-              //   //           const SizedBox(width: 10),
-              //   //           PopupMenuButton<String>(
-              //   //             color: kDarkestBlue,
-              //   //             shape: RoundedRectangleBorder(
-              //   //               borderRadius: BorderRadius.circular(10),
-              //   //             ),
-              //   //             icon: const Icon(MdiIcons.dotsVertical),
-              //   //             itemBuilder: (BuildContext context) =>
-              //   //                 options.map((e) {
-              //   //               return PopupMenuItem<String>(
-              //   //                 value: e,
-              //   //                 child: Text(e),
-              //   //               );
-              //   //             }).toList(),
-              //   //             onSelected: moreMenu,
-              //   //           ),
-              //   //         ],
-              //   //       )
-              //   //     ],
-              //   //   ),
-              //   // );
-              // ),
-
-              // ...overtimeRecords.map(
-              //   (record) {
-              //     return Text(record.date.toIso8601String(),);
-              //   },
-              // ),
-              Visibility(
-                visible: !isFetching && overtimeRecords.isNotEmpty,
+                visible: !isFetching && error.isEmpty,
                 child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     color: kDarkestBlue,
@@ -577,15 +418,15 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        'Daily Overtime Records',
-                        style: TextStyle(
+                        'Showing ${filterRange()}',
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      Text(
+                      const Text(
                         'Tap on date to show/hide the record.',
                         style: TextStyle(
                           fontSize: 12,
@@ -596,6 +437,25 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                   ),
                 ),
               ),
+              // no record
+              Visibility(
+                visible: overtimeRecords.isEmpty && !isFetching,
+                child: _noRecord,
+              ),
+              // error
+              Visibility(
+                visible: error.isNotEmpty && !isFetching,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      StatusError(text: error),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+              ),
+              // result
               Visibility(
                 visible: !isFetching && overtimeRecords.isNotEmpty,
                 child: Expanded(
@@ -603,120 +463,8 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                     itemCount: overtimeRecords.length,
                     itemBuilder: (context, i) {
                       OvertimeByDay record = overtimeRecords[i];
-                      return ExpansionTile(
-                        textColor: Colors.white,
-                        iconColor: Colors.white,
-                        initiallyExpanded: true,
-                        title: Text(
-                          getStringFromDateTime(record.date),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const ClampingScrollPhysics(),
-                            itemCount: record.overtimes.length,
-                            itemBuilder: (context, i) {
-                              OvertimeAttendance overtime = record.overtimes[i];
-                              User user = overtime.user as User;
-                              print(overtime.checkin?.id);
-
-                              TimeOfDay overtimeTotal = getTimeOfDayFromString(
-                                overtime.checkout!.overtime,
-                              );
-
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                  vertical: 5,
-                                ),
-                                color: i % 2 == 0 ? kDarkestBlue : kBlue,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CustomCircleAvatar(
-                                          imageUrl: "${user.image}",
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () =>
-                                              Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  IndividualOvertimeScreen(
-                                                user: user,
-                                              ),
-                                            ),
-                                          ),
-                                          child: SizedBox(
-                                            width: 120,
-                                            child: Text(
-                                              '${user.name}',
-                                              style: kSubtitle,
-                                              overflow: TextOverflow.fade,
-                                              softWrap: false,
-                                              maxLines: 1,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 82,
-                                          alignment: Alignment.center,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 2,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: kGreenBackground,
-                                            borderRadius:
-                                                BorderRadius.circular(3),
-                                          ),
-                                          child: Text(
-                                            '${overtimeTotal.hour}h ${overtimeTotal.minute}mn',
-                                            style: kSubtitle.copyWith(
-                                                color: kGreenText),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        PopupMenuButton<String>(
-                                          color: kDarkestBlue,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          icon:
-                                              const Icon(MdiIcons.dotsVertical),
-                                          itemBuilder: (BuildContext context) =>
-                                              options.map((e) {
-                                            return PopupMenuItem<String>(
-                                              value: e,
-                                              child: Text(e),
-                                            );
-                                          }).toList(),
-                                          onSelected: (value) =>
-                                              moreMenu(value, overtime),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      );
+                      // title date
+                      return _buildResult(record);
                     },
                   ),
                 ),
@@ -728,6 +476,160 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     );
   }
 
+  /// result
+  Widget _buildResult(OvertimeByDay record) {
+    return ExpansionTile(
+      textColor: Colors.white,
+      iconColor: Colors.white,
+      initiallyExpanded: true,
+      title: Text(
+        getDateStringFromDateTime(record.date),
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      children: [
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+          itemCount: record.overtimes.length,
+          itemBuilder: (context, i) {
+            OvertimeAttendance overtime = record.overtimes[i];
+            User user = overtime.user as User;
+
+            TimeOfDay overtimeTotal = getTimeOfDayFromString(
+              overtime.checkout!.overtime,
+            );
+
+            // list of overtime
+            return Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 5,
+              ),
+              color: i % 2 == 0 ? kDarkestBlue : kBlue,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      CustomCircleAvatar(
+                        imageUrl: "${user.image}",
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => IndividualOvertimeScreen(
+                              user: user,
+                            ),
+                          ),
+                        ),
+                        child: SizedBox(
+                          width: 120,
+                          child: Text(
+                            '${user.name}',
+                            style: kSubtitle,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 82,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: kGreenBackground,
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Text(
+                          '${overtimeTotal.hour}h ${overtimeTotal.minute}mn',
+                          style: kSubtitle.copyWith(
+                            fontSize: 12,
+                            color: kGreenText,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      PopupMenuButton<String>(
+                        color: kDarkestBlue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        icon: const Icon(MdiIcons.dotsVertical),
+                        itemBuilder: (BuildContext context) {
+                          return options.map((option) {
+                            return _buildMoreMenu(option);
+                          }).toList();
+                        },
+                        onSelected: (value) => moreMenu(value, overtime),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  /// more menu
+  PopupMenuEntry<String> _buildMoreMenu(String option) {
+    return PopupMenuItem<String>(
+      height: 24,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+      ),
+      value: option,
+      child: Text(
+        option,
+        style: const TextStyle(
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+
+  /// drop down menu for filter
+  Widget get _buildDropdownMenu {
+    return DropdownButton(
+      borderRadius: const BorderRadius.all(kBorderRadius),
+      dropdownColor: kDarkestBlue,
+      underline: Container(),
+      style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+      isDense: true,
+      value: sortByValue,
+      icon: const Icon(Icons.keyboard_arrow_down),
+      items: dropdownItems.map((String items) {
+        return DropdownMenuItem(
+          value: items,
+          child: Text(items),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        if (sortByValue == newValue) return;
+        setState(() {
+          sortByValue = newValue as String;
+        });
+      },
+    );
+  }
+
+  /// no record
   Widget get _noRecord {
     return Center(
       child: Column(

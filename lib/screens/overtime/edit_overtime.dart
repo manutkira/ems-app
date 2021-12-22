@@ -6,7 +6,6 @@ import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../constants.dart';
@@ -39,28 +38,13 @@ class _EditOvertimeState extends State<EditOvertime> {
     }
   }
 
-  void _deleteOvertime() async {
-    if (!isLoading) {
-      setState(() {
-        isLoading = true;
-      });
-
-      Future.delayed(const Duration(seconds: 3), () {
-        setState(() {
-          isLoading = false;
-        });
-        _closePanel();
-      });
-    }
-  }
-
   void _updateOvertime() async {
     if (!isLoading) {
       setState(() {
         isLoading = true;
       });
-      print('checkin ${checkIn?.id} checkout ${checkOut?.id}');
       try {
+        /// creating Attendance objects
         Attendance checkInAttendance = Attendance(
           id: checkIn?.id,
           userId: user?.id,
@@ -84,12 +68,14 @@ class _EditOvertimeState extends State<EditOvertime> {
           code: 'cout3',
         );
 
-        bool sameTime =
-            checkIn?.date?.compareTo(checkOut?.date as DateTime) == 0;
+        /// the service will use the same data for check in and check out object
+        /// if there's no check out data from the api.
+        bool hasNoCheckout = checkIn?.id == checkOut?.id;
 
         await _attendanceService.updateOne(checkInAttendance);
-        if (sameTime) {
-          print('true');
+
+        /// if there's no checkout, create one.
+        if (hasNoCheckout) {
           Attendance checkOutAttendance = Attendance(
             userId: user?.id,
             date: selectedDate.copyWith(
@@ -101,16 +87,18 @@ class _EditOvertimeState extends State<EditOvertime> {
             code: 'cout3',
           );
           await _attendanceService.createOne(attendance: checkOutAttendance);
-        } else {
-          print('false');
+        }
+
+        /// otherwise, just update the record
+        else {
           await _attendanceService.updateOne(checkOutAttendance);
         }
+
         setState(() {
           isLoading = false;
         });
         _closePanel();
       } catch (err, stk) {
-        print(stk);
         setState(() {
           isLoading = false;
           error = err.toString();
@@ -125,16 +113,24 @@ class _EditOvertimeState extends State<EditOvertime> {
       user = record.user;
       checkIn = record.checkin;
       checkOut = record.checkout;
+
+      // hour and minute
       int checkInHour = checkIn?.date?.hour as int;
       int checkInMinute = checkIn?.date?.minute as int;
       int checkOutHour = checkOut?.date?.hour as int;
       int checkOutMinute = checkOut?.date?.minute as int;
+
       selectedDate = checkIn?.date as DateTime;
 
+      // timeOfDay
       startedTime = TimeOfDay(hour: checkInHour, minute: checkInMinute);
       endedTime = TimeOfDay(hour: checkOutHour, minute: checkOutMinute);
       _noteController.text = "${checkIn?.note}";
     });
+  }
+
+  String formatToHourAndMinute(TimeOfDay time) {
+    return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
   }
 
   @override
@@ -176,86 +172,14 @@ class _EditOvertimeState extends State<EditOvertime> {
                   ),
                 ],
               ),
-              isLoading
-                  ? const CircularProgressIndicator(color: kWhite)
-                  : TextButton(
-                      style: TextButton.styleFrom(
-                        padding: kPadding.copyWith(top: 10, bottom: 10),
-                        primary: Colors.white,
-                        textStyle:
-                            kParagraph.copyWith(fontWeight: FontWeight.w700),
-                        backgroundColor: kRedText,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(kBorderRadius),
-                        ),
-                      ),
-                      onPressed: _deleteOvertime,
-                      child: const Text('Delete'),
-                    ),
+              Visibility(
+                visible: isLoading,
+                child: const CircularProgressIndicator(color: kWhite),
+              ),
             ],
           ),
           const SizedBox(height: 30),
-          Container(
-            height: 60,
-            width: _size.width,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            decoration: BoxDecoration(
-              color: kDarkestBlue,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CustomCircleAvatar(
-                  imageUrl: "${user?.image}",
-                  size: 50,
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'ID',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          "${user?.id}",
-                          style: kParagraph,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          'Name',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        const SizedBox(width: 5),
-                        SizedBox(
-                          width: _size.width * 0.45,
-                          child: Text(
-                            '${user?.name}',
-                            style: kParagraph,
-                            overflow: TextOverflow.fade,
-                            softWrap: false,
-                            maxLines: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 10),
-              ],
-            ),
-          ),
+          _buildUserInfo(_size, user),
           const SizedBox(height: 20),
           Row(
             children: [
@@ -276,17 +200,9 @@ class _EditOvertimeState extends State<EditOvertime> {
                   ),
                 ),
                 onPressed: () async {
-                  final DateTime? picked = await showDatePicker(
+                  final DateTime? picked = await buildDateTimePicker(
                     context: context,
-                    initialDate: selectedDate,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2025),
-                    locale: const Locale('km'),
-                    helpText: "Pick a date",
-                    errorFormatText: 'Enter valid date',
-                    errorInvalidText: 'Enter date in valid range',
-                    fieldLabelText: 'Date',
-                    fieldHintText: 'Date/Month/Year',
+                    date: selectedDate,
                   );
                   if (picked != null && picked != selectedDate) {
                     setState(() {
@@ -297,7 +213,9 @@ class _EditOvertimeState extends State<EditOvertime> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(DateFormat('dd/MM/yyyy').format(selectedDate)),
+                    Text(
+                      getDateStringFromDateTime(selectedDate),
+                    ),
                     const SizedBox(width: 10),
                     const Icon(MdiIcons.calendar),
                   ],
@@ -325,11 +243,9 @@ class _EditOvertimeState extends State<EditOvertime> {
                   ),
                 ),
                 onPressed: () async {
-                  final TimeOfDay? picked = await showTimePicker(
+                  final TimeOfDay? picked = await buildTimePicker(
                     context: context,
-                    initialEntryMode: TimePickerEntryMode.input,
-                    initialTime: startedTime,
-                    // hourLabelText: "mong",
+                    time: startedTime,
                   );
 
                   if (picked != null && picked != startedTime) {
@@ -368,11 +284,9 @@ class _EditOvertimeState extends State<EditOvertime> {
                   ),
                 ),
                 onPressed: () async {
-                  final TimeOfDay? picked = await showTimePicker(
+                  final TimeOfDay? picked = await buildTimePicker(
                     context: context,
-                    initialEntryMode: TimePickerEntryMode.input,
-                    initialTime: endedTime,
-                    // hourLabelText: "mong",
+                    time: endedTime,
                   );
 
                   if (picked != null && picked != endedTime) {
@@ -385,7 +299,8 @@ class _EditOvertimeState extends State<EditOvertime> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                        "${endedTime.hour.toString().padLeft(2, '0')}:${endedTime.minute.toString().padLeft(2, '0')}"),
+                      formatToHourAndMinute(endedTime),
+                    ),
                     const SizedBox(width: 10),
                     const Icon(MdiIcons.clockOutline),
                   ],
@@ -445,6 +360,68 @@ class _EditOvertimeState extends State<EditOvertime> {
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserInfo(Size size, User? user) {
+    return Container(
+      height: 60,
+      width: size.width,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: kDarkestBlue,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CustomCircleAvatar(
+            imageUrl: "${user?.image}",
+            size: 50,
+          ),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'ID',
+                    style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    "${user?.id}",
+                    style: kParagraph,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    'Name',
+                    style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(width: 5),
+                  SizedBox(
+                    width: size.width * 0.45,
+                    child: Text(
+                      '${user?.name}',
+                      style: kParagraph,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      maxLines: 1,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(width: 10),
         ],
       ),
     );

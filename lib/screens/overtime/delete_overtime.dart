@@ -33,13 +33,13 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
   }
 
   void deleteOvertime() async {
-    // might have to delete two
     setState(() {
       isLoading = true;
     });
 
     try {
       await _attendanceService.deleteOne(int.parse("${record.checkin?.id}"));
+      // if there is a check out record
       if (record.checkin?.id != record.checkout?.id) {
         await _attendanceService.deleteOne(int.parse("${record.checkout?.id}"));
       }
