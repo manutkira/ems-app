@@ -1,8 +1,8 @@
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendance/individual_attendance.dart';
-import 'package:ems/screens/attendances_api/attendance_info.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/home_screen.dart';
+import 'package:ems/screens/home_screen_employee.dart';
 import 'package:ems/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,7 +56,9 @@ class MyApp extends ConsumerWidget {
           final currentUserData = box.values.toList();
           return box.isEmpty || currentUserData[0].isEmpty
               ? const LoginScreen()
-              : const HomeScreen();
+              : currentUserData[0].role?.toLowerCase() == 'admin'
+                  ? const HomeScreen()
+                  : const HomeScreenEmployee();
         },
       ),
       localizationsDelegates: const [
