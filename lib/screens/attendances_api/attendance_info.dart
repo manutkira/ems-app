@@ -1,8 +1,10 @@
 import 'package:ems/models/attendance_no_s.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/utils/services/overtime_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:http/http.dart' as http;
 
@@ -39,13 +41,31 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   dynamic countAbsentNoon = '';
   dynamic countPermission = '';
   dynamic countPermissionNoon = '';
+  dynamic lateMorning = '';
+  dynamic lateAfternoon = '';
+  dynamic absentMorning = '';
+  dynamic absentAfternoon = '';
+  dynamic permissionMorning = '';
+  dynamic permissionAfternoon = '';
+  dynamic presentMorning = '';
+  dynamic presentAfternoon = '';
+  bool multipleDay = false;
   bool _isLoading = true;
   bool order = false;
+  bool isFilterExpanded = true;
   List<Appointment>? _appointment;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
   List<Attendance>? isToday;
   bool now = true;
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+
+  String sortByValue = 'All Time';
+  var dropdownItems = [
+    'Multiple Days',
+    'All Time',
+  ];
 
   fetchAttendance() async {
     try {
@@ -108,6 +128,111 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       });
     } else {
       return false;
+    }
+  }
+
+  fetchLate() async {
+    var pc = await _attendanceService.countLateByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        lateMorning = pc;
+      });
+    }
+  }
+
+  fetchLateNoon() async {
+    var pc = await _attendanceService.countLateNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        lateAfternoon = pc;
+      });
+    }
+  }
+
+  fetchAbsent() async {
+    var pc = await _attendanceService.countAbsentByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        absentMorning = pc;
+      });
+    }
+  }
+
+  fetchAbsentNoon() async {
+    var pc = await _attendanceService.countAbsentNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        absentAfternoon = pc;
+      });
+    }
+  }
+
+  fetchPermission() async {
+    var pc = await _attendanceService.countPermissionByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        permissionMorning = pc;
+      });
+    }
+  }
+
+  fetchPermissionNoon() async {
+    var pc = await _attendanceService.countPermissionNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        permissionAfternoon = pc;
+      });
+    }
+  }
+
+  fetchPresent() async {
+    var pc = await _attendanceService.countPresentByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        presentMorning = pc;
+        print('present $presentMorning');
+      });
+    }
+  }
+
+  fetchPresentNoon() async {
+    var pc = await _attendanceService.countPresentNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        presentAfternoon = pc;
+      });
     }
   }
 
@@ -183,6 +308,12 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
+  void _toggleFilter() {
+    setState(() {
+      isFilterExpanded = !isFilterExpanded;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -197,6 +328,14 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       getPermission();
       getPermissionNoon();
       fetchAttendance();
+      fetchLate();
+      fetchLateNoon();
+      fetchAbsent();
+      fetchAbsentNoon();
+      fetchPermission();
+      fetchPermissionNoon();
+      fetchPresent();
+      fetchPresentNoon();
       _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
         setState(() {
           attendanceAllDisplay.addAll(value);
@@ -238,8 +377,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1990),
-      lastDate: DateTime.now(),
+      firstDate: startDate,
+      lastDate: endDate,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
     ).then((picked) {
       if (picked == null) {
@@ -491,50 +630,310 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             )),
                         child: Column(
                           children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: kDarkestBlue,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: DropdownButton(
-                                underline: Container(),
-                                style: kParagraph.copyWith(
-                                    fontWeight: FontWeight.bold),
-                                isDense: true,
-                                borderRadius:
-                                    const BorderRadius.all(kBorderRadius),
-                                dropdownColor: kDarkestBlue,
-                                icon: const Icon(Icons.expand_more),
-                                value: dropDownValue,
-                                onChanged: (String? newValue) {
-                                  if (newValue == 'Afternoon') {
-                                    setState(() {
-                                      afternoon = true;
-                                      dropDownValue = newValue!;
-                                    });
-                                  }
-                                  if (newValue == 'Morning') {
-                                    setState(() {
-                                      afternoon = false;
-                                      dropDownValue = newValue!;
-                                    });
-                                  }
-                                },
-                                items: <String>[
-                                  'Morning',
-                                  'Afternoon',
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(top: 0),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: kDarkestBlue,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: DropdownButton(
+                                    underline: Container(),
+                                    style: kParagraph.copyWith(
+                                        fontWeight: FontWeight.bold),
+                                    isDense: true,
+                                    borderRadius:
+                                        const BorderRadius.all(kBorderRadius),
+                                    dropdownColor: kDarkestBlue,
+                                    icon: const Icon(Icons.expand_more),
+                                    value: dropDownValue,
+                                    onChanged: (String? newValue) {
+                                      if (newValue == 'Afternoon') {
+                                        setState(() {
+                                          afternoon = true;
+                                          dropDownValue = newValue!;
+                                        });
+                                      }
+                                      if (newValue == 'Morning') {
+                                        setState(() {
+                                          afternoon = false;
+                                          dropDownValue = newValue!;
+                                        });
+                                      }
+                                    },
+                                    items: <String>[
+                                      'Morning',
+                                      'Afternoon',
+                                    ].map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Visibility(
+                                      visible: isFilterExpanded,
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(height: 20),
+
+                                          /// SORT FILTER
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                  vertical: 6,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: kDarkestBlue,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: DropdownButton(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          kBorderRadius),
+                                                  dropdownColor: kDarkestBlue,
+                                                  underline: Container(),
+                                                  style: kParagraph.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  isDense: true,
+                                                  value: sortByValue,
+                                                  icon: const Icon(Icons
+                                                      .keyboard_arrow_down),
+                                                  items: dropdownItems
+                                                      .map((String items) {
+                                                    return DropdownMenuItem(
+                                                      value: items,
+                                                      child: Text(items),
+                                                    );
+                                                  }).toList(),
+                                                  onChanged:
+                                                      (String? newValue) {
+                                                    if (sortByValue == newValue)
+                                                      return;
+                                                    setState(() {
+                                                      sortByValue =
+                                                          newValue as String;
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 6),
+
+                                          /// FROM FILTER
+                                          Visibility(
+                                            visible: sortByValue != 'All Time',
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  sortByValue == 'Day'
+                                                      ? "Date"
+                                                      : 'From',
+                                                  style: kParagraph,
+                                                ),
+                                                TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    primary: Colors.white,
+                                                    textStyle: kParagraph,
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 6,
+                                                    ),
+                                                    backgroundColor:
+                                                        kDarkestBlue,
+                                                    shape:
+                                                        const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              kBorderRadius),
+                                                    ),
+                                                  ),
+                                                  onPressed: () async {
+                                                    final DateTime? picked =
+                                                        await buildDateTimePicker(
+                                                      context: context,
+                                                      date: startDate,
+                                                    );
+                                                    if (picked != null &&
+                                                        picked != startDate) {
+                                                      setState(() {
+                                                        startDate = picked;
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        getDateStringFromDateTime(
+                                                            startDate),
+                                                      ),
+                                                      const SizedBox(width: 10),
+                                                      const Icon(
+                                                          MdiIcons.calendar),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          /// TO FILTER
+                                          Visibility(
+                                            visible:
+                                                sortByValue == 'Multiple Days',
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                const Text('To',
+                                                    style: kParagraph),
+                                                TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    primary: Colors.white,
+                                                    textStyle: kParagraph,
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 6,
+                                                    ),
+                                                    backgroundColor:
+                                                        kDarkestBlue,
+                                                    shape:
+                                                        const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              kBorderRadius),
+                                                    ),
+                                                  ),
+                                                  onPressed: () async {
+                                                    final DateTime? picked =
+                                                        await buildDateTimePicker(
+                                                      context: context,
+                                                      date: endDate,
+                                                    );
+                                                    if (picked != null &&
+                                                        picked != endDate) {
+                                                      setState(() {
+                                                        endDate = picked;
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        getDateStringFromDateTime(
+                                                            endDate),
+                                                      ),
+                                                      const SizedBox(width: 10),
+                                                      const Icon(
+                                                          MdiIcons.calendar),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          /// GO BUTTON
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              TextButton(
+                                                style: TextButton.styleFrom(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 0,
+                                                      horizontal: 16),
+                                                  primary: Colors.white,
+                                                  textStyle: kParagraph,
+                                                  backgroundColor:
+                                                      Colors.black38,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            kBorderRadius),
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  if (sortByValue ==
+                                                      'Multiple Days') {
+                                                    setState(() {
+                                                      multipleDay = true;
+                                                    });
+                                                    fetchLate();
+                                                    fetchLateNoon();
+                                                    fetchAbsent();
+                                                    fetchAbsentNoon();
+                                                    fetchPermission();
+                                                    fetchPermissionNoon();
+                                                    fetchPresent();
+                                                    fetchPresentNoon();
+                                                  }
+                                                  if (sortByValue ==
+                                                      'All Time') {
+                                                    setState(() {
+                                                      multipleDay = false;
+                                                    });
+                                                  }
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    const SizedBox(width: 8),
+                                                    Text(
+                                                      'Go',
+                                                      style:
+                                                          kParagraph.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                    const Icon(
+                                                        MdiIcons.chevronRight)
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                             Row(
                               children: [
@@ -559,8 +958,15 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             ),
                                             Text(
                                               afternoon
-                                                  ? countPresentNoon.toString()
-                                                  : countPresent.toString(),
+                                                  ? multipleDay
+                                                      ? presentAfternoon
+                                                          .toString()
+                                                      : countPresentNoon
+                                                          .toString()
+                                                  : multipleDay
+                                                      ? presentMorning
+                                                          .toString()
+                                                      : countPresent.toString(),
                                               style: kHeadingFour.copyWith(
                                                   color: kWhite),
                                             )
@@ -576,8 +982,16 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                           ),
                                           Text(
                                             afternoon
-                                                ? countPermissionNoon.toString()
-                                                : countPermission.toString(),
+                                                ? multipleDay
+                                                    ? permissionAfternoon
+                                                        .toString()
+                                                    : countPermissionNoon
+                                                        .toString()
+                                                : multipleDay
+                                                    ? permissionMorning
+                                                        .toString()
+                                                    : countPermission
+                                                        .toString(),
                                             style: kHeadingFour.copyWith(
                                                 color: kWhite),
                                           ),
@@ -607,8 +1021,12 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             ),
                                             Text(
                                               afternoon
-                                                  ? countLateNoon.toString()
-                                                  : countLate.toString(),
+                                                  ? multipleDay
+                                                      ? lateAfternoon.toString()
+                                                      : countLateNoon.toString()
+                                                  : multipleDay
+                                                      ? lateMorning.toString()
+                                                      : countLate.toString(),
                                               style: kHeadingFour.copyWith(
                                                   color: kWhite),
                                             ),
@@ -624,8 +1042,12 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                           ),
                                           Text(
                                             afternoon
-                                                ? countAbsentNoon.toString()
-                                                : countAbsent.toString(),
+                                                ? multipleDay
+                                                    ? absentAfternoon.toString()
+                                                    : countAbsentNoon.toString()
+                                                : multipleDay
+                                                    ? absentMorning.toString()
+                                                    : countAbsent.toString(),
                                             style: kHeadingFour.copyWith(
                                                 color: kWhite),
                                           ),
