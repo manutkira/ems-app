@@ -28,13 +28,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final AuthService _authService = AuthService.instance;
 
   Future<void> logUserIn() async {
+    // reset error, start loading
     setState(() {
       if (mounted) {
         error = "";
+        isLoading = true;
       }
-      isLoading = true;
     });
 
+    // call the api
     try {
       await _authService.login(phone: phone, password: password);
     } catch (err) {
@@ -45,28 +47,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       });
     }
 
+    // after finished the api call, stop loading.
     setState(() {
       if (mounted) {
         isLoading = false;
       }
     });
 
+    // if there's an error, stop.
     if (error.isNotEmpty) {
       return;
     }
 
     var currentUserBox = Hive.box<User>(currentUserBoxName);
     User? user = currentUserBox.get(currentUserBoxName);
+
+    // if there's no user in the local storage, stop.
     if (user == null) {
       return;
     }
 
+    // otherwise, move to home screen
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => user.role!.toLowerCase() == 'admin'
-            ? const HomeScreen()
-            : const HomeScreenEmployee(),
-      ),
+      MaterialPageRoute(builder: (_) {
+        // if user is an admin, load the admin screen
+        if (user.role!.toLowerCase() == 'admin') {
+          return const HomeScreen();
+        }
+        // otherwise, load the employee screen
+        return const HomeScreenEmployee();
+      }),
     );
   }
 
