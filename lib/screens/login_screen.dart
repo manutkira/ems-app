@@ -1,9 +1,13 @@
+import 'package:ems/models/user.dart';
+import 'package:ems/persistence/current_user.dart';
+import 'package:ems/screens/home_screen_employee.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/widgets/inputfield.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../constants.dart';
 import 'home_screen.dart';
@@ -24,6 +28,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final AuthService _authService = AuthService.instance;
 
   Future<void> logUserIn() async {
+    setState(() {
+      if (mounted) {
+        error = "";
+      }
+      isLoading = true;
+    });
+
     try {
       await _authService.login(phone: phone, password: password);
     } catch (err) {
@@ -33,6 +44,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         }
       });
     }
+
+    setState(() {
+      if (mounted) {
+        isLoading = false;
+      }
+    });
+
+    if (error.isNotEmpty) {
+      return;
+    }
+
+    var currentUserBox = Hive.box<User>(currentUserBoxName);
+    User? user = currentUserBox.get(currentUserBoxName);
+    if (user == null) {
+      return;
+    }
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => user.role!.toLowerCase() == 'admin'
+            ? const HomeScreen()
+            : const HomeScreenEmployee(),
+      ),
+    );
   }
 
   @override
@@ -128,30 +163,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           borderRadius: BorderRadius.all(kBorderRadius),
                         ),
                       ),
-                      onPressed: () async {
-                        setState(() {
-                          if (mounted) {
-                            error = "";
-                          }
-                          isLoading = true;
-                        });
-
-                        await logUserIn();
-
-                        setState(() {
-                          if (mounted) {
-                            isLoading = false;
-                          }
-                        });
-
-                        if (error.isEmpty) {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (_) => const HomeScreen(),
-                            ),
-                          );
-                        }
-                      },
+                      onPressed: logUserIn,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
