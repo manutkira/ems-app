@@ -3,10 +3,10 @@ import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/utils/services/overtime_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:http/http.dart' as http;
 
 import '../../constants.dart';
 import '../../models/attendance.dart';
@@ -87,7 +87,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
         setState(() {
           attendanceAllDisplay = [];
-          attendanceAllDisplay.addAll(value);
+
+          /// TODO: change this List<AttendanceWithDate>
+          // attendanceAllDisplay.addAll(value);
           _isLoading = false;
           var now = DateTime.now();
           var today = attendanceAllDisplay
@@ -113,7 +115,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       users = [];
       _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
         setState(() {
-          attendanceAllDisplay.addAll(value);
+          /// TODO: change this List<AttendanceWithDate>
+          // attendanceAllDisplay.addAll(value);
           _isLoading = false;
           var checkingDate = attendanceAllDisplay.where((element) =>
               element.date?.day == _selectDate?.day &&
@@ -338,7 +341,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       fetchPresentNoon();
       _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
         setState(() {
-          attendanceAllDisplay.addAll(value);
+          /// TODO: change this List<AttendanceWithDate>
+          // attendanceAllDisplay.addAll(value);
           _isLoading = false;
           var now = DateTime.now();
           var today = attendanceAllDisplay
@@ -1184,9 +1188,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                       widget.id)
                                                               .then((value) {
                                                             setState(() {
-                                                              attendanceAllDisplay
-                                                                  .addAll(
-                                                                      value);
+                                                              /// TODO: change this List<AttendanceWithDate>
+                                                              // attendanceAllDisplay
+                                                              //     .addAll(
+                                                              //         value);
                                                               _isLoading =
                                                                   false;
                                                               var now = DateTime
@@ -1356,9 +1361,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                       widget.id)
                                                               .then((value) {
                                                             setState(() {
-                                                              attendanceAllDisplay
-                                                                  .addAll(
-                                                                      value);
+                                                              /// TODO: change this List<AttendanceWithDate>
+                                                              // attendanceAllDisplay
+                                                              //     .addAll(
+                                                              //         value);
                                                               _isLoading =
                                                                   false;
                                                               var checkingDate = attendanceAllDisplay.where((element) =>

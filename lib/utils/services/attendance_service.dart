@@ -375,25 +375,53 @@ class AttendanceService extends BaseService {
     }
   }
 
-  Future<List<Attendance>> findManyByUserId({required int userId}) async {
+  Future<List<AttendanceWithDate>> findManyByUserId({
+    required int userId,
+    DateTime? start,
+    DateTime? end,
+  }) async {
+    String startDate = _formatDate(start);
+    String endDate = _formatDate(end);
+
+    bool hasNoStartOrEndDate =
+        start == null || end == null || startDate.isEmpty || endDate.isEmpty;
+
+    String url = hasNoStartOrEndDate
+        ? '$baseUrl/users/$userId/attendances'
+        : '$baseUrl/users/$userId/attendances?start=$startDate&end=$endDate';
     try {
-      Response response =
-          await get(Uri.parse('$baseUrl/users/$userId/attendances'));
+      Response response = await get(Uri.parse(url));
+
       _code = response.statusCode;
-      var jsondata = json.decode(response.body);
-      // get the user object
-      User _user = User.fromJson(jsondata);
-      // attendance object without user object
-      List<Attendance> _attendances =
-          attendancesFromJson(jsondata["attendances"]);
+      if (response.statusCode == 200) {
+        var jsondata = json.decode(response.body);
+        // get the user object
 
-      //adding user object to the attendances
-      List<Attendance> attendances = _attendances.map((attendance) {
-        return attendance.copyWith(users: _user);
-      }).toList();
+        User _user = User.fromJson(jsondata['data']['user']);
+        if (jsondata['data']["attendances"] != null &&
+            jsondata['data']["attendances"].length > 0) {
+          Map<String, dynamic>? map = jsondata['data']["attendances"];
+          List<AttendanceWithDate> _attendances =
+              attendancesByDayFromJson(map!);
 
-      return attendances;
+          //adding user object to the attendances
+          List<AttendanceWithDate> awds = _attendances.map((awd) {
+            List<Attendance> atts = awd.list.map((attendance) {
+              return attendance.copyWith(users: _user);
+            }).toList();
+
+            return awd.copyWith(list: atts);
+          }).toList();
+          return awds;
+        } else {
+          print('hio');
+          return [];
+        }
+      } else {
+        throw AttendanceException(code: _code);
+      }
     } catch (e) {
+      print(_code);
       throw AttendanceException(code: _code);
     }
   }
