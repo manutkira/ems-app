@@ -71,7 +71,7 @@ class UserService extends BaseService {
         'POST',
         Uri.parse("$baseUrl/users/${user.id}"),
       );
-      request.headers.addAll(headers);
+      request.headers.addAll(headers());
       request.files.add(
         MultipartFile(
           field,
@@ -105,7 +105,7 @@ class UserService extends BaseService {
         Uri.parse(
           '$baseUrl/users',
         ),
-        headers: headers,
+        headers: headers(),
         body: json.encode(user.buildCleanJson()),
       );
       if (response.statusCode != 201) {
@@ -132,7 +132,7 @@ class UserService extends BaseService {
         Uri.parse(
           '$baseUrl/users/$userid',
         ),
-        headers: headers,
+        headers: headers(),
         body: json.encode(jsons),
       );
       var jsondata = json.decode(response.body);

@@ -414,7 +414,6 @@ class AttendanceService extends BaseService {
           }).toList();
           return awds;
         } else {
-          print('hio');
           return [];
         }
       } else {
@@ -439,7 +438,7 @@ class AttendanceService extends BaseService {
         Uri.parse(
           '$baseUrl/attendances',
         ),
-        headers: headers,
+        headers: headers(),
         body: json.encode(jsons),
       );
       _code = response.statusCode;
@@ -467,7 +466,7 @@ class AttendanceService extends BaseService {
         Uri.parse(
           '$baseUrl/attendances/$attId',
         ),
-        headers: headers,
+        headers: headers(),
         body: json.encode(jsons),
       );
       if (response.statusCode == 200) {

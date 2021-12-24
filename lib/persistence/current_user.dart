@@ -1,10 +1,10 @@
 import 'package:ems/models/user.dart';
-import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 const currentUserBoxName = 'currentUser';
+const tokenBoxName = 'tokenBox';
 
 class CurrentUserStore {
   final User initUser = User(
@@ -34,16 +34,31 @@ class CurrentUserStore {
 
     // open the box
     await Hive.openBox<User>(currentUserBoxName);
+    await Hive.openBox<String>(tokenBoxName);
 
-    final box = Hive.box<User>(currentUserBoxName);
+    final userBox = Hive.box<User>(currentUserBoxName);
+    final box = Hive.box<String>(tokenBoxName);
 
     try {
-      int? id = box.values.toList().isNotEmpty ? box.values.toList()[0].id : 0;
-      User user = await UserService().findOne(id as int);
-      box.put(currentUserBoxName, user);
+      var token = box.get('token');
+      if (token == null || token.isEmpty) {
+        await box.delete('token');
+        await userBox.delete(currentUserBoxName);
+      }
     } catch (err) {
-      await box.delete(currentUserBoxName);
+      await box.delete('token');
+      await userBox.delete(currentUserBoxName);
     }
+
+    // print('hi');
+    //
+    // try {
+    //   int? id = box.values.toList().isNotEmpty ? box.values.toList()[0].id : 0;
+    //   User user = await UserService().findOne(id as int);
+    //   box.put(currentUserBoxName, user);
+    // } catch (err) {
+    //   await box.delete(currentUserBoxName);
+    // }
   }
 
   /// returns the current user
