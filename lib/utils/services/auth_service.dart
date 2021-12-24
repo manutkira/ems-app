@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:ems/models/auth.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 
 import 'base_service.dart';
@@ -12,7 +13,8 @@ class AuthService extends BaseService {
   static AuthService get instance => AuthService();
   int _code = 0;
 
-  Future<User> login({required String phone, required String password}) async {
+  Future<AuthData> login(
+      {required String phone, required String password}) async {
     if (phone.isEmpty || password.isEmpty) {
       throw AuthException(code: 2);
     }
@@ -22,16 +24,35 @@ class AuthService extends BaseService {
         Uri.parse(
           '$baseUrl/login',
         ),
-        headers: headers,
+        headers: headers(),
         body: json.encode({
           "phone": phone,
           "password": password,
         }),
       );
+
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body)["user"];
-        var user = User.fromJson(data);
-        return user;
+        var authData = AuthData.fromJson(jsonDecode(response.body));
+
+        var tokenBox = Hive.box<String>(tokenBoxName);
+        var userBox = Hive.box<User>(currentUserBoxName);
+
+        User? _user = authData.user.isNotEmpty ? authData.user : null;
+
+        if (_user == null) {
+          throw Exception("error from auth service");
+        }
+
+        await userBox.put(
+          currentUserBoxName,
+          _user.copyWith(
+            image: _user.image.runtimeType != String ? null : _user.image,
+            role: _user.role ?? "Employee",
+            status: _user.status ?? "Active",
+          ),
+        );
+        await tokenBox.put('token', authData.token);
+        return authData;
       } else {
         _code = response.statusCode;
         throw Exception("error from auth service");
@@ -42,14 +63,16 @@ class AuthService extends BaseService {
   }
 
   Future<bool> logout() async {
-    final box = Hive.box<User>(currentUserBoxName);
-    var currentUserId = box.get(currentUserBoxName)?.id;
+    final userBox = Hive.box<User>(currentUserBoxName);
+    var tokenBox = Hive.box<String>(tokenBoxName);
+    await tokenBox.delete('token');
+    var currentUserId = userBox.get(currentUserBoxName)?.id;
     try {
       Response response = await post(
         Uri.parse(
           '$baseUrl/logout/$currentUserId',
         ),
-        headers: headers,
+        headers: headers(),
       );
 
       if (response.statusCode == 200) {
@@ -70,7 +93,7 @@ class AuthService extends BaseService {
         Uri.parse(
           "$baseUrl/verify/${id.toString()}?password=$password",
         ),
-        headers: headers,
+        headers: headers(),
       );
       if (response.statusCode == 200) {
         return true;

@@ -1,5 +1,3 @@
-import 'package:ems/models/user.dart';
-import 'package:ems/persistence/current_user.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/widgets/inputfield.dart';
 import 'package:ems/widgets/statuses/error.dart';
@@ -27,11 +25,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> logUserIn() async {
     try {
-      User _user = await _authService.login(phone: phone, password: password);
-      ref.read(currentUserProvider).setUser(user: _user);
+      await _authService.login(phone: phone, password: password);
     } catch (err) {
       setState(() {
-        error = err.toString();
+        if (mounted) {
+          error = err.toString();
+        }
       });
     }
   }
@@ -79,7 +78,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     InputField(
                       getValue: (value) {
                         setState(() {
-                          phone = value;
+                          if (mounted) {
+                            phone = value;
+                          }
                         });
                       },
                       labelText: "Phone",
@@ -95,7 +96,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     InputField(
                       getValue: (value) {
                         setState(() {
-                          password = value;
+                          if (mounted) {
+                            password = value;
+                          }
                         });
                       },
                       textInputAction: TextInputAction.done,
@@ -127,20 +130,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       onPressed: () async {
                         setState(() {
-                          error = "";
+                          if (mounted) {
+                            error = "";
+                          }
                           isLoading = true;
                         });
 
                         await logUserIn();
 
                         setState(() {
-                          isLoading = false;
+                          if (mounted) {
+                            isLoading = false;
+                          }
                         });
 
                         if (error.isEmpty) {
                           Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (_) => const HomeScreen()));
+                            MaterialPageRoute(
+                              builder: (_) => const HomeScreen(),
+                            ),
+                          );
                         }
                       },
                       child: Row(
