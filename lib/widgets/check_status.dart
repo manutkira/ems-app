@@ -18,18 +18,59 @@ class CheckStatus extends ConsumerStatefulWidget {
 
 class _CheckStatusState extends ConsumerState<CheckStatus> {
   bool isFetchingStatus = false;
+  bool isMorningCheckIn = false;
+  bool isMorningCheckOut = false;
+  bool isAfternoonCheckIn = false;
+  bool isAfternoonCheckOut = false;
+
   void getStatus() async {
     setState(() {
       isFetchingStatus = true;
     });
     AttendanceService attservice = AttendanceService.instance;
     int userId = ref.read(currentUserProvider).user.id as int;
-    List<Attendance> listofAttendance = [];
-    listofAttendance = await attservice.findManyByUserId(userId: userId);
-    print(attendancesToJson(listofAttendance));
+    List<AttendanceWithDate> listofAttendance = [];
+    listofAttendance = await attservice.findManyByUserId(
+        userId: userId, start: DateTime.now(), end: DateTime.now());
+    if (listofAttendance.isNotEmpty) {
+      listofAttendance[0].list.map((e) {
+        switch (e.code) {
+          case 'cin1':
+            {
+              return setState(() {
+                isMorningCheckIn = true;
+              });
+            }
+          case 'cout1':
+            {
+              return setState(() {
+                isMorningCheckOut = true;
+              });
+            }
+          case 'cin2':
+            {
+              return setState(() {
+                isAfternoonCheckIn = true;
+              });
+            }
+          case 'cout2':
+            {
+              return setState(() {
+                isAfternoonCheckIn = true;
+              });
+            }
+        }
+      }).toList();
+    }
     setState(() {
       isFetchingStatus = false;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getStatus();
   }
 
   @override
@@ -81,27 +122,38 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    Expanded(
-                        child: Text(
-                      'Morning',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: kBlack,
+                    const Expanded(
+                      child: Text(
+                        'Morning',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: kBlack,
+                        ),
                       ),
-                    )),
+                    ),
                     Expanded(
                         child: Text(
-                      '✔',
-                      style: TextStyle(
+                      isFetchingStatus
+                          ? 'loading...'
+                          : isMorningCheckIn
+                              ? '✔'
+                              : '--',
+                      style: const TextStyle(
                         color: kBlack,
+                        fontSize: 12,
                       ),
                       textAlign: TextAlign.center,
                     )),
                     Expanded(
                         child: Text(
-                      '✔',
-                      style: TextStyle(
+                      isFetchingStatus
+                          ? 'loading...'
+                          : isMorningCheckOut
+                              ? '✔'
+                              : '--',
+                      style: const TextStyle(
                         color: kBlack,
+                        fontSize: 12,
                       ),
                       textAlign: TextAlign.center,
                     )),
@@ -110,27 +162,38 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    Expanded(
-                        child: Text(
-                      'Afternoon',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: kBlack,
+                    const Expanded(
+                      child: Text(
+                        'Afternoon',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: kBlack,
+                        ),
                       ),
-                    )),
+                    ),
                     Expanded(
                         child: Text(
-                      '✔',
-                      style: TextStyle(
+                      isFetchingStatus
+                          ? 'loading...'
+                          : isAfternoonCheckIn
+                              ? '✔'
+                              : '--',
+                      style: const TextStyle(
                         color: kBlack,
+                        fontSize: 12,
                       ),
                       textAlign: TextAlign.center,
                     )),
                     Expanded(
                         child: Text(
-                      '--',
-                      style: TextStyle(
+                      isFetchingStatus
+                          ? 'loading...'
+                          : isAfternoonCheckOut
+                              ? '✔'
+                              : '--',
+                      style: const TextStyle(
                         color: kBlack,
+                        fontSize: 12,
                       ),
                       textAlign: TextAlign.center,
                     )),

@@ -1,7 +1,40 @@
 import 'dart:convert';
 
 import 'package:ems/models/user.dart';
-import 'package:ems/screens/overtime/delete_overtime.dart';
+
+// List<Attendance> attendancesByDayFromJson(Map<String, dynamic> list) {
+List<AttendanceWithDate> attendancesByDayFromJson(Map<String, dynamic> list) {
+  List<Attendance> lists = [];
+  List<AttendanceWithDate> awdlist = [];
+  // print('list list list ${list.runtimeType}');
+  list.forEach((key, value) {
+    var awd = AttendanceWithDate(
+        date: DateTime.parse(key), list: attendancesFromJson(value));
+    awdlist.add(awd);
+    // print('awd ${awd.date}');
+    var over = Attendance.fromJson(list);
+    lists.add(
+      over,
+    );
+  });
+
+  /// lists here to send back to service.
+  // print(lists);
+  return awdlist;
+}
+
+class AttendanceWithDate {
+  DateTime date;
+  List<Attendance> list;
+
+  AttendanceWithDate({required this.date, required this.list});
+
+  AttendanceWithDate copyWith({
+    DateTime? date,
+    List<Attendance>? list,
+  }) =>
+      AttendanceWithDate(date: date ?? this.date, list: list ?? this.list);
+}
 
 List<Attendance> attendancesFromJson(List<dynamic> list) {
   return List<Attendance>.from(list.map((x) => Attendance.fromJson(x)));
