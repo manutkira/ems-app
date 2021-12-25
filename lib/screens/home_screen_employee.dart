@@ -177,7 +177,10 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                           ),
                         );
                       },
-                      illustration: SvgPicture.asset("assets/images/tick.svg"),
+                      illustration: SvgPicture.asset(
+                        "assets/images/tick.svg",
+                        width: MediaQuery.of(context).size.width * 0.15,
+                      ),
                       label: "Check In",
                     ),
                   ),
@@ -192,7 +195,10 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                           ),
                         );
                       },
-                      illustration: SvgPicture.asset("assets/images/close.svg"),
+                      illustration: SvgPicture.asset(
+                        "assets/images/close.svg",
+                        width: MediaQuery.of(context).size.width * 0.15,
+                      ),
                       label: "Check out",
                     ),
                   ),

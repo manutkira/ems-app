@@ -27,6 +27,7 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
     setState(() {
       isFetchingStatus = true;
     });
+
     AttendanceService attservice = AttendanceService.instance;
     int userId = ref.read(currentUserProvider).user.id as int;
     List<AttendanceWithDate> listofAttendance = [];

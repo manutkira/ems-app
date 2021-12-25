@@ -8,6 +8,7 @@ import 'package:http/http.dart';
 
 import 'base_service.dart';
 import 'exceptions/auth.dart';
+import 'exceptions/user.dart';
 
 class AuthService extends BaseService {
   static AuthService get instance => AuthService();
@@ -57,6 +58,24 @@ class AuthService extends BaseService {
         _code = response.statusCode;
         throw Exception("error from auth service");
       }
+    } catch (err) {
+      throw AuthException(code: _code);
+    }
+  }
+
+  Future<User> findMe() async {
+    try {
+      Response response = await get(
+        Uri.parse('$baseUrl/me'),
+        headers: headers(),
+      );
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw UserException(code: _code);
+      }
+      var jsondata = json.decode(response.body);
+      var user = User.fromJson(jsondata);
+      return user;
     } catch (err) {
       throw AuthException(code: _code);
     }
