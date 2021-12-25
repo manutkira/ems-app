@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:ems/models/attendance_no_s.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/utils/services/overtime_service.dart';
@@ -29,7 +31,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Attendance> attendanceAllDisplay = [];
 
   AttendanceByIdService _overtimeService = AttendanceByIdService.instance;
-  List<AttendanceById> _attendanceDisplay = [];
+  List<AttendanceWithDate> _attendanceDisplay = [];
 
   String dropDownValue = 'Morning';
   bool afternoon = false;
@@ -56,27 +58,58 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Appointment>? _appointment;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
-  List<Attendance>? isToday;
+  List<AttendanceWithDate>? isToday;
   bool now = true;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
+  List sum = [];
 
   String sortByValue = 'All Time';
   var dropdownItems = [
     'Multiple Days',
     'All Time',
   ];
-
-  fetchAttendance() async {
+  fetchAttendanceById() async {
     try {
-      List<AttendanceById> attendanceDisplay =
-          await _overtimeService.findByUserId(userId: widget.id);
+      List<AttendanceWithDate> attendanceDisplay =
+          await _attendanceService.findManyByUserId(
+        userId: widget.id,
+        start: startDate,
+        end: endDate,
+      );
       setState(() {
         _attendanceDisplay = attendanceDisplay;
+        _attendanceDisplay.map((e) {
+          print(e.list);
+        });
+        _isLoading = false;
+        var now = DateTime.now();
+        var today = attendanceDisplay.where((element) =>
+            element.date.day == now.day &&
+            element.date.month == now.month &&
+            element.date.year == now.year);
+        isToday = today.toList();
       });
-    } catch (e) {
-      print('hehe $e');
-    }
+    } catch (e) {}
+  }
+
+  List mapAttendance = [];
+
+  int countLength() {
+    int a = 0;
+    _attendanceDisplay.forEach((element) {
+      a += element.list.length;
+    });
+    return a;
+  }
+
+  int countTodayLength() {
+    int a = 0;
+    _attendanceDisplay.forEach((element) {
+      a += element.list.length;
+    });
+    print(a);
+    return a;
   }
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/attendances";
@@ -98,8 +131,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                   element.date?.month == now.month &&
                   element.date?.year == now.year)
               .toList();
-          isToday = today.toList();
-          isToday?.sort((a, b) => a.id!.compareTo(b.id!));
+
+          // isToday = today.toList();
+          // isToday?.sort((a, b) => a.id!.compareTo(b.id!));
         });
       });
     } else {
@@ -330,7 +364,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       getAbsentNoon();
       getPermission();
       getPermissionNoon();
-      fetchAttendance();
+      // fetchAttendance();
+      fetchAttendanceById();
       fetchLate();
       fetchLateNoon();
       fetchAbsent();
@@ -339,41 +374,23 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       fetchPermissionNoon();
       fetchPresent();
       fetchPresentNoon();
-      _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
-        setState(() {
-          /// TODO: change this List<AttendanceWithDate>
-          // attendanceAllDisplay.addAll(value);
-          _isLoading = false;
-          var now = DateTime.now();
-          var today = attendanceAllDisplay
-              .where((element) =>
-                  element.date?.day == now.day &&
-                  element.date?.month == now.month &&
-                  element.date?.year == now.year)
-              .toList();
-          isToday = today.toList();
-          isToday?.sort((a, b) => a.id!.compareTo(b.id!));
-        });
-      });
     } catch (err) {}
   }
 
   List<Attendance> checkedDate = [];
   List<Attendance> users = [];
 
-  void checkDate(DateTime pick) {
-    var checkingDate = attendanceAllDisplay.where((element) =>
-        element.date?.day == pick.day &&
-        element.date?.month == pick.month &&
-        element.date?.year == pick.year);
-    setState(() {
-      users = checkingDate.toList();
-      checkedDate = users;
-      checkedDate.sort((a, b) => a.id!.compareTo(b.id!));
-    });
-  }
-
-  void checkToday(DateTime pick) {}
+  // void checkDate(DateTime pick) {
+  //   var checkingDate = attendanceAllDisplay.where((element) =>
+  //       element.date?.day == pick.day &&
+  //       element.date?.month == pick.month &&
+  //       element.date?.year == pick.year);
+  //   setState(() {
+  //     users = checkingDate.toList();
+  //     checkedDate = users;
+  //     checkedDate.sort((a, b) => a.id!.compareTo(b.id!));
+  //   });
+  // }
 
   DateTime? _selectDate;
 
@@ -388,7 +405,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       if (picked == null) {
         return;
       }
-      checkDate(picked);
+      // checkDate(picked);
       setState(() {
         _selectDate = picked;
         now = false;
@@ -437,20 +454,20 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
-  List<Appointment> getAppointments() {
-    List<Appointment> meetings = <Appointment>[];
-    DateTime? startTime;
-    DateTime? endTime;
-    _attendanceDisplay.asMap().forEach((key, value) {
-      Appointment newAppointment = Appointment(
-        startTime: value.checkin1?.date as DateTime,
-        endTime: value.checkout1?.date as DateTime,
-        color: checkColor(value),
-      );
-      meetings.add(newAppointment);
-    });
-    return meetings;
-  }
+  // List<Appointment> getAppointments() {
+  //   List<Appointment> meetings = <Appointment>[];
+  //   DateTime? startTime;
+  //   DateTime? endTime;
+  //   _attendanceDisplay.asMap().forEach((key, value) {
+  //     Appointment newAppointment = Appointment(
+  //       startTime: value.checkin1?.date as DateTime,
+  //       endTime: value.checkout1?.date as DateTime,
+  //       color: checkColor(value),
+  //     );
+  //     meetings.add(newAppointment);
+  //   });
+  //   return meetings;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -477,7 +494,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                 ),
               ),
             )
-          : attendanceAllDisplay.isEmpty
+          : _attendanceDisplay.isEmpty
               ? Container(
                   padding: const EdgeInsets.only(top: 200, left: 40),
                   child: Column(
@@ -534,7 +551,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                         borderRadius:
                                             BorderRadius.circular(150),
                                         child: Image.network(
-                                          attendanceAllDisplay[0].users!.image!,
+                                          _attendanceDisplay[0]
+                                              .list[0]
+                                              .users!
+                                              .image
+                                              .toString(),
                                           fit: BoxFit.cover,
                                           width: double.infinity,
                                           height: 75,
@@ -565,7 +586,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                 width: 45,
                                               ),
                                               Text(
-                                                attendanceAllDisplay[0]
+                                                _attendanceDisplay[0]
+                                                    .list[0]
                                                     .users!
                                                     .id
                                                     .toString(),
@@ -592,7 +614,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                 width: 20,
                                               ),
                                               Text(
-                                                attendanceAllDisplay[0]
+                                                _attendanceDisplay[0]
+                                                    .list[0]
                                                     .users!
                                                     .name
                                                     .toString(),
@@ -896,6 +919,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                       'Multiple Days') {
                                                     setState(() {
                                                       multipleDay = true;
+                                                      now = false;
                                                     });
                                                     fetchLate();
                                                     fetchLateNoon();
@@ -905,6 +929,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                     fetchPermissionNoon();
                                                     fetchPresent();
                                                     fetchPresentNoon();
+                                                    fetchAttendanceById();
                                                   }
                                                   if (sortByValue ==
                                                       'All Time') {
@@ -1116,370 +1141,384 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                               ),
                             ),
                             Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 15),
-                                child: ListView.builder(
-                                  itemBuilder: (ctx, index) {
-                                    return now
-                                        ? Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 25,
-                                              vertical: 8,
-                                            ),
-                                            color: index % 2 == 0
-                                                ? Color(0xff177d9c)
-                                                : kBlue,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  DateFormat('dd/MM/yyyy HH:mm')
-                                                      .format(isToday?[index]
-                                                          .date as DateTime),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Text(isToday![index].type!,
-                                                        style: kParagraph),
-                                                    PopupMenuButton(
-                                                      color: Colors.black,
-                                                      shape: const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          10))),
-                                                      onSelected: (int
-                                                          selectedValue) async {
-                                                        if (selectedValue ==
-                                                            0) {
-                                                          final int userId =
-                                                              isToday![index]
-                                                                  .userId!;
-                                                          final int id =
-                                                              isToday![index]
-                                                                  .id!;
-                                                          final String type =
-                                                              isToday![index]
-                                                                  .type!;
-                                                          final DateTime date =
-                                                              isToday![index]
-                                                                  .date!;
-                                                          await Navigator.of(
-                                                                  context)
-                                                              .push(
-                                                            MaterialPageRoute(
-                                                              builder: (ctx) =>
-                                                                  AttedancesEdit(
-                                                                id: id,
-                                                                userId: userId,
-                                                                type: type,
-                                                                date: date,
-                                                              ),
-                                                            ),
-                                                          );
-                                                          attendanceAllDisplay =
-                                                              [];
-                                                          _attendanceAllService
-                                                              .findManyByUserId(
-                                                                  userId:
-                                                                      widget.id)
-                                                              .then((value) {
-                                                            setState(() {
-                                                              /// TODO: change this List<AttendanceWithDate>
-                                                              // attendanceAllDisplay
-                                                              //     .addAll(
-                                                              //         value);
-                                                              _isLoading =
-                                                                  false;
-                                                              var now = DateTime
-                                                                  .now();
-                                                              var today = attendanceAllDisplay
-                                                                  .where((element) =>
-                                                                      element.date?.day == now.day &&
-                                                                      element.date
-                                                                              ?.month ==
-                                                                          now
-                                                                              .month &&
-                                                                      element.date
-                                                                              ?.year ==
-                                                                          now.year)
-                                                                  .toList();
-                                                              isToday = today
-                                                                  .toList();
-                                                              isToday?.sort((a,
-                                                                      b) =>
-                                                                  a.id!.compareTo(
-                                                                      b.id!));
-                                                            });
-                                                          });
-                                                        }
-                                                        if (selectedValue ==
-                                                            1) {
-                                                          print(isToday?[index]
-                                                              .id);
-                                                          showDialog(
-                                                            context: context,
-                                                            builder: (ctx) =>
-                                                                AlertDialog(
-                                                              title: Text(
-                                                                  'Are you sure?'),
-                                                              content: Text(
-                                                                  'This action cannot be undone!'),
-                                                              actions: [
-                                                                OutlineButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                    deleteData(
-                                                                        isToday?[index].id
-                                                                            as int);
-                                                                  },
-                                                                  child: Text(
-                                                                      'Yes'),
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                          color:
-                                                                              Colors.green),
-                                                                ),
-                                                                OutlineButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                  },
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                          color:
-                                                                              Colors.red),
-                                                                  child: Text(
-                                                                      'No'),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          );
-                                                        }
-                                                      },
-                                                      itemBuilder: (_) => [
-                                                        PopupMenuItem(
-                                                          child: Text('Edit',
-                                                              style: kParagraph.copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold)),
-                                                          value: 0,
-                                                        ),
-                                                        PopupMenuItem(
-                                                          child: Text('Delete',
-                                                              style: kParagraph.copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold)),
-                                                          value: 1,
-                                                        ),
-                                                      ],
-                                                      icon: const Icon(
-                                                          Icons.more_vert),
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 25,
-                                              vertical: 8,
-                                            ),
-                                            color:
-                                                index % 2 == 0 ? color : color1,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  DateFormat('dd/MM/yyyy HH:mm')
-                                                      .format(checkedDate[index]
-                                                          .date!),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                        checkedDate[index]
-                                                            .type!,
-                                                        style: kParagraph),
-                                                    PopupMenuButton(
-                                                      color: Colors.black,
-                                                      shape: const RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          10))),
-                                                      onSelected: (int
-                                                          selectedValue) async {
-                                                        if (selectedValue ==
-                                                            0) {
-                                                          final int userId =
-                                                              checkedDate[index]
-                                                                  .userId!;
-                                                          final int id =
-                                                              checkedDate[index]
-                                                                  .id!;
-                                                          final String type =
-                                                              checkedDate[index]
-                                                                  .type!;
-                                                          final DateTime date =
-                                                              checkedDate[index]
-                                                                  .date!;
-                                                          await Navigator.of(
-                                                                  context)
-                                                              .push(
-                                                            MaterialPageRoute(
-                                                              builder: (ctx) =>
-                                                                  AttedancesEdit(
-                                                                id: id,
-                                                                userId: userId,
-                                                                type: type,
-                                                                date: date,
-                                                              ),
-                                                            ),
-                                                          );
-                                                          attendanceAllDisplay =
-                                                              [];
-                                                          checkedDate = [];
-                                                          users = [];
-                                                          _attendanceAllService
-                                                              .findManyByUserId(
-                                                                  userId:
-                                                                      widget.id)
-                                                              .then((value) {
-                                                            setState(() {
-                                                              /// TODO: change this List<AttendanceWithDate>
-                                                              // attendanceAllDisplay
-                                                              //     .addAll(
-                                                              //         value);
-                                                              _isLoading =
-                                                                  false;
-                                                              var checkingDate = attendanceAllDisplay.where((element) =>
-                                                                  element.date?.day == _selectDate?.day &&
-                                                                  element.date
-                                                                          ?.month ==
-                                                                      _selectDate
-                                                                          ?.month &&
-                                                                  element.date
-                                                                          ?.year ==
-                                                                      _selectDate
-                                                                          ?.year);
-                                                              setState(() {
-                                                                users =
-                                                                    checkingDate
-                                                                        .toList();
-                                                                checkedDate =
-                                                                    users;
-                                                                checkedDate.sort((a,
-                                                                        b) =>
-                                                                    a.id!.compareTo(
-                                                                        b.id!));
-                                                              });
-                                                            });
-                                                          });
-                                                        }
-                                                        if (selectedValue ==
-                                                            1) {
-                                                          print(
-                                                              checkedDate[index]
-                                                                  .id);
-                                                          showDialog(
-                                                            context: context,
-                                                            builder: (ctx) =>
-                                                                AlertDialog(
-                                                              title: Text(
-                                                                  'Are you sure?'),
-                                                              content: Text(
-                                                                  'This action cannot be undone!'),
-                                                              actions: [
-                                                                OutlineButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                    deleteData1(
-                                                                        checkedDate[index].id
-                                                                            as int);
-                                                                  },
-                                                                  child: Text(
-                                                                      'Yes'),
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                          color:
-                                                                              Colors.green),
-                                                                ),
-                                                                OutlineButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                  },
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                          color:
-                                                                              Colors.red),
-                                                                  child: Text(
-                                                                      'No'),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          );
-                                                        }
-                                                      },
-                                                      itemBuilder: (_) => [
-                                                        PopupMenuItem(
-                                                          child: Text(
-                                                            'Edit',
+                                child: Padding(
+                              padding: const EdgeInsets.only(top: 15),
+                              child: ListView.builder(
+                                itemBuilder: (ctx, index) {
+                                  var mapped =
+                                      _attendanceDisplay.map((e) => e.list);
+                                  return now
+                                      ? Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 25,
+                                            vertical: 8,
+                                          ),
+                                          color: index % 2 == 0
+                                              ? Color(0xff177d9c)
+                                              : kBlue,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                DateFormat('dd/MM/yyyy HH:mm')
+                                                    .format(isToday?[0]
+                                                        .list[index]
+                                                        .date as DateTime),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                      isToday![0]
+                                                          .list[index]
+                                                          .type
+                                                          .toString(),
+                                                      style: kParagraph),
+                                                  PopupMenuButton(
+                                                    color: Colors.black,
+                                                    shape: const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10))),
+                                                    onSelected: (int
+                                                        selectedValue) async {
+                                                      // if (selectedValue ==
+                                                      //     0) {
+                                                      //   final int userId =
+                                                      //       isToday![index]
+                                                      //           .userId!;
+                                                      //   final int id =
+                                                      //       isToday![index]
+                                                      //           .id!;
+                                                      //   final String type =
+                                                      //       isToday![index]
+                                                      //           .type!;
+                                                      //   final DateTime date =
+                                                      //       isToday![index]
+                                                      //           .date!;
+                                                      //   await Navigator.of(
+                                                      //           context)
+                                                      //       .push(
+                                                      //     MaterialPageRoute(
+                                                      //       builder: (ctx) =>
+                                                      //           AttedancesEdit(
+                                                      //         id: id,
+                                                      //         userId: userId,
+                                                      //         type: type,
+                                                      //         date: date,
+                                                      //       ),
+                                                      //     ),
+                                                      //   );
+                                                      //   attendanceAllDisplay =
+                                                      //       [];
+                                                      //   _attendanceAllService
+                                                      //       .findManyByUserId(
+                                                      //           userId:
+                                                      //               widget.id)
+                                                      //       .then((value) {
+                                                      //     setState(() {
+                                                      //       /// TODO: change this List<AttendanceWithDate>
+                                                      //       // attendanceAllDisplay
+                                                      //       //     .addAll(
+                                                      //       //         value);
+                                                      //       _isLoading =
+                                                      //           false;
+                                                      //       var now = DateTime
+                                                      //           .now();
+                                                      //       var today = attendanceAllDisplay
+                                                      //           .where((element) =>
+                                                      //               element.date?.day == now.day &&
+                                                      //               element.date
+                                                      //                       ?.month ==
+                                                      //                   now
+                                                      //                       .month &&
+                                                      //               element.date
+                                                      //                       ?.year ==
+                                                      //                   now.year)
+                                                      //           .toList();
+                                                      //       isToday = today
+                                                      //           .toList();
+                                                      //       isToday?.sort((a,
+                                                      //               b) =>
+                                                      //           a.id!.compareTo(
+                                                      //               b.id!));
+                                                      //     });
+                                                      //   });
+                                                      // }
+                                                      // if (selectedValue ==
+                                                      //     1) {
+                                                      //   print(isToday?[index]
+                                                      //       .id);
+                                                      //   showDialog(
+                                                      //     context: context,
+                                                      //     builder: (ctx) =>
+                                                      //         AlertDialog(
+                                                      //       title: Text(
+                                                      //           'Are you sure?'),
+                                                      //       content: Text(
+                                                      //           'This action cannot be undone!'),
+                                                      //       actions: [
+                                                      //         OutlineButton(
+                                                      //           onPressed:
+                                                      //               () {
+                                                      //             Navigator.of(
+                                                      //                     context)
+                                                      //                 .pop();
+                                                      //             deleteData(
+                                                      //                 isToday?[index].id
+                                                      //                     as int);
+                                                      //           },
+                                                      //           child: Text(
+                                                      //               'Yes'),
+                                                      //           borderSide:
+                                                      //               BorderSide(
+                                                      //                   color:
+                                                      //                       Colors.green),
+                                                      //         ),
+                                                      //         OutlineButton(
+                                                      //           onPressed:
+                                                      //               () {
+                                                      //             Navigator.of(
+                                                      //                     context)
+                                                      //                 .pop();
+                                                      //           },
+                                                      //           borderSide:
+                                                      //               BorderSide(
+                                                      //                   color:
+                                                      //                       Colors.red),
+                                                      //           child: Text(
+                                                      //               'No'),
+                                                      //         )
+                                                      //       ],
+                                                      //     ),
+                                                      //   );
+                                                      // }
+                                                    },
+                                                    itemBuilder: (_) => [
+                                                      PopupMenuItem(
+                                                        child: Text('Edit',
                                                             style: kParagraph
                                                                 .copyWith(
                                                                     fontWeight:
                                                                         FontWeight
-                                                                            .bold),
-                                                          ),
-                                                          value: 0,
-                                                        ),
-                                                        PopupMenuItem(
-                                                          child: Text(
-                                                            'Delete',
+                                                                            .bold)),
+                                                        value: 0,
+                                                      ),
+                                                      PopupMenuItem(
+                                                        child: Text('Delete',
                                                             style: kParagraph
                                                                 .copyWith(
                                                                     fontWeight:
                                                                         FontWeight
-                                                                            .bold),
-                                                          ),
-                                                          value: 1,
+                                                                            .bold)),
+                                                        value: 1,
+                                                      ),
+                                                    ],
+                                                    icon: const Icon(
+                                                        Icons.more_vert),
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 25,
+                                            vertical: 8,
+                                          ),
+                                          color:
+                                              index % 2 == 0 ? color : color1,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                DateFormat('dd/MM/yyyy HH:mm')
+                                                    .format(_attendanceDisplay[
+                                                            index]
+                                                        .date),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  ListView.builder(
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      var mapped =
+                                                          _attendanceDisplay
+                                                              .map((e) =>
+                                                                  e.list);
+                                                      return Text(mapped
+                                                          .map((e) => e[index])
+                                                          .toString());
+                                                    },
+                                                    itemCount: 1,
+                                                  ),
+                                                  PopupMenuButton(
+                                                    color: Colors.black,
+                                                    shape: const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10))),
+                                                    onSelected: (int
+                                                        selectedValue) async {
+                                                      // if (selectedValue ==
+                                                      //     0) {
+                                                      //   final int userId =
+                                                      //       checkedDate[index]
+                                                      //           .userId!;
+                                                      //   final int id =
+                                                      //       checkedDate[index]
+                                                      //           .id!;
+                                                      //   final String type =
+                                                      //       checkedDate[index]
+                                                      //           .type!;
+                                                      //   final DateTime date =
+                                                      //       checkedDate[index]
+                                                      //           .date!;
+                                                      //   await Navigator.of(
+                                                      //           context)
+                                                      //       .push(
+                                                      //     MaterialPageRoute(
+                                                      //       builder: (ctx) =>
+                                                      //           AttedancesEdit(
+                                                      //         id: id,
+                                                      //         userId: userId,
+                                                      //         type: type,
+                                                      //         date: date,
+                                                      //       ),
+                                                      //     ),
+                                                      //   );
+                                                      //   attendanceAllDisplay =
+                                                      //       [];
+                                                      //   checkedDate = [];
+                                                      //   users = [];
+                                                      //   _attendanceAllService
+                                                      //       .findManyByUserId(
+                                                      //           userId:
+                                                      //               widget.id)
+                                                      //       .then((value) {
+                                                      //     setState(() {
+                                                      //       /// TODO: change this List<AttendanceWithDate>
+                                                      //       // attendanceAllDisplay
+                                                      //       //     .addAll(
+                                                      //       //         value);
+                                                      //       _isLoading =
+                                                      //           false;
+                                                      //       var checkingDate = attendanceAllDisplay.where((element) =>
+                                                      //           element.date?.day == _selectDate?.day &&
+                                                      //           element.date
+                                                      //                   ?.month ==
+                                                      //               _selectDate
+                                                      //                   ?.month &&
+                                                      //           element.date
+                                                      //                   ?.year ==
+                                                      //               _selectDate
+                                                      //                   ?.year);
+                                                      //       setState(() {
+                                                      //         users =
+                                                      //             checkingDate
+                                                      //                 .toList();
+                                                      //         checkedDate =
+                                                      //             users;
+                                                      //         checkedDate.sort((a,
+                                                      //                 b) =>
+                                                      //             a.id!.compareTo(
+                                                      //                 b.id!));
+                                                      //       });
+                                                      //     });
+                                                      //   });
+                                                      // }
+                                                      // if (selectedValue ==
+                                                      //     1) {
+                                                      //   print(
+                                                      //       checkedDate[index]
+                                                      //           .id);
+                                                      //   showDialog(
+                                                      //     context: context,
+                                                      //     builder: (ctx) =>
+                                                      //         AlertDialog(
+                                                      //       title: Text(
+                                                      //           'Are you sure?'),
+                                                      //       content: Text(
+                                                      //           'This action cannot be undone!'),
+                                                      //       actions: [
+                                                      //         OutlineButton(
+                                                      //           onPressed:
+                                                      //               () {
+                                                      //             Navigator.of(
+                                                      //                     context)
+                                                      //                 .pop();
+                                                      //             deleteData1(
+                                                      //                 checkedDate[index].id
+                                                      //                     as int);
+                                                      //           },
+                                                      //           child: Text(
+                                                      //               'Yes'),
+                                                      //           borderSide:
+                                                      //               BorderSide(
+                                                      //                   color:
+                                                      //                       Colors.green),
+                                                      //         ),
+                                                      //         OutlineButton(
+                                                      //           onPressed:
+                                                      //               () {
+                                                      //             Navigator.of(
+                                                      //                     context)
+                                                      //                 .pop();
+                                                      //           },
+                                                      //           borderSide:
+                                                      //               BorderSide(
+                                                      //                   color:
+                                                      //                       Colors.red),
+                                                      //           child: Text(
+                                                      //               'No'),
+                                                      //         )
+                                                      //       ],
+                                                      //     ),
+                                                      //   );
+                                                      // }
+                                                    },
+                                                    itemBuilder: (_) => [
+                                                      PopupMenuItem(
+                                                        child: Text(
+                                                          'Edit',
+                                                          style: kParagraph
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
                                                         ),
-                                                      ],
-                                                      icon: const Icon(
-                                                          Icons.more_vert),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                  },
-                                  itemCount: now
-                                      ? isToday?.length
-                                      : checkedDate.length,
-                                ),
+                                                        value: 0,
+                                                      ),
+                                                      PopupMenuItem(
+                                                        child: Text(
+                                                          'Delete',
+                                                          style: kParagraph
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                        ),
+                                                        value: 1,
+                                                      ),
+                                                    ],
+                                                    icon: const Icon(
+                                                        Icons.more_vert),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                },
+                                itemCount: now
+                                    ? countTodayLength()
+                                    : _attendanceDisplay.length,
                               ),
-                            )
+                            ))
                           ],
                         ),
                       ),

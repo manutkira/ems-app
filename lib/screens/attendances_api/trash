@@ -1,0 +1,369 @@
+ListView.builder(
+                                  itemBuilder: (ctx, index) {
+                                    return now
+                                        ? Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 25,
+                                              vertical: 8,
+                                            ),
+                                            color: index % 2 == 0
+                                                ? Color(0xff177d9c)
+                                                : kBlue,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  DateFormat('dd/MM/yyyy HH:mm')
+                                                      .format(isToday?[index]
+                                                          .list[index]
+                                                          .date as DateTime),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                        isToday![index]
+                                                            .list[index]
+                                                            .type
+                                                            .toString(),
+                                                        style: kParagraph),
+                                                    PopupMenuButton(
+                                                      color: Colors.black,
+                                                      shape: const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      onSelected: (int
+                                                          selectedValue) async {
+                                                        // if (selectedValue ==
+                                                        //     0) {
+                                                        //   final int userId =
+                                                        //       isToday![index]
+                                                        //           .userId!;
+                                                        //   final int id =
+                                                        //       isToday![index]
+                                                        //           .id!;
+                                                        //   final String type =
+                                                        //       isToday![index]
+                                                        //           .type!;
+                                                        //   final DateTime date =
+                                                        //       isToday![index]
+                                                        //           .date!;
+                                                        //   await Navigator.of(
+                                                        //           context)
+                                                        //       .push(
+                                                        //     MaterialPageRoute(
+                                                        //       builder: (ctx) =>
+                                                        //           AttedancesEdit(
+                                                        //         id: id,
+                                                        //         userId: userId,
+                                                        //         type: type,
+                                                        //         date: date,
+                                                        //       ),
+                                                        //     ),
+                                                        //   );
+                                                        //   attendanceAllDisplay =
+                                                        //       [];
+                                                        //   _attendanceAllService
+                                                        //       .findManyByUserId(
+                                                        //           userId:
+                                                        //               widget.id)
+                                                        //       .then((value) {
+                                                        //     setState(() {
+                                                        //       /// TODO: change this List<AttendanceWithDate>
+                                                        //       // attendanceAllDisplay
+                                                        //       //     .addAll(
+                                                        //       //         value);
+                                                        //       _isLoading =
+                                                        //           false;
+                                                        //       var now = DateTime
+                                                        //           .now();
+                                                        //       var today = attendanceAllDisplay
+                                                        //           .where((element) =>
+                                                        //               element.date?.day == now.day &&
+                                                        //               element.date
+                                                        //                       ?.month ==
+                                                        //                   now
+                                                        //                       .month &&
+                                                        //               element.date
+                                                        //                       ?.year ==
+                                                        //                   now.year)
+                                                        //           .toList();
+                                                        //       isToday = today
+                                                        //           .toList();
+                                                        //       isToday?.sort((a,
+                                                        //               b) =>
+                                                        //           a.id!.compareTo(
+                                                        //               b.id!));
+                                                        //     });
+                                                        //   });
+                                                        // }
+                                                        // if (selectedValue ==
+                                                        //     1) {
+                                                        //   print(isToday?[index]
+                                                        //       .id);
+                                                        //   showDialog(
+                                                        //     context: context,
+                                                        //     builder: (ctx) =>
+                                                        //         AlertDialog(
+                                                        //       title: Text(
+                                                        //           'Are you sure?'),
+                                                        //       content: Text(
+                                                        //           'This action cannot be undone!'),
+                                                        //       actions: [
+                                                        //         OutlineButton(
+                                                        //           onPressed:
+                                                        //               () {
+                                                        //             Navigator.of(
+                                                        //                     context)
+                                                        //                 .pop();
+                                                        //             deleteData(
+                                                        //                 isToday?[index].id
+                                                        //                     as int);
+                                                        //           },
+                                                        //           child: Text(
+                                                        //               'Yes'),
+                                                        //           borderSide:
+                                                        //               BorderSide(
+                                                        //                   color:
+                                                        //                       Colors.green),
+                                                        //         ),
+                                                        //         OutlineButton(
+                                                        //           onPressed:
+                                                        //               () {
+                                                        //             Navigator.of(
+                                                        //                     context)
+                                                        //                 .pop();
+                                                        //           },
+                                                        //           borderSide:
+                                                        //               BorderSide(
+                                                        //                   color:
+                                                        //                       Colors.red),
+                                                        //           child: Text(
+                                                        //               'No'),
+                                                        //         )
+                                                        //       ],
+                                                        //     ),
+                                                        //   );
+                                                        // }
+                                                      },
+                                                      itemBuilder: (_) => [
+                                                        PopupMenuItem(
+                                                          child: Text('Edit',
+                                                              style: kParagraph.copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                          value: 0,
+                                                        ),
+                                                        PopupMenuItem(
+                                                          child: Text('Delete',
+                                                              style: kParagraph.copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                          value: 1,
+                                                        ),
+                                                      ],
+                                                      icon: const Icon(
+                                                          Icons.more_vert),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 25,
+                                              vertical: 8,
+                                            ),
+                                            color:
+                                                index % 2 == 0 ? color : color1,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  DateFormat('dd/MM/yyyy HH:mm')
+                                                      .format(
+                                                          _attendanceDisplay[
+                                                                  index]
+                                                              .date),
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                        _attendanceDisplay[
+                                                                index]
+                                                            .list[index]
+                                                            .type
+                                                            .toString(),
+                                                        style: kParagraph),
+                                                    PopupMenuButton(
+                                                      color: Colors.black,
+                                                      shape: const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      onSelected: (int
+                                                          selectedValue) async {
+                                                        // if (selectedValue ==
+                                                        //     0) {
+                                                        //   final int userId =
+                                                        //       checkedDate[index]
+                                                        //           .userId!;
+                                                        //   final int id =
+                                                        //       checkedDate[index]
+                                                        //           .id!;
+                                                        //   final String type =
+                                                        //       checkedDate[index]
+                                                        //           .type!;
+                                                        //   final DateTime date =
+                                                        //       checkedDate[index]
+                                                        //           .date!;
+                                                        //   await Navigator.of(
+                                                        //           context)
+                                                        //       .push(
+                                                        //     MaterialPageRoute(
+                                                        //       builder: (ctx) =>
+                                                        //           AttedancesEdit(
+                                                        //         id: id,
+                                                        //         userId: userId,
+                                                        //         type: type,
+                                                        //         date: date,
+                                                        //       ),
+                                                        //     ),
+                                                        //   );
+                                                        //   attendanceAllDisplay =
+                                                        //       [];
+                                                        //   checkedDate = [];
+                                                        //   users = [];
+                                                        //   _attendanceAllService
+                                                        //       .findManyByUserId(
+                                                        //           userId:
+                                                        //               widget.id)
+                                                        //       .then((value) {
+                                                        //     setState(() {
+                                                        //       /// TODO: change this List<AttendanceWithDate>
+                                                        //       // attendanceAllDisplay
+                                                        //       //     .addAll(
+                                                        //       //         value);
+                                                        //       _isLoading =
+                                                        //           false;
+                                                        //       var checkingDate = attendanceAllDisplay.where((element) =>
+                                                        //           element.date?.day == _selectDate?.day &&
+                                                        //           element.date
+                                                        //                   ?.month ==
+                                                        //               _selectDate
+                                                        //                   ?.month &&
+                                                        //           element.date
+                                                        //                   ?.year ==
+                                                        //               _selectDate
+                                                        //                   ?.year);
+                                                        //       setState(() {
+                                                        //         users =
+                                                        //             checkingDate
+                                                        //                 .toList();
+                                                        //         checkedDate =
+                                                        //             users;
+                                                        //         checkedDate.sort((a,
+                                                        //                 b) =>
+                                                        //             a.id!.compareTo(
+                                                        //                 b.id!));
+                                                        //       });
+                                                        //     });
+                                                        //   });
+                                                        // }
+                                                        // if (selectedValue ==
+                                                        //     1) {
+                                                        //   print(
+                                                        //       checkedDate[index]
+                                                        //           .id);
+                                                        //   showDialog(
+                                                        //     context: context,
+                                                        //     builder: (ctx) =>
+                                                        //         AlertDialog(
+                                                        //       title: Text(
+                                                        //           'Are you sure?'),
+                                                        //       content: Text(
+                                                        //           'This action cannot be undone!'),
+                                                        //       actions: [
+                                                        //         OutlineButton(
+                                                        //           onPressed:
+                                                        //               () {
+                                                        //             Navigator.of(
+                                                        //                     context)
+                                                        //                 .pop();
+                                                        //             deleteData1(
+                                                        //                 checkedDate[index].id
+                                                        //                     as int);
+                                                        //           },
+                                                        //           child: Text(
+                                                        //               'Yes'),
+                                                        //           borderSide:
+                                                        //               BorderSide(
+                                                        //                   color:
+                                                        //                       Colors.green),
+                                                        //         ),
+                                                        //         OutlineButton(
+                                                        //           onPressed:
+                                                        //               () {
+                                                        //             Navigator.of(
+                                                        //                     context)
+                                                        //                 .pop();
+                                                        //           },
+                                                        //           borderSide:
+                                                        //               BorderSide(
+                                                        //                   color:
+                                                        //                       Colors.red),
+                                                        //           child: Text(
+                                                        //               'No'),
+                                                        //         )
+                                                        //       ],
+                                                        //     ),
+                                                        //   );
+                                                        // }
+                                                      },
+                                                      itemBuilder: (_) => [
+                                                        PopupMenuItem(
+                                                          child: Text(
+                                                            'Edit',
+                                                            style: kParagraph
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                          ),
+                                                          value: 0,
+                                                        ),
+                                                        PopupMenuItem(
+                                                          child: Text(
+                                                            'Delete',
+                                                            style: kParagraph
+                                                                .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                          ),
+                                                          value: 1,
+                                                        ),
+                                                      ],
+                                                      icon: const Icon(
+                                                          Icons.more_vert),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                  },
+                                  itemCount:
+                                      now ? isToday!.length : countLength(),
+                                ),
