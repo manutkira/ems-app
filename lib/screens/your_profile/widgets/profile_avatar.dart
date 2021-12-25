@@ -20,7 +20,7 @@ class ProfileAvatar extends ConsumerWidget {
     return ValueListenableBuilder(
       valueListenable: ref.watch(currentUserProvider).currentUserListenable,
       builder: (BuildContext context, Box<User> box, Widget? child) {
-        User _user = box.values.toList()[0];
+        User? _user = box.get(currentUserBoxName);
 
         return Container(
           padding: const EdgeInsets.all(10),
@@ -33,7 +33,7 @@ class ProfileAvatar extends ConsumerWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(1000),
             child: Image.network(
-              "${_user.image}",
+              "${_user?.image}",
               fit: BoxFit.cover,
               errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
                 return Image.asset(

@@ -31,7 +31,10 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
     int userId = ref.read(currentUserProvider).user.id as int;
     List<AttendanceWithDate> listofAttendance = [];
     listofAttendance = await attservice.findManyByUserId(
-        userId: userId, start: DateTime.now(), end: DateTime.now());
+      userId: userId,
+      start: DateTime.now(),
+      end: DateTime.now(),
+    );
     if (listofAttendance.isNotEmpty) {
       listofAttendance[0].list.map((e) {
         switch (e.code) {

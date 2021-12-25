@@ -45,6 +45,11 @@ class CurrentUserStore {
         await box.delete('token');
         await userBox.delete(currentUserBoxName);
       }
+
+      /// TODO:
+      /// fetch user via api route /me
+      /// token will be sent through headers of the request
+      /// after that set current user to returned user;
     } catch (err) {
       await box.delete('token');
       await userBox.delete(currentUserBoxName);

@@ -219,7 +219,8 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                     ref.watch(currentUserProvider).currentUserListenable,
                 builder: (_, Box<User> box, __) {
                   final listFromBox = box.values.toList();
-                  final currentUser = listFromBox[0];
+                  final currentUser =
+                      listFromBox.isNotEmpty ? listFromBox[0] : null;
                   return Container(
                     height: 170,
                     padding: const EdgeInsets.symmetric(
@@ -231,7 +232,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) =>
-                                AttendancesInfoScreen(currentUser.id as int),
+                                AttendancesInfoScreen(currentUser?.id as int),
                           ),
                         );
                       },
@@ -296,13 +297,15 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                     ref.watch(currentUserProvider).currentUserListenable,
                 builder: (_, Box<User> box, __) {
                   final listFromBox = box.values.toList();
-                  final currentUser = listFromBox[0];
+                  final currentUser =
+                      listFromBox.isNotEmpty ? listFromBox[0] : null;
 
                   return GestureDetector(
                     onTap: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>
-                            IndividualOvertimeScreen(user: currentUser),
+                        builder: (context) => IndividualOvertimeScreen(
+                          user: currentUser as User,
+                        ),
                       ),
                     ),
                     child: SizedBox(
