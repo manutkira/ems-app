@@ -1,4 +1,5 @@
 import 'package:ems/models/user.dart';
+import 'package:ems/utils/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -39,6 +40,7 @@ class CurrentUserStore {
     final userBox = Hive.box<User>(currentUserBoxName);
     final box = Hive.box<String>(tokenBoxName);
 
+    /// fetch logged in user's information
     try {
       var token = box.get('token');
       if (token == null || token.isEmpty) {
@@ -46,24 +48,17 @@ class CurrentUserStore {
         await userBox.delete(currentUserBoxName);
       }
 
-      /// TODO:
       /// fetch user via api route /me
       /// token will be sent through headers of the request
+      final AuthService _authService = AuthService.instance;
+      User? user = await _authService.findMe();
+
       /// after that set current user to returned user;
+      userBox.put(currentUserBoxName, user);
     } catch (err) {
       await box.delete('token');
       await userBox.delete(currentUserBoxName);
     }
-
-    // print('hi');
-    //
-    // try {
-    //   int? id = box.values.toList().isNotEmpty ? box.values.toList()[0].id : 0;
-    //   User user = await UserService().findOne(id as int);
-    //   box.put(currentUserBoxName, user);
-    // } catch (err) {
-    //   await box.delete(currentUserBoxName);
-    // }
   }
 
   /// returns the current user
