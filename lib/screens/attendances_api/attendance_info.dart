@@ -162,27 +162,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   Future deleteData(int id) async {
     final response = await http.delete(Uri.parse("$url/$id"));
     if (response.statusCode == 200) {
-      _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
-        setState(() {
-          attendanceAllDisplay = [];
-
-          /// TODO: change this List<AttendanceWithDate>
-          // attendanceAllDisplay.addAll(value);
-          _isLoading = false;
-          var now = DateTime.now();
-          if (_attendanceDisplay.isNotEmpty) {
-            var today = attendanceAllDisplay
-                .where((element) =>
-                    element.date?.day == now.day &&
-                    element.date?.month == now.month &&
-                    element.date?.year == now.year)
-                .toList();
-          }
-
-          // isToday = today.toList();
-          // isToday?.sort((a, b) => a.id!.compareTo(b.id!));
-        });
-      });
+      attendanceAllDisplay = [];
+      fetchAttendanceById();
     } else {
       return false;
     }
@@ -192,24 +173,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     final response = await http.delete(Uri.parse("$url/$id"));
     if (response.statusCode == 200) {
       attendanceAllDisplay = [];
-      checkedDate = [];
-      users = [];
-      _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
-        setState(() {
-          /// TODO: change this List<AttendanceWithDate>
-          // attendanceAllDisplay.addAll(value);
-          _isLoading = false;
-          var checkingDate = attendanceAllDisplay.where((element) =>
-              element.date?.day == _selectDate?.day &&
-              element.date?.month == _selectDate?.month &&
-              element.date?.year == _selectDate?.year);
-          setState(() {
-            users = checkingDate.toList();
-            checkedDate = users;
-            checkedDate.sort((a, b) => a.id!.compareTo(b.id!));
-          });
-        });
-      });
+      fetchAttendanceByIdNoon();
     } else {
       return false;
     }
@@ -1101,7 +1065,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                         )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Expanded(
@@ -1268,6 +1232,51 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                   [];
                                                               fetchAttendanceById();
                                                             }
+                                                            if (selectedValue ==
+                                                                1) {
+                                                              print(
+                                                                  isToday[index]
+                                                                      .id);
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (ctx) =>
+                                                                    AlertDialog(
+                                                                  title: Text(
+                                                                      'Are you sure?'),
+                                                                  content: Text(
+                                                                      'This action cannot be undone!'),
+                                                                  actions: [
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        deleteData(isToday[index].id
+                                                                            as int);
+                                                                      },
+                                                                      child: Text(
+                                                                          'Yes'),
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.green),
+                                                                    ),
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.red),
+                                                                      child: Text(
+                                                                          'No'),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }
                                                           }
                                                           if (afternoon ==
                                                               true) {
@@ -1309,56 +1318,52 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                   [];
                                                               fetchAttendanceByIdNoon();
                                                             }
+                                                            if (selectedValue ==
+                                                                1) {
+                                                              print(isTodayNoon[
+                                                                      index]
+                                                                  .id);
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (ctx) =>
+                                                                    AlertDialog(
+                                                                  title: Text(
+                                                                      'Are you sure?'),
+                                                                  content: Text(
+                                                                      'This action cannot be undone!'),
+                                                                  actions: [
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        deleteData(isTodayNoon[index].id
+                                                                            as int);
+                                                                      },
+                                                                      child: Text(
+                                                                          'Yes'),
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.green),
+                                                                    ),
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.red),
+                                                                      child: Text(
+                                                                          'No'),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }
                                                           }
-                                                          // if (selectedValue ==
-                                                          //     1) {
-                                                          //   print(
-                                                          //       isToday[index]
-                                                          //           .id);
-                                                          //   showDialog(
-                                                          //     context: context,
-                                                          //     builder: (ctx) =>
-                                                          //         AlertDialog(
-                                                          //       title: Text(
-                                                          //           'Are you sure?'),
-                                                          //       content: Text(
-                                                          //           'This action cannot be undone!'),
-                                                          //       actions: [
-                                                          //         OutlineButton(
-                                                          //           onPressed:
-                                                          //               () {
-                                                          //             Navigator.of(
-                                                          //                     context)
-                                                          //                 .pop();
-                                                          //             deleteData(
-                                                          //                 isToday[index].id
-                                                          //                     as int);
-                                                          //           },
-                                                          //           child: Text(
-                                                          //               'Yes'),
-                                                          //           borderSide:
-                                                          //               BorderSide(
-                                                          //                   color:
-                                                          //                       Colors.green),
-                                                          //         ),
-                                                          //         OutlineButton(
-                                                          //           onPressed:
-                                                          //               () {
-                                                          //             Navigator.of(
-                                                          //                     context)
-                                                          //                 .pop();
-                                                          //           },
-                                                          //           borderSide:
-                                                          //               BorderSide(
-                                                          //                   color:
-                                                          //                       Colors.red),
-                                                          //           child: Text(
-                                                          //               'No'),
-                                                          //         )
-                                                          //       ],
-                                                          //     ),
-                                                          //   );
-                                                          // }
                                                         },
                                                         itemBuilder: (_) => [
                                                           PopupMenuItem(
@@ -1480,6 +1485,52 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                   [];
                                                               fetchAttendanceById();
                                                             }
+                                                            if (selectedValue ==
+                                                                1) {
+                                                              print(
+                                                                  attendanceList[
+                                                                          index]
+                                                                      .id);
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (ctx) =>
+                                                                    AlertDialog(
+                                                                  title: Text(
+                                                                      'Are you sure?'),
+                                                                  content: Text(
+                                                                      'This action cannot be undone!'),
+                                                                  actions: [
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        deleteData(attendanceList[index].id
+                                                                            as int);
+                                                                      },
+                                                                      child: Text(
+                                                                          'Yes'),
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.green),
+                                                                    ),
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.red),
+                                                                      child: Text(
+                                                                          'No'),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }
                                                           }
                                                           if (afternoon ==
                                                               true) {
@@ -1521,56 +1572,53 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                   [];
                                                               fetchAttendanceByIdNoon();
                                                             }
+                                                            if (selectedValue ==
+                                                                1) {
+                                                              print(
+                                                                  attendanceListNoon[
+                                                                          index]
+                                                                      .id);
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (ctx) =>
+                                                                    AlertDialog(
+                                                                  title: Text(
+                                                                      'Are you sure?'),
+                                                                  content: Text(
+                                                                      'This action cannot be undone!'),
+                                                                  actions: [
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        deleteData1(attendanceListNoon[index].id
+                                                                            as int);
+                                                                      },
+                                                                      child: Text(
+                                                                          'Yes'),
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.green),
+                                                                    ),
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.red),
+                                                                      child: Text(
+                                                                          'No'),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }
                                                           }
-                                                          // if (selectedValue ==
-                                                          //     1) {
-                                                          //   print(
-                                                          //       checkedDate[index]
-                                                          //           .id);
-                                                          //   showDialog(
-                                                          //     context: context,
-                                                          //     builder: (ctx) =>
-                                                          //         AlertDialog(
-                                                          //       title: Text(
-                                                          //           'Are you sure?'),
-                                                          //       content: Text(
-                                                          //           'This action cannot be undone!'),
-                                                          //       actions: [
-                                                          //         OutlineButton(
-                                                          //           onPressed:
-                                                          //               () {
-                                                          //             Navigator.of(
-                                                          //                     context)
-                                                          //                 .pop();
-                                                          //             deleteData1(
-                                                          //                 checkedDate[index].id
-                                                          //                     as int);
-                                                          //           },
-                                                          //           child: Text(
-                                                          //               'Yes'),
-                                                          //           borderSide:
-                                                          //               BorderSide(
-                                                          //                   color:
-                                                          //                       Colors.green),
-                                                          //         ),
-                                                          //         OutlineButton(
-                                                          //           onPressed:
-                                                          //               () {
-                                                          //             Navigator.of(
-                                                          //                     context)
-                                                          //                 .pop();
-                                                          //           },
-                                                          //           borderSide:
-                                                          //               BorderSide(
-                                                          //                   color:
-                                                          //                       Colors.red),
-                                                          //           child: Text(
-                                                          //               'No'),
-                                                          //         )
-                                                          //       ],
-                                                          //     ),
-                                                          //   );
-                                                          // }
                                                         },
                                                         itemBuilder: (_) => [
                                                           PopupMenuItem(
