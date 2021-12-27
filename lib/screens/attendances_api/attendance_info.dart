@@ -4,6 +4,10 @@ import 'package:ems/models/attendance_no_s.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/utils/services/overtime_service.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/attendance/attendance_info_name_id.dart';
+import 'package:ems/widgets/attendance/attendance_info_no_attendance.dart';
+import 'package:ems/widgets/attendance/attendance_info_no_data.dart';
+import 'package:ems/widgets/attendance/attendance_info_present.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -33,27 +37,26 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
   AttendanceByIdService _overtimeService = AttendanceByIdService.instance;
   List<AttendanceWithDate> _attendanceDisplay = [];
-  List<AttendanceWithDate> _attendanceDisplayNoon = [];
   List<AttendanceWithDate> _attendanceNoDateDisplay = [];
 
   String dropDownValue = 'Morning';
   bool afternoon = false;
-  dynamic countPresent = '';
-  dynamic countPresentNoon = '';
-  dynamic countLate = '';
-  dynamic countLateNoon = '';
-  dynamic countAbsent = '';
-  dynamic countAbsentNoon = '';
-  dynamic countPermission = '';
-  dynamic countPermissionNoon = '';
-  dynamic lateMorning = '';
-  dynamic lateAfternoon = '';
-  dynamic absentMorning = '';
-  dynamic absentAfternoon = '';
-  dynamic permissionMorning = '';
-  dynamic permissionAfternoon = '';
-  dynamic presentMorning = '';
-  dynamic presentAfternoon = '';
+  dynamic countPresent,
+      countPresentNoon,
+      countLate,
+      countLateNoon,
+      countAbsent,
+      countAbsentNoon,
+      countPermission,
+      countPermissionNoon,
+      lateMorning,
+      lateAfternoon,
+      absentMorning,
+      absentAfternoon,
+      permissionMorning,
+      permissionAfternoon,
+      presentMorning,
+      presentAfternoon;
   bool multipleDay = false;
   bool _isLoading = true;
   bool order = false;
@@ -61,11 +64,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Appointment>? _appointment;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
-  List<AttendanceWithDate>? isToday;
+  List isToday = [];
+  List isTodayNoon = [];
   bool now = true;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
-  List sum = [];
   List attendanceList = [];
   List attendanceListNoon = [];
 
@@ -102,58 +105,60 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             element.date.day == now.day &&
             element.date.month == now.month &&
             element.date.year == now.year);
-        isToday = today.toList();
+        List todayFlat = today.expand((element) => element.list).toList();
+        isToday = todayFlat
+            .where((element) =>
+                element.code != 'cin2' &&
+                element.code != 'cout2' &&
+                element.code != 'cout3' &&
+                element.code != 'cin3')
+            .toList();
       });
       List flat = _attendanceDisplay.expand((element) => element.list).toList();
       attendanceList = flat
-          .where((element) => element.code != 'cin2' && element.code != 'cin3')
+          .where((element) =>
+              element.code != 'cin2' &&
+              element.code != 'cout2' &&
+              element.code != 'cout3' &&
+              element.code != 'cin3')
           .toList();
     } catch (e) {}
   }
 
   fetchAttendanceByIdNoon() async {
     try {
-      List<AttendanceWithDate> attendanceDisplayNoon =
+      List<AttendanceWithDate> attendanceDisplay =
           await _attendanceService.findManyByUserId(
         userId: widget.id,
         start: startDate,
         end: endDate,
       );
       setState(() {
-        _attendanceDisplayNoon = attendanceDisplayNoon;
+        _attendanceDisplay = attendanceDisplay;
         _isLoading = false;
         var now = DateTime.now();
-        var today = attendanceDisplayNoon.where((element) =>
+        var today = attendanceDisplay.where((element) =>
             element.date.day == now.day &&
             element.date.month == now.month &&
             element.date.year == now.year);
-        isToday = today.toList();
+        List todayFlat = today.expand((element) => element.list).toList();
+        isTodayNoon = todayFlat
+            .where((element) =>
+                element.code != 'cin1' &&
+                element.code != 'cout1' &&
+                element.code != 'cout3' &&
+                element.code != 'cin3')
+            .toList();
       });
-      List flat =
-          _attendanceDisplayNoon.expand((element) => element.list).toList();
+      List flat = _attendanceDisplay.expand((element) => element.list).toList();
       attendanceListNoon = flat
-          .where((element) => element.code != 'cin1' && element.code != 'cin3')
+          .where((element) =>
+              element.code != 'cin1' &&
+              element.code != 'cout1' &&
+              element.code != 'cout3' &&
+              element.code != 'cin3')
           .toList();
     } catch (e) {}
-  }
-
-  List mapAttendance = [];
-
-  int countLength() {
-    int a = 0;
-    _attendanceDisplay.forEach((element) {
-      a += element.list.length;
-    });
-    return a;
-  }
-
-  int countTodayLength() {
-    int a = 0;
-    _attendanceDisplay.forEach((element) {
-      a += element.list.length;
-    });
-    print(a);
-    return a;
   }
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/attendances";
@@ -161,27 +166,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   Future deleteData(int id) async {
     final response = await http.delete(Uri.parse("$url/$id"));
     if (response.statusCode == 200) {
-      _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
-        setState(() {
-          attendanceAllDisplay = [];
-
-          /// TODO: change this List<AttendanceWithDate>
-          // attendanceAllDisplay.addAll(value);
-          _isLoading = false;
-          var now = DateTime.now();
-          if (_attendanceDisplay.isNotEmpty) {
-            var today = attendanceAllDisplay
-                .where((element) =>
-                    element.date?.day == now.day &&
-                    element.date?.month == now.month &&
-                    element.date?.year == now.year)
-                .toList();
-          }
-
-          // isToday = today.toList();
-          // isToday?.sort((a, b) => a.id!.compareTo(b.id!));
-        });
-      });
+      attendanceAllDisplay = [];
+      fetchAttendanceById();
     } else {
       return false;
     }
@@ -191,24 +177,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     final response = await http.delete(Uri.parse("$url/$id"));
     if (response.statusCode == 200) {
       attendanceAllDisplay = [];
-      checkedDate = [];
-      users = [];
-      _attendanceAllService.findManyByUserId(userId: widget.id).then((value) {
-        setState(() {
-          /// TODO: change this List<AttendanceWithDate>
-          // attendanceAllDisplay.addAll(value);
-          _isLoading = false;
-          var checkingDate = attendanceAllDisplay.where((element) =>
-              element.date?.day == _selectDate?.day &&
-              element.date?.month == _selectDate?.month &&
-              element.date?.year == _selectDate?.year);
-          setState(() {
-            users = checkingDate.toList();
-            checkedDate = users;
-            checkedDate.sort((a, b) => a.id!.compareTo(b.id!));
-          });
-        });
-      });
+      fetchAttendanceByIdNoon();
     } else {
       return false;
     }
@@ -301,7 +270,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     if (mounted) {
       setState(() {
         presentMorning = pc;
-        print('present $presentMorning');
       });
     }
   }
@@ -409,7 +377,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       getAbsentNoon();
       getPermission();
       getPermissionNoon();
-      // fetchAttendance();
       fetchAttendanceById();
       fetchAttendanceByIdNoon();
       fetchNoDate();
@@ -423,98 +390,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       fetchPresentNoon();
     } catch (err) {}
   }
-
-  List<Attendance> checkedDate = [];
-  List<Attendance> users = [];
-
-  // void checkDate(DateTime pick) {
-  //   var checkingDate = attendanceAllDisplay.where((element) =>
-  //       element.date?.day == pick.day &&
-  //       element.date?.month == pick.month &&
-  //       element.date?.year == pick.year);
-  //   setState(() {
-  //     users = checkingDate.toList();
-  //     checkedDate = users;
-  //     checkedDate.sort((a, b) => a.id!.compareTo(b.id!));
-  //   });
-  // }
-
-  DateTime? _selectDate;
-
-  void _byDayDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: startDate,
-      lastDate: endDate,
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-    ).then((picked) {
-      if (picked == null) {
-        return;
-      }
-      // checkDate(picked);
-      setState(() {
-        _selectDate = picked;
-        now = false;
-      });
-    });
-  }
-
-  Color checkColor(AttendanceById attendance) {
-    if (attendance.checkin1!.type == 'absent') {
-      return Colors.red;
-    }
-    if (attendance.checkin1!.type == 'permission') {
-      return Colors.blue;
-    }
-    if (attendance.checkin1!.type == 'checkout') {
-      return Colors.lightGreen;
-    }
-    if (attendance.checkin1!.date!.hour >= 7 &&
-        attendance.checkin1!.date!.minute >= 16 &&
-        attendance.checkin1!.code == 'cin1' &&
-        attendance.checkin1!.type == 'checkin') {
-      return Colors.yellow;
-    }
-    if (attendance.checkin1!.date!.hour >= 13 &&
-        attendance.checkin1!.date!.minute >= 16 &&
-        attendance.checkin1!.code == 'cin2' &&
-        attendance.checkin1!.type == 'checkin') {
-      return Colors.yellow;
-    }
-    if (attendance.checkin1!.date!.hour == 7 &&
-        attendance.checkin1!.date!.minute <= 15 &&
-        attendance.checkin1!.code == 'cin1' &&
-        attendance.checkin1!.type == 'checkin') {
-      return Colors.green;
-    }
-    if (attendance.checkin1!.code == 'cin3') {
-      return Color(0xffd4d2bc);
-    }
-    if (attendance.checkin1!.date!.hour == 13 &&
-        attendance.checkin1!.date!.minute <= 15 &&
-        attendance.checkin1!.code == 'cin2' &&
-        attendance.checkin1!.type == 'checkin') {
-      return Colors.green;
-    } else {
-      return Colors.red;
-    }
-  }
-
-  // List<Appointment> getAppointments() {
-  //   List<Appointment> meetings = <Appointment>[];
-  //   DateTime? startTime;
-  //   DateTime? endTime;
-  //   _attendanceDisplay.asMap().forEach((key, value) {
-  //     Appointment newAppointment = Appointment(
-  //       startTime: value.checkin1?.date as DateTime,
-  //       endTime: value.checkout1?.date as DateTime,
-  //       color: checkColor(value),
-  //     );
-  //     meetings.add(newAppointment);
-  //   });
-  //   return meetings;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -542,27 +417,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
               ),
             )
           : _attendanceNoDateDisplay.isEmpty
-              ? Container(
-                  padding: const EdgeInsets.only(top: 200, left: 40),
-                  child: Column(
-                    children: [
-                      Text(
-                        'NO ATTENDANCE ADDED YET!!',
-                        style: kHeadingThree.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Image.asset(
-                        'assets/images/calendar.jpeg',
-                        width: 220,
-                      ),
-                    ],
-                  ),
-                )
+              ? AttendanceInfoNoAttenance()
               : Column(
                   children: [
                     Padding(
@@ -841,6 +696,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                               fetchPresent();
                                               fetchPresentNoon();
                                               fetchAttendanceById();
+                                              fetchAttendanceByIdNoon();
                                             }
                                             if (sortByValue == 'All Time') {
                                               setState(() {
@@ -872,125 +728,22 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin:
-                          const EdgeInsets.only(top: 5, left: 10, right: 10),
-                      height: 120,
-                      width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        color: kLightBlue,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10, top: 20),
-                                    child: Container(
-                                      width: 75,
-                                      height: 75,
-                                      decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(100)),
-                                          border: Border.all(
-                                            width: 1,
-                                            color: Colors.white,
-                                          )),
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(150),
-                                        child: Image.network(
-                                          _attendanceNoDateDisplay[0]
-                                              .list[0]
-                                              .users!
-                                              .image
-                                              .toString(),
-                                          fit: BoxFit.cover,
-                                          width: double.infinity,
-                                          height: 75,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 50,
-                                    margin: const EdgeInsets.only(
-                                        left: 25, top: 25),
-                                    child: Expanded(
-                                      flex: 7,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                'ID: ',
-                                                style: kParagraph.copyWith(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              const SizedBox(
-                                                width: 45,
-                                              ),
-                                              Text(
-                                                _attendanceNoDateDisplay[0]
-                                                    .list[0]
-                                                    .users!
-                                                    .id
-                                                    .toString(),
-                                                style: kParagraph.copyWith(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                'Name: ',
-                                                style: kParagraph.copyWith(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              const SizedBox(
-                                                width: 20,
-                                              ),
-                                              Text(
-                                                _attendanceNoDateDisplay[0]
-                                                    .list[0]
-                                                    .users!
-                                                    .name
-                                                    .toString(),
-                                                style: kParagraph.copyWith(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    AttendanceInfoNameId(
+                        name: _attendanceNoDateDisplay[0]
+                            .list[0]
+                            .users!
+                            .name
+                            .toString(),
+                        id: _attendanceNoDateDisplay[0]
+                            .list[0]
+                            .users!
+                            .id
+                            .toString(),
+                        image: _attendanceNoDateDisplay[0]
+                            .list[0]
+                            .users!
+                            .image
+                            .toString()),
                     Row(
                       children: [
                         const SizedBox(
@@ -1003,45 +756,27 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 10),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Present: ',
-                                      style:
-                                          kHeadingFour.copyWith(color: kWhite),
-                                    ),
-                                    Text(
-                                      afternoon
-                                          ? multipleDay
-                                              ? presentAfternoon.toString()
-                                              : countPresentNoon.toString()
-                                          : multipleDay
-                                              ? presentMorning.toString()
-                                              : countPresent.toString(),
-                                      style:
-                                          kHeadingFour.copyWith(color: kWhite),
-                                    )
-                                  ],
-                                ),
+                                child: AttendanceInfoPresent(
+                                    text: 'Present: ',
+                                    afternoon: afternoon,
+                                    multipleDay: multipleDay,
+                                    presentAfternoon:
+                                        presentAfternoon.toString(),
+                                    countPresentNoon:
+                                        countPresentNoon.toString(),
+                                    presentMorning: presentMorning.toString(),
+                                    countPresent: countPresent.toString()),
                               ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Permission: ',
-                                    style: kHeadingFour.copyWith(color: kWhite),
-                                  ),
-                                  Text(
-                                    afternoon
-                                        ? multipleDay
-                                            ? permissionAfternoon.toString()
-                                            : countPermissionNoon.toString()
-                                        : multipleDay
-                                            ? permissionMorning.toString()
-                                            : countPermission.toString(),
-                                    style: kHeadingFour.copyWith(color: kWhite),
-                                  ),
-                                ],
-                              ),
+                              AttendanceInfoPresent(
+                                  text: 'Permission: ',
+                                  afternoon: afternoon,
+                                  multipleDay: multipleDay,
+                                  presentAfternoon:
+                                      permissionAfternoon.toString(),
+                                  countPresentNoon:
+                                      countPermissionNoon.toString(),
+                                  presentMorning: permissionMorning.toString(),
+                                  countPresent: countPermission.toString()),
                             ],
                           ),
                         ),
@@ -1054,78 +789,36 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Late: ',
-                                      style:
-                                          kHeadingFour.copyWith(color: kWhite),
-                                    ),
-                                    Text(
-                                      afternoon
-                                          ? multipleDay
-                                              ? lateAfternoon.toString()
-                                              : countLateNoon.toString()
-                                          : multipleDay
-                                              ? lateMorning.toString()
-                                              : countLate.toString(),
-                                      style:
-                                          kHeadingFour.copyWith(color: kWhite),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Absent: ',
-                                    style: kHeadingFour.copyWith(color: kWhite),
-                                  ),
-                                  Text(
-                                    afternoon
-                                        ? multipleDay
-                                            ? absentAfternoon.toString()
-                                            : countAbsentNoon.toString()
-                                        : multipleDay
-                                            ? absentMorning.toString()
-                                            : countAbsent.toString(),
-                                    style: kHeadingFour.copyWith(color: kWhite),
-                                  ),
-                                ],
-                              ),
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: AttendanceInfoPresent(
+                                      text: 'Late: ',
+                                      afternoon: afternoon,
+                                      multipleDay: multipleDay,
+                                      presentAfternoon:
+                                          lateAfternoon.toString(),
+                                      countPresentNoon:
+                                          countLateNoon.toString(),
+                                      presentMorning: lateMorning.toString(),
+                                      countPresent: countLate.toString())),
+                              AttendanceInfoPresent(
+                                  text: 'Absent: ',
+                                  afternoon: afternoon,
+                                  multipleDay: multipleDay,
+                                  presentAfternoon: absentAfternoon.toString(),
+                                  countPresentNoon: countAbsentNoon.toString(),
+                                  presentMorning: absentMorning.toString(),
+                                  countPresent: countAbsent.toString())
                             ],
                           ),
                         )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Expanded(
                       child: Column(
                         children: [
-                          // Container(
-                          //   margin: const EdgeInsets.all(20),
-                          //   padding:
-                          //       const EdgeInsets.only(top: 40, right: 10),
-                          //   child: SfCalendar(
-                          //     view: CalendarView.month,
-                          //     dataSource:
-                          //         MeetingDataSource(getAppointments()),
-                          //     todayHighlightColor: Colors.grey,
-                          //     headerHeight: 25,
-                          //     scheduleViewSettings:
-                          //         const ScheduleViewSettings(
-                          //             appointmentTextStyle:
-                          //                 TextStyle(color: Colors.black)),
-                          //     cellBorderColor: Colors.grey,
-                          //     allowedViews: const [
-                          //       CalendarView.month,
-                          //       CalendarView.schedule,
-                          //     ],
-                          //   ),
-                          // ),
                           SizedBox(
                             height: 10,
                           ),
@@ -1145,32 +838,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             ),
                           ),
                           _attendanceDisplay.isEmpty
-                              ? Expanded(
-                                  child: Container(
-                                    padding:
-                                        const EdgeInsets.only(top: 50, left: 0),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          'NO ATTENDANCE ADDED YET!!',
-                                          style: kHeadingThree.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          '🤷🏼',
-                                          style: TextStyle(
-                                            fontSize: 80,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
+                              ? AttendanceInfoNoData()
                               : Expanded(
                                   child: Padding(
                                   padding: const EdgeInsets.only(top: 15),
@@ -1191,21 +859,35 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  Text(
-                                                    DateFormat(
-                                                            'dd/MM/yyyy HH:mm')
-                                                        .format(isToday?[0]
-                                                            .list[index]
-                                                            .date as DateTime),
-                                                  ),
+                                                  afternoon
+                                                      ? Text(DateFormat(
+                                                              'dd/MM/yyyy HH:mm')
+                                                          .format(
+                                                              isTodayNoon[index]
+                                                                      .date
+                                                                  as DateTime))
+                                                      : Text(
+                                                          DateFormat(
+                                                                  'dd/MM/yyyy HH:mm')
+                                                              .format(isToday[
+                                                                          index]
+                                                                      .date
+                                                                  as DateTime),
+                                                        ),
                                                   Row(
                                                     children: [
-                                                      Text(
-                                                          isToday![0]
-                                                              .list[index]
-                                                              .type
-                                                              .toString(),
-                                                          style: kParagraph),
+                                                      afternoon
+                                                          ? Text(
+                                                              isTodayNoon[index]
+                                                                  .type
+                                                                  .toString(),
+                                                              style: kParagraph)
+                                                          : Text(
+                                                              isToday[index]
+                                                                  .type
+                                                                  .toString(),
+                                                              style:
+                                                                  kParagraph),
                                                       PopupMenuButton(
                                                         color: Colors.black,
                                                         shape: const RoundedRectangleBorder(
@@ -1216,117 +898,168 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                             10))),
                                                         onSelected: (int
                                                             selectedValue) async {
-                                                          // if (selectedValue ==
-                                                          //     0) {
-                                                          //   final int userId =
-                                                          //       isToday![index]
-                                                          //           .userId!;
-                                                          //   final int id =
-                                                          //       isToday![index]
-                                                          //           .id!;
-                                                          //   final String type =
-                                                          //       isToday![index]
-                                                          //           .type!;
-                                                          //   final DateTime date =
-                                                          //       isToday![index]
-                                                          //           .date!;
-                                                          //   await Navigator.of(
-                                                          //           context)
-                                                          //       .push(
-                                                          //     MaterialPageRoute(
-                                                          //       builder: (ctx) =>
-                                                          //           AttedancesEdit(
-                                                          //         id: id,
-                                                          //         userId: userId,
-                                                          //         type: type,
-                                                          //         date: date,
-                                                          //       ),
-                                                          //     ),
-                                                          //   );
-                                                          //   attendanceAllDisplay =
-                                                          //       [];
-                                                          //   _attendanceAllService
-                                                          //       .findManyByUserId(
-                                                          //           userId:
-                                                          //               widget.id)
-                                                          //       .then((value) {
-                                                          //     setState(() {
-                                                          //       /// TODO: change this List<AttendanceWithDate>
-                                                          //       // attendanceAllDisplay
-                                                          //       //     .addAll(
-                                                          //       //         value);
-                                                          //       _isLoading =
-                                                          //           false;
-                                                          //       var now = DateTime
-                                                          //           .now();
-                                                          //       var today = attendanceAllDisplay
-                                                          //           .where((element) =>
-                                                          //               element.date?.day == now.day &&
-                                                          //               element.date
-                                                          //                       ?.month ==
-                                                          //                   now
-                                                          //                       .month &&
-                                                          //               element.date
-                                                          //                       ?.year ==
-                                                          //                   now.year)
-                                                          //           .toList();
-                                                          //       isToday = today
-                                                          //           .toList();
-                                                          //       isToday?.sort((a,
-                                                          //               b) =>
-                                                          //           a.id!.compareTo(
-                                                          //               b.id!));
-                                                          //     });
-                                                          //   });
-                                                          // }
-                                                          // if (selectedValue ==
-                                                          //     1) {
-                                                          //   print(isToday?[index]
-                                                          //       .id);
-                                                          //   showDialog(
-                                                          //     context: context,
-                                                          //     builder: (ctx) =>
-                                                          //         AlertDialog(
-                                                          //       title: Text(
-                                                          //           'Are you sure?'),
-                                                          //       content: Text(
-                                                          //           'This action cannot be undone!'),
-                                                          //       actions: [
-                                                          //         OutlineButton(
-                                                          //           onPressed:
-                                                          //               () {
-                                                          //             Navigator.of(
-                                                          //                     context)
-                                                          //                 .pop();
-                                                          //             deleteData(
-                                                          //                 isToday?[index].id
-                                                          //                     as int);
-                                                          //           },
-                                                          //           child: Text(
-                                                          //               'Yes'),
-                                                          //           borderSide:
-                                                          //               BorderSide(
-                                                          //                   color:
-                                                          //                       Colors.green),
-                                                          //         ),
-                                                          //         OutlineButton(
-                                                          //           onPressed:
-                                                          //               () {
-                                                          //             Navigator.of(
-                                                          //                     context)
-                                                          //                 .pop();
-                                                          //           },
-                                                          //           borderSide:
-                                                          //               BorderSide(
-                                                          //                   color:
-                                                          //                       Colors.red),
-                                                          //           child: Text(
-                                                          //               'No'),
-                                                          //         )
-                                                          //       ],
-                                                          //     ),
-                                                          //   );
-                                                          // }
+                                                          if (afternoon ==
+                                                              false) {
+                                                            if (selectedValue ==
+                                                                0) {
+                                                              final int userId =
+                                                                  isToday[index]
+                                                                      .userId;
+                                                              final int id =
+                                                                  isToday[index]
+                                                                      .id;
+                                                              final String
+                                                                  type =
+                                                                  isToday[index]
+                                                                      .type;
+                                                              final DateTime
+                                                                  date =
+                                                                  isToday[index]
+                                                                      .date;
+                                                              await Navigator.of(
+                                                                      context)
+                                                                  .push(
+                                                                MaterialPageRoute(
+                                                                  builder: (ctx) =>
+                                                                      AttedancesEdit(
+                                                                    id: id,
+                                                                    userId:
+                                                                        userId,
+                                                                    type: type,
+                                                                    date: date,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                              attendanceAllDisplay =
+                                                                  [];
+                                                              fetchAttendanceById();
+                                                            }
+                                                            if (selectedValue ==
+                                                                1) {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (ctx) =>
+                                                                    AlertDialog(
+                                                                  title: Text(
+                                                                      'Are you sure?'),
+                                                                  content: Text(
+                                                                      'This action cannot be undone!'),
+                                                                  actions: [
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        deleteData(isToday[index].id
+                                                                            as int);
+                                                                      },
+                                                                      child: Text(
+                                                                          'Yes'),
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.green),
+                                                                    ),
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.red),
+                                                                      child: Text(
+                                                                          'No'),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }
+                                                          }
+                                                          if (afternoon ==
+                                                              true) {
+                                                            if (selectedValue ==
+                                                                0) {
+                                                              final int userId =
+                                                                  isTodayNoon[
+                                                                          index]
+                                                                      .userId;
+                                                              final int id =
+                                                                  isTodayNoon[
+                                                                          index]
+                                                                      .id;
+                                                              final String
+                                                                  type =
+                                                                  isTodayNoon[
+                                                                          index]
+                                                                      .type;
+                                                              final DateTime
+                                                                  date =
+                                                                  isTodayNoon[
+                                                                          index]
+                                                                      .date;
+                                                              await Navigator.of(
+                                                                      context)
+                                                                  .push(
+                                                                MaterialPageRoute(
+                                                                  builder: (ctx) =>
+                                                                      AttedancesEdit(
+                                                                    id: id,
+                                                                    userId:
+                                                                        userId,
+                                                                    type: type,
+                                                                    date: date,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                              attendanceAllDisplay =
+                                                                  [];
+                                                              fetchAttendanceByIdNoon();
+                                                            }
+                                                            if (selectedValue ==
+                                                                1) {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (ctx) =>
+                                                                    AlertDialog(
+                                                                  title: Text(
+                                                                      'Are you sure?'),
+                                                                  content: Text(
+                                                                      'This action cannot be undone!'),
+                                                                  actions: [
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        deleteData(isTodayNoon[index].id
+                                                                            as int);
+                                                                      },
+                                                                      child: Text(
+                                                                          'Yes'),
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.green),
+                                                                    ),
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.red),
+                                                                      child: Text(
+                                                                          'No'),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }
+                                                          }
                                                         },
                                                         itemBuilder: (_) => [
                                                           PopupMenuItem(
@@ -1408,122 +1141,172 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                             10))),
                                                         onSelected: (int
                                                             selectedValue) async {
-                                                          // if (selectedValue ==
-                                                          //     0) {
-                                                          //   final int userId =
-                                                          //       checkedDate[index]
-                                                          //           .userId!;
-                                                          //   final int id =
-                                                          //       checkedDate[index]
-                                                          //           .id!;
-                                                          //   final String type =
-                                                          //       checkedDate[index]
-                                                          //           .type!;
-                                                          //   final DateTime date =
-                                                          //       checkedDate[index]
-                                                          //           .date!;
-                                                          //   await Navigator.of(
-                                                          //           context)
-                                                          //       .push(
-                                                          //     MaterialPageRoute(
-                                                          //       builder: (ctx) =>
-                                                          //           AttedancesEdit(
-                                                          //         id: id,
-                                                          //         userId: userId,
-                                                          //         type: type,
-                                                          //         date: date,
-                                                          //       ),
-                                                          //     ),
-                                                          //   );
-                                                          //   attendanceAllDisplay =
-                                                          //       [];
-                                                          //   checkedDate = [];
-                                                          //   users = [];
-                                                          //   _attendanceAllService
-                                                          //       .findManyByUserId(
-                                                          //           userId:
-                                                          //               widget.id)
-                                                          //       .then((value) {
-                                                          //     setState(() {
-                                                          //       /// TODO: change this List<AttendanceWithDate>
-                                                          //       // attendanceAllDisplay
-                                                          //       //     .addAll(
-                                                          //       //         value);
-                                                          //       _isLoading =
-                                                          //           false;
-                                                          //       var checkingDate = attendanceAllDisplay.where((element) =>
-                                                          //           element.date?.day == _selectDate?.day &&
-                                                          //           element.date
-                                                          //                   ?.month ==
-                                                          //               _selectDate
-                                                          //                   ?.month &&
-                                                          //           element.date
-                                                          //                   ?.year ==
-                                                          //               _selectDate
-                                                          //                   ?.year);
-                                                          //       setState(() {
-                                                          //         users =
-                                                          //             checkingDate
-                                                          //                 .toList();
-                                                          //         checkedDate =
-                                                          //             users;
-                                                          //         checkedDate.sort((a,
-                                                          //                 b) =>
-                                                          //             a.id!.compareTo(
-                                                          //                 b.id!));
-                                                          //       });
-                                                          //     });
-                                                          //   });
-                                                          // }
-                                                          // if (selectedValue ==
-                                                          //     1) {
-                                                          //   print(
-                                                          //       checkedDate[index]
-                                                          //           .id);
-                                                          //   showDialog(
-                                                          //     context: context,
-                                                          //     builder: (ctx) =>
-                                                          //         AlertDialog(
-                                                          //       title: Text(
-                                                          //           'Are you sure?'),
-                                                          //       content: Text(
-                                                          //           'This action cannot be undone!'),
-                                                          //       actions: [
-                                                          //         OutlineButton(
-                                                          //           onPressed:
-                                                          //               () {
-                                                          //             Navigator.of(
-                                                          //                     context)
-                                                          //                 .pop();
-                                                          //             deleteData1(
-                                                          //                 checkedDate[index].id
-                                                          //                     as int);
-                                                          //           },
-                                                          //           child: Text(
-                                                          //               'Yes'),
-                                                          //           borderSide:
-                                                          //               BorderSide(
-                                                          //                   color:
-                                                          //                       Colors.green),
-                                                          //         ),
-                                                          //         OutlineButton(
-                                                          //           onPressed:
-                                                          //               () {
-                                                          //             Navigator.of(
-                                                          //                     context)
-                                                          //                 .pop();
-                                                          //           },
-                                                          //           borderSide:
-                                                          //               BorderSide(
-                                                          //                   color:
-                                                          //                       Colors.red),
-                                                          //           child: Text(
-                                                          //               'No'),
-                                                          //         )
-                                                          //       ],
-                                                          //     ),
-                                                          //   );
-                                                          // }
+                                                          if (afternoon ==
+                                                              false) {
+                                                            if (selectedValue ==
+                                                                0) {
+                                                              final int userId =
+                                                                  attendanceList[
+                                                                          index]
+                                                                      .userId;
+                                                              final int id =
+                                                                  attendanceList[
+                                                                          index]
+                                                                      .id;
+                                                              final String
+                                                                  type =
+                                                                  attendanceList[
+                                                                          index]
+                                                                      .type;
+                                                              final DateTime
+                                                                  date =
+                                                                  attendanceList[
+                                                                          index]
+                                                                      .date;
+                                                              await Navigator.of(
+                                                                      context)
+                                                                  .push(
+                                                                MaterialPageRoute(
+                                                                  builder: (ctx) =>
+                                                                      AttedancesEdit(
+                                                                    id: id,
+                                                                    userId:
+                                                                        userId,
+                                                                    type: type,
+                                                                    date: date,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                              attendanceAllDisplay =
+                                                                  [];
+                                                              fetchAttendanceById();
+                                                            }
+                                                            if (selectedValue ==
+                                                                1) {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (ctx) =>
+                                                                    AlertDialog(
+                                                                  title: Text(
+                                                                      'Are you sure?'),
+                                                                  content: Text(
+                                                                      'This action cannot be undone!'),
+                                                                  actions: [
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        deleteData(attendanceList[index].id
+                                                                            as int);
+                                                                      },
+                                                                      child: Text(
+                                                                          'Yes'),
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.green),
+                                                                    ),
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.red),
+                                                                      child: Text(
+                                                                          'No'),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }
+                                                          }
+                                                          if (afternoon ==
+                                                              true) {
+                                                            if (selectedValue ==
+                                                                0) {
+                                                              final int userId =
+                                                                  attendanceListNoon[
+                                                                          index]
+                                                                      .userId;
+                                                              final int id =
+                                                                  attendanceListNoon[
+                                                                          index]
+                                                                      .id;
+                                                              final String
+                                                                  type =
+                                                                  attendanceListNoon[
+                                                                          index]
+                                                                      .type;
+                                                              final DateTime
+                                                                  date =
+                                                                  attendanceListNoon[
+                                                                          index]
+                                                                      .date;
+                                                              await Navigator.of(
+                                                                      context)
+                                                                  .push(
+                                                                MaterialPageRoute(
+                                                                  builder: (ctx) =>
+                                                                      AttedancesEdit(
+                                                                    id: id,
+                                                                    userId:
+                                                                        userId,
+                                                                    type: type,
+                                                                    date: date,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                              attendanceAllDisplay =
+                                                                  [];
+                                                              fetchAttendanceByIdNoon();
+                                                            }
+                                                            if (selectedValue ==
+                                                                1) {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (ctx) =>
+                                                                    AlertDialog(
+                                                                  title: Text(
+                                                                      'Are you sure?'),
+                                                                  content: Text(
+                                                                      'This action cannot be undone!'),
+                                                                  actions: [
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                        deleteData1(attendanceListNoon[index].id
+                                                                            as int);
+                                                                      },
+                                                                      child: Text(
+                                                                          'Yes'),
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.green),
+                                                                    ),
+                                                                    OutlineButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      borderSide:
+                                                                          BorderSide(
+                                                                              color: Colors.red),
+                                                                      child: Text(
+                                                                          'No'),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }
+                                                          }
                                                         },
                                                         itemBuilder: (_) => [
                                                           PopupMenuItem(
@@ -1557,8 +1340,12 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             );
                                     },
                                     itemCount: now
-                                        ? countTodayLength()
-                                        : attendanceList.length,
+                                        ? afternoon
+                                            ? isTodayNoon.length
+                                            : isToday.length
+                                        : afternoon
+                                            ? attendanceListNoon.length
+                                            : attendanceList.length,
                                   ),
                                 ))
                         ],
