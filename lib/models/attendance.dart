@@ -2,25 +2,30 @@ import 'dart:convert';
 
 import 'package:ems/models/user.dart';
 
-// List<Attendance> attendancesByDayFromJson(Map<String, dynamic> list) {
 List<AttendanceWithDate> attendancesByDayFromJson(Map<String, dynamic> list) {
-  List<Attendance> lists = [];
   List<AttendanceWithDate> awdlist = [];
-  // print('list list list ${list.runtimeType}');
+
   list.forEach((key, value) {
     var awd = AttendanceWithDate(
         date: DateTime.parse(key), list: attendancesFromJson(value));
     awdlist.add(awd);
-    // print('awd ${awd.date}');
-    var over = Attendance.fromJson(list);
-    lists.add(
-      over,
-    );
   });
 
   /// lists here to send back to service.
-  // print(lists);
   return awdlist;
+}
+
+List<Attendance> attendancesFromAttendancesByDay(
+  List<AttendanceWithDate> awds,
+) {
+  List<Attendance> attendances = [];
+  try {
+    // flatten the list to get the attendances
+    attendances = awds.expand((element) => element.list).toList();
+  } catch (e) {
+    return [];
+  }
+  return attendances;
 }
 
 class AttendanceWithDate {

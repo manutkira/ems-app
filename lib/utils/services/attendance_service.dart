@@ -24,18 +24,6 @@ class AttendanceService extends BaseService {
     }
   }
 
-  Future<List<Attendance>> findMany() async {
-    try {
-      Response response = await get(Uri.parse('$baseUrl/attendances'));
-      _code = response.statusCode;
-      var jsondata = json.decode(response.body);
-      var attendances = attendancesFromJson(jsondata);
-      return attendances;
-    } catch (e) {
-      throw AttendanceException(code: _code);
-    }
-  }
-
   String _formatDate(DateTime? date) {
     return date != null ? DateFormat('y-M-d').format(date) : '';
   }
@@ -370,6 +358,19 @@ class AttendanceService extends BaseService {
 
       // List<Attendance> attendances = [Attendance(), Attendance()];
       return jsondata;
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<List<AttendanceWithDate>> findMany() async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/attendances'));
+      _code = response.statusCode;
+      var jsondata = json.decode(response.body);
+      List<AttendanceWithDate> awd = [];
+      awd = attendancesByDayFromJson(jsondata);
+      return awd;
     } catch (e) {
       throw AttendanceException(code: _code);
     }
