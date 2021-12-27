@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
+import 'package:ems/persistence/setting.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/check_in_screen.dart';
 import 'package:ems/screens/take_attendance/check_out_screen.dart';
@@ -11,10 +12,12 @@ import 'package:ems/widgets/check_status.dart';
 import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'attendances_api/attendance_info.dart';
 import 'overtime/individual_overtime_screen.dart';
@@ -90,6 +93,9 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: _buildAppBar,
@@ -132,23 +138,27 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                                   : null;
 
                               return Text(
-                                "Hello, ${currentUser?.name}",
-                                style: const TextStyle(
-                                  fontSize: 16,
+                                "${local?.hello("${currentUser?.name}")}",
+                                style: TextStyle(
+                                  fontSize: isEnglish ? 16 : 14,
+                                  height: 1,
                                   fontWeight: FontWeight.w700,
                                 ),
                               );
                             },
                           ),
-                          const SizedBox(height: 5),
+                          Visibility(
+                            visible: isEnglish,
+                            child: const SizedBox(height: 5),
+                          ),
                           Text(
-                            "It's $time on ${getDateStringFromDateTime(DateTime.now())}.",
+                            "${local?.timeText(time, getDateStringFromDateTime(DateTime.now()))}",
                             style: kSubtitleTwo,
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 26),
+                    SizedBox(height: isEnglish ? 30 : 25),
                     const CheckStatus(),
                   ],
                 ),
@@ -157,36 +167,36 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             _buildSpacerVertical,
 
             // check in/out
-            _buildTitle('Check In/Out'),
+            _buildTitle('${local?.checkInOut}'),
             Container(
               height: 170,
               padding: const EdgeInsets.symmetric(
                 horizontal: 15,
-                vertical: 15,
+                vertical: 12,
               ),
               child: Row(
                 children: [
                   Expanded(
                     flex: 1,
                     child: MenuItem(
-                      onTap: () => _goToCheckInScreen,
+                      onTap: _goToCheckInScreen,
                       illustration: SvgPicture.asset(
                         "assets/images/tick.svg",
                         width: MediaQuery.of(context).size.width * 0.15,
                       ),
-                      label: "Check In",
+                      label: "${local?.checkin}",
                     ),
                   ),
                   const SizedBox(width: 15),
                   Expanded(
                     flex: 1,
                     child: MenuItem(
-                      onTap: () => _goToCheckoutScreen,
+                      onTap: _goToCheckoutScreen,
                       illustration: SvgPicture.asset(
                         "assets/images/close.svg",
                         width: MediaQuery.of(context).size.width * 0.15,
                       ),
-                      label: "Check out",
+                      label: "${local?.checkout}",
                     ),
                   ),
                 ],
@@ -195,7 +205,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             _buildSpacerVertical,
 
             // current user attendance
-            _buildTitle('Attendance'),
+            _buildTitle('${local?.attendance}'),
             ValueListenableBuilder(
                 valueListenable:
                     ref.watch(currentUserProvider).currentUserListenable,
@@ -206,40 +216,35 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                   return Container(
                     height: 170,
                     padding: const EdgeInsets.symmetric(
-                      vertical: 15,
+                      vertical: 12,
                       horizontal: 15,
                     ),
                     child: GestureDetector(
                       onTap: () => _goToMyAttendance(currentUser?.id as int),
                       child: SizedBox(
                         width: _size.width,
-                        height: 175,
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Container(
-                            width: double.infinity,
-                            decoration: const BoxDecoration(
-                              color: kLightBlue,
-                              borderRadius: BorderRadius.all(kBorderRadius),
-                            ),
-                            padding: kPaddingAll,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/images/chart.svg',
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  "My Attendance",
-                                  style: kSubtitle.copyWith(
-                                      color: kBlack,
-                                      fontWeight: FontWeight.w700),
-                                  textAlign: TextAlign.center,
-                                )
-                              ],
-                            ),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                            color: kLightBlue,
+                            borderRadius: BorderRadius.all(kBorderRadius),
+                          ),
+                          padding: kPaddingAll,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/images/chart.svg',
+                              ),
+                              SizedBox(height: isEnglish ? 10 : 2),
+                              Text(
+                                "${local?.myAttendance}",
+                                style: kSubtitle.copyWith(
+                                    color: kBlack, fontWeight: FontWeight.w700),
+                                textAlign: TextAlign.center,
+                              )
+                            ],
                           ),
                         ),
                       ),
@@ -249,11 +254,11 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             _buildSpacerVertical,
 
             // current user overtime
-            _buildTitle('Overtime'),
+            _buildTitle('${local?.overtime}'),
             Container(
               height: 170,
               padding: const EdgeInsets.symmetric(
-                vertical: 15,
+                vertical: 12,
                 horizontal: 15,
               ),
               child: ValueListenableBuilder(
@@ -268,7 +273,6 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                     onTap: () => _goToMyOvertime(currentUser),
                     child: SizedBox(
                       width: _size.width,
-                      height: 175,
                       child: AspectRatio(
                         aspectRatio: 1,
                         child: Container(
@@ -286,9 +290,9 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                                 'assets/images/overtime-icon.svg',
                                 height: 82,
                               ),
-                              const SizedBox(height: 10),
+                              SizedBox(height: isEnglish ? 10 : 2),
                               Text(
-                                "My Overtime",
+                                "${local?.myOvertime}",
                                 style: kSubtitle.copyWith(
                                     color: kBlack, fontWeight: FontWeight.w700),
                                 textAlign: TextAlign.center,
@@ -336,10 +340,17 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
         ),
       ),
       title: const Text('Internal EMS'),
+      actions: [
+        GestureDetector(
+          onTap: () => ref.read(settingsProvider).toggleLanguage(),
+          child: const Icon(MdiIcons.earth),
+        ),
+        SizedBox(width: 10),
+      ],
     );
   }
 
   Widget get _buildSpacerVertical {
-    return const SizedBox(height: 15);
+    return const SizedBox(height: 10);
   }
 }

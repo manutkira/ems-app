@@ -32,7 +32,7 @@ class MenuItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               illustration,
-              const SizedBox(height: 10),
+              const SizedBox(height: 6),
               Text(
                 label,
                 style: kSubtitle.copyWith(

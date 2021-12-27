@@ -1,7 +1,9 @@
 import 'package:ems/models/attendance.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/utils/services/attendance_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -79,6 +81,9 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15),
       height: 100,
@@ -94,8 +99,8 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Row(
-                  children: const [
-                    Expanded(
+                  children: [
+                    const Expanded(
                         child: Text(
                       '',
                       style: TextStyle(
@@ -105,32 +110,38 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
                     )),
                     Expanded(
                         child: Text(
-                      'Check In',
-                      style: TextStyle(
+                      "${local?.checkin}",
+                      style: const TextStyle(
                         fontWeight: FontWeight.w700,
+                        fontSize: 14,
                         color: kBlack,
                       ),
                       textAlign: TextAlign.center,
                     )),
                     Expanded(
                         child: Text(
-                      'Check Out',
-                      style: TextStyle(
+                      "${local?.checkout}",
+                      style: const TextStyle(
                         fontWeight: FontWeight.w700,
+                        fontSize: 14,
                         color: kBlack,
                       ),
                       textAlign: TextAlign.center,
                     )),
                   ],
                 ),
-                const SizedBox(height: 6),
+                Visibility(
+                  visible: isEnglish,
+                  child: const SizedBox(height: 8),
+                ),
                 Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'Morning',
-                        style: TextStyle(
+                        "${local?.morning}",
+                        style: const TextStyle(
                           fontWeight: FontWeight.w700,
+                          fontSize: 14,
                           color: kBlack,
                         ),
                       ),
@@ -138,7 +149,7 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
                     Expanded(
                         child: Text(
                       isFetchingStatus
-                          ? 'loading...'
+                          ? '${local?.loading}...'
                           : isMorningCheckIn
                               ? '✔'
                               : '--',
@@ -151,7 +162,7 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
                     Expanded(
                         child: Text(
                       isFetchingStatus
-                          ? 'loading...'
+                          ? '${local?.loading}...'
                           : isMorningCheckOut
                               ? '✔'
                               : '--',
@@ -163,14 +174,18 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
                     )),
                   ],
                 ),
-                const SizedBox(height: 6),
+                Visibility(
+                  visible: isEnglish,
+                  child: const SizedBox(height: 8),
+                ),
                 Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'Afternoon',
-                        style: TextStyle(
+                        "${local?.afternoon}",
+                        style: const TextStyle(
                           fontWeight: FontWeight.w700,
+                          fontSize: 14,
                           color: kBlack,
                         ),
                       ),
@@ -178,7 +193,7 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
                     Expanded(
                         child: Text(
                       isFetchingStatus
-                          ? 'loading...'
+                          ? '${local?.loading}...'
                           : isAfternoonCheckIn
                               ? '✔'
                               : '--',
@@ -191,7 +206,7 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
                     Expanded(
                         child: Text(
                       isFetchingStatus
-                          ? 'loading...'
+                          ? '${local?.loading}...'
                           : isAfternoonCheckOut
                               ? '✔'
                               : '--',
