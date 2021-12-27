@@ -36,17 +36,23 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
     _controller.clear();
   }
 
+  fetchAttendances() async {
+    List<AttendanceWithDate> atts = [];
+    atts = await _attendanceService.findMany();
+    List<Attendance> att2 = attendancesFromAttendancesByDay(atts);
+    setState(() {
+      attendancedisplay = att2;
+      print(attendancedisplay);
+      attendancedisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+    });
+  }
+
   @override
   void initState() {
     super.initState();
 
     try {
-      _attendanceService.findMany().then((userFromServer) {
-        setState(() {
-          _isLoading = false;
-          attendancedisplay.addAll(userFromServer);
-        });
-      });
+      fetchAttendances();
       _userService.findMany().then((value) {
         setState(() {
           _isLoading = false;

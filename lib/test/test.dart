@@ -15,7 +15,7 @@ class _TestServiceState extends State<TestService> {
 
   fetchAttendances() async {
     List<AttendanceWithDate> atts = [];
-    atts = await attendanceService.findManyNew();
+    atts = await attendanceService.findMany();
     List<Attendance> att2 = attendancesFromAttendancesByDay(atts);
     print(att2);
     setState(() {});

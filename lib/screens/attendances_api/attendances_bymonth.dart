@@ -28,12 +28,21 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
 
+  fetchAttendances() async {
+    List<AttendanceWithDate> atts = [];
+    atts = await _attendanceService.findMany();
+    List<Attendance> att2 = attendancesFromAttendancesByDay(atts);
+    setState(() {
+      attendanceDisplay = att2;
+      print(attendanceDisplay);
+      attendanceDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    _attendanceService.findMany().then((value) {
-      attendanceDisplay.addAll(value);
-    });
+    fetchAttendances();
     _userService.findMany().then((value) {
       users.addAll(value);
       userDisplay = users;
