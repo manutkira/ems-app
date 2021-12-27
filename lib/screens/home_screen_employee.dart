@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
-import 'package:ems/screens/overtime/overtime_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/check_in_screen.dart';
 import 'package:ems/screens/take_attendance/check_out_screen.dart';
+import 'package:ems/test/test.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/widgets/check_status.dart';
 import 'package:ems/widgets/menu_item.dart';
@@ -115,7 +115,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (_) => const OvertimeScreen(),
+                                      builder: (_) => const TestService(),
                                     ),
                                   );
                                 },
@@ -143,7 +143,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            _buildSpacer,
 
             // check in/out
             const Padding(
@@ -205,7 +205,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                 ],
               ),
             ),
-            const SizedBox(height: 15),
+            _buildSpacer,
 
             // current user attendance
             const Padding(
@@ -277,7 +277,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                     ),
                   );
                 }),
-            const SizedBox(height: 15),
+            _buildSpacer,
 
             // current user overtime
             const Padding(
@@ -370,5 +370,9 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
       ),
       title: const Text('Internal EMS'),
     );
+  }
+
+  Widget get _buildSpacer {
+    return const SizedBox(height: 15);
   }
 }
