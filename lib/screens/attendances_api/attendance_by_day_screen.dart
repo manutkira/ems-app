@@ -38,15 +38,21 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     _controller.clear();
   }
 
+  fetchAttendances() async {
+    List<AttendanceWithDate> atts = [];
+    atts = await _attendanceService.findMany();
+    List<Attendance> att2 = attendancesFromAttendancesByDay(atts);
+    setState(() {
+      attendanceDisplay = att2;
+      print(attendanceDisplay);
+      attendanceDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    _attendanceService.findMany().then((value) {
-      setState(() {
-        attendanceDisplay.addAll(value);
-        attendanceDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-      });
-    });
+    fetchAttendances();
     _userService.findMany().then((value) {
       userDisplay.addAll(value);
     });

@@ -27,7 +27,7 @@ class _TapScreenState extends State<TapScreen> {
 
   static final List<Widget> _pages = [
     AttendanceByDayScreen(),
-    AttendanceByDayAfternoonScreen(),
+    // AttendanceByDayAfternoonScreen(),
   ];
 
   @override

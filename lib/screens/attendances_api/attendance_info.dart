@@ -33,6 +33,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
   AttendanceByIdService _overtimeService = AttendanceByIdService.instance;
   List<AttendanceWithDate> _attendanceDisplay = [];
+  List<AttendanceWithDate> _attendanceDisplayNoon = [];
   List<AttendanceWithDate> _attendanceNoDateDisplay = [];
 
   String dropDownValue = 'Morning';
@@ -56,7 +57,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   bool multipleDay = false;
   bool _isLoading = true;
   bool order = false;
-  bool isFilterExpanded = true;
+  bool isFilterExpanded = false;
   List<Appointment>? _appointment;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
@@ -66,6 +67,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   DateTime endDate = DateTime.now();
   List sum = [];
   List attendanceList = [];
+  List attendanceListNoon = [];
 
   String sortByValue = 'All Time';
   var dropdownItems = [
@@ -103,7 +105,35 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
         isToday = today.toList();
       });
       List flat = _attendanceDisplay.expand((element) => element.list).toList();
-      attendanceList = flat;
+      attendanceList = flat
+          .where((element) => element.code != 'cin2' && element.code != 'cin3')
+          .toList();
+    } catch (e) {}
+  }
+
+  fetchAttendanceByIdNoon() async {
+    try {
+      List<AttendanceWithDate> attendanceDisplayNoon =
+          await _attendanceService.findManyByUserId(
+        userId: widget.id,
+        start: startDate,
+        end: endDate,
+      );
+      setState(() {
+        _attendanceDisplayNoon = attendanceDisplayNoon;
+        _isLoading = false;
+        var now = DateTime.now();
+        var today = attendanceDisplayNoon.where((element) =>
+            element.date.day == now.day &&
+            element.date.month == now.month &&
+            element.date.year == now.year);
+        isToday = today.toList();
+      });
+      List flat =
+          _attendanceDisplayNoon.expand((element) => element.list).toList();
+      attendanceListNoon = flat
+          .where((element) => element.code != 'cin1' && element.code != 'cin3')
+          .toList();
     } catch (e) {}
   }
 
@@ -381,6 +411,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       getPermissionNoon();
       // fetchAttendance();
       fetchAttendanceById();
+      fetchAttendanceByIdNoon();
       fetchNoDate();
       fetchLate();
       fetchLateNoon();
@@ -534,6 +565,313 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                 )
               : Column(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: kDarkestBlue,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: DropdownButton(
+                              underline: Container(),
+                              style: kParagraph.copyWith(
+                                  fontWeight: FontWeight.bold),
+                              isDense: true,
+                              borderRadius:
+                                  const BorderRadius.all(kBorderRadius),
+                              dropdownColor: kDarkestBlue,
+                              icon: const Icon(Icons.expand_more),
+                              value: dropDownValue,
+                              onChanged: (String? newValue) {
+                                if (newValue == 'Afternoon') {
+                                  setState(() {
+                                    afternoon = true;
+                                    dropDownValue = newValue!;
+                                  });
+                                }
+                                if (newValue == 'Morning') {
+                                  setState(() {
+                                    afternoon = false;
+                                    dropDownValue = newValue!;
+                                  });
+                                }
+                              },
+                              items: <String>[
+                                'Morning',
+                                'Afternoon',
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GestureDetector(
+                                onTap: _toggleFilter,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Filter',
+                                      style: kParagraph.copyWith(
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    Icon(
+                                      isFilterExpanded
+                                          ? MdiIcons.chevronUp
+                                          : MdiIcons.chevronDown,
+                                      size: 22,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Visibility(
+                                visible: isFilterExpanded,
+                                child: Column(
+                                  children: [
+                                    const SizedBox(height: 20),
+
+                                    /// SORT FILTER
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: kDarkestBlue,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: DropdownButton(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    kBorderRadius),
+                                            dropdownColor: kDarkestBlue,
+                                            underline: Container(),
+                                            style: kParagraph.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                            isDense: true,
+                                            value: sortByValue,
+                                            icon: const Icon(
+                                                Icons.keyboard_arrow_down),
+                                            items: dropdownItems
+                                                .map((String items) {
+                                              return DropdownMenuItem(
+                                                value: items,
+                                                child: Text(items),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? newValue) {
+                                              if (sortByValue == newValue)
+                                                return;
+                                              setState(() {
+                                                sortByValue =
+                                                    newValue as String;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 6),
+
+                                    /// FROM FILTER
+                                    Visibility(
+                                      visible: sortByValue != 'All Time',
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            sortByValue == 'Day'
+                                                ? "Date"
+                                                : 'From',
+                                            style: kParagraph,
+                                          ),
+                                          TextButton(
+                                            style: TextButton.styleFrom(
+                                              primary: Colors.white,
+                                              textStyle: kParagraph,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 10,
+                                                vertical: 6,
+                                              ),
+                                              backgroundColor: kDarkestBlue,
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    kBorderRadius),
+                                              ),
+                                            ),
+                                            onPressed: () async {
+                                              final DateTime? picked =
+                                                  await buildDateTimePicker(
+                                                context: context,
+                                                date: startDate,
+                                              );
+                                              if (picked != null &&
+                                                  picked != startDate) {
+                                                setState(() {
+                                                  startDate = picked;
+                                                });
+                                              }
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  getDateStringFromDateTime(
+                                                      startDate),
+                                                ),
+                                                const SizedBox(width: 10),
+                                                const Icon(MdiIcons.calendar),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    /// TO FILTER
+                                    Visibility(
+                                      visible: sortByValue == 'Multiple Days',
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text('To', style: kParagraph),
+                                          TextButton(
+                                            style: TextButton.styleFrom(
+                                              primary: Colors.white,
+                                              textStyle: kParagraph,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 10,
+                                                vertical: 6,
+                                              ),
+                                              backgroundColor: kDarkestBlue,
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    kBorderRadius),
+                                              ),
+                                            ),
+                                            onPressed: () async {
+                                              final DateTime? picked =
+                                                  await buildDateTimePicker(
+                                                context: context,
+                                                date: endDate,
+                                              );
+                                              if (picked != null &&
+                                                  picked != endDate) {
+                                                setState(() {
+                                                  endDate = picked;
+                                                });
+                                              }
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  getDateStringFromDateTime(
+                                                      endDate),
+                                                ),
+                                                const SizedBox(width: 10),
+                                                const Icon(MdiIcons.calendar),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    /// GO BUTTON
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        TextButton(
+                                          style: TextButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 0, horizontal: 16),
+                                            primary: Colors.white,
+                                            textStyle: kParagraph,
+                                            backgroundColor: Colors.black38,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  kBorderRadius),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            if (sortByValue ==
+                                                'Multiple Days') {
+                                              setState(() {
+                                                multipleDay = true;
+                                                now = false;
+                                              });
+                                              fetchLate();
+                                              fetchLateNoon();
+                                              fetchAbsent();
+                                              fetchAbsentNoon();
+                                              fetchPermission();
+                                              fetchPermissionNoon();
+                                              fetchPresent();
+                                              fetchPresentNoon();
+                                              fetchAttendanceById();
+                                            }
+                                            if (sortByValue == 'All Time') {
+                                              setState(() {
+                                                multipleDay = false;
+                                              });
+                                            }
+                                          },
+                                          child: Row(
+                                            children: [
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                'Go',
+                                                style: kParagraph.copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              const Icon(MdiIcons.chevronRight)
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                     Container(
                       margin:
                           const EdgeInsets.only(top: 5, left: 10, right: 10),
@@ -652,278 +990,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                           ),
                         ),
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(top: 0),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: kDarkestBlue,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: DropdownButton(
-                            underline: Container(),
-                            style: kParagraph.copyWith(
-                                fontWeight: FontWeight.bold),
-                            isDense: true,
-                            borderRadius: const BorderRadius.all(kBorderRadius),
-                            dropdownColor: kDarkestBlue,
-                            icon: const Icon(Icons.expand_more),
-                            value: dropDownValue,
-                            onChanged: (String? newValue) {
-                              if (newValue == 'Afternoon') {
-                                setState(() {
-                                  afternoon = true;
-                                  dropDownValue = newValue!;
-                                });
-                              }
-                              if (newValue == 'Morning') {
-                                setState(() {
-                                  afternoon = false;
-                                  dropDownValue = newValue!;
-                                });
-                              }
-                            },
-                            items: <String>[
-                              'Morning',
-                              'Afternoon',
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Visibility(
-                              visible: isFilterExpanded,
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 20),
-
-                                  /// SORT FILTER
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 6,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: kDarkestBlue,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: DropdownButton(
-                                          borderRadius: const BorderRadius.all(
-                                              kBorderRadius),
-                                          dropdownColor: kDarkestBlue,
-                                          underline: Container(),
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold),
-                                          isDense: true,
-                                          value: sortByValue,
-                                          icon: const Icon(
-                                              Icons.keyboard_arrow_down),
-                                          items:
-                                              dropdownItems.map((String items) {
-                                            return DropdownMenuItem(
-                                              value: items,
-                                              child: Text(items),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? newValue) {
-                                            if (sortByValue == newValue) return;
-                                            setState(() {
-                                              sortByValue = newValue as String;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 6),
-
-                                  /// FROM FILTER
-                                  Visibility(
-                                    visible: sortByValue != 'All Time',
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          sortByValue == 'Day'
-                                              ? "Date"
-                                              : 'From',
-                                          style: kParagraph,
-                                        ),
-                                        TextButton(
-                                          style: TextButton.styleFrom(
-                                            primary: Colors.white,
-                                            textStyle: kParagraph,
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 6,
-                                            ),
-                                            backgroundColor: kDarkestBlue,
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  kBorderRadius),
-                                            ),
-                                          ),
-                                          onPressed: () async {
-                                            final DateTime? picked =
-                                                await buildDateTimePicker(
-                                              context: context,
-                                              date: startDate,
-                                            );
-                                            if (picked != null &&
-                                                picked != startDate) {
-                                              setState(() {
-                                                startDate = picked;
-                                              });
-                                            }
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                getDateStringFromDateTime(
-                                                    startDate),
-                                              ),
-                                              const SizedBox(width: 10),
-                                              const Icon(MdiIcons.calendar),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  /// TO FILTER
-                                  Visibility(
-                                    visible: sortByValue == 'Multiple Days',
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text('To', style: kParagraph),
-                                        TextButton(
-                                          style: TextButton.styleFrom(
-                                            primary: Colors.white,
-                                            textStyle: kParagraph,
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 6,
-                                            ),
-                                            backgroundColor: kDarkestBlue,
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  kBorderRadius),
-                                            ),
-                                          ),
-                                          onPressed: () async {
-                                            final DateTime? picked =
-                                                await buildDateTimePicker(
-                                              context: context,
-                                              date: endDate,
-                                            );
-                                            if (picked != null &&
-                                                picked != endDate) {
-                                              setState(() {
-                                                endDate = picked;
-                                              });
-                                            }
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                getDateStringFromDateTime(
-                                                    endDate),
-                                              ),
-                                              const SizedBox(width: 10),
-                                              const Icon(MdiIcons.calendar),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  /// GO BUTTON
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 0, horizontal: 16),
-                                          primary: Colors.white,
-                                          textStyle: kParagraph,
-                                          backgroundColor: Colors.black38,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.all(kBorderRadius),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          if (sortByValue == 'Multiple Days') {
-                                            setState(() {
-                                              multipleDay = true;
-                                              now = false;
-                                            });
-                                            fetchLate();
-                                            fetchLateNoon();
-                                            fetchAbsent();
-                                            fetchAbsentNoon();
-                                            fetchPermission();
-                                            fetchPermissionNoon();
-                                            fetchPresent();
-                                            fetchPresentNoon();
-                                            fetchAttendanceById();
-                                          }
-                                          if (sortByValue == 'All Time') {
-                                            setState(() {
-                                              multipleDay = false;
-                                            });
-                                          }
-                                        },
-                                        child: Row(
-                                          children: [
-                                            const SizedBox(width: 8),
-                                            Text(
-                                              'Go',
-                                              style: kParagraph.copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            const Icon(MdiIcons.chevronRight)
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
                     ),
                     Row(
                       children: [
@@ -1303,18 +1369,35 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  Text(
-                                                    DateFormat(
-                                                            'dd/MM/yyyy HH:mm')
-                                                        .format(attendanceList[
-                                                                index]
-                                                            .date),
-                                                  ),
+                                                  afternoon
+                                                      ? Text(
+                                                          DateFormat(
+                                                                  'dd/MM/yyyy HH:mm')
+                                                              .format(
+                                                                  attendanceListNoon[
+                                                                          index]
+                                                                      .date),
+                                                        )
+                                                      : Text(
+                                                          DateFormat(
+                                                                  'dd/MM/yyyy HH:mm')
+                                                              .format(
+                                                                  attendanceList[
+                                                                          index]
+                                                                      .date),
+                                                        ),
                                                   Row(
                                                     children: [
-                                                      Text(attendanceList[index]
-                                                          .type
-                                                          .toString()),
+                                                      afternoon
+                                                          ? Text(
+                                                              attendanceListNoon[
+                                                                      index]
+                                                                  .type
+                                                                  .toString())
+                                                          : Text(attendanceList[
+                                                                  index]
+                                                              .type
+                                                              .toString()),
                                                       PopupMenuButton(
                                                         color: Colors.black,
                                                         shape: const RoundedRectangleBorder(
