@@ -4,6 +4,10 @@ import 'package:ems/models/attendance_no_s.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/utils/services/overtime_service.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/attendance/attendance_info_name_id.dart';
+import 'package:ems/widgets/attendance/attendance_info_no_attendance.dart';
+import 'package:ems/widgets/attendance/attendance_info_no_data.dart';
+import 'package:ems/widgets/attendance/attendance_info_present.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -37,22 +41,22 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
   String dropDownValue = 'Morning';
   bool afternoon = false;
-  dynamic countPresent = '';
-  dynamic countPresentNoon = '';
-  dynamic countLate = '';
-  dynamic countLateNoon = '';
-  dynamic countAbsent = '';
-  dynamic countAbsentNoon = '';
-  dynamic countPermission = '';
-  dynamic countPermissionNoon = '';
-  dynamic lateMorning = '';
-  dynamic lateAfternoon = '';
-  dynamic absentMorning = '';
-  dynamic absentAfternoon = '';
-  dynamic permissionMorning = '';
-  dynamic permissionAfternoon = '';
-  dynamic presentMorning = '';
-  dynamic presentAfternoon = '';
+  dynamic countPresent,
+      countPresentNoon,
+      countLate,
+      countLateNoon,
+      countAbsent,
+      countAbsentNoon,
+      countPermission,
+      countPermissionNoon,
+      lateMorning,
+      lateAfternoon,
+      absentMorning,
+      absentAfternoon,
+      permissionMorning,
+      permissionAfternoon,
+      presentMorning,
+      presentAfternoon;
   bool multipleDay = false;
   bool _isLoading = true;
   bool order = false;
@@ -266,7 +270,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     if (mounted) {
       setState(() {
         presentMorning = pc;
-        print('present $presentMorning');
       });
     }
   }
@@ -374,7 +377,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       getAbsentNoon();
       getPermission();
       getPermissionNoon();
-      // fetchAttendance();
       fetchAttendanceById();
       fetchAttendanceByIdNoon();
       fetchNoDate();
@@ -388,98 +390,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       fetchPresentNoon();
     } catch (err) {}
   }
-
-  List<Attendance> checkedDate = [];
-  List<Attendance> users = [];
-
-  // void checkDate(DateTime pick) {
-  //   var checkingDate = attendanceAllDisplay.where((element) =>
-  //       element.date?.day == pick.day &&
-  //       element.date?.month == pick.month &&
-  //       element.date?.year == pick.year);
-  //   setState(() {
-  //     users = checkingDate.toList();
-  //     checkedDate = users;
-  //     checkedDate.sort((a, b) => a.id!.compareTo(b.id!));
-  //   });
-  // }
-
-  DateTime? _selectDate;
-
-  void _byDayDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: startDate,
-      lastDate: endDate,
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-    ).then((picked) {
-      if (picked == null) {
-        return;
-      }
-      // checkDate(picked);
-      setState(() {
-        _selectDate = picked;
-        now = false;
-      });
-    });
-  }
-
-  Color checkColor(AttendanceById attendance) {
-    if (attendance.checkin1!.type == 'absent') {
-      return Colors.red;
-    }
-    if (attendance.checkin1!.type == 'permission') {
-      return Colors.blue;
-    }
-    if (attendance.checkin1!.type == 'checkout') {
-      return Colors.lightGreen;
-    }
-    if (attendance.checkin1!.date!.hour >= 7 &&
-        attendance.checkin1!.date!.minute >= 16 &&
-        attendance.checkin1!.code == 'cin1' &&
-        attendance.checkin1!.type == 'checkin') {
-      return Colors.yellow;
-    }
-    if (attendance.checkin1!.date!.hour >= 13 &&
-        attendance.checkin1!.date!.minute >= 16 &&
-        attendance.checkin1!.code == 'cin2' &&
-        attendance.checkin1!.type == 'checkin') {
-      return Colors.yellow;
-    }
-    if (attendance.checkin1!.date!.hour == 7 &&
-        attendance.checkin1!.date!.minute <= 15 &&
-        attendance.checkin1!.code == 'cin1' &&
-        attendance.checkin1!.type == 'checkin') {
-      return Colors.green;
-    }
-    if (attendance.checkin1!.code == 'cin3') {
-      return Color(0xffd4d2bc);
-    }
-    if (attendance.checkin1!.date!.hour == 13 &&
-        attendance.checkin1!.date!.minute <= 15 &&
-        attendance.checkin1!.code == 'cin2' &&
-        attendance.checkin1!.type == 'checkin') {
-      return Colors.green;
-    } else {
-      return Colors.red;
-    }
-  }
-
-  // List<Appointment> getAppointments() {
-  //   List<Appointment> meetings = <Appointment>[];
-  //   DateTime? startTime;
-  //   DateTime? endTime;
-  //   _attendanceDisplay.asMap().forEach((key, value) {
-  //     Appointment newAppointment = Appointment(
-  //       startTime: value.checkin1?.date as DateTime,
-  //       endTime: value.checkout1?.date as DateTime,
-  //       color: checkColor(value),
-  //     );
-  //     meetings.add(newAppointment);
-  //   });
-  //   return meetings;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -507,27 +417,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
               ),
             )
           : _attendanceNoDateDisplay.isEmpty
-              ? Container(
-                  padding: const EdgeInsets.only(top: 200, left: 40),
-                  child: Column(
-                    children: [
-                      Text(
-                        'NO ATTENDANCE ADDED YET!!',
-                        style: kHeadingThree.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Image.asset(
-                        'assets/images/calendar.jpeg',
-                        width: 220,
-                      ),
-                    ],
-                  ),
-                )
+              ? AttendanceInfoNoAttenance()
               : Column(
                   children: [
                     Padding(
@@ -838,125 +728,22 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin:
-                          const EdgeInsets.only(top: 5, left: 10, right: 10),
-                      height: 120,
-                      width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        color: kLightBlue,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10, top: 20),
-                                    child: Container(
-                                      width: 75,
-                                      height: 75,
-                                      decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(100)),
-                                          border: Border.all(
-                                            width: 1,
-                                            color: Colors.white,
-                                          )),
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(150),
-                                        child: Image.network(
-                                          _attendanceNoDateDisplay[0]
-                                              .list[0]
-                                              .users!
-                                              .image
-                                              .toString(),
-                                          fit: BoxFit.cover,
-                                          width: double.infinity,
-                                          height: 75,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 50,
-                                    margin: const EdgeInsets.only(
-                                        left: 25, top: 25),
-                                    child: Expanded(
-                                      flex: 7,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                'ID: ',
-                                                style: kParagraph.copyWith(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              const SizedBox(
-                                                width: 45,
-                                              ),
-                                              Text(
-                                                _attendanceNoDateDisplay[0]
-                                                    .list[0]
-                                                    .users!
-                                                    .id
-                                                    .toString(),
-                                                style: kParagraph.copyWith(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                'Name: ',
-                                                style: kParagraph.copyWith(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              const SizedBox(
-                                                width: 20,
-                                              ),
-                                              Text(
-                                                _attendanceNoDateDisplay[0]
-                                                    .list[0]
-                                                    .users!
-                                                    .name
-                                                    .toString(),
-                                                style: kParagraph.copyWith(
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    AttendanceInfoNameId(
+                        name: _attendanceNoDateDisplay[0]
+                            .list[0]
+                            .users!
+                            .name
+                            .toString(),
+                        id: _attendanceNoDateDisplay[0]
+                            .list[0]
+                            .users!
+                            .id
+                            .toString(),
+                        image: _attendanceNoDateDisplay[0]
+                            .list[0]
+                            .users!
+                            .image
+                            .toString()),
                     Row(
                       children: [
                         const SizedBox(
@@ -969,45 +756,27 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 10),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Present: ',
-                                      style:
-                                          kHeadingFour.copyWith(color: kWhite),
-                                    ),
-                                    Text(
-                                      afternoon
-                                          ? multipleDay
-                                              ? presentAfternoon.toString()
-                                              : countPresentNoon.toString()
-                                          : multipleDay
-                                              ? presentMorning.toString()
-                                              : countPresent.toString(),
-                                      style:
-                                          kHeadingFour.copyWith(color: kWhite),
-                                    )
-                                  ],
-                                ),
+                                child: AttendanceInfoPresent(
+                                    text: 'Present: ',
+                                    afternoon: afternoon,
+                                    multipleDay: multipleDay,
+                                    presentAfternoon:
+                                        presentAfternoon.toString(),
+                                    countPresentNoon:
+                                        countPresentNoon.toString(),
+                                    presentMorning: presentMorning.toString(),
+                                    countPresent: countPresent.toString()),
                               ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Permission: ',
-                                    style: kHeadingFour.copyWith(color: kWhite),
-                                  ),
-                                  Text(
-                                    afternoon
-                                        ? multipleDay
-                                            ? permissionAfternoon.toString()
-                                            : countPermissionNoon.toString()
-                                        : multipleDay
-                                            ? permissionMorning.toString()
-                                            : countPermission.toString(),
-                                    style: kHeadingFour.copyWith(color: kWhite),
-                                  ),
-                                ],
-                              ),
+                              AttendanceInfoPresent(
+                                  text: 'Permission: ',
+                                  afternoon: afternoon,
+                                  multipleDay: multipleDay,
+                                  presentAfternoon:
+                                      permissionAfternoon.toString(),
+                                  countPresentNoon:
+                                      countPermissionNoon.toString(),
+                                  presentMorning: permissionMorning.toString(),
+                                  countPresent: countPermission.toString()),
                             ],
                           ),
                         ),
@@ -1020,46 +789,25 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Late: ',
-                                      style:
-                                          kHeadingFour.copyWith(color: kWhite),
-                                    ),
-                                    Text(
-                                      afternoon
-                                          ? multipleDay
-                                              ? lateAfternoon.toString()
-                                              : countLateNoon.toString()
-                                          : multipleDay
-                                              ? lateMorning.toString()
-                                              : countLate.toString(),
-                                      style:
-                                          kHeadingFour.copyWith(color: kWhite),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Absent: ',
-                                    style: kHeadingFour.copyWith(color: kWhite),
-                                  ),
-                                  Text(
-                                    afternoon
-                                        ? multipleDay
-                                            ? absentAfternoon.toString()
-                                            : countAbsentNoon.toString()
-                                        : multipleDay
-                                            ? absentMorning.toString()
-                                            : countAbsent.toString(),
-                                    style: kHeadingFour.copyWith(color: kWhite),
-                                  ),
-                                ],
-                              ),
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: AttendanceInfoPresent(
+                                      text: 'Late: ',
+                                      afternoon: afternoon,
+                                      multipleDay: multipleDay,
+                                      presentAfternoon:
+                                          lateAfternoon.toString(),
+                                      countPresentNoon:
+                                          countLateNoon.toString(),
+                                      presentMorning: lateMorning.toString(),
+                                      countPresent: countLate.toString())),
+                              AttendanceInfoPresent(
+                                  text: 'Absent: ',
+                                  afternoon: afternoon,
+                                  multipleDay: multipleDay,
+                                  presentAfternoon: absentAfternoon.toString(),
+                                  countPresentNoon: countAbsentNoon.toString(),
+                                  presentMorning: absentMorning.toString(),
+                                  countPresent: countAbsent.toString())
                             ],
                           ),
                         )
@@ -1071,27 +819,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                     Expanded(
                       child: Column(
                         children: [
-                          // Container(
-                          //   margin: const EdgeInsets.all(20),
-                          //   padding:
-                          //       const EdgeInsets.only(top: 40, right: 10),
-                          //   child: SfCalendar(
-                          //     view: CalendarView.month,
-                          //     dataSource:
-                          //         MeetingDataSource(getAppointments()),
-                          //     todayHighlightColor: Colors.grey,
-                          //     headerHeight: 25,
-                          //     scheduleViewSettings:
-                          //         const ScheduleViewSettings(
-                          //             appointmentTextStyle:
-                          //                 TextStyle(color: Colors.black)),
-                          //     cellBorderColor: Colors.grey,
-                          //     allowedViews: const [
-                          //       CalendarView.month,
-                          //       CalendarView.schedule,
-                          //     ],
-                          //   ),
-                          // ),
                           SizedBox(
                             height: 10,
                           ),
@@ -1111,32 +838,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             ),
                           ),
                           _attendanceDisplay.isEmpty
-                              ? Expanded(
-                                  child: Container(
-                                    padding:
-                                        const EdgeInsets.only(top: 50, left: 0),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          'NO ATTENDANCE ADDED YET!!',
-                                          style: kHeadingThree.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-                                        Text(
-                                          '🤷🏼',
-                                          style: TextStyle(
-                                            fontSize: 80,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
+                              ? AttendanceInfoNoData()
                               : Expanded(
                                   child: Padding(
                                   padding: const EdgeInsets.only(top: 15),
@@ -1234,9 +936,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                             }
                                                             if (selectedValue ==
                                                                 1) {
-                                                              print(
-                                                                  isToday[index]
-                                                                      .id);
                                                               showDialog(
                                                                 context:
                                                                     context,
@@ -1320,9 +1019,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                             }
                                                             if (selectedValue ==
                                                                 1) {
-                                                              print(isTodayNoon[
-                                                                      index]
-                                                                  .id);
                                                               showDialog(
                                                                 context:
                                                                     context,
@@ -1487,10 +1183,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                             }
                                                             if (selectedValue ==
                                                                 1) {
-                                                              print(
-                                                                  attendanceList[
-                                                                          index]
-                                                                      .id);
                                                               showDialog(
                                                                 context:
                                                                     context,
@@ -1574,10 +1266,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                             }
                                                             if (selectedValue ==
                                                                 1) {
-                                                              print(
-                                                                  attendanceListNoon[
-                                                                          index]
-                                                                      .id);
                                                               showDialog(
                                                                 context:
                                                                     context,
