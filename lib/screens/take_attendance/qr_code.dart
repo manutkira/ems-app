@@ -1,7 +1,9 @@
 import 'package:ems/models/attendance.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/utils/services/attendance_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -70,6 +72,11 @@ class _QRCodeState extends ConsumerState<QRCode> {
         ? 200.0
         : 250.0;
 
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    String type =
+        "${widget.type == AttendanceType.typeCheckIn ? local?.checkin : local?.checkout}";
+
     return _isAddingAttendance
         ? _loading(context)
         : Container(
@@ -99,7 +106,7 @@ class _QRCodeState extends ConsumerState<QRCode> {
                 const SizedBox(
                   height: 20,
                 ),
-                Text("Scan the code to ${widget.type}"),
+                Text("${local?.scanToType(type)}"),
                 const SizedBox(
                   height: 20,
                 ),
@@ -115,7 +122,7 @@ class _QRCodeState extends ConsumerState<QRCode> {
                   ),
                   onPressed: addAttendance,
                   child: Text(
-                    'Check Myself ${widget.type == AttendanceType.typeCheckIn ? "In" : "Out"}',
+                    '${local?.checkMyself(type)}',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),

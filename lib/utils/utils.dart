@@ -1,3 +1,4 @@
+import 'package:ems/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -99,3 +100,6 @@ Future<TimeOfDay?> buildTimePicker({
     initialTime: time,
   );
 }
+
+bool isInEnglish(BuildContext context) =>
+    Localizations.localeOf(context) == L10n.all[1];

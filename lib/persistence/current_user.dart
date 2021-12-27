@@ -38,13 +38,13 @@ class CurrentUserStore {
     await Hive.openBox<String>(tokenBoxName);
 
     final userBox = Hive.box<User>(currentUserBoxName);
-    final box = Hive.box<String>(tokenBoxName);
+    final tokenBox = Hive.box<String>(tokenBoxName);
 
     /// fetch logged in user's information
     try {
-      var token = box.get('token');
+      var token = tokenBox.get('token');
       if (token == null || token.isEmpty) {
-        await box.delete('token');
+        await tokenBox.delete('token');
         await userBox.delete(currentUserBoxName);
       }
 
@@ -56,7 +56,7 @@ class CurrentUserStore {
       /// after that set current user to returned user;
       userBox.put(currentUserBoxName, user);
     } catch (err) {
-      await box.delete('token');
+      await tokenBox.delete('token');
       await userBox.delete(currentUserBoxName);
     }
   }

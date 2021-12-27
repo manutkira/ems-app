@@ -1,0 +1,118 @@
+{
+  "language": "English",
+  "@language": {
+    "description": "The current language"
+  },
+  "hello": "Hello, {name}",
+  "@hello": {
+    "description": "greeting used in home screens",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "timeText": "It's {time} on {date}.",
+  "@timeText": {
+    "description": "time used in home screens",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "date": {
+        "type" : "String"
+      }
+    }
+  },
+  "checkin": "Check In",
+  "@checkin": {
+    "description": "used in check status widget"
+  },
+  "checkout": "Check Out",
+  "@checkout": {
+    "description": "used in check status widget"
+  },
+  "morning": "Morning",
+  "@morning": {
+    "description": "used in check status widget"
+  },
+  "afternoon": "Afternoon",
+  "@afternoon": {
+    "description": "used in check status widget"
+  },
+  "loading": "Loading",
+  "@loading": {
+    "description": "used in check status widget"
+  },
+  "checkInOut": "Check In/Out",
+  "@checkInOut": {
+    "description": "Home screen title"
+  },
+  "attendance": "Attendance",
+  "@attendance": {
+    "description": "Home screen title"
+  },
+  "myAttendance": "My Attendance",
+  "@myAttendance": {
+    "description": "Home screen title"
+  },
+  "overtime": "Overtime",
+  "@overtime": {
+    "description": "Home screen title"
+  },
+  "myOvertime": "My Overtime",
+  "@myOvertime": {
+    "description": "Home screen title"
+  },
+  "myProfile": "My Profile",
+  "@myProfile": {
+    "description": "slide app drawer"
+  },
+  "editProfile": "Edit Profile",
+  "@editProfile": {
+    "description": "slide app drawer"
+  },
+  "changePassword": "Change Password",
+  "@changePassword": {
+    "description": "slide app drawer"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Home screen title"
+  },
+  "flash": "Flash",
+  "@flash": {
+    "description": "Home screen title"
+  },
+  "scanInstruction": "Keep the QR code in the center",
+  "@scanInstruction": {
+    "description": "Home screen title"
+  },
+  "allowCamera": "Please allow camera permission to scan QR code.",
+  "@allowCamera": {
+    "description": "Home screen title"
+  },
+  "savingAttendance": "Saving attendance",
+  "@savingAttendance": {
+    "description": "Home screen title"
+  },
+  "scanToType": "Scan the code to {type}",
+  "@scanToType": {
+    "description": "qr code screen",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "checkMyself": "{type} myself",
+  "@checkMyself": {
+    "description": "qr code screen",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  }
+
+}

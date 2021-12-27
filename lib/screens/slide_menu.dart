@@ -6,8 +6,10 @@ import 'package:ems/screens/your_profile/your_profile_edit.dart';
 import 'package:ems/screens/your_profile/your_profile_password.dart';
 import 'package:ems/screens/your_profile/your_profile_view.dart';
 import 'package:ems/utils/services/auth_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -24,6 +26,9 @@ class MenuDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Size _size = MediaQuery.of(context).size;
+
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
 
     return Drawer(
       child: Container(
@@ -84,7 +89,10 @@ class MenuDrawer extends ConsumerWidget {
                         type: MaterialType.transparency,
                         child: ListTile(
                           leading: const Icon(MdiIcons.accountCircleOutline),
-                          title: const Text('Your Profile'),
+                          title: Text(
+                            "${local?.myProfile}",
+                            style: TextStyle(fontSize: isEnglish ? 16 : 14),
+                          ),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -102,7 +110,10 @@ class MenuDrawer extends ConsumerWidget {
                         type: MaterialType.transparency,
                         child: ListTile(
                           leading: const Icon(MdiIcons.pencil),
-                          title: const Text('Edit Profile'),
+                          title: Text(
+                            "${local?.editProfile}",
+                            style: TextStyle(fontSize: isEnglish ? 16 : 14),
+                          ),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -120,7 +131,10 @@ class MenuDrawer extends ConsumerWidget {
                         type: MaterialType.transparency,
                         child: ListTile(
                           leading: const Icon(MdiIcons.key),
-                          title: const Text('Change Password'),
+                          title: Text(
+                            "${local?.changePassword}",
+                            style: TextStyle(fontSize: isEnglish ? 16 : 14),
+                          ),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -138,7 +152,10 @@ class MenuDrawer extends ConsumerWidget {
                         type: MaterialType.transparency,
                         child: ListTile(
                           leading: const Icon(MdiIcons.arrowLeftBottom),
-                          title: const Text('Logout'),
+                          title: Text(
+                            "${local?.logout}",
+                            style: TextStyle(fontSize: isEnglish ? 16 : 14),
+                          ),
                           onTap: () async {
                             try {
                               await _auth.logout();

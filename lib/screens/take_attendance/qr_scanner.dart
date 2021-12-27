@@ -6,9 +6,11 @@ import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/utils/services/attendance_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/statuses/info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -26,7 +28,6 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   bool noPermission = false;
   bool isAddingAttendance = false;
-
   final AttendanceService _attService = AttendanceService.instance;
 
   /// helps with hotreload
@@ -107,12 +108,19 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: isAddingAttendance ? _loading(context) : _buildScanner);
+  void initState() {
+    super.initState();
   }
 
-  Widget get _buildScanner {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: isAddingAttendance ? _loading(context) : _buildScanner(context));
+  }
+
+  Widget _buildScanner(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Container(
       color: kDarkestBlue,
       child: Stack(
@@ -129,18 +137,22 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
                     onPressed: () async {
                       await controller?.toggleFlash();
                     },
-                    child: const Text(
-                      'Flash',
-                      style: TextStyle(fontSize: 20),
+                    child: Text(
+                      '${local?.flash}',
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             top: 80,
-            child: StatusInfo(text: "Keep the QR code in the center"),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: StatusInfo(text: "${local?.scanInstruction}"),
+            ),
           ),
         ],
       ),
@@ -194,6 +206,8 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
 
   /// check permission
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     if (!p) {
       setState(() {
@@ -203,7 +217,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
         SnackBar(
             backgroundColor: kRedBackground,
             content: Text(
-              'Please allow camera permission to use this feature.',
+              '${local?.allowCamera}',
               style: kParagraph.copyWith(color: kRedText),
             )),
       );
@@ -220,21 +234,24 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   /// loading widget
   Widget _loading(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+
     return Container(
       width: _size.width,
       height: _size.height,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            CircularProgressIndicator(
+          children: [
+            const CircularProgressIndicator(
               color: kWhite,
               strokeWidth: 4,
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
-            Text("Creating Attendance")
+            Text("${local?.savingAttendance}")
           ],
         ),
       ),
