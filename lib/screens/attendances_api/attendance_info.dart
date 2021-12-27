@@ -33,7 +33,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
   AttendanceByIdService _overtimeService = AttendanceByIdService.instance;
   List<AttendanceWithDate> _attendanceDisplay = [];
-  List<AttendanceWithDate> _attendanceDisplayNoon = [];
   List<AttendanceWithDate> _attendanceNoDateDisplay = [];
 
   String dropDownValue = 'Morning';
@@ -61,11 +60,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Appointment>? _appointment;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
-  List<AttendanceWithDate>? isToday;
+  List isToday = [];
+  List isTodayNoon = [];
   bool now = true;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
-  List sum = [];
   List attendanceList = [];
   List attendanceListNoon = [];
 
@@ -102,58 +101,60 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             element.date.day == now.day &&
             element.date.month == now.month &&
             element.date.year == now.year);
-        isToday = today.toList();
+        List todayFlat = today.expand((element) => element.list).toList();
+        isToday = todayFlat
+            .where((element) =>
+                element.code != 'cin2' &&
+                element.code != 'cout2' &&
+                element.code != 'cout3' &&
+                element.code != 'cin3')
+            .toList();
       });
       List flat = _attendanceDisplay.expand((element) => element.list).toList();
       attendanceList = flat
-          .where((element) => element.code != 'cin2' && element.code != 'cin3')
+          .where((element) =>
+              element.code != 'cin2' &&
+              element.code != 'cout2' &&
+              element.code != 'cout3' &&
+              element.code != 'cin3')
           .toList();
     } catch (e) {}
   }
 
   fetchAttendanceByIdNoon() async {
     try {
-      List<AttendanceWithDate> attendanceDisplayNoon =
+      List<AttendanceWithDate> attendanceDisplay =
           await _attendanceService.findManyByUserId(
         userId: widget.id,
         start: startDate,
         end: endDate,
       );
       setState(() {
-        _attendanceDisplayNoon = attendanceDisplayNoon;
+        _attendanceDisplay = attendanceDisplay;
         _isLoading = false;
         var now = DateTime.now();
-        var today = attendanceDisplayNoon.where((element) =>
+        var today = attendanceDisplay.where((element) =>
             element.date.day == now.day &&
             element.date.month == now.month &&
             element.date.year == now.year);
-        isToday = today.toList();
+        List todayFlat = today.expand((element) => element.list).toList();
+        isTodayNoon = todayFlat
+            .where((element) =>
+                element.code != 'cin1' &&
+                element.code != 'cout1' &&
+                element.code != 'cout3' &&
+                element.code != 'cin3')
+            .toList();
       });
-      List flat =
-          _attendanceDisplayNoon.expand((element) => element.list).toList();
+      List flat = _attendanceDisplay.expand((element) => element.list).toList();
       attendanceListNoon = flat
-          .where((element) => element.code != 'cin1' && element.code != 'cin3')
+          .where((element) =>
+              element.code != 'cin1' &&
+              element.code != 'cout1' &&
+              element.code != 'cout3' &&
+              element.code != 'cin3')
           .toList();
     } catch (e) {}
-  }
-
-  List mapAttendance = [];
-
-  int countLength() {
-    int a = 0;
-    _attendanceDisplay.forEach((element) {
-      a += element.list.length;
-    });
-    return a;
-  }
-
-  int countTodayLength() {
-    int a = 0;
-    _attendanceDisplay.forEach((element) {
-      a += element.list.length;
-    });
-    print(a);
-    return a;
   }
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/attendances";
@@ -841,6 +842,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                               fetchPresent();
                                               fetchPresentNoon();
                                               fetchAttendanceById();
+                                              fetchAttendanceByIdNoon();
                                             }
                                             if (sortByValue == 'All Time') {
                                               setState(() {
@@ -1191,21 +1193,35 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  Text(
-                                                    DateFormat(
-                                                            'dd/MM/yyyy HH:mm')
-                                                        .format(isToday?[0]
-                                                            .list[index]
-                                                            .date as DateTime),
-                                                  ),
+                                                  afternoon
+                                                      ? Text(DateFormat(
+                                                              'dd/MM/yyyy HH:mm')
+                                                          .format(
+                                                              isTodayNoon[index]
+                                                                      .date
+                                                                  as DateTime))
+                                                      : Text(
+                                                          DateFormat(
+                                                                  'dd/MM/yyyy HH:mm')
+                                                              .format(isToday[
+                                                                          index]
+                                                                      .date
+                                                                  as DateTime),
+                                                        ),
                                                   Row(
                                                     children: [
-                                                      Text(
-                                                          isToday![0]
-                                                              .list[index]
-                                                              .type
-                                                              .toString(),
-                                                          style: kParagraph),
+                                                      afternoon
+                                                          ? Text(
+                                                              isTodayNoon[index]
+                                                                  .type
+                                                                  .toString(),
+                                                              style: kParagraph)
+                                                          : Text(
+                                                              isToday[index]
+                                                                  .type
+                                                                  .toString(),
+                                                              style:
+                                                                  kParagraph),
                                                       PopupMenuButton(
                                                         color: Colors.black,
                                                         shape: const RoundedRectangleBorder(
@@ -1216,73 +1232,89 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                             10))),
                                                         onSelected: (int
                                                             selectedValue) async {
-                                                          // if (selectedValue ==
-                                                          //     0) {
-                                                          //   final int userId =
-                                                          //       isToday![index]
-                                                          //           .userId!;
-                                                          //   final int id =
-                                                          //       isToday![index]
-                                                          //           .id!;
-                                                          //   final String type =
-                                                          //       isToday![index]
-                                                          //           .type!;
-                                                          //   final DateTime date =
-                                                          //       isToday![index]
-                                                          //           .date!;
-                                                          //   await Navigator.of(
-                                                          //           context)
-                                                          //       .push(
-                                                          //     MaterialPageRoute(
-                                                          //       builder: (ctx) =>
-                                                          //           AttedancesEdit(
-                                                          //         id: id,
-                                                          //         userId: userId,
-                                                          //         type: type,
-                                                          //         date: date,
-                                                          //       ),
-                                                          //     ),
-                                                          //   );
-                                                          //   attendanceAllDisplay =
-                                                          //       [];
-                                                          //   _attendanceAllService
-                                                          //       .findManyByUserId(
-                                                          //           userId:
-                                                          //               widget.id)
-                                                          //       .then((value) {
-                                                          //     setState(() {
-                                                          //       /// TODO: change this List<AttendanceWithDate>
-                                                          //       // attendanceAllDisplay
-                                                          //       //     .addAll(
-                                                          //       //         value);
-                                                          //       _isLoading =
-                                                          //           false;
-                                                          //       var now = DateTime
-                                                          //           .now();
-                                                          //       var today = attendanceAllDisplay
-                                                          //           .where((element) =>
-                                                          //               element.date?.day == now.day &&
-                                                          //               element.date
-                                                          //                       ?.month ==
-                                                          //                   now
-                                                          //                       .month &&
-                                                          //               element.date
-                                                          //                       ?.year ==
-                                                          //                   now.year)
-                                                          //           .toList();
-                                                          //       isToday = today
-                                                          //           .toList();
-                                                          //       isToday?.sort((a,
-                                                          //               b) =>
-                                                          //           a.id!.compareTo(
-                                                          //               b.id!));
-                                                          //     });
-                                                          //   });
-                                                          // }
+                                                          if (afternoon ==
+                                                              false) {
+                                                            if (selectedValue ==
+                                                                0) {
+                                                              final int userId =
+                                                                  isToday[index]
+                                                                      .userId;
+                                                              final int id =
+                                                                  isToday[index]
+                                                                      .id;
+                                                              final String
+                                                                  type =
+                                                                  isToday[index]
+                                                                      .type;
+                                                              final DateTime
+                                                                  date =
+                                                                  isToday[index]
+                                                                      .date;
+                                                              await Navigator.of(
+                                                                      context)
+                                                                  .push(
+                                                                MaterialPageRoute(
+                                                                  builder: (ctx) =>
+                                                                      AttedancesEdit(
+                                                                    id: id,
+                                                                    userId:
+                                                                        userId,
+                                                                    type: type,
+                                                                    date: date,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                              attendanceAllDisplay =
+                                                                  [];
+                                                              fetchAttendanceById();
+                                                            }
+                                                          }
+                                                          if (afternoon ==
+                                                              true) {
+                                                            if (selectedValue ==
+                                                                0) {
+                                                              final int userId =
+                                                                  isTodayNoon[
+                                                                          index]
+                                                                      .userId;
+                                                              final int id =
+                                                                  isTodayNoon[
+                                                                          index]
+                                                                      .id;
+                                                              final String
+                                                                  type =
+                                                                  isTodayNoon[
+                                                                          index]
+                                                                      .type;
+                                                              final DateTime
+                                                                  date =
+                                                                  isTodayNoon[
+                                                                          index]
+                                                                      .date;
+                                                              await Navigator.of(
+                                                                      context)
+                                                                  .push(
+                                                                MaterialPageRoute(
+                                                                  builder: (ctx) =>
+                                                                      AttedancesEdit(
+                                                                    id: id,
+                                                                    userId:
+                                                                        userId,
+                                                                    type: type,
+                                                                    date: date,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                              attendanceAllDisplay =
+                                                                  [];
+                                                              fetchAttendanceByIdNoon();
+                                                            }
+                                                          }
                                                           // if (selectedValue ==
                                                           //     1) {
-                                                          //   print(isToday?[index]
-                                                          //       .id);
+                                                          //   print(
+                                                          //       isToday[index]
+                                                          //           .id);
                                                           //   showDialog(
                                                           //     context: context,
                                                           //     builder: (ctx) =>
@@ -1299,7 +1331,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                           //                     context)
                                                           //                 .pop();
                                                           //             deleteData(
-                                                          //                 isToday?[index].id
+                                                          //                 isToday[index].id
                                                           //                     as int);
                                                           //           },
                                                           //           child: Text(
@@ -1408,73 +1440,88 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                                             10))),
                                                         onSelected: (int
                                                             selectedValue) async {
-                                                          // if (selectedValue ==
-                                                          //     0) {
-                                                          //   final int userId =
-                                                          //       checkedDate[index]
-                                                          //           .userId!;
-                                                          //   final int id =
-                                                          //       checkedDate[index]
-                                                          //           .id!;
-                                                          //   final String type =
-                                                          //       checkedDate[index]
-                                                          //           .type!;
-                                                          //   final DateTime date =
-                                                          //       checkedDate[index]
-                                                          //           .date!;
-                                                          //   await Navigator.of(
-                                                          //           context)
-                                                          //       .push(
-                                                          //     MaterialPageRoute(
-                                                          //       builder: (ctx) =>
-                                                          //           AttedancesEdit(
-                                                          //         id: id,
-                                                          //         userId: userId,
-                                                          //         type: type,
-                                                          //         date: date,
-                                                          //       ),
-                                                          //     ),
-                                                          //   );
-                                                          //   attendanceAllDisplay =
-                                                          //       [];
-                                                          //   checkedDate = [];
-                                                          //   users = [];
-                                                          //   _attendanceAllService
-                                                          //       .findManyByUserId(
-                                                          //           userId:
-                                                          //               widget.id)
-                                                          //       .then((value) {
-                                                          //     setState(() {
-                                                          //       /// TODO: change this List<AttendanceWithDate>
-                                                          //       // attendanceAllDisplay
-                                                          //       //     .addAll(
-                                                          //       //         value);
-                                                          //       _isLoading =
-                                                          //           false;
-                                                          //       var checkingDate = attendanceAllDisplay.where((element) =>
-                                                          //           element.date?.day == _selectDate?.day &&
-                                                          //           element.date
-                                                          //                   ?.month ==
-                                                          //               _selectDate
-                                                          //                   ?.month &&
-                                                          //           element.date
-                                                          //                   ?.year ==
-                                                          //               _selectDate
-                                                          //                   ?.year);
-                                                          //       setState(() {
-                                                          //         users =
-                                                          //             checkingDate
-                                                          //                 .toList();
-                                                          //         checkedDate =
-                                                          //             users;
-                                                          //         checkedDate.sort((a,
-                                                          //                 b) =>
-                                                          //             a.id!.compareTo(
-                                                          //                 b.id!));
-                                                          //       });
-                                                          //     });
-                                                          //   });
-                                                          // }
+                                                          if (afternoon ==
+                                                              false) {
+                                                            if (selectedValue ==
+                                                                0) {
+                                                              final int userId =
+                                                                  attendanceList[
+                                                                          index]
+                                                                      .userId;
+                                                              final int id =
+                                                                  attendanceList[
+                                                                          index]
+                                                                      .id;
+                                                              final String
+                                                                  type =
+                                                                  attendanceList[
+                                                                          index]
+                                                                      .type;
+                                                              final DateTime
+                                                                  date =
+                                                                  attendanceList[
+                                                                          index]
+                                                                      .date;
+                                                              await Navigator.of(
+                                                                      context)
+                                                                  .push(
+                                                                MaterialPageRoute(
+                                                                  builder: (ctx) =>
+                                                                      AttedancesEdit(
+                                                                    id: id,
+                                                                    userId:
+                                                                        userId,
+                                                                    type: type,
+                                                                    date: date,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                              attendanceAllDisplay =
+                                                                  [];
+                                                              fetchAttendanceById();
+                                                            }
+                                                          }
+                                                          if (afternoon ==
+                                                              true) {
+                                                            if (selectedValue ==
+                                                                0) {
+                                                              final int userId =
+                                                                  attendanceListNoon[
+                                                                          index]
+                                                                      .userId;
+                                                              final int id =
+                                                                  attendanceListNoon[
+                                                                          index]
+                                                                      .id;
+                                                              final String
+                                                                  type =
+                                                                  attendanceListNoon[
+                                                                          index]
+                                                                      .type;
+                                                              final DateTime
+                                                                  date =
+                                                                  attendanceListNoon[
+                                                                          index]
+                                                                      .date;
+                                                              await Navigator.of(
+                                                                      context)
+                                                                  .push(
+                                                                MaterialPageRoute(
+                                                                  builder: (ctx) =>
+                                                                      AttedancesEdit(
+                                                                    id: id,
+                                                                    userId:
+                                                                        userId,
+                                                                    type: type,
+                                                                    date: date,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                              attendanceAllDisplay =
+                                                                  [];
+                                                              fetchAttendanceByIdNoon();
+                                                            }
+                                                          }
                                                           // if (selectedValue ==
                                                           //     1) {
                                                           //   print(
@@ -1557,8 +1604,12 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             );
                                     },
                                     itemCount: now
-                                        ? countTodayLength()
-                                        : attendanceList.length,
+                                        ? afternoon
+                                            ? isTodayNoon.length
+                                            : isToday.length
+                                        : afternoon
+                                            ? attendanceListNoon.length
+                                            : attendanceList.length,
                                   ),
                                 ))
                         ],
