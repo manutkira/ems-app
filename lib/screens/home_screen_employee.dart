@@ -6,8 +6,7 @@ import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/check_in_screen.dart';
 import 'package:ems/screens/take_attendance/check_out_screen.dart';
-import 'package:ems/test/test.dart';
-import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/check_status.dart';
 import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,19 +29,7 @@ class HomeScreenEmployee extends ConsumerStatefulWidget {
 class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var time = 'calculating';
-  dynamic employeeCount = "loading...";
   late Timer _timer;
-  final UserService _userService = UserService.instance;
-
-  // Get total employee counts
-  getCount() async {
-    var c = await _userService.count();
-    if (mounted) {
-      setState(() {
-        employeeCount = c;
-      });
-    }
-  }
 
   getTime() async {
     if (mounted) {
@@ -54,10 +41,43 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
     }
   }
 
+  void _goToMyAttendance(int userId) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AttendancesInfoScreen(userId),
+      ),
+    );
+  }
+
+  void _goToMyOvertime(User? currentUser) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => IndividualOvertimeScreen(
+          user: currentUser as User,
+        ),
+      ),
+    );
+  }
+
+  void _goToCheckoutScreen() {
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => const CheckOutScreen(),
+      ),
+    );
+  }
+
+  void _goToCheckInScreen() {
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => const CheckInScreen(),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
-    getCount();
     getTime();
   }
 
@@ -111,53 +131,33 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                                   ? listFromBox[0]
                                   : null;
 
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => const TestService(),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  "Hello, ${currentUser?.name}",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              return Text(
+                                "Hello, ${currentUser?.name}",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               );
                             },
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            "It's $time on ${DateFormat('dd-MM-yyyy').format(DateTime.now())}.",
+                            "It's $time on ${getDateStringFromDateTime(DateTime.now())}.",
                             style: kSubtitleTwo,
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 26),
-                    CheckStatus(),
+                    const CheckStatus(),
                   ],
                 ),
               ],
             ),
-            _buildSpacer,
+            _buildSpacerVertical,
 
             // check in/out
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 15,
-              ),
-              child: Text(
-                'Check In/Out',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+            _buildTitle('Check In/Out'),
             Container(
               height: 170,
               padding: const EdgeInsets.symmetric(
@@ -169,14 +169,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                   Expanded(
                     flex: 1,
                     child: MenuItem(
-                      onTap: () {
-                        getCount();
-                        Navigator.of(context).push(
-                          CupertinoPageRoute(
-                            builder: (context) => const CheckInScreen(),
-                          ),
-                        );
-                      },
+                      onTap: () => _goToCheckInScreen,
                       illustration: SvgPicture.asset(
                         "assets/images/tick.svg",
                         width: MediaQuery.of(context).size.width * 0.15,
@@ -188,13 +181,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                   Expanded(
                     flex: 1,
                     child: MenuItem(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          CupertinoPageRoute(
-                            builder: (context) => const CheckOutScreen(),
-                          ),
-                        );
-                      },
+                      onTap: () => _goToCheckoutScreen,
                       illustration: SvgPicture.asset(
                         "assets/images/close.svg",
                         width: MediaQuery.of(context).size.width * 0.15,
@@ -205,21 +192,10 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                 ],
               ),
             ),
-            _buildSpacer,
+            _buildSpacerVertical,
 
             // current user attendance
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 15,
-              ),
-              child: Text(
-                'Attendance',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+            _buildTitle('Attendance'),
             ValueListenableBuilder(
                 valueListenable:
                     ref.watch(currentUserProvider).currentUserListenable,
@@ -233,15 +209,8 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                       vertical: 15,
                       horizontal: 15,
                     ),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                AttendancesInfoScreen(currentUser?.id as int),
-                          ),
-                        );
-                      },
+                    child: GestureDetector(
+                      onTap: () => _goToMyAttendance(currentUser?.id as int),
                       child: SizedBox(
                         width: _size.width,
                         height: 175,
@@ -277,21 +246,10 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                     ),
                   );
                 }),
-            _buildSpacer,
+            _buildSpacerVertical,
 
             // current user overtime
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 15,
-              ),
-              child: Text(
-                'Overtime',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+            _buildTitle('Overtime'),
             Container(
               height: 170,
               padding: const EdgeInsets.symmetric(
@@ -307,13 +265,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                       listFromBox.isNotEmpty ? listFromBox[0] : null;
 
                   return GestureDetector(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => IndividualOvertimeScreen(
-                          user: currentUser as User,
-                        ),
-                      ),
-                    ),
+                    onTap: () => _goToMyOvertime(currentUser),
                     child: SizedBox(
                       width: _size.width,
                       height: 175,
@@ -356,6 +308,21 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
     );
   }
 
+  Widget _buildTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15,
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
   PreferredSizeWidget get _buildAppBar {
     return AppBar(
       leading: GestureDetector(
@@ -372,7 +339,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
     );
   }
 
-  Widget get _buildSpacer {
+  Widget get _buildSpacerVertical {
     return const SizedBox(height: 15);
   }
 }
