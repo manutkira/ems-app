@@ -6,7 +6,7 @@ import '../constants.dart';
 class MenuItem extends StatelessWidget {
   final illustration;
   final String label;
-  final Function onTap;
+  final Function() onTap;
   const MenuItem(
       {Key? key,
       required this.onTap,
@@ -17,9 +17,7 @@ class MenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        onTap();
-      },
+      onTap: onTap,
       child: AspectRatio(
         aspectRatio: 1,
         child: Container(

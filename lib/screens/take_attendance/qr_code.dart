@@ -1,7 +1,6 @@
 import 'package:ems/models/attendance.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/utils/services/attendance_service.dart';
-import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,7 +72,6 @@ class _QRCodeState extends ConsumerState<QRCode> {
         : 250.0;
 
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     String type =
         "${widget.type == AttendanceType.typeCheckIn ? local?.checkin : local?.checkout}";
 
@@ -136,6 +134,8 @@ class _QRCodeState extends ConsumerState<QRCode> {
       {required backgroundColor,
       required Color textColor,
       required String type}) {
+    AppLocalizations? local = AppLocalizations.of(context);
+
     return SnackBar(
       duration: const Duration(seconds: 2),
       backgroundColor: backgroundColor,
@@ -149,7 +149,7 @@ class _QRCodeState extends ConsumerState<QRCode> {
               color: textColor,
             ),
             Text(
-              '$type successfully!',
+              '$type ${local?.successfully}!',
               style: kParagraph.copyWith(color: textColor),
             ),
           ],
@@ -161,21 +161,24 @@ class _QRCodeState extends ConsumerState<QRCode> {
   /// loading widget
   Widget _loading(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+
+    AppLocalizations? local = AppLocalizations.of(context);
+
     return Container(
       width: _size.width,
       height: _size.height,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            CircularProgressIndicator(
+          children: [
+            const CircularProgressIndicator(
               color: kWhite,
               strokeWidth: 4,
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
-            Text("Creating Attendance")
+            Text("${local?.savingAttendance}")
           ],
         ),
       ),

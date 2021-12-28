@@ -10,6 +10,7 @@ import 'package:ems/widgets/statuses/error.dart';
 import 'package:ems/widgets/textbox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -27,6 +28,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   String password = '';
   String oldPassword = '';
   String error = "";
+  String mainError = "";
   bool isUploadingProfile = false;
   bool isUploadingID = false;
 
@@ -85,6 +87,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
 
   Future<File?> cropImage(
       {required String filePath, required String field}) async {
+    AppLocalizations? local = AppLocalizations.of(context);
+
     File? cropped = await ImageCropper.cropImage(
       sourcePath: filePath,
       maxHeight: 500,
@@ -94,9 +98,9 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
           : const CropAspectRatio(ratioX: 1, ratioY: 1),
       compressQuality: 100,
       compressFormat: ImageCompressFormat.jpg,
-      androidUiSettings: const AndroidUiSettings(
+      androidUiSettings: AndroidUiSettings(
         toolbarColor: kBlue,
-        toolbarTitle: "Crop the image",
+        toolbarTitle: "${local?.cropImage}",
         toolbarWidgetColor: kWhite,
         statusBarColor: kBlue,
         backgroundColor: kBlue,
@@ -135,7 +139,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
         } catch (err) {
           // write error handling here
           setState(() {
-            error = err.toString();
+            mainError = err.toString();
           });
         }
       }
@@ -155,11 +159,12 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+    AppLocalizations? local = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Edit Profile",
+        title: Text(
+          "${local?.editProfile}",
         ),
         actions: [
           IconButton(
@@ -185,7 +190,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                   isDarkBackground: false,
                 ),
               ),
-              const SizedBox(height: 10),
+              _buildSpacerHeight(),
               Center(
                 child: isUploadingProfile
                     ? Row(
@@ -201,7 +206,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            'Changing',
+                            "${local?.changing}",
                             style: kParagraph.copyWith(
                                 fontWeight: FontWeight.w700),
                           ),
@@ -227,13 +232,15 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                               children: [
                                 const Icon(
                                   MdiIcons.cameraOutline,
-                                  size: 30,
+                                  size: 20,
                                 ),
                                 const SizedBox(width: 10),
                                 Text(
-                                  'Camera',
+                                  '${local?.camera}',
                                   style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.w500),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ],
                             ),
@@ -256,13 +263,15 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                               children: [
                                 const Icon(
                                   MdiIcons.image,
-                                  size: 30,
+                                  size: 20,
                                 ),
                                 const SizedBox(width: 10),
                                 Text(
-                                  'Gallery',
+                                  '${local?.gallery}',
                                   style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.w500),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ],
                             ),
@@ -270,82 +279,82 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         ],
                       ),
               ),
-              const SizedBox(
-                height: 40,
-              ),
+              const SizedBox(height: 40),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Visibility(
-                    visible: error.isNotEmpty,
+                    visible: mainError.isNotEmpty,
                     child: Container(
                       margin: const EdgeInsets.only(bottom: 40),
                       child: StatusError(
-                        text: error,
+                        text: mainError,
                       ),
                     ),
                   ),
                   Text(
-                    "Basic Info",
+                    "${local?.basicInfo}",
                     style: kHeadingThree.copyWith(fontWeight: FontWeight.w400),
                   ),
-                  const SizedBox(height: 20),
-                  RowWithInput(
+                  _buildSpacerHeight(),
+                  rowWithInput(
                     size: _size,
                     defaultText: _user.name,
-                    label: 'Name',
-                    textHint: 'username',
+                    label: "${local?.name}",
+                    textHint: "${local?.name}",
                     getValue: (value) {
                       setState(() {
                         _user.name = "$value";
                       });
                     },
                   ),
-                  const SizedBox(height: 20),
-                  RowWithInput(
+                  _buildSpacerHeight(),
+                  rowWithInput(
                     size: _size,
                     defaultText: _user.phone,
-                    label: 'Phone',
-                    textHint: 'Phone Number',
+                    label: "${local?.phoneNumber}",
+                    textHint: "${local?.phoneNumber}",
                     getValue: (value) {
                       setState(() {
                         _user.phone = "$value";
                       });
                     },
                   ),
-                  const SizedBox(height: 20),
-                  RowWithInput(
+                  _buildSpacerHeight(),
+                  rowWithInput(
                     size: _size,
                     defaultText: _user.email,
-                    label: 'Email',
-                    textHint: 'Email',
+                    label: "${local?.email}",
+                    textHint: "${local?.email}",
                     getValue: (value) {
                       setState(() {
                         _user.email = "$value";
                       });
                     },
                   ),
-                  const SizedBox(height: 20),
-                  RowWithInput(
+                  _buildSpacerHeight(),
+                  rowWithInput(
                     size: _size,
                     defaultText: _user.address,
-                    label: 'Address',
-                    textHint: 'Phnom Penh',
+                    label: "${local?.address}",
+                    textHint: "${local?.address}",
                     getValue: (value) {
                       setState(() {
                         _user.address = "$value";
                       });
                     },
                   ),
-                  const SizedBox(height: 20),
+                  _buildSpacerHeight(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
                         child: Text(
-                          "National ID",
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.w700),
+                          "${local?.nationalId}",
+                          style: kParagraph.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
                       Flexible(
@@ -379,62 +388,48 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Employment Info",
+                    "${local?.employeeInfo}",
                     style: kHeadingThree.copyWith(fontWeight: FontWeight.w400),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  RowWithInput(
+                  const SizedBox(height: 20),
+                  rowWithInput(
                     size: _size,
                     defaultText: _user.position,
-                    label: 'Position',
-                    textHint: 'Employee',
+                    label: "${local?.position}",
+                    textHint: "${local?.position}",
                     getValue: (value) {
                       setState(() {
                         _user.position = "$value";
                       });
                     },
                   ),
-                  const SizedBox(height: 20),
-                  RowWithInput(
+                  _buildSpacerHeight(),
+                  rowWithInput(
                     size: _size,
                     defaultText: _user.skill,
-                    label: 'Skill',
-                    textHint: 'design...',
+                    label: "${local?.skill}",
+                    textHint: "${local?.design}...",
                     getValue: (value) {
                       setState(() {
                         _user.skill = "$value";
                       });
                     },
                   ),
-                  const SizedBox(height: 20),
-                  RowWithInput(
+                  _buildSpacerHeight(),
+                  rowWithInput(
                     size: _size,
                     icon: MdiIcons.currencyUsd,
                     defaultText: _user.salary,
-                    label: 'Salary',
-                    textHint: '999',
+                    label: "${local?.salary}",
+                    textHint: "${local?.salary}",
                     getValue: (value) {
                       setState(() {
                         _user.salary = "$value";
                       });
                     },
                   ),
-                  const SizedBox(height: 20),
-                  RowWithInput(
-                    size: _size,
-                    defaultText: _user.status,
-                    label: 'Status',
-                    textHint: 'Active',
-                    getValue: (value) {
-                      setState(() {
-                        _user.status = "$value";
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  RowWithInput(
+                  _buildSpacerHeight(),
+                  rowWithInput(
                     size: _size,
                     defaultText: _user.rate,
                     label: 'Rate',
@@ -445,7 +440,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                       });
                     },
                   ),
-                  const SizedBox(height: 20),
+                  _buildSpacerHeight(),
                 ],
               ), // Employment Info
               const SizedBox(height: 40),
@@ -456,8 +451,12 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
     );
   }
 
+  Widget _buildSpacerHeight() {
+    return const SizedBox(height: 16);
+  }
+
   /// generates a label + input
-  Widget RowWithInput({
+  Widget rowWithInput({
     required Size size,
     required String label,
     required String textHint,
@@ -465,12 +464,17 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
     required Function getValue,
     IconData? icon,
   }) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    String notAvailable = "${local?.notAvailable}";
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label.toString(),
-          style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+          style: kParagraph.copyWith(
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+          ),
         ),
         Container(
           //
@@ -483,9 +487,9 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                     color: kWhite,
                   )
                 : null,
-            textHint: '$textHint',
+            textHint: textHint,
             getValue: getValue,
-            defaultText: "${defaultText ?? ""}",
+            defaultText: defaultText ?? notAvailable,
           ),
         ),
       ],
@@ -496,6 +500,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   ///
   /// @Params User user => User object used to get user.imageId
   Widget _buildDisplayID(User user) {
+    AppLocalizations? local = AppLocalizations.of(context);
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 120),
       child: Stack(
@@ -506,10 +511,10 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                 errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
               return Visibility(
                 visible: !isUploadingID,
-                child: const Center(
+                child: Center(
                   child: Padding(
-                    padding: EdgeInsets.only(top: 40),
-                    child: Text('Error fetching the ID image.'),
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Text('${local?.errorId}'),
                   ),
                 ),
               );
@@ -529,7 +534,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                   )
                 : Row(
                     children: [
-                      CustomIconButton(
+                      customIconButton(
                         onTap: () {
                           uploadPicture(
                             field: UserImageType.id,
@@ -539,7 +544,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         icon: MdiIcons.cameraOutline,
                       ),
                       const SizedBox(width: 5),
-                      CustomIconButton(
+                      customIconButton(
                         onTap: () {
                           uploadPicture(
                             field: UserImageType.id,
@@ -557,7 +562,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   }
 
   /// generate a custom icon button for id upload display
-  Widget CustomIconButton(
+  Widget customIconButton(
       {required VoidCallback onTap, required IconData icon}) {
     return GestureDetector(
       onTap: onTap,
@@ -589,10 +594,12 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
 
   /// generate No ID with buttons to upload ID images
   Widget get _buildNoID {
+    AppLocalizations? local = AppLocalizations.of(context);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text('No ID', style: kParagraph),
+        Text('${local?.noId}', style: kParagraph),
         Row(
           children: [
             GestureDetector(
@@ -643,7 +650,9 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   /// confirm password dialog
   /// appears after clicking submit button
   Future<dynamic> _buildDialog(context, errorString) {
+    AppLocalizations? local = AppLocalizations.of(context);
     Size _size = MediaQuery.of(context).size;
+
     return showDialog(
       context: context,
       builder: (context) {
@@ -653,18 +662,15 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
           builder: (context, setState) {
             return AlertDialog(
               // insetPadding: const EdgeInsets.all(10),
-              title: const Text("Confirmation"),
+              title: Text("${local?.confirmation}"),
               content: SizedBox(
                 width: _size.width * 0.8,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                        "Please enter your password to save the changes."),
-                    const SizedBox(
-                      height: 30,
-                    ),
+                    Text("${local?.pleaseEnterPassword}"),
+                    const SizedBox(height: 10),
                     SizedBox(
                         width: _size.width,
                         child: error.isNotEmpty
@@ -702,10 +708,10 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                   ),
                 ),
                 TextButton(
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
-                      'Confirm',
+                      '${local?.confirm}',
                       style: kParagraph,
                     ),
                   ),
@@ -717,7 +723,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                       });
                       if (oldPassword.isEmpty) {
                         setState(() {
-                          error = "Please input password.";
+                          error = "${local?.errorInputPassword}";
                         });
                       }
                       var isVerified = await confirmPassword();
@@ -730,7 +736,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         setState(
                           () {
                             loading = false;
-                            error = "Wrong password";
+                            error = "${local?.errorWrongPassword}";
                           },
                         );
                       }
@@ -740,10 +746,10 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                 Container(
                   margin: const EdgeInsets.only(right: 15),
                   child: TextButton(
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        'Cancel',
+                        '${local?.cancel}',
                         style: kParagraph,
                       ),
                     ),

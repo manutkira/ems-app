@@ -3,8 +3,10 @@ import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
 import 'package:ems/screens/your_profile/your_profile_edit.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
@@ -13,14 +15,19 @@ class YourProfileViewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     final _labelStyle = kParagraph.copyWith(fontWeight: FontWeight.w700);
-    final _sectionTitleStyle =
-        kHeadingThree.copyWith(fontWeight: FontWeight.w400);
+    final _sectionTitleStyle = kHeadingThree.copyWith(
+      fontWeight: FontWeight.w400,
+    );
+
+    String notAvailable = "${local?.notAvailable}";
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Your Profile",
+        title: Text(
+          "${local?.myProfile}",
         ),
         actions: [
           IconButton(
@@ -84,7 +91,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                               ],
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -93,10 +100,13 @@ class YourProfileViewScreen extends ConsumerWidget {
                   ),
                   // basic info
                   Text(
-                    "Basic Info",
+                    "${local?.basicInfo}",
                     style: _sectionTitleStyle,
                   ),
-                  const SizedBox(height: 20),
+                  Visibility(
+                    visible: isEnglish,
+                    child: const SizedBox(height: 20),
+                  ),
                   SizedBox(
                     height: 200,
                     child: GridView.count(
@@ -105,55 +115,58 @@ class YourProfileViewScreen extends ConsumerWidget {
                       childAspectRatio: 4.5,
                       children: [
                         Text(
-                          "Name",
+                          "${local?.name}",
                           style: _labelStyle,
                         ),
                         Text(
-                          _currentUser?.name ?? "Not Available",
+                          _currentUser?.name ?? notAvailable,
                           style: kParagraph,
                         ),
                         Text(
-                          "Phone Number",
+                          "${local?.phoneNumber}",
                           style: _labelStyle,
                         ),
                         Text(
-                          _currentUser?.phone ?? "Not Available",
+                          _currentUser?.phone ?? notAvailable,
                           style: kParagraph,
                         ),
                         Text(
-                          "Email",
+                          "${local?.email}",
                           style: _labelStyle,
                         ),
                         Text(
-                          _currentUser?.email ?? "Not Available",
+                          _currentUser?.email ?? notAvailable,
                           style: kParagraph,
                         ),
                         Text(
-                          "Address",
+                          "${local?.address}",
                           style: _labelStyle,
                         ),
                         Text(
-                          _currentUser?.address ?? "Not Available",
+                          _currentUser?.address ?? notAvailable,
                           style: kParagraph,
                         ),
                         Text(
-                          "Account Type",
+                          "${local?.accountType}",
                           style: _labelStyle,
                         ),
                         Text(
-                          _currentUser?.role ?? "Not Available",
+                          _currentUser?.role ?? notAvailable,
                           style: kParagraph,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  SizedBox(height: isEnglish ? 30 : 16),
                   // employee info
                   Text(
-                    "Employee Info",
+                    "${local?.employeeInfo}",
                     style: _sectionTitleStyle,
                   ),
-                  const SizedBox(height: 20),
+                  Visibility(
+                    visible: isEnglish,
+                    child: const SizedBox(height: 20),
+                  ),
                   SizedBox(
                     height: 160,
                     child: GridView.count(
@@ -162,53 +175,59 @@ class YourProfileViewScreen extends ConsumerWidget {
                       childAspectRatio: 4.5,
                       children: [
                         Text(
-                          "Position",
+                          "${local?.position}",
                           style: _labelStyle,
                         ),
                         Text(
-                          _currentUser?.position ?? "Not Available",
+                          _currentUser?.position ?? notAvailable,
                           style: kParagraph,
                         ),
                         Text(
-                          "Skill",
+                          "${local?.skill}",
                           style: _labelStyle,
                         ),
                         Text(
-                          _currentUser?.skill ?? "Not Available",
+                          _currentUser?.skill ?? notAvailable,
                           style: kParagraph,
                         ),
                         Text(
-                          "Salary",
+                          "${local?.salary}",
                           style: _labelStyle,
                         ),
                         Text(
-                          _currentUser?.salary ?? "Not Available",
+                          _currentUser?.salary ?? notAvailable,
                           style: kParagraph,
                         ),
                         Text(
-                          "Rate",
+                          "${local?.rate}",
                           style: _labelStyle,
                         ),
                         Text(
-                          _currentUser?.rate ?? "Not Available",
+                          _currentUser?.rate ?? notAvailable,
                           style: kParagraph,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  Visibility(
+                    visible: isEnglish,
+                    child: const SizedBox(height: 10),
+                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Background",
+                        "${local?.background}",
                         style: _labelStyle,
                       ),
-                      const SizedBox(
-                        height: 15,
+                      Visibility(
+                        visible: isEnglish,
+                        child: const SizedBox(
+                          height: 15,
+                        ),
                       ),
                       Text(
-                        _currentUser?.background ?? "Not Available",
+                        _currentUser?.background ?? notAvailable,
                         style: kParagraph,
                       ),
                     ],

@@ -6,7 +6,6 @@ import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/utils/services/attendance_service.dart';
-import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/statuses/info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -120,7 +119,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
 
   Widget _buildScanner(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
+
     return Container(
       color: kDarkestBlue,
       child: Stack(
@@ -207,7 +206,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   /// check permission
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
+
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     if (!p) {
       setState(() {
@@ -235,7 +234,6 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   Widget _loading(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
 
     return Container(
       width: _size.width,

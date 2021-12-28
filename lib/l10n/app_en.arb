@@ -113,6 +113,149 @@
         "type": "String"
       }
     }
+  },
+  "successfully": "successfully",
+  "@successfully": {
+    "description": "qr code screen"
+  },
+  "basicInfo": "Basic Info",
+  "@basicInfo": {
+    "description": "My Profile screen"
+  },
+  "name": "Name",
+  "@name": {
+    "description": "My Profile screen"
+  },
+  "phoneNumber": "Phone",
+  "@phoneNumber": {
+    "description": "My Profile screen"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "My Profile screen"
+  },
+  "address": "Address",
+  "@address": {
+    "description": "My Profile screen"
+  },
+  "accountType": "Account Type",
+  "@accountType": {
+    "description": "My Profile screen"
+  },
+  "employeeInfo": "Employee Info",
+  "@employeeInfo": {
+    "description": "My Profile screen"
+  },
+  "position": "Position",
+  "@position": {
+    "description": "My Profile screen"
+  },
+  "skill": "Skill",
+  "@skill": {
+    "description": "My Profile screen"
+  },
+  "salary": "Salary",
+  "@salary": {
+    "description": "My Profile screen"
+  },
+  "rate": "Rate",
+  "@rate": {
+    "description": "My Profile screen"
+  },
+  "background": "Background",
+  "@background": {
+    "description": "My Profile screen"
+  },
+  "notAvailable": "Not Available",
+  "@notAvailable": {
+    "description": "My Profile screen"
+  },
+  "changing": "Changing",
+  "@changing": {
+    "description": "Edit Profile screen"
+  },
+  "camera": "Camera",
+  "@camera": {
+    "description": "Edit Profile screen"
+  },
+  "gallery": "Gallery",
+  "@gallery": {
+    "description": "Edit Profile screen"
+  },
+  "nationalId": "National ID",
+  "@nationalId": {
+    "description": "Edit Profile screen"
+  },
+  "employee": "employee",
+  "@employee": {
+    "description": "Edit Profile screen"
+  },
+  "design": "design",
+  "@design": {
+    "description": "Edit Profile screen"
+  },
+  "errorId": "Error fetching the ID image.",
+  "@errorId": {
+    "description": "Edit Profile screen"
+  },
+  "noId": "No ID",
+  "@noId": {
+    "description": "Edit Profile screen"
+  },
+  "confirmation": "Confirmation",
+  "@confirmation": {
+    "description": "Edit Profile screen"
+  },
+  "pleaseEnterPassword": "Please enter your password to save the changes.",
+  "@pleaseEnterPassword": {
+    "description": "Edit Profile screen"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Edit Profile screen"
+  },
+  "errorInputPassword": "Please input password.",
+  "@errorInputPassword": {
+    "description": "Edit Profile screen"
+  },
+  "errorWrongPassword": "Wrong password",
+  "@errorWrongPassword": {
+    "description": "Edit Profile screen"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Edit Profile screen"
+  },
+  "cropImage": "Crop the image",
+  "@cropImage": {
+    "description": "Edit Profile screen"
+  },
+  "oldPassword": "Old password",
+  "@oldPassword": {
+    "description": "Change Password screen"
+  },
+  "newPassword": "New password",
+  "@newPassword": {
+    "description": "Change Password screen"
+  },
+  "confirmNewPassword": "Confirm new password",
+  "@confirmNewPassword": {
+    "description": "Change Password screen"
+  },
+  "changingPassword": "Changing your password...",
+  "@changingPassword": {
+    "description": "Change Password screen"
+  },
+  "errorAllRequired": "All text inputs are required.",
+  "@errorAllRequired": {
+    "description": "Change Password screen"
+  },
+  "errorPasswordMustMatch": "Passwords must match.",
+  "@errorPasswordMustMatch": {
+    "description": "Change Password screen"
+  },
+  "errorVerificationFailed": "Password verification failed.",
+  "@errorVerificationFailed": {
+    "description": "Change Password screen"
   }
-
 }

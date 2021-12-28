@@ -84,7 +84,4 @@ class QRAppScreen extends ConsumerWidget {
     //   ),
     // );
   }
-
-  /// qr code
-
 }

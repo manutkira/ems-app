@@ -2,9 +2,11 @@ import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:ems/widgets/textbox.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../constants.dart';
@@ -50,20 +52,21 @@ class _YourProfilePasswordScreenState
   }
 
   updatePassword() async {
+    AppLocalizations? local = AppLocalizations.of(context);
     setState(() {
       error = "";
     });
 
     if (password.isEmpty || newPassword.isEmpty || confirmNewPassword.isEmpty) {
       setState(() {
-        error = "Please all text inputs are required.";
+        error = "${local?.errorAllRequired}";
       });
       return;
     }
 
     if (newPassword != confirmNewPassword) {
       setState(() {
-        error = "Passwords must match.";
+        error = "${local?.errorPasswordMustMatch}";
       });
       return;
     }
@@ -76,7 +79,7 @@ class _YourProfilePasswordScreenState
     bool isVerified = await verifyPassword();
     if (isVerified == false) {
       setState(() {
-        error = "Password verification failed.";
+        error = "${local?.errorVerificationFailed}";
         isLoading = false;
       });
       return;
@@ -104,9 +107,10 @@ class _YourProfilePasswordScreenState
 
   /// app bar
   PreferredSizeWidget get _buildAppBar {
+    AppLocalizations? local = AppLocalizations.of(context);
     return AppBar(
-      title: const Text(
-        "Change Password",
+      title: Text(
+        "${local?.changePassword}",
       ),
       actions: [
         IconButton(
@@ -129,13 +133,16 @@ class _YourProfilePasswordScreenState
 
   /// build form
   Widget get _buildForm {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(
-            height: 20,
+            height: 10,
           ),
           Visibility(
             visible: error.isNotEmpty,
@@ -145,17 +152,17 @@ class _YourProfilePasswordScreenState
                   text: error,
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
               ],
             ),
           ),
           Text(
-            "Old Password",
-            style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+            "${local?.oldPassword}",
+            style: kParagraph,
           ),
-          const SizedBox(
-            height: 15,
+          SizedBox(
+            height: isEnglish ? 12 : 4,
           ),
           TextBoxCustom(
             isPassword: true,
@@ -170,11 +177,11 @@ class _YourProfilePasswordScreenState
             height: 15,
           ),
           Text(
-            "New Password",
-            style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+            "${local?.newPassword}",
+            style: kParagraph,
           ),
-          const SizedBox(
-            height: 15,
+          SizedBox(
+            height: isEnglish ? 12 : 4,
           ),
           TextBoxCustom(
             isPassword: true,
@@ -189,11 +196,11 @@ class _YourProfilePasswordScreenState
             height: 15,
           ),
           Text(
-            "Confirm New Password",
-            style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+            "${local?.confirmNewPassword}",
+            style: kParagraph,
           ),
-          const SizedBox(
-            height: 15,
+          SizedBox(
+            height: isEnglish ? 12 : 4,
           ),
           TextBoxCustom(
             isPassword: true,
@@ -211,19 +218,21 @@ class _YourProfilePasswordScreenState
 
   /// loading widget
   Widget get _buildLoading {
+    AppLocalizations? local = AppLocalizations.of(context);
+
     return Center(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
-        CircularProgressIndicator(
+      children: [
+        const CircularProgressIndicator(
           color: kWhite,
           strokeWidth: 4,
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Text(
-          "Changing your password...",
+          "${local?.changingPassword}",
           style: kParagraph,
         )
       ],
