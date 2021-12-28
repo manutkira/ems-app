@@ -1,3 +1,4 @@
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -19,9 +20,12 @@ class StatusWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isEnglish = isInEnglish(context);
+
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding:
+          EdgeInsets.symmetric(horizontal: 10, vertical: isEnglish ? 5 : 0),
       decoration: BoxDecoration(
           color: backgroundColor, borderRadius: BorderRadius.circular(6)),
       child: Row(
