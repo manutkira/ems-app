@@ -4,10 +4,12 @@ import 'package:ems/models/attendance_no_s.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/utils/services/overtime_service.dart';
 import 'package:ems/utils/utils.dart';
-import 'package:ems/widgets/attendance/attendance_info_name_id.dart';
-import 'package:ems/widgets/attendance/attendance_info_no_attendance.dart';
-import 'package:ems/widgets/attendance/attendance_info_no_data.dart';
-import 'package:ems/widgets/attendance/attendance_info_present.dart';
+import 'package:ems/widgets/attendance_info/attendance_info_attendacnace_list.dart';
+import 'package:ems/widgets/attendance_info/attendance_info_name_id.dart';
+import 'package:ems/widgets/attendance_info/attendance_info_no_attendance.dart';
+import 'package:ems/widgets/attendance_info/attendance_info_no_data.dart';
+import 'package:ems/widgets/attendance_info/attendance_info_present.dart';
+import 'package:ems/widgets/attendance_info/attendnace_info_filter_button.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -31,11 +33,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   AttendanceService _attendanceService = AttendanceService.instance;
   AttendanceService _attendanceNoDateService = AttendanceService.instance;
   List<Attendance> attendanceDisplay = [];
-
-  AttendanceService _attendanceAllService = AttendanceService.instance;
   List<Attendance> attendanceAllDisplay = [];
-
-  AttendanceByIdService _overtimeService = AttendanceByIdService.instance;
   List<AttendanceWithDate> _attendanceDisplay = [];
   List<AttendanceWithDate> _attendanceNoDateDisplay = [];
 
@@ -359,7 +357,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
-  void _toggleFilter() {
+  void toggleFilter() {
     setState(() {
       isFilterExpanded = !isFilterExpanded;
     });
@@ -475,7 +473,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               GestureDetector(
-                                onTap: _toggleFilter,
+                                onTap: toggleFilter,
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -819,13 +817,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                     Expanded(
                       child: Column(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
-                              children: [
+                              children: const [
                                 Text(
                                   'Attendance ',
                                   style: kHeadingFour,
@@ -841,513 +839,24 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                               ? AttendanceInfoNoData()
                               : Expanded(
                                   child: Padding(
-                                  padding: const EdgeInsets.only(top: 15),
-                                  child: ListView.builder(
-                                    itemBuilder: (ctx, index) {
-                                      return now
-                                          ? Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 25,
-                                                vertical: 8,
-                                              ),
-                                              color: index % 2 == 0
-                                                  ? kDarkestBlue
-                                                  : kBlue,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  afternoon
-                                                      ? Text(DateFormat(
-                                                              'dd/MM/yyyy HH:mm')
-                                                          .format(
-                                                              isTodayNoon[index]
-                                                                      .date
-                                                                  as DateTime))
-                                                      : Text(
-                                                          DateFormat(
-                                                                  'dd/MM/yyyy HH:mm')
-                                                              .format(isToday[
-                                                                          index]
-                                                                      .date
-                                                                  as DateTime),
-                                                        ),
-                                                  Row(
-                                                    children: [
-                                                      afternoon
-                                                          ? Text(
-                                                              isTodayNoon[index]
-                                                                  .type
-                                                                  .toString(),
-                                                              style: kParagraph)
-                                                          : Text(
-                                                              isToday[index]
-                                                                  .type
-                                                                  .toString(),
-                                                              style:
-                                                                  kParagraph),
-                                                      PopupMenuButton(
-                                                        color: Colors.black,
-                                                        shape: const RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            10))),
-                                                        onSelected: (int
-                                                            selectedValue) async {
-                                                          if (afternoon ==
-                                                              false) {
-                                                            if (selectedValue ==
-                                                                0) {
-                                                              final int userId =
-                                                                  isToday[index]
-                                                                      .userId;
-                                                              final int id =
-                                                                  isToday[index]
-                                                                      .id;
-                                                              final String
-                                                                  type =
-                                                                  isToday[index]
-                                                                      .type;
-                                                              final DateTime
-                                                                  date =
-                                                                  isToday[index]
-                                                                      .date;
-                                                              await Navigator.of(
-                                                                      context)
-                                                                  .push(
-                                                                MaterialPageRoute(
-                                                                  builder: (ctx) =>
-                                                                      AttedancesEdit(
-                                                                    id: id,
-                                                                    userId:
-                                                                        userId,
-                                                                    type: type,
-                                                                    date: date,
-                                                                  ),
-                                                                ),
-                                                              );
-                                                              attendanceAllDisplay =
-                                                                  [];
-                                                              fetchAttendanceById();
-                                                            }
-                                                            if (selectedValue ==
-                                                                1) {
-                                                              showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder: (ctx) =>
-                                                                    AlertDialog(
-                                                                  title: Text(
-                                                                      'Are you sure?'),
-                                                                  content: Text(
-                                                                      'This action cannot be undone!'),
-                                                                  actions: [
-                                                                    OutlineButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                        deleteData(isToday[index].id
-                                                                            as int);
-                                                                      },
-                                                                      child: Text(
-                                                                          'Yes'),
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                              color: Colors.green),
-                                                                    ),
-                                                                    OutlineButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                      },
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                              color: Colors.red),
-                                                                      child: Text(
-                                                                          'No'),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              );
-                                                            }
-                                                          }
-                                                          if (afternoon ==
-                                                              true) {
-                                                            if (selectedValue ==
-                                                                0) {
-                                                              final int userId =
-                                                                  isTodayNoon[
-                                                                          index]
-                                                                      .userId;
-                                                              final int id =
-                                                                  isTodayNoon[
-                                                                          index]
-                                                                      .id;
-                                                              final String
-                                                                  type =
-                                                                  isTodayNoon[
-                                                                          index]
-                                                                      .type;
-                                                              final DateTime
-                                                                  date =
-                                                                  isTodayNoon[
-                                                                          index]
-                                                                      .date;
-                                                              await Navigator.of(
-                                                                      context)
-                                                                  .push(
-                                                                MaterialPageRoute(
-                                                                  builder: (ctx) =>
-                                                                      AttedancesEdit(
-                                                                    id: id,
-                                                                    userId:
-                                                                        userId,
-                                                                    type: type,
-                                                                    date: date,
-                                                                  ),
-                                                                ),
-                                                              );
-                                                              attendanceAllDisplay =
-                                                                  [];
-                                                              fetchAttendanceByIdNoon();
-                                                            }
-                                                            if (selectedValue ==
-                                                                1) {
-                                                              showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder: (ctx) =>
-                                                                    AlertDialog(
-                                                                  title: Text(
-                                                                      'Are you sure?'),
-                                                                  content: Text(
-                                                                      'This action cannot be undone!'),
-                                                                  actions: [
-                                                                    OutlineButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                        deleteData(isTodayNoon[index].id
-                                                                            as int);
-                                                                      },
-                                                                      child: Text(
-                                                                          'Yes'),
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                              color: Colors.green),
-                                                                    ),
-                                                                    OutlineButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                      },
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                              color: Colors.red),
-                                                                      child: Text(
-                                                                          'No'),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              );
-                                                            }
-                                                          }
-                                                        },
-                                                        itemBuilder: (_) => [
-                                                          PopupMenuItem(
-                                                            child: Text('Edit',
-                                                                style: kParagraph.copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold)),
-                                                            value: 0,
-                                                          ),
-                                                          PopupMenuItem(
-                                                            child: Text(
-                                                                'Delete',
-                                                                style: kParagraph.copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold)),
-                                                            value: 1,
-                                                          ),
-                                                        ],
-                                                        icon: const Icon(
-                                                            Icons.more_vert),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          : Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 25,
-                                                vertical: 8,
-                                              ),
-                                              color: index % 2 == 0
-                                                  ? kDarkestBlue
-                                                  : kBlue,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  afternoon
-                                                      ? Text(
-                                                          DateFormat(
-                                                                  'dd/MM/yyyy HH:mm')
-                                                              .format(
-                                                                  attendanceListNoon[
-                                                                          index]
-                                                                      .date),
-                                                        )
-                                                      : Text(
-                                                          DateFormat(
-                                                                  'dd/MM/yyyy HH:mm')
-                                                              .format(
-                                                                  attendanceList[
-                                                                          index]
-                                                                      .date),
-                                                        ),
-                                                  Row(
-                                                    children: [
-                                                      afternoon
-                                                          ? Text(
-                                                              attendanceListNoon[
-                                                                      index]
-                                                                  .type
-                                                                  .toString())
-                                                          : Text(attendanceList[
-                                                                  index]
-                                                              .type
-                                                              .toString()),
-                                                      PopupMenuButton(
-                                                        color: Colors.black,
-                                                        shape: const RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            10))),
-                                                        onSelected: (int
-                                                            selectedValue) async {
-                                                          if (afternoon ==
-                                                              false) {
-                                                            if (selectedValue ==
-                                                                0) {
-                                                              final int userId =
-                                                                  attendanceList[
-                                                                          index]
-                                                                      .userId;
-                                                              final int id =
-                                                                  attendanceList[
-                                                                          index]
-                                                                      .id;
-                                                              final String
-                                                                  type =
-                                                                  attendanceList[
-                                                                          index]
-                                                                      .type;
-                                                              final DateTime
-                                                                  date =
-                                                                  attendanceList[
-                                                                          index]
-                                                                      .date;
-                                                              await Navigator.of(
-                                                                      context)
-                                                                  .push(
-                                                                MaterialPageRoute(
-                                                                  builder: (ctx) =>
-                                                                      AttedancesEdit(
-                                                                    id: id,
-                                                                    userId:
-                                                                        userId,
-                                                                    type: type,
-                                                                    date: date,
-                                                                  ),
-                                                                ),
-                                                              );
-                                                              attendanceAllDisplay =
-                                                                  [];
-                                                              fetchAttendanceById();
-                                                            }
-                                                            if (selectedValue ==
-                                                                1) {
-                                                              showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder: (ctx) =>
-                                                                    AlertDialog(
-                                                                  title: Text(
-                                                                      'Are you sure?'),
-                                                                  content: Text(
-                                                                      'This action cannot be undone!'),
-                                                                  actions: [
-                                                                    OutlineButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                        deleteData(attendanceList[index].id
-                                                                            as int);
-                                                                      },
-                                                                      child: Text(
-                                                                          'Yes'),
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                              color: Colors.green),
-                                                                    ),
-                                                                    OutlineButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                      },
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                              color: Colors.red),
-                                                                      child: Text(
-                                                                          'No'),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              );
-                                                            }
-                                                          }
-                                                          if (afternoon ==
-                                                              true) {
-                                                            if (selectedValue ==
-                                                                0) {
-                                                              final int userId =
-                                                                  attendanceListNoon[
-                                                                          index]
-                                                                      .userId;
-                                                              final int id =
-                                                                  attendanceListNoon[
-                                                                          index]
-                                                                      .id;
-                                                              final String
-                                                                  type =
-                                                                  attendanceListNoon[
-                                                                          index]
-                                                                      .type;
-                                                              final DateTime
-                                                                  date =
-                                                                  attendanceListNoon[
-                                                                          index]
-                                                                      .date;
-                                                              await Navigator.of(
-                                                                      context)
-                                                                  .push(
-                                                                MaterialPageRoute(
-                                                                  builder: (ctx) =>
-                                                                      AttedancesEdit(
-                                                                    id: id,
-                                                                    userId:
-                                                                        userId,
-                                                                    type: type,
-                                                                    date: date,
-                                                                  ),
-                                                                ),
-                                                              );
-                                                              attendanceAllDisplay =
-                                                                  [];
-                                                              fetchAttendanceByIdNoon();
-                                                            }
-                                                            if (selectedValue ==
-                                                                1) {
-                                                              showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder: (ctx) =>
-                                                                    AlertDialog(
-                                                                  title: Text(
-                                                                      'Are you sure?'),
-                                                                  content: Text(
-                                                                      'This action cannot be undone!'),
-                                                                  actions: [
-                                                                    OutlineButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                        deleteData1(attendanceListNoon[index].id
-                                                                            as int);
-                                                                      },
-                                                                      child: Text(
-                                                                          'Yes'),
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                              color: Colors.green),
-                                                                    ),
-                                                                    OutlineButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                      },
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                              color: Colors.red),
-                                                                      child: Text(
-                                                                          'No'),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              );
-                                                            }
-                                                          }
-                                                        },
-                                                        itemBuilder: (_) => [
-                                                          PopupMenuItem(
-                                                            child: Text(
-                                                              'Edit',
-                                                              style: kParagraph.copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                            value: 0,
-                                                          ),
-                                                          PopupMenuItem(
-                                                            child: Text(
-                                                              'Delete',
-                                                              style: kParagraph.copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                            value: 1,
-                                                          ),
-                                                        ],
-                                                        icon: const Icon(
-                                                            Icons.more_vert),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                    },
-                                    itemCount: now
-                                        ? afternoon
-                                            ? isTodayNoon.length
-                                            : isToday.length
-                                        : afternoon
-                                            ? attendanceListNoon.length
-                                            : attendanceList.length,
+                                    padding: const EdgeInsets.only(top: 15),
+                                    child: AttendanceInfoAttendanceList(
+                                        now: now,
+                                        afternoon: afternoon,
+                                        isTodayNoon: isTodayNoon,
+                                        isToday: isToday,
+                                        attendanceList: attendanceList,
+                                        attendanceListNoon: attendanceListNoon,
+                                        attendanceAllDisplay:
+                                            attendanceAllDisplay,
+                                        fetchAttendanceById:
+                                            fetchAttendanceById,
+                                        deleteData: deleteData,
+                                        deleteData1: deleteData1,
+                                        fetchAttendanceByIdNoon:
+                                            fetchAttendanceByIdNoon),
                                   ),
-                                ))
+                                ),
                         ],
                       ),
                     ),
