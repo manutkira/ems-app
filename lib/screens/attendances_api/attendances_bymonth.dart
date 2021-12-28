@@ -916,39 +916,6 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       const SizedBox(
                                                         height: 10,
                                                       ),
-                                                      // Row(
-                                                      //   children: [
-                                                      //     Text('E:'),
-                                                      //     Text(
-                                                      //       attendanceDisplay
-                                                      //           .where((element) => (element
-                                                      //                       .userId ==
-                                                      //                   userDisplay[
-                                                      //                           index]
-                                                      //                       .id &&
-                                                      //               element
-                                                      //                       .date
-                                                      //                       .month ==
-                                                      //                   _selectMonth &&
-                                                      //               element.code ==
-                                                      //                   'cin1' &&
-                                                      //               element.type ==
-                                                      //                   'check out' &&
-                                                      //               element.date
-                                                      //                       .hour <
-                                                      //                   17 &&
-                                                      //               element.date
-                                                      //                       .year ==
-                                                      //                   int.parse(
-                                                      //                       pickedYear)))
-                                                      //           .length
-                                                      //           .toString(),
-                                                      //     ),
-                                                      //   ],
-                                                      // ),
-                                                      // const SizedBox(
-                                                      //   height: 10,
-                                                      // ),
                                                       Row(
                                                         children: [
                                                           Text('PM:'),

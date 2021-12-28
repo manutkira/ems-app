@@ -44,7 +44,6 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     List<Attendance> att2 = attendancesFromAttendancesByDay(atts);
     setState(() {
       attendanceDisplay = att2;
-      print(attendanceDisplay);
       attendanceDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
     });
   }
@@ -388,7 +387,6 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                             clearText();
                             checkedDate = users.where((user) {
                               var userName = user.users!.name!.toLowerCase();
-                              print(userName);
                               return userName.contains(_controller.text);
                             }).toList();
                           });
