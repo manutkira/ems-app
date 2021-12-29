@@ -257,5 +257,117 @@
   "errorVerificationFailed": "Password verification failed.",
   "@errorVerificationFailed": {
     "description": "Change Password screen"
+  },
+  "errorParsingTime": "Error parsing time",
+  "@errorParsingTime": {
+    "description": "View overtime screen"
+  },
+  "viewOvertime": "View Overtime",
+  "@viewOvertime": {
+    "description": "View overtime screen"
+  },
+  "date": "Date",
+  "@date": {
+    "description": "View overtime screen"
+  },
+  "from": "From",
+  "@from": {
+    "description": "View overtime screen"
+  },
+  "to": "To",
+  "@to": {
+    "description": "View overtime screen"
+  },
+  "total": "Total",
+  "@total": {
+    "description": "View overtime screen"
+  },
+  "note": "Note",
+  "@note": {
+    "description": "View overtime screen"
+  },
+  "error": "An error has occurred.",
+  "@error": {
+    "description": "View overtime screen"
+  },
+  "enterAllInfo": "Please enter all information below.",
+  "@enterAllInfo": {
+    "description": "View overtime screen"
+  },
+  "update": "Update",
+  "@update": {
+    "description": "View overtime screen"
+  },
+  "deleteOvertime": "Deleting Overtime",
+  "@deleteOvertime": {
+    "description": "View overtime screen"
+  },
+  "errorDeletingOvertime": "Error deleting record.",
+  "@errorDeletingOvertime": {
+    "description": "View overtime screen"
+  },
+  "overtimeManager": "Overtime Manager",
+  "@overtimeManager": {
+    "description": "View overtime screen"
+  },
+  "filter": "Filter",
+  "@filter": {
+    "description": "View overtime screen"
+  },
+  "dateRange": "Date range",
+  "@dateRange": {
+    "description": "View overtime screen"
+  },
+  "optionDay": "Day",
+  "@optionDay": {
+    "description": "View overtime screen"
+  },
+  "optionMultiDay": "Multiple Days",
+  "@optionMultiDay": {
+    "description": "View overtime screen"
+  },
+  "optionAllTime": "All Time",
+  "@optionAllTime": {
+    "description": "View overtime screen"
+  },
+  "go": "Go",
+  "@go": {
+    "description": "View overtime screen"
+  },
+  "loadingOvertime": "Fetching overtime records...",
+  "@loadingOvertime": {
+    "description": "View overtime screen"
+  },
+  "showing": "Showing",
+  "@showing": {
+    "description": "View overtime screen"
+  },
+  "allRecords": "all records",
+  "@allRecords": {
+    "description": "View overtime screen"
+  },
+  "tapToShowHide": "Tap on date to show/hide the record.",
+  "@tapToShowHide": {
+    "description": "View overtime screen"
+  },
+  "optionView": "View",
+  "@optionView": {
+    "description": "View overtime screen"
+  },
+  "optionEdit": "Edit",
+  "@optionEdit": {
+    "description": "View overtime screen"
+  },
+  "optionDelete": "Delete",
+  "@optionDelete": {
+    "description": "View overtime screen"
+  },
+  "employeeOvertime": "Employee Overtime",
+  "@employeeOvertime": {
+    "description": "View overtime screen"
+  },
+  "errorNoRecord": "No Record Found.",
+  "@errorNoRecord": {
+    "description": "View overtime screen"
   }
 }

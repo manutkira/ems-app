@@ -1,5 +1,4 @@
 import 'package:ems/constants.dart';
-import 'package:ems/models/menu_options.dart';
 import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/overtime/view_overtime.dart';
@@ -9,6 +8,7 @@ import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'delete_overtime.dart';
@@ -25,18 +25,28 @@ class OvertimeScreen extends StatefulWidget {
 class _OvertimeScreenState extends State<OvertimeScreen> {
   final OvertimeService _overtimeService = OvertimeService.instance;
   List<OvertimeByDay> overtimeRecords = [];
-  String sortByValue = 'All Time';
-  var dropdownItems = [
-    'Day',
-    'Multiple Days',
-    'All Time',
-  ];
+  String sortByValue = '';
+  List<String> dropdownItems = [];
+  List<String> options = [];
 
-  var options = [
-    MenuOptions.view,
-    MenuOptions.edit,
-    MenuOptions.delete,
-  ];
+  init() {
+    AppLocalizations? local = AppLocalizations.of(context);
+    setState(() {
+      if (sortByValue.isEmpty) {
+        sortByValue = '${local?.optionAllTime}';
+      }
+      options = [
+        "${local?.optionView}",
+        "${local?.optionEdit}",
+        "${local?.optionDelete}",
+      ];
+      dropdownItems = [
+        '${local?.optionDay}',
+        '${local?.optionMultiDay}',
+        '${local?.optionAllTime}',
+      ];
+    });
+  }
 
   String error = '';
   bool isFetching = false;
@@ -56,6 +66,9 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
 
   /// fetches data from overtime service, set the received data to overtime record
   void fetchOvertimeRecord() async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+
     setState(() {
       // shows loading
       isFetching = true;
@@ -69,32 +82,56 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     List<OvertimeByDay> records = [];
     try {
       // reads the sort filter condition
-      switch (sortByValue) {
-        // one day data
-        case 'Day':
-          {
-            records = await _overtimeService.findMany(
-              start: startDate,
-              end: startDate,
-            );
-            break;
-          }
-        // multiple days data
-        case 'Multiple Days':
-          {
-            records = await _overtimeService.findMany(
-              start: startDate,
-              end: endDate,
-            );
-            break;
-          }
-        // anything else, which in this case is All Time option
-        default:
-          {
-            records = await _overtimeService.findMany();
-            break;
-          }
+      if (sortByValue == "${local?.optionDay}") {
+        // if (sortByValue == "Day") {
+        records = await _overtimeService.findMany(
+          start: startDate,
+          end: startDate,
+        );
+      } else if (sortByValue == "${local?.optionMultiDay}") {
+        // } else if (sortByValue == "Multiple Days") {
+        records = await _overtimeService.findMany(
+          start: startDate,
+          end: endDate,
+        );
+      } else {
+        records = await _overtimeService.findMany();
       }
+      print(records);
+
+      setState(() {
+        // set newly received data to as overtime records
+        overtimeRecords = records;
+        // stop loading
+        isFetching = false;
+      });
+    } catch (err) {
+      setState(() {
+        error = err.toString();
+        isFetching = false;
+      });
+      //
+    }
+  }
+
+  /// init fetch
+  void initFetch() async {
+    // AppLocalizations? local = AppLocalizations.of(context);
+    // bool isEnglish = isInEnglish(context);
+
+    setState(() {
+      // shows loading
+      isFetching = true;
+      // closes filter
+      isFilterExpanded = false;
+      // reset overtime records
+      overtimeRecords = [];
+      // reset error
+      error = '';
+    });
+    List<OvertimeByDay> records = [];
+    try {
+      records = await _overtimeService.findMany();
 
       setState(() {
         // set newly received data to as overtime records
@@ -113,78 +150,66 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
 
   /// show filtered date range
   String filterRange() {
-    switch (sortByValue) {
-      case 'Day':
-        {
-          return "from ${getDateStringFromDateTime(startDate)}";
-        }
-      case 'Multiple Days':
-        {
-          return "from ${getDateStringFromDateTime(startDate)} to ${getDateStringFromDateTime(endDate)}";
-        }
-      default:
-        {
-          return "all records";
-        }
+    AppLocalizations? local = AppLocalizations.of(context);
+    if (sortByValue == '${local?.optionDay}') {
+      return "${local?.from} ${getDateStringFromDateTime(startDate)}";
+    } else if (sortByValue == '${local?.optionMultiDay}') {
+      return "${local?.from} ${getDateStringFromDateTime(startDate)} ${local?.to} ${getDateStringFromDateTime(endDate)}";
+    } else {
+      return "${local?.allRecords}";
     }
   }
 
   /// more menu
   void moreMenu(String value, OvertimeAttendance record) async {
-    switch (value) {
-      case "View":
-        {
-          await modalBottomSheetBuilder(
-            context: context,
-            maxHeight: MediaQuery.of(context).size.height * 0.55,
-            minHeight: MediaQuery.of(context).size.height * 0.4,
-            child: ViewOvertime(
-              record: record,
-            ),
-          );
-        }
-        break;
-      case "Edit":
-        {
-          await modalBottomSheetBuilder(
-            context: context,
-            maxHeight: MediaQuery.of(context).size.height * 0.7,
-            minHeight: MediaQuery.of(context).size.height * 0.6,
-            isDismissible: false,
-            child: EditOvertime(record: record),
-          );
-          fetchOvertimeRecord();
-        }
-        break;
-      case "Delete":
-        {
-          await modalBottomSheetBuilder(
-            context: context,
-            isDismissible: false,
-            child: DeleteOvertime(record: record),
-          );
-          fetchOvertimeRecord();
-        }
-        break;
-      default:
-        {
-          return;
-        }
+    AppLocalizations? local = AppLocalizations.of(context);
+    if (value == local?.optionView) {
+      await modalBottomSheetBuilder(
+        context: context,
+        maxHeight: MediaQuery.of(context).size.height * 0.55,
+        minHeight: MediaQuery.of(context).size.height * 0.4,
+        child: ViewOvertime(
+          record: record,
+        ),
+      );
+    }
+    if (value == local?.optionEdit) {
+      await modalBottomSheetBuilder(
+        context: context,
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        minHeight: MediaQuery.of(context).size.height * 0.6,
+        isDismissible: false,
+        child: EditOvertime(record: record),
+      );
+      fetchOvertimeRecord();
+    }
+    if (value == local?.optionDelete) {
+      await modalBottomSheetBuilder(
+        context: context,
+        isDismissible: false,
+        child: DeleteOvertime(record: record),
+      );
+      fetchOvertimeRecord();
     }
   }
 
   @override
   void initState() {
     super.initState();
-    fetchOvertimeRecord();
+    initFetch();
+    // fetchOvertimeRecord();
   }
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+
+    init();
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Overtime Manager",
+        title: Text(
+          "${local?.overtimeManager}",
         ),
       ),
       body: SafeArea(
@@ -207,9 +232,9 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Filter',
+                            '${local?.filter}',
                             style: kParagraph.copyWith(
-                              fontSize: 20,
+                              fontSize: 18,
                             ),
                           ),
                           Icon(
@@ -231,7 +256,10 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('Sort by', style: kParagraph),
+                              Text(
+                                '${local?.dateRange}',
+                                style: kParagraph,
+                              ),
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 10,
@@ -249,12 +277,14 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
 
                           /// FROM FILTER
                           Visibility(
-                            visible: sortByValue != 'All Time',
+                            visible: sortByValue != '${local?.optionAllTime}',
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  sortByValue == 'Day' ? "Date" : 'From',
+                                  sortByValue == '${local?.optionDay}'
+                                      ? "${local?.date}"
+                                      : '${local?.from}',
                                   style: kParagraph,
                                 ),
                                 TextButton(
@@ -298,11 +328,11 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
 
                           /// TO FILTER
                           Visibility(
-                            visible: sortByValue == 'Multiple Days',
+                            visible: sortByValue == '${local?.optionMultiDay}',
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text('To', style: kParagraph),
+                                Text('${local?.to}', style: kParagraph),
                                 TextButton(
                                   style: TextButton.styleFrom(
                                     primary: Colors.white,
@@ -362,7 +392,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                                   children: [
                                     const SizedBox(width: 8),
                                     Text(
-                                      'Go',
+                                      '${local?.go}',
                                       style: kParagraph.copyWith(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14,
@@ -390,12 +420,12 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        CircularProgressIndicator(
+                      children: [
+                        const CircularProgressIndicator(
                           color: Colors.white,
                         ),
-                        SizedBox(height: 10),
-                        Text('Fetching overtime records...'),
+                        const SizedBox(height: 10),
+                        Text('${local?.loadingOvertime}'),
                       ],
                     ),
                   ),
@@ -420,15 +450,15 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Showing ${filterRange()}',
+                        '${local?.showing} ${filterRange()}',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const Text(
-                        'Tap on date to show/hide the record.',
-                        style: TextStyle(
+                      Text(
+                        '${local?.tapToShowHide}',
+                        style: const TextStyle(
                           fontSize: 12,
                           color: Colors.white54,
                         ),

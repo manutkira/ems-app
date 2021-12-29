@@ -1,7 +1,10 @@
 import 'package:ems/models/overtime.dart';
 import 'package:ems/utils/services/attendance_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../constants.dart';
 
@@ -71,6 +74,8 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     // deleteOvertime();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -80,15 +85,15 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Deleting Overtime',
+              Text(
+                '${local?.deleteOvertime}',
                 style: kHeadingTwo,
               ),
               Visibility(
                 visible: !isLoading,
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    padding: kPadding.copyWith(top: 10, bottom: 10),
+                    padding: EdgeInsets.zero,
                     primary: Colors.white,
                     textStyle: kParagraph.copyWith(fontWeight: FontWeight.w700),
                     backgroundColor: kBlack.withOpacity(0.3),
@@ -97,7 +102,10 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
                     ),
                   ),
                   onPressed: _closePanel,
-                  child: const Text('Close'),
+                  child: const Icon(
+                    MdiIcons.close,
+                    size: 16,
+                  ),
                 ),
               ),
             ],
@@ -105,7 +113,7 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
           const SizedBox(height: 30),
           Visibility(
             visible: !isLoading && hasError,
-            child: const StatusError(text: 'Error deleting record'),
+            child: StatusError(text: "${local?.errorDeletingOvertime}"),
           ),
           SizedBox(
             height: 250,

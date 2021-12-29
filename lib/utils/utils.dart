@@ -96,7 +96,7 @@ Future<TimeOfDay?> buildTimePicker({
 }) async {
   return await showTimePicker(
     context: context,
-    initialEntryMode: TimePickerEntryMode.input,
+    initialEntryMode: TimePickerEntryMode.dial,
     initialTime: time,
   );
 }
