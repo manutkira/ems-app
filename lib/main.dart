@@ -61,7 +61,7 @@ class MyApp extends ConsumerWidget {
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
-            theme: themeData,
+            theme: themeData(context),
             home: ValueListenableBuilder(
               valueListenable:
                   ref.watch(currentUserProvider).currentUserListenable,
@@ -70,7 +70,7 @@ class MyApp extends ConsumerWidget {
                 return box.isEmpty || currentUserData[0].isEmpty
                     ? const LoginScreen()
                     : currentUserData[0].role?.toLowerCase() == 'admin'
-                        ? const HomeScreen()
+                        ? const HomeScreenAdmin()
                         : const HomeScreenEmployee();
               },
             ),

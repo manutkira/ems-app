@@ -22,6 +22,34 @@ class SettingsStore {
     }
   }
 
+  String getLanguage() {
+    final languageBox = Hive.box<int>(languageBoxName);
+    var language = languageBox.get(languageBoxName);
+    bool isInKhmer = L10n.all[language ?? 0] == L10n.all[0];
+    if (isInKhmer) {
+      return "ខ្មែរ";
+    } else {
+      return "English";
+    }
+  }
+
+  void switchLanguage(String language) {
+    final languageBox = Hive.box<int>(languageBoxName);
+    if (language.isEmpty) return;
+    if (language.toLowerCase() == 'ខ្មែរ') {
+      languageBox.put(
+        languageBoxName,
+        0,
+      );
+    }
+    if (language.toLowerCase() == 'english') {
+      languageBox.put(
+        languageBoxName,
+        1,
+      );
+    }
+  }
+
   void toggleLanguage() {
     final languageBox = Hive.box<int>(languageBoxName);
     var language = languageBox.get(languageBoxName);

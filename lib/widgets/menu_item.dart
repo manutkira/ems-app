@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 class MenuItem extends StatelessWidget {
-  final illustration;
+  final Widget illustration;
   final String label;
   final Function() onTap;
   const MenuItem(
@@ -24,18 +24,27 @@ class MenuItem extends StatelessWidget {
           width: double.infinity,
           decoration: const BoxDecoration(
               color: kLightBlue, borderRadius: BorderRadius.all(kBorderRadius)),
-          padding: kPaddingAll,
+          // padding: kPaddingAll,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               illustration,
               const SizedBox(height: 6),
-              Text(
-                label,
-                style: kSubtitle.copyWith(
-                    color: kBlack, fontWeight: FontWeight.w700),
-                textAlign: TextAlign.center,
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: Text(
+                  label,
+                  style: kSubtitle.copyWith(
+                    fontSize: 14,
+                    color: kBlack,
+                    fontWeight: FontWeight.w700,
+                    height: 1.7,
+                    overflow: TextOverflow.visible,
+                  ),
+                  softWrap: false,
+                  textAlign: TextAlign.center,
+                ),
               )
             ],
           ),

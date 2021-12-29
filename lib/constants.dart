@@ -39,7 +39,7 @@ const kPadding = EdgeInsets.symmetric(horizontal: 20);
 const kPaddingAll = EdgeInsets.all(15);
 const kBorderRadius = Radius.circular(10);
 
-ThemeData get themeData {
+ThemeData themeData(BuildContext context) {
   return ThemeData.dark().copyWith(
     // dialogBackgroundColor: kBlue,
     dialogTheme: DialogTheme(

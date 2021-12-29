@@ -72,7 +72,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       MaterialPageRoute(builder: (_) {
         // if user is an admin, load the admin screen
         if (user.role!.toLowerCase() == 'admin') {
-          return const HomeScreen();
+          return const HomeScreenAdmin();
         }
         // otherwise, load the employee screen
         return const HomeScreenEmployee();

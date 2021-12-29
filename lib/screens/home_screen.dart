@@ -4,43 +4,36 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/attendances_screen.dart';
-import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/overtime/overtime_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/check_in_screen.dart';
 import 'package:ems/screens/take_attendance/check_out_screen.dart';
-import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/appbar.dart';
+import 'package:ems/widgets/check_status.dart';
 import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
-class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+import 'attendances_api/attendance_info.dart';
+import 'overtime/individual_overtime_screen.dart';
+
+class HomeScreenAdmin extends ConsumerStatefulWidget {
+  const HomeScreenAdmin({Key? key}) : super(key: key);
 
   @override
-  ConsumerState createState() => _HomeScreenState();
+  ConsumerState createState() => _HomeScreenAdminState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var time = 'calculating';
-  dynamic employeeCount = "loading...";
   late Timer _timer;
-  final UserService _userService = UserService.instance;
-
-  // Get total employee counts
-  getCount() async {
-    var c = await _userService.count();
-    if (mounted) {
-      setState(() {
-        employeeCount = c;
-      });
-    }
-  }
 
   getTime() async {
     if (mounted) {
@@ -52,10 +45,59 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  void _goToMyAttendance(int userId) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AttendancesInfoScreen(userId),
+      ),
+    );
+  }
+
+  void _goToMyOvertime(User? currentUser) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => IndividualOvertimeScreen(
+          user: currentUser as User,
+        ),
+      ),
+    );
+  }
+
+  void _goToCheckoutScreen() {
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => const CheckOutScreen(),
+      ),
+    );
+  }
+
+  void _goToCheckInScreen() {
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => const CheckInScreen(),
+      ),
+    );
+  }
+
+  void _goToAttendanceScreen() {
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => AttendancesScreen(),
+      ),
+    );
+  }
+
+  void _goToOvertimeScreen() {
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => const OvertimeScreen(),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
-    getCount();
     getTime();
   }
 
@@ -68,263 +110,269 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _buildAppBar,
+      appBar: EMSAppBar(
+        openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+      ),
       drawer: MenuDrawer(),
       body: SafeArea(
         bottom: false,
-        child: SizedBox(
-          height: _size.height,
-          child: ListView(
-            children: [
-              // top
-              Stack(
+        child: ListView(
+          children: [
+            /// top
+            Stack(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(top: 25),
+                  height: 200,
+                  width: _size.width,
+                  child: SvgPicture.asset(
+                    'assets/images/graph.svg',
+                    semanticsLabel: "menu",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, left: 15),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ValueListenableBuilder(
+                            valueListenable: ref
+                                .watch(currentUserProvider)
+                                .currentUserListenable,
+                            builder: (_, Box<User> box, __) {
+                              final listFromBox = box.values.toList();
+                              final currentUser = listFromBox.isNotEmpty
+                                  ? listFromBox[0]
+                                  : null;
+
+                              return Text(
+                                "${local?.hello("${currentUser?.name}")}",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  height: 1,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              );
+                            },
+                          ),
+                          Visibility(
+                            visible: isEnglish,
+                            child: const SizedBox(height: 5),
+                          ),
+                          Text(
+                            "${local?.timeText(time, getDateStringFromDateTime(DateTime.now()))}",
+                            style: kSubtitleTwo,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: isEnglish ? 30 : 25),
+                    const CheckStatus(),
+                  ],
+                ),
+              ],
+            ),
+            _buildSpacerVertical,
+
+            /// check in/out
+            _buildTitle('${local?.checkInOut}'),
+            Container(
+              height: 170,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 12,
+              ),
+              child: Row(
                 children: [
-                  SizedBox(
-                    height: 200,
-                    width: _size.width,
-                    child: SvgPicture.asset(
-                      'assets/images/graph.svg',
-                      semanticsLabel: "menu",
-                      fit: BoxFit.cover,
+                  Expanded(
+                    flex: 1,
+                    child: MenuItem(
+                      onTap: _goToCheckInScreen,
+                      illustration: SvgPicture.asset(
+                        "assets/images/tick.svg",
+                        width: MediaQuery.of(context).size.width * 0.15,
+                      ),
+                      label: "${local?.checkin}",
                     ),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20, left: 15),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ValueListenableBuilder(
-                              valueListenable: ref
-                                  .watch(currentUserProvider)
-                                  .currentUserListenable,
-                              builder: (_, Box<User> box, __) {
-                                final listFromBox = box.values.toList();
-                                final currentUser = listFromBox.isNotEmpty
-                                    ? listFromBox[0]
-                                    : null;
-
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => const OvertimeScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    "Hello, ${currentUser?.name}",
-                                    style: kHeadingFour,
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "It's $time on ${DateFormat('dd-MM-yyyy').format(DateTime.now())}.",
-                              style: kSubtitleTwo,
-                            ),
-                          ],
-                        ),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    flex: 1,
+                    child: MenuItem(
+                      onTap: _goToCheckoutScreen,
+                      illustration: SvgPicture.asset(
+                        "assets/images/close.svg",
+                        width: MediaQuery.of(context).size.width * 0.15,
                       ),
-                      const SizedBox(height: 15),
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => EmployeeListScreen(),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: kPaddingAll.copyWith(top: 30, bottom: 30),
-                          margin: kPaddingAll,
-                          width: _size.width,
-                          decoration: const BoxDecoration(
-                            color: kLightBlue,
-                            borderRadius: BorderRadius.all(kBorderRadius),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height: 75,
-                                child: Image.asset(
-                                  "assets/images/profile-icon-png-910.png",
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 50,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '$employeeCount',
-                                    style: kHeadingOne.copyWith(
-                                        color: kBlack, fontSize: 32),
-                                  ),
-                                  Text(
-                                    'employees',
-                                    style: kSubtitle.copyWith(color: kBlack),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                      label: "${local?.checkout}",
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 25,
-              ),
-              // menu tile: CHECK IN, CHECK OUT, ATTENDANCE HISTORY
-              Container(
-                padding: kPaddingAll,
-                width: double.infinity,
-                height: _size.height * .6,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                  ),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      kDarkestBlue,
-                      kDarkestBlue,
-                      kBlue,
-                    ],
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Spacer(),
-                    // Check in / Checkout
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+            ),
+            _buildSpacerVertical,
+
+            /// current user attendance
+            _buildTitle('${local?.attendance}'),
+
+            ValueListenableBuilder(
+                valueListenable:
+                    ref.watch(currentUserProvider).currentUserListenable,
+                builder: (_, Box<User> box, __) {
+                  final listFromBox = box.values.toList();
+                  final currentUser =
+                      listFromBox.isNotEmpty ? listFromBox[0] : null;
+                  return Container(
+                    height: 170,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 12,
+                    ),
+                    child: Row(
                       children: [
                         Expanded(
                           flex: 1,
                           child: MenuItem(
-                            onTap: () {
-                              getCount();
-                              Navigator.of(context).push(
-                                CupertinoPageRoute(
-                                  builder: (context) => const CheckInScreen(),
-                                ),
-                              );
-                            },
-                            illustration:
-                                SvgPicture.asset("assets/images/tick.svg"),
-                            label: "Check In",
+                            onTap: _goToAttendanceScreen,
+                            illustration: SvgPicture.asset(
+                              "assets/images/calendar.svg",
+                              width: MediaQuery.of(context).size.width * 0.15,
+                            ),
+                            label: "${local?.attendanceManager}",
                           ),
                         ),
-                        const SizedBox(
-                          width: 15,
-                        ),
+                        const SizedBox(width: 15),
                         Expanded(
                           flex: 1,
                           child: MenuItem(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                CupertinoPageRoute(
-                                  builder: (context) => const CheckOutScreen(),
-                                ),
-                              );
-                            },
-                            illustration:
-                                SvgPicture.asset("assets/images/close.svg"),
-                            label: "Check out",
+                            onTap: () =>
+                                _goToMyAttendance(currentUser?.id as int),
+                            illustration: SvgPicture.asset(
+                              "assets/images/user.svg",
+                              width: MediaQuery.of(context).size.width * 0.17,
+                            ),
+                            label: "${local?.myAttendance}",
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    // Attendance history
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => AttendancesScreen(),
+                  );
+                }),
+            _buildSpacerVertical,
+
+            /// current user overtime
+            _buildTitle('${local?.overtime}'),
+            Container(
+              height: 170,
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 15,
+              ),
+              child: ValueListenableBuilder(
+                valueListenable:
+                    ref.watch(currentUserProvider).currentUserListenable,
+                builder: (_, Box<User> box, __) {
+                  final listFromBox = box.values.toList();
+                  final currentUser =
+                      listFromBox.isNotEmpty ? listFromBox[0] : null;
+
+                  return Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: MenuItem(
+                          onTap: _goToOvertimeScreen,
+                          illustration: SvgPicture.asset(
+                            "assets/images/overtime-icon.svg",
+                            width: MediaQuery.of(context).size.width * 0.17,
                           ),
-                        );
-                      },
-                      child: SizedBox(
-                        width: _size.width,
-                        height: 175,
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Container(
-                            width: double.infinity,
-                            decoration: const BoxDecoration(
-                              color: kLightBlue,
-                              borderRadius: BorderRadius.all(kBorderRadius),
-                            ),
-                            padding: kPaddingAll,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/images/chart.svg',
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  "Attendance History",
-                                  style: kSubtitle.copyWith(
-                                      color: kBlack,
-                                      fontWeight: FontWeight.w700),
-                                  textAlign: TextAlign.center,
-                                )
-                              ],
-                            ),
-                          ),
+                          label: "${local?.overtimeManager}",
                         ),
                       ),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        flex: 1,
+                        child: MenuItem(
+                          onTap: () => _goToMyOvertime(currentUser),
+                          illustration: SvgPicture.asset(
+                            "assets/images/user.svg",
+                            width: MediaQuery.of(context).size.width * 0.17,
+                          ),
+                          label: "${local?.myOvertime}",
+                        ),
+                      ),
+                    ],
+                  );
+                  // return GestureDetector(
+                  //   onTap: () => _goToMyOvertime(currentUser),
+                  //   child: SizedBox(
+                  //     width: _size.width,
+                  //     child: AspectRatio(
+                  //       aspectRatio: 1,
+                  //       child: Container(
+                  //         width: double.infinity,
+                  //         decoration: const BoxDecoration(
+                  //           color: kLightBlue,
+                  //           borderRadius: BorderRadius.all(kBorderRadius),
+                  //         ),
+                  //         padding: kPaddingAll,
+                  //         child: Column(
+                  //           mainAxisAlignment: MainAxisAlignment.center,
+                  //           crossAxisAlignment: CrossAxisAlignment.center,
+                  //           children: [
+                  //             SvgPicture.asset(
+                  //               'assets/images/overtime-icon.svg',
+                  //               height: 82,
+                  //             ),
+                  //             SizedBox(height: isEnglish ? 10 : 2),
+                  //             Text(
+                  //               "${local?.myOvertime}",
+                  //               style: kSubtitle.copyWith(
+                  //                   color: kBlack, fontWeight: FontWeight.w700),
+                  //               textAlign: TextAlign.center,
+                  //             )
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  PreferredSizeWidget get _buildAppBar {
-    return AppBar(
-      leading: GestureDetector(
-        onTap: () => _scaffoldKey.currentState?.openDrawer(),
-        child: Container(
-          padding: kPaddingAll,
-          child: SvgPicture.asset(
-            'assets/images/menuburger.svg',
-            semanticsLabel: "menu",
-          ),
+  Widget _buildTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15,
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
         ),
       ),
-      title: const Text('Internal EMS'),
     );
+  }
+
+  Widget get _buildSpacerVertical {
+    return const SizedBox(height: 10);
   }
 }
