@@ -103,6 +103,10 @@ flutter:
     - assets/images/attendanceicon.png
     - assets/images/notfound.png
     - assets/images/overtime-icon.svg
+    - assets/images/calendar.svg
+    - assets/images/user.svg
+    - assets/images/flag-cambodia.svg
+    - assets/images/flag-united-states.svg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

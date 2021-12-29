@@ -8,6 +8,7 @@ import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/check_in_screen.dart';
 import 'package:ems/screens/take_attendance/check_out_screen.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/appbar.dart';
 import 'package:ems/widgets/check_status.dart';
 import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
@@ -98,13 +99,15 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _buildAppBar,
+      appBar: EMSAppBar(
+        openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
+      ),
       drawer: MenuDrawer(),
       body: SafeArea(
         bottom: false,
         child: ListView(
           children: [
-            // top
+            /// top
             Stack(
               children: [
                 Container(
@@ -139,8 +142,8 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
 
                               return Text(
                                 "${local?.hello("${currentUser?.name}")}",
-                                style: TextStyle(
-                                  fontSize: isEnglish ? 16 : 14,
+                                style: const TextStyle(
+                                  fontSize: 16,
                                   height: 1,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -166,7 +169,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             ),
             _buildSpacerVertical,
 
-            // check in/out
+            /// check in/out
             _buildTitle('${local?.checkInOut}'),
             Container(
               height: 170,
@@ -204,7 +207,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             ),
             _buildSpacerVertical,
 
-            // current user attendance
+            /// current user attendance
             _buildTitle('${local?.attendance}'),
             ValueListenableBuilder(
                 valueListenable:
@@ -253,7 +256,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                 }),
             _buildSpacerVertical,
 
-            // current user overtime
+            /// current user overtime
             _buildTitle('${local?.overtime}'),
             Container(
               height: 170,
@@ -345,7 +348,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
           onTap: () => ref.read(settingsProvider).toggleLanguage(),
           child: const Icon(MdiIcons.earth),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
       ],
     );
   }
