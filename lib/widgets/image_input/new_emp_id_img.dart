@@ -1,8 +1,10 @@
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import '../../constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImageInputId extends StatefulWidget {
   final Function onSelectImage;
@@ -64,6 +66,8 @@ class _ImageInputIdState extends State<ImageInputId> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Row(
       children: [
         Container(
@@ -83,7 +87,7 @@ class _ImageInputIdState extends State<ImageInputId> {
                   ),
                 )
               : Text(
-                  'No ID Image',
+                  '${local?.noIdImage}',
                   textAlign: TextAlign.center,
                 ),
           alignment: Alignment.center,
@@ -130,15 +134,15 @@ class _ImageInputIdState extends State<ImageInputId> {
                                 Navigator.of(context).pop();
                               },
                               leading: Icon(Icons.camera),
-                              title: Text('Take a picture'),
+                              title: Text('${local?.takePicture}'),
                             ),
                             ListTile(
                               onTap: () {
                                 getIdFromGallery();
                                 Navigator.of(context).pop();
                               },
-                              leading: Icon(Icons.folder),
-                              title: Text('From library'),
+                              leading: Icon(Icons.photo),
+                              title: Text('${local?.fromGallery}'),
                             ),
                           ],
                         ),
@@ -149,7 +153,7 @@ class _ImageInputIdState extends State<ImageInputId> {
               color: kBlue,
               // borderSide: BorderSide(color: Colors.black),
               icon: Icon(Icons.photo),
-              label: Text('Upload an image'),
+              label: Text('${local?.uploadImage}'),
             ),
           ),
         )

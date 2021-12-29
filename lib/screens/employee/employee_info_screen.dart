@@ -1,7 +1,9 @@
 import 'package:ems/screens/card/card.screen.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 
@@ -30,6 +32,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     final color = const Color(0xff05445E);
     final color1 = const Color(0xff3982A0);
     return Scaffold(
@@ -44,7 +48,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Fetching Data'),
+                    Text('${local?.fetchData}'),
                     const CircularProgressIndicator(
                       color: kWhite,
                     ),
@@ -100,7 +104,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                               ),
                             ),
                             Container(
-                              height: 55,
+                              height: 65,
                               margin: EdgeInsets.only(left: 15, top: 13),
                               child: Expanded(
                                 flex: 7,
@@ -110,13 +114,13 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     Row(
                                       children: [
                                         Text(
-                                          'ID: ',
+                                          '${local?.id} : ',
                                           style: kParagraph.copyWith(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         SizedBox(
-                                          width: 45,
+                                          width: isEnglish ? 45 : 20,
                                         ),
                                         Text(
                                           (snapshot.data as dynamic)['id']
@@ -130,9 +134,10 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     Row(
                                       children: [
                                         Container(
-                                          padding: EdgeInsets.only(top: 3),
+                                          padding: EdgeInsets.only(
+                                              top: isEnglish ? 3 : 00),
                                           child: Text(
-                                            'Name: ',
+                                            '${local?.name} : ',
                                             style: kParagraph.copyWith(
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold),
@@ -142,8 +147,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           width: 20,
                                         ),
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 4),
+                                          padding: EdgeInsets.only(
+                                              top: isEnglish ? 4 : 0),
                                           child: Text(
                                             (snapshot.data as dynamic)['name'],
                                             style: kParagraph.copyWith(

@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImageInputPickerId extends StatefulWidget {
   final Function onSelectImage;
@@ -66,6 +68,8 @@ class _ImageInputPickerIdState extends State<ImageInputPickerId> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Row(
       children: [
         Container(
@@ -86,7 +90,10 @@ class _ImageInputPickerIdState extends State<ImageInputPickerId> {
                   ),
                 )
               : widget.imageUrl.length == 4
-                  ? Text('No ID Image')
+                  ? Text(
+                      '${local?.noIdImage}',
+                      textAlign: TextAlign.center,
+                    )
                   : ClipRRect(
                       child: Image.network(
                         widget.imageUrl.toString(),
@@ -139,7 +146,7 @@ class _ImageInputPickerIdState extends State<ImageInputPickerId> {
                                 Navigator.of(context).pop();
                               },
                               leading: Icon(Icons.camera),
-                              title: Text('Take a picture'),
+                              title: Text('${local?.takePicture}'),
                             ),
                             ListTile(
                               onTap: () {
@@ -147,7 +154,7 @@ class _ImageInputPickerIdState extends State<ImageInputPickerId> {
                                 Navigator.of(context).pop();
                               },
                               leading: Icon(Icons.folder),
-                              title: Text('From library'),
+                              title: Text('${local?.fromGallery}'),
                             ),
                           ],
                         ),
@@ -157,7 +164,7 @@ class _ImageInputPickerIdState extends State<ImageInputPickerId> {
               elevation: 10,
               color: kBlue,
               icon: Icon(Icons.photo),
-              label: Text('Upload an image'),
+              label: Text('${local?.uploadImage}'),
             ),
           ),
         )

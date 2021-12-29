@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:ems/screens/employee/employee_list_screen.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/image_input/new_emp_id_img.dart';
 import 'package:ems/widgets/image_input/new_emp_profile_img.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../constants.dart';
@@ -35,9 +35,9 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   TextEditingController workrate = TextEditingController();
   TextEditingController background = TextEditingController();
 
-  String dropDownValue = 'Active';
-  String dropDownValue1 = 'Admin';
-  String dropDownValue2 = 'Very\ Good';
+  String dropDownValue = '';
+  String dropDownValue1 = '';
+  String dropDownValue2 = '';
 
   final _form = GlobalKey<FormState>();
   File? pickedImg;
@@ -53,6 +53,19 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    setState(() {
+      if (dropDownValue1.isEmpty) {
+        dropDownValue1 = '${local?.admin}';
+      }
+      if (dropDownValue.isEmpty) {
+        dropDownValue = '${local?.active}';
+      }
+      if (dropDownValue2.isEmpty) {
+        dropDownValue2 = '${local?.veryGood}';
+      }
+    });
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -63,8 +76,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                   showDialog(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                            title: Text('Are you Sure?'),
-                            content: Text('Your data will be lost.'),
+                            title: Text('${local?.areYouSure}'),
+                            content: Text('${local?.yourDataWillLost}'),
                             actions: [
                               OutlineButton(
                                 onPressed: () async {
@@ -74,14 +87,14 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                     EmployeeListScreen.routeName,
                                   );
                                 },
-                                child: Text('Yes'),
+                                child: Text('${local?.yes}'),
                                 borderSide: BorderSide(color: Colors.green),
                               ),
                               OutlineButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text('No'),
+                                child: Text('${local?.no}'),
                                 borderSide: BorderSide(color: Colors.red),
                               )
                             ],
@@ -96,20 +109,19 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                 padding: EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    // ImageInput(_selectImage),
                     ImageInputPicker(_selectImage),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Name ',
+                          '${local?.name} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Container(
@@ -119,8 +131,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           child: Flexible(
                             child: TextFormField(
                               decoration: InputDecoration(
-                                hintText: 'Enter Name',
-                                errorStyle: TextStyle(
+                                hintText: '${local?.enterName} ',
+                                errorStyle: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -128,9 +140,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               controller: name,
                               textInputAction: TextInputAction.next,
                               validator: (value) {
-                                if (value!.isEmpty ||
-                                    !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
-                                  return 'Please Enter Correct Name';
+                                if (value!.isEmpty) {
+                                  return '${local?.errorName}';
                                 }
                                 return null;
                               },
@@ -139,18 +150,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Phone ',
+                          '${local?.phoneNumber} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Container(
@@ -160,8 +171,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           child: Flexible(
                             child: TextFormField(
                               decoration: InputDecoration(
-                                hintText: 'Enter Phone Number',
-                                errorStyle: TextStyle(
+                                hintText: '${local?.enterPhone} ',
+                                errorStyle: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -172,7 +183,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                 if (value!.isEmpty ||
                                     !RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$')
                                         .hasMatch(value)) {
-                                  return 'Please Enter Correct Phone';
+                                  return '${local?.errorPhone}';
                                 }
                                 return null;
                               },
@@ -181,18 +192,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Email ',
+                          '${local?.email} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Container(
@@ -202,8 +213,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           child: Flexible(
                             child: TextFormField(
                               decoration: InputDecoration(
-                                hintText: 'Enter Email address',
-                                errorStyle: TextStyle(
+                                hintText: '${local?.enterEmail} ',
+                                errorStyle: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -215,7 +226,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                 if (value!.isEmpty ||
                                     !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
                                         .hasMatch(value)) {
-                                  return 'Please Enter Correct Email';
+                                  return '${local?.errorEmail}';
                                 }
                                 return null;
                               },
@@ -224,18 +235,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Password ',
+                          '${local?.password} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Container(
@@ -245,8 +256,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           child: Flexible(
                             child: TextFormField(
                               decoration: InputDecoration(
-                                hintText: 'Enter Password',
-                                errorStyle: TextStyle(
+                                hintText: '${local?.enterPassword} ',
+                                errorStyle: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -255,10 +266,10 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               textInputAction: TextInputAction.next,
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Please Enter Password';
+                                  return '${local?.errorPassword}';
                                 }
                                 if (value.length < 8) {
-                                  return 'Enter more than 8 characters';
+                                  return '${local?.errorPasswordLength}';
                                 }
                                 return null;
                               },
@@ -267,18 +278,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Position ',
+                          '${local?.position} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Container(
@@ -288,8 +299,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           child: Flexible(
                             child: TextFormField(
                               decoration: InputDecoration(
-                                  hintText: 'Enter Position',
-                                  errorStyle: TextStyle(
+                                  hintText: '${local?.enterPosition} ',
+                                  errorStyle: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   )),
@@ -300,18 +311,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Skill ',
+                          '${local?.skill} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Container(
@@ -321,8 +332,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           child: Flexible(
                             child: TextFormField(
                               decoration: InputDecoration(
-                                  hintText: 'Enter Skill',
-                                  errorStyle: TextStyle(
+                                  hintText: '${local?.enterSkill} ',
+                                  errorStyle: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   )),
@@ -333,18 +344,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Salary ',
+                          '${local?.salary} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Container(
@@ -358,8 +369,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                     MdiIcons.currencyUsd,
                                     color: kWhite,
                                   ),
-                                  hintText: 'Enter Salary',
-                                  errorStyle: TextStyle(
+                                  hintText: '${local?.enterSalary} ',
+                                  errorStyle: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   )),
@@ -369,32 +380,34 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Role ',
+                          '${local?.role} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Container(
                           width: 233,
                           child: DropdownButtonFormField(
-                            icon: Icon(Icons.expand_more),
+                            icon: const Icon(Icons.expand_more),
                             value: dropDownValue1,
                             onChanged: (String? newValue) {
                               setState(() {
                                 dropDownValue1 = newValue!;
                               });
                             },
-                            items: <String>['Admin', 'Employee']
-                                .map<DropdownMenuItem<String>>((String value) {
+                            items: <String>[
+                              '${local?.admin}',
+                              '${local?.employee}'
+                            ].map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(
@@ -405,24 +418,24 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Status ',
+                          '${local?.status} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Container(
                           width: 233,
                           child: DropdownButtonFormField(
-                            icon: Icon(Icons.expand_more),
+                            icon: const Icon(Icons.expand_more),
                             value: dropDownValue,
                             onChanged: (String? newValue) {
                               setState(() {
@@ -430,10 +443,10 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               });
                             },
                             items: <String>[
-                              'Active',
-                              'Inactive',
-                              'Resigned',
-                              'Fired'
+                              '${local?.active}',
+                              '${local?.inactive}',
+                              '${local?.resigned}',
+                              '${local?.fired}'
                             ].map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -444,18 +457,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Rate ',
+                          '${local?.rate} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Container(
@@ -469,10 +482,10 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               });
                             },
                             items: <String>[
-                              'Very \Good',
-                              'Good',
-                              'Meduim',
-                              'Low',
+                              '${local?.veryGood}',
+                              '${local?.good}',
+                              '${local?.medium}',
+                              '${local?.low}',
                             ].map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -483,18 +496,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Address ',
+                          '${local?.address} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                           height: 15,
                         ),
@@ -504,8 +517,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           child: Flexible(
                             child: TextFormField(
                               decoration: InputDecoration(
-                                  hintText: 'Enter Address',
-                                  errorStyle: TextStyle(
+                                  hintText: '${local?.enterAddress} ',
+                                  errorStyle: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   )),
@@ -517,18 +530,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Background ',
+                          '${local?.background} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         Container(
@@ -537,8 +550,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           child: Flexible(
                             child: TextFormField(
                               decoration: InputDecoration(
-                                  hintText: 'Enter Employee background',
-                                  errorStyle: TextStyle(
+                                  hintText: '${local?.enterBackground} ',
+                                  errorStyle: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   )),
@@ -548,30 +561,30 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         ImageInputId(_selectId),
                       ],
                     ),
                     Container(
-                      padding: EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Container(
-                            padding: EdgeInsets.only(right: 10),
+                            padding: const EdgeInsets.only(right: 10),
                             child: RaisedButton(
                               onPressed: () {
                                 showDialog(
                                     context: context,
                                     builder: (ctx) => AlertDialog(
-                                          title: Text('Are you sure?'),
-                                          content: Text(
-                                              'Do you want to add new employee?'),
+                                          title: Text('${local?.areYouSure}'),
+                                          content:
+                                              Text('${local?.doYouWantToAdd}'),
                                           actions: [
                                             OutlineButton(
-                                              borderSide: BorderSide(
+                                              borderSide: const BorderSide(
                                                   color: Colors.green),
                                               onPressed: () {
                                                 if (_form.currentState!
@@ -581,20 +594,20 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                                 }
                                                 Navigator.of(context).pop();
                                               },
-                                              child: Text('Yes'),
+                                              child: Text('${local?.yes}'),
                                             ),
                                             OutlineButton(
-                                              borderSide:
-                                                  BorderSide(color: Colors.red),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.red),
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              child: Text('No'),
+                                              child: Text('${local?.no}'),
                                             ),
                                           ],
                                         ));
                               },
-                              child: Text('Save'),
+                              child: Text('${local?.save}'),
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
@@ -603,13 +616,13 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               showDialog(
                                   context: context,
                                   builder: (ctx) => AlertDialog(
-                                        title: Text('Are you sure?'),
+                                        title: Text('${local?.areYouSure}'),
                                         content:
-                                            Text('Your data will be lost.'),
+                                            Text('${local?.yourDataWillLost}'),
                                         actions: [
                                           OutlineButton(
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
+                                            borderSide: const BorderSide(
+                                                color: Colors.green),
                                             onPressed: () async {
                                               Navigator.of(context).pop();
                                               await Navigator.of(context)
@@ -620,20 +633,20 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                                 ),
                                               );
                                             },
-                                            child: Text('Yes'),
+                                            child: Text('${local?.yes}'),
                                           ),
                                           OutlineButton(
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
+                                            borderSide: const BorderSide(
+                                                color: Colors.red),
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
-                                            child: Text('No'),
+                                            child: Text('${local?.no}'),
                                           )
                                         ],
                                       ));
                             },
-                            child: Text('Cancel'),
+                            child: Text('${local?.cancel}'),
                             color: Colors.red,
                           ),
                         ],
@@ -648,6 +661,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   }
 
   uploadImage() async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     var aName = name.text;
     var aPhone = phone.text;
     var aEmail = email.text;
@@ -682,10 +697,59 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     request.files.add(http.MultipartFile.fromString('position', aPosition));
     request.files.add(http.MultipartFile.fromString('skill', aSkill));
     request.files.add(http.MultipartFile.fromString('salary', aSalary));
-    request.files.add(http.MultipartFile.fromString('role', aRole));
-    request.files.add(http.MultipartFile.fromString('status', aStatus));
+
+    String checkRole() {
+      if (aRole == local?.employee) {
+        return 'amployee';
+      }
+      if (aRole == local?.admin) {
+        return 'admin';
+      } else {
+        return '';
+      }
+    }
+
+    request.files.add(http.MultipartFile.fromString('role', checkRole()));
+
+    String checkStatus() {
+      if (aStatus == local?.active) {
+        return 'active';
+      }
+      if (aStatus == local?.inactive) {
+        return 'inactive';
+      }
+      if (aStatus == local?.resigned) {
+        return 'resigned';
+      }
+      if (aStatus == local?.fired) {
+        return 'fired';
+      } else {
+        return '';
+      }
+    }
+
+    request.files.add(http.MultipartFile.fromString('status', checkStatus()));
     request.files.add(http.MultipartFile.fromString('password', apassword));
-    request.files.add(http.MultipartFile.fromString('rate', aWorkrate));
+
+    String checkRate() {
+      if (aWorkrate == local?.veryGood) {
+        return 'verygood';
+      }
+      if (aWorkrate == local?.good) {
+        return 'good';
+      }
+      if (aWorkrate == local?.medium) {
+        return 'medium';
+      }
+      if (aWorkrate == local?.low) {
+        return 'low';
+      } else {
+        return '';
+      }
+    }
+
+    request.files.add(http.MultipartFile.fromString('rate', checkRate()));
+
     request.files.add(http.MultipartFile.fromString('background', aBackground));
     request.headers.addAll(headers);
 

@@ -6,6 +6,8 @@ import 'package:ems/models/user.dart';
 import 'package:ems/screens/employee/employee_edit_screen.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
+import 'package:ems/utils/utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -70,6 +72,8 @@ class _EmployeeListState extends State<EmployeeList> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -93,7 +97,7 @@ class _EmployeeListState extends State<EmployeeList> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('Fetching Data'),
+                    Text('${local?.fetchData}'),
                     SizedBox(
                       height: 10,
                     ),
@@ -147,6 +151,8 @@ class _EmployeeListState extends State<EmployeeList> {
   }
 
   _searchBar() {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Padding(
       padding: EdgeInsets.all(10),
       child: Row(
@@ -175,9 +181,12 @@ class _EmployeeListState extends State<EmployeeList> {
                           color: Colors.white,
                         ),
                       ),
-                hintText: 'Search...',
+                hintText: '${local?.search}...',
+                hintStyle: TextStyle(
+                  fontSize: isEnglish ? 15 : 13,
+                ),
                 errorStyle: TextStyle(
-                  fontSize: 15,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -217,15 +226,26 @@ class _EmployeeListState extends State<EmployeeList> {
             },
             itemBuilder: (_) => [
               PopupMenuItem(
-                child: Text('From A-Z'),
+                child: Text(
+                  '${local?.fromAtoZ}',
+                  style: TextStyle(
+                    fontSize: isEnglish ? 15 : 16,
+                  ),
+                ),
                 value: 0,
               ),
               PopupMenuItem(
-                child: Text('From Z-A'),
+                child: Text(
+                  '${local?.fromZtoA}',
+                  style: TextStyle(fontSize: isEnglish ? 15 : 16),
+                ),
                 value: 1,
               ),
               PopupMenuItem(
-                child: Text('by ID'),
+                child: Text(
+                  '${local?.byId}',
+                  style: TextStyle(fontSize: isEnglish ? 15 : 16),
+                ),
                 value: 2,
               ),
             ],
@@ -237,6 +257,8 @@ class _EmployeeListState extends State<EmployeeList> {
   }
 
   _listItem(index) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(bottom: 20),
@@ -281,7 +303,15 @@ class _EmployeeListState extends State<EmployeeList> {
                     children: [
                       Row(
                         children: [
-                          Text('Name: '),
+                          Container(
+                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                            child: Text(
+                              '${local?.name}: ',
+                              style: TextStyle(
+                                fontSize: isEnglish ? 15 : 15,
+                              ),
+                            ),
+                          ),
                           Text(
                             userDisplay[index].name.toString(),
                           ),
@@ -289,7 +319,13 @@ class _EmployeeListState extends State<EmployeeList> {
                       ),
                       Row(
                         children: [
-                          Text('ID: '),
+                          Container(
+                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                            child: Text('${local?.id}: ',
+                                style: TextStyle(
+                                  fontSize: isEnglish ? 15 : 15,
+                                )),
+                          ),
                           Text(userDisplay[index].id.toString()),
                         ],
                       )
@@ -370,15 +406,30 @@ class _EmployeeListState extends State<EmployeeList> {
                     },
                     itemBuilder: (_) => [
                       PopupMenuItem(
-                        child: Text('Info'),
+                        child: Text(
+                          '${local?.info}',
+                          style: TextStyle(
+                            fontSize: isEnglish ? 15 : 16,
+                          ),
+                        ),
                         value: 0,
                       ),
                       PopupMenuItem(
-                        child: Text('Edit'),
+                        child: Text(
+                          '${local?.edit}',
+                          style: TextStyle(
+                            fontSize: isEnglish ? 15 : 16,
+                          ),
+                        ),
                         value: 1,
                       ),
                       PopupMenuItem(
-                        child: Text('Delete'),
+                        child: Text(
+                          '${local?.delete}',
+                          style: TextStyle(
+                            fontSize: isEnglish ? 15 : 16,
+                          ),
+                        ),
                         value: 2,
                       ),
                     ],

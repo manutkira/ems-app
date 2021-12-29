@@ -1,7 +1,9 @@
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../constants.dart';
 
 class ImageInputPicker extends StatefulWidget {
@@ -22,10 +24,10 @@ class _ImageInputPickerState extends State<ImageInputPicker> {
       maxWidth: 450,
       imageQuality: 1,
     );
-
     if (pickedFile == null) {
       return;
     }
+
     cropImageProfile(pickedFile.path);
   }
 
@@ -66,6 +68,8 @@ class _ImageInputPickerState extends State<ImageInputPicker> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Row(
       children: [
         Container(
@@ -87,7 +91,10 @@ class _ImageInputPickerState extends State<ImageInputPicker> {
                   ),
                 )
               : Text(
-                  'No Profile',
+                  '${local?.noProfile}',
+                  style: TextStyle(
+                    fontSize: isEnglish ? 15 : 16,
+                  ),
                   textAlign: TextAlign.center,
                 ),
           alignment: Alignment.center,
@@ -134,15 +141,15 @@ class _ImageInputPickerState extends State<ImageInputPicker> {
                                 Navigator.of(context).pop();
                               },
                               leading: Icon(Icons.camera),
-                              title: Text('Take a picture'),
+                              title: Text('${local?.takePicture}'),
                             ),
                             ListTile(
                               onTap: () {
                                 getImage();
                                 Navigator.of(context).pop();
                               },
-                              leading: Icon(Icons.folder),
-                              title: Text('From library'),
+                              leading: Icon(Icons.photo),
+                              title: Text('${local?.fromGallery}'),
                             ),
                           ],
                         ),
@@ -152,7 +159,12 @@ class _ImageInputPickerState extends State<ImageInputPicker> {
               elevation: 10,
               color: kBlue,
               icon: Icon(Icons.photo),
-              label: Text('Upload an image'),
+              label: Text(
+                '${local?.uploadImage}',
+                style: TextStyle(
+                  fontSize: isEnglish ? 15 : 16,
+                ),
+              ),
             ),
           ),
         )

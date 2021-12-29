@@ -373,5 +373,189 @@
   "errorNoRecord": "No Record Found.",
   "@errorNoRecord": {
     "description": "View overtime screen"
+  },
+  "fetchData": "Fetching Data",
+  "@fetchData": {
+    "description": "Fetching Data"
+  },
+  "id": "ID",
+  "@id": {
+    "description": "employee id"
+  },
+  "search": "Search",
+  "@search": {
+    "description": "search"
+  },
+  "fromAtoZ": "From A-Z",
+  "@fromAtoZ": {
+    "description": "From A-Z"
+  },
+  "fromZtoA": "From Z-A",
+  "@fromZtoA": {
+    "description": "From Z-A"
+  },
+  "byId": "by ID",
+  "@byId": {
+    "description": "by ID"
+  },
+  "info": "info",
+  "@info": {
+    "description": "employee list"
+  },
+  "edit": "edit",
+  "@edit": {
+    "description": "employee list"
+  },
+  "delete": "delete",
+  "@delete": {
+    "description": "employee list"
+  },
+  "noProfile": "No Profile",
+  "@noProfile": {
+    "description": "add new employee"
+  },
+  "uploadImage": "Upload an image",
+  "@uploadImage": {
+    "description": "add new employee"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "add new employee"
+  },
+  "status": "Status",
+  "@status": {
+    "description": "add new employee"
+  },
+  "role": "Role",
+  "@role": {
+    "description": "add new employee"
+  },
+  "admin": "Admin",
+  "@admin": {
+    "description": "add new employee"
+  },
+  "active": "Active",
+  "@active": {
+    "description": "add new employee"
+  },
+  "inactive": "Inactive",
+  "@inactive": {
+    "description": "add new employee"
+  },
+  "resigned": "Resigned",
+  "@resigned": {
+    "description": "add new employee"
+  },
+  "fired": "Fired",
+  "@fired": {
+    "description": "add new employee"
+  },
+  "veryGood": "Very Good",
+  "@veryGood": {
+    "description": "add new employee"
+  },
+  "good": "Good",
+  "@good": {
+    "description": "add new employee"
+  },
+  "medium": "Medium",
+  "@medium": {
+    "description": "add new employee"
+  },
+  "low": "Low",
+  "@low": {
+    "description": "add new employee"
+  },
+  "errorName": "Please Enter Correct Name",
+  "@errorName": {
+    "description": "add new employee"
+  },
+  "errorPhone": "Please Enter Correct Phone",
+  "@errorPhone": {
+    "description": "add new employee"
+  },
+  "errorEmail": "Please Enter Correct Email",
+  "@errorEmail": {
+    "description": "add new employee"
+  },
+  "errorPassword": "Please Enter Correct Password",
+  "@errorPassword": {
+    "description": "add new employee"
+  },
+  "errorPasswordLength": "Enter more than 8 characters",
+  "@errorPasswordLength": {
+    "description": "add new employee"
+  },
+  "enterName": "Enter Name",
+  "@enter": {
+    "description": "add new employee"
+  },
+  "enterPhone": "Enter Phone",
+  "@enterPhone": {
+    "description": "add new employee"
+  },
+  "enterEmail": "Enter Email",
+  "@enterEmail": {
+    "description": "add new employee"
+  },
+  "enterPassword": "Enter Password",
+  "@enterPassword": {
+    "description": "add new employee"
+  },
+  "enterPosition": "Enter Position",
+  "@enterPosition": {
+    "description": "add new employee"
+  },
+  "enterSkill": "Enter Skill",
+  "@enterSkill": {
+    "description": "add new employee"
+  },
+  "enterSalary": "Enter Salary",
+  "@enterSalary": {
+    "description": "add new employee"
+  },
+  "enterAddress": "Enter Address",
+  "@enterAddress": {
+    "description": "add new employee"
+  },
+  "enterBackground": "Enter Employee Work Background",
+  "@enterBackground": {
+    "description": "add new employee"
+  },
+  "areYouSure": "Are you sure?",
+  "@areYouSure": {
+    "description": "add new employee"
+  },
+  "yourDataWillLost": "Your data will be lost.",
+  "@yourDataWillLost": {
+    "description": "add new employee"
+  },
+  "yes": "Yes",
+  "@yes": {
+    "description": "add new employee"
+  },
+  "no": "No",
+  "@no": {
+    "description": "add new employee"
+  },
+  "noIdImage": "No ID Image",
+  "@noIdImage": {
+    "description": "add new employee"
+  },
+  "save": "Save",
+  "@no": {
+    "description": "add new employee"
+  },
+  "takePicture": "Take a picture",
+  "@takePicture": {
+    "description": "add new employee"
+  },
+  "fromGallery": "From gallery",
+  "@fromGallery": {
+    "description": "add new employee"
+  },
+  "doYouWantToAdd": "Do you want to add new employee?",
+  "@doYouWantToAdd": {
+    "description": "add new employee"
   }
 }

@@ -2,8 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:ems/screens/employee/employee_list_screen.dart';
+import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/check_status.dart';
 import 'package:ems/widgets/image_input/edit_emp_id.dart';
 import 'package:ems/widgets/image_input/edit_emp_profile.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
@@ -60,9 +63,9 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   TextEditingController skillController = TextEditingController();
   TextEditingController salaryController = TextEditingController();
   TextEditingController backgroundController = TextEditingController();
-  String role = 'Admin';
-  String status = 'Active';
-  String rate = 'Good';
+  String role = '';
+  String status = '';
+  String rate = '';
 
   final _form = GlobalKey<FormState>();
 
@@ -90,9 +93,9 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     skillController.text = widget.skill;
     salaryController.text = widget.salary;
     backgroundController.text = widget.background;
-    role = widget.role;
-    status = widget.status;
-    rate = widget.ratee;
+    // role = '';
+    // status = '';
+    rate = '';
     imageUrl = widget.image;
     idUrl = widget.imageId;
 
@@ -101,6 +104,66 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    print(widget.status);
+
+    String checkRole() {
+      if (widget.role == 'admin') {
+        return '${local?.admin}';
+      }
+      if (widget.role == 'employee') {
+        return '${local?.employee}';
+      } else {
+        return '';
+      }
+    }
+
+    String checkSatus() {
+      if (widget.status == 'active') {
+        return '${local?.active}';
+      }
+      if (widget.status == 'inactive') {
+        return '${local?.inactive}';
+      }
+      if (widget.status == 'resigned') {
+        return '${local?.resigned}';
+      }
+      if (widget.status == 'fired') {
+        return '${local?.fired}';
+      } else {
+        return '';
+      }
+    }
+
+    String checkRate() {
+      if (widget.ratee == 'verygood') {
+        return '${local?.veryGood}';
+      }
+      if (widget.ratee == 'good') {
+        return '${local?.good}';
+      }
+      if (widget.ratee == 'medium') {
+        return '${local?.medium}';
+      }
+      if (widget.ratee == 'low') {
+        return '${local?.low}';
+      } else {
+        return '';
+      }
+    }
+
+    setState(() {
+      if (role.isEmpty) {
+        role = checkRole();
+      }
+      if (status.isEmpty) {
+        status = checkSatus();
+      }
+      if (rate.isEmpty) {
+        rate = checkRate();
+      }
+    });
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -111,7 +174,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                 showDialog(
                     context: context,
                     builder: (ctx) => AlertDialog(
-                          title: Text('Are you Sure?'),
+                          title: Text('${local?.areYouSure}'),
                           content: Text('Your changes will be lost.'),
                           actions: [
                             OutlineButton(
@@ -122,14 +185,14 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                   EmployeeListScreen.routeName,
                                 );
                               },
-                              child: Text('Yes'),
+                              child: Text('${local?.yes}'),
                               borderSide: BorderSide(color: Colors.green),
                             ),
                             OutlineButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text('No'),
+                              child: Text('${local?.no}'),
                               borderSide: BorderSide(color: Colors.red),
                             )
                           ],
@@ -152,7 +215,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Name ',
+                        '${local?.name} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -164,7 +227,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                         child: Flexible(
                           child: TextFormField(
                             decoration: InputDecoration(
-                              hintText: 'Enter Name',
+                              hintText: '${local?.enterName}',
                               errorStyle: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -174,7 +237,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return 'Please Enter Correct Name';
+                                return '${local?.errorName}';
                               }
                               return null;
                             },
@@ -190,7 +253,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Phone ',
+                        '${local?.phoneNumber} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -202,7 +265,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                         child: Flexible(
                           child: TextFormField(
                             decoration: InputDecoration(
-                              hintText: 'Enter Phone number',
+                              hintText: '${local?.enterPhone}',
                               errorStyle: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -212,7 +275,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             textInputAction: TextInputAction.next,
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return 'Please Enter Phone Number';
+                                return '${local?.errorPhone}';
                               }
                               if (double.tryParse(value) == null) {
                                 return 'Please Enter valid number';
@@ -234,7 +297,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Email ',
+                        '${local?.email} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -246,7 +309,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                         child: Flexible(
                           child: TextFormField(
                             decoration: InputDecoration(
-                              hintText: 'Enter Email address',
+                              hintText: '${local?.enterEmail}',
                               errorStyle: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -258,7 +321,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                               if (value!.isEmpty ||
                                   !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
                                       .hasMatch(value)) {
-                                return 'Please Enter Correct Email';
+                                return '${local?.errorEmail}';
                               }
                               return null;
                             },
@@ -274,7 +337,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Position ',
+                        '${local?.position} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -286,7 +349,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                         child: Flexible(
                           child: TextFormField(
                             decoration: InputDecoration(
-                              hintText: 'Enter Position',
+                              hintText: '${local?.enterPosition}',
                               errorStyle: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -306,7 +369,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Skill ',
+                        '${local?.skill} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -318,7 +381,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                         child: Flexible(
                           child: TextFormField(
                             decoration: InputDecoration(
-                              hintText: 'Enter Skill',
+                              hintText: '${local?.enterSkill}',
                               errorStyle: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -338,7 +401,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Salary ',
+                        '${local?.salary} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -354,7 +417,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                 MdiIcons.currencyUsd,
                                 color: kWhite,
                               ),
-                              hintText: 'Enter Salary',
+                              hintText: '${local?.enterSalary}',
                               errorStyle: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -373,7 +436,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Role ',
+                        '${local?.role} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -388,49 +451,10 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             setState(() {
                               role = newValue!;
                             });
-                            widget.role;
-                          },
-                          items: <String>['Admin', 'Employee']
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                ));
-                          }).toList(),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Status ',
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        width: 233,
-                        child: DropdownButtonFormField(
-                          icon: Icon(Icons.expand_more),
-                          value: status,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              status = newValue!;
-                            });
-                            widget.status;
                           },
                           items: <String>[
-                            'Active',
-                            'Inactive',
-                            'Resigned',
-                            'Fired'
+                            '${local?.admin}',
+                            '${local?.employee}'
                           ].map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                                 value: value,
@@ -449,7 +473,46 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Rate ',
+                        '${local?.status} ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        width: 233,
+                        child: DropdownButtonFormField(
+                          icon: Icon(Icons.expand_more),
+                          value: status,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              status = newValue!;
+                            });
+                          },
+                          items: <String>[
+                            '${local?.active}',
+                            '${local?.inactive}',
+                            '${local?.resigned}',
+                            '${local?.fired}'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                ));
+                          }).toList(),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${local?.rate} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -464,10 +527,13 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             setState(() {
                               rate = newValue!;
                             });
-                            widget.ratee;
                           },
-                          items: <String>['Very\ Good', 'Good', 'Meduim', 'Low']
-                              .map<DropdownMenuItem<String>>((String value) {
+                          items: <String>[
+                            '${local?.veryGood}',
+                            '${local?.good}',
+                            '${local?.medium}',
+                            '${local?.low}',
+                          ].map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(
@@ -490,7 +556,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Address ',
+                            '${local?.address} ',
                             style: kParagraph.copyWith(
                                 fontWeight: FontWeight.bold),
                           ),
@@ -505,7 +571,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             child: Flexible(
                               child: TextFormField(
                                 decoration: InputDecoration(
-                                  hintText: 'Enter Address',
+                                  hintText: '${local?.enterAddress}',
                                   errorStyle: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
@@ -526,7 +592,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Background ',
+                            '${local?.background} ',
                             style: kParagraph.copyWith(
                                 fontWeight: FontWeight.bold),
                           ),
@@ -540,7 +606,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             child: Flexible(
                               child: TextFormField(
                                 decoration: InputDecoration(
-                                  hintText: 'Enter Employee background',
+                                  hintText: '${local?.enterBackground}',
                                   errorStyle: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
@@ -572,14 +638,14 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                               showDialog(
                                   context: context,
                                   builder: (ctx) => AlertDialog(
-                                        title: Text('Are you sure?'),
+                                        title: Text('${local?.areYouSure}'),
                                         content: Text(
                                             'Do you want to save the changes'),
                                         actions: [
                                           OutlineButton(
                                             borderSide:
                                                 BorderSide(color: Colors.green),
-                                            child: Text('Yes'),
+                                            child: Text('${local?.yes}'),
                                             onPressed: () {
                                               if (_form.currentState!
                                                   .validate()) {
@@ -592,14 +658,14 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
-                                            child: Text('No'),
+                                            child: Text('${local?.no}'),
                                             borderSide:
                                                 BorderSide(color: Colors.red),
                                           )
                                         ],
                                       ));
                             },
-                            child: Text('Save'),
+                            child: Text('${local?.save}'),
                             color: Theme.of(context).primaryColor,
                           ),
                         ),
@@ -608,7 +674,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             showDialog(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
-                                      title: Text('Are you Sure?'),
+                                      title: Text('${local?.areYouSure}'),
                                       content:
                                           Text('Your changes will be lost.'),
                                       actions: [
@@ -620,7 +686,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                               EmployeeListScreen.routeName,
                                             );
                                           },
-                                          child: Text('Yes'),
+                                          child: Text('${local?.yes}'),
                                           borderSide:
                                               BorderSide(color: Colors.green),
                                         ),
@@ -628,14 +694,14 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
-                                          child: Text('No'),
+                                          child: Text('${local?.no}'),
                                           borderSide:
                                               BorderSide(color: Colors.red),
                                         )
                                       ],
                                     ));
                           },
-                          child: Text('Cancel'),
+                          child: Text('${local?.cancel}'),
                           color: Colors.red,
                         ),
                       ],
@@ -651,6 +717,8 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   }
 
   uploadImage() async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     var aName = nameController.text;
     var aPhone = phoneController.text;
     var aEmail = emailController.text;
@@ -685,9 +753,54 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     request.files.add(http.MultipartFile.fromString('position', aPosition));
     request.files.add(http.MultipartFile.fromString('skill', aSkill));
     request.files.add(http.MultipartFile.fromString('salary', aSalary));
-    request.files.add(http.MultipartFile.fromString('role', aRole));
-    request.files.add(http.MultipartFile.fromString('status', aStatus));
-    request.files.add(http.MultipartFile.fromString('rate', aWorkrate));
+    String checkRole() {
+      if (aRole == local?.employee) {
+        return 'amployee';
+      }
+      if (aRole == local?.admin) {
+        return 'admin';
+      } else {
+        return '';
+      }
+    }
+
+    request.files.add(http.MultipartFile.fromString('role', checkRole()));
+    String checkStatus() {
+      if (aStatus == local?.active) {
+        return 'active';
+      }
+      if (aStatus == local?.inactive) {
+        return 'inactive';
+      }
+      if (aStatus == local?.resigned) {
+        return 'resigned';
+      }
+      if (aStatus == local?.fired) {
+        return 'fired';
+      } else {
+        return '';
+      }
+    }
+
+    request.files.add(http.MultipartFile.fromString('status', checkStatus()));
+    String checkRate() {
+      if (aWorkrate == local?.veryGood) {
+        return 'verygood';
+      }
+      if (aWorkrate == local?.good) {
+        return 'good';
+      }
+      if (aWorkrate == local?.medium) {
+        return 'medium';
+      }
+      if (aWorkrate == local?.low) {
+        return 'low';
+      } else {
+        return '';
+      }
+    }
+
+    request.files.add(http.MultipartFile.fromString('rate', checkRate()));
     request.files.add(http.MultipartFile.fromString('background', aBackground));
     request.headers.addAll(headers);
 

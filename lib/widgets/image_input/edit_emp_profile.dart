@@ -1,8 +1,10 @@
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImageInputProfileEdit extends StatefulWidget {
   final Function onSelectImage;
@@ -54,6 +56,8 @@ class _ImageInputProfileEditState extends State<ImageInputProfileEdit> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Row(
       children: [
         Container(
@@ -130,7 +134,7 @@ class _ImageInputProfileEditState extends State<ImageInputProfileEdit> {
                                 Navigator.of(context).pop();
                               },
                               leading: Icon(Icons.camera),
-                              title: Text('Take a picture'),
+                              title: Text('${local?.takePicture}'),
                             ),
                             ListTile(
                               onTap: () {
@@ -138,7 +142,7 @@ class _ImageInputProfileEditState extends State<ImageInputProfileEdit> {
                                 Navigator.of(context).pop();
                               },
                               leading: Icon(Icons.folder),
-                              title: Text('From library'),
+                              title: Text('${local?.fromGallery}'),
                             ),
                           ],
                         ),
@@ -149,7 +153,7 @@ class _ImageInputProfileEditState extends State<ImageInputProfileEdit> {
               color: kBlue,
               // borderSide: BorderSide(color: Colors.black),
               icon: Icon(Icons.photo),
-              label: Text('Upload an image'),
+              label: Text('${local?.uploadImage}'),
             ),
           ),
         )
