@@ -6,6 +6,7 @@ import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../constants.dart';
@@ -147,11 +148,15 @@ class _EditOvertimeState extends State<EditOvertime> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
     Size _size = MediaQuery.of(context).size;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    bool isEnglish = isInEnglish(context);
+
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.65,
+      child: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -159,13 +164,16 @@ class _EditOvertimeState extends State<EditOvertime> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Edit Overtime',
-                    style: kHeadingTwo,
-                  ),
-                  const SizedBox(height: 5),
                   Text(
-                    'Please enter all information below.',
+                    '${local?.viewOvertime}',
+                    style: kHeadingThree,
+                  ),
+                  Visibility(
+                    visible: isEnglish,
+                    child: const SizedBox(height: 5),
+                  ),
+                  Text(
+                    '${local?.enterAllInfo}',
                     style: kSubtitle.copyWith(
                       color: kSubtitle.color?.withOpacity(0.75),
                     ),
@@ -183,8 +191,8 @@ class _EditOvertimeState extends State<EditOvertime> {
           const SizedBox(height: 20),
           Row(
             children: [
-              const Text(
-                "Date",
+              Text(
+                "${local?.date}",
                 style: kParagraph,
               ),
               const SizedBox(
@@ -223,11 +231,11 @@ class _EditOvertimeState extends State<EditOvertime> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: isEnglish ? 10 : 0),
           Row(
             children: [
-              const Text(
-                "From",
+              Text(
+                "${local?.from}",
                 style: kParagraph,
               ),
               const SizedBox(
@@ -267,8 +275,8 @@ class _EditOvertimeState extends State<EditOvertime> {
               const SizedBox(
                 width: 20,
               ),
-              const Text(
-                "To",
+              Text(
+                "${local?.to}",
                 style: kParagraph,
               ),
               const SizedBox(
@@ -308,9 +316,9 @@ class _EditOvertimeState extends State<EditOvertime> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          const Text('Note', style: kParagraph),
-          const SizedBox(height: 10),
+          SizedBox(height: isEnglish ? 10 : 0),
+          Text("${local?.note}", style: kParagraph),
+          SizedBox(height: isEnglish ? 10 : 0),
           TextField(
             minLines: 5,
             maxLines: 5,
@@ -332,7 +340,8 @@ class _EditOvertimeState extends State<EditOvertime> {
             children: [
               TextButton(
                 style: TextButton.styleFrom(
-                  padding: kPadding.copyWith(top: 10, bottom: 10),
+                  padding: kPadding.copyWith(
+                      top: isEnglish ? 10 : 4, bottom: isEnglish ? 10 : 4),
                   primary: Colors.white,
                   textStyle: kParagraph.copyWith(fontWeight: FontWeight.w700),
                   backgroundColor: kBlack.withOpacity(0.3),
@@ -341,13 +350,17 @@ class _EditOvertimeState extends State<EditOvertime> {
                   ),
                 ),
                 onPressed: _updateOvertime,
-                child: const Text('Update'),
+                child: Text(
+                  '${local?.update}',
+                  style: const TextStyle(fontSize: 14),
+                ),
               ),
               const SizedBox(width: 10),
               TextButton(
                 autofocus: true,
                 style: TextButton.styleFrom(
-                  padding: kPadding.copyWith(top: 10, bottom: 10),
+                  padding: kPadding.copyWith(
+                      top: isEnglish ? 10 : 4, bottom: isEnglish ? 10 : 4),
                   primary: Colors.white,
                   textStyle: kParagraph.copyWith(fontWeight: FontWeight.w700),
                   backgroundColor: kRedText,
@@ -356,7 +369,10 @@ class _EditOvertimeState extends State<EditOvertime> {
                   ),
                 ),
                 onPressed: _closePanel,
-                child: const Text('Cancel'),
+                child: Text(
+                  '${local?.cancel}',
+                  style: const TextStyle(fontSize: 14),
+                ),
               ),
             ],
           ),

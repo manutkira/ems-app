@@ -4,10 +4,6 @@ import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
-import '../../constants.dart';
-
 // class Overtime {
 //   static get uid => 1;
 //   static get name => "Kim Song";
@@ -16,6 +12,10 @@ import '../../constants.dart';
 //   static get endedTime => TimeOfDay.now();
 //   static get note => "finish the project";
 // }
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
+import '../../constants.dart';
 
 class ViewOvertime extends StatefulWidget {
   const ViewOvertime({Key? key, required this.record}) : super(key: key);
@@ -33,10 +33,11 @@ class _ViewOvertimeState extends State<ViewOvertime> {
   }
 
   String formatTime(DateTime? time) {
+    AppLocalizations? local = AppLocalizations.of(context);
     if (time != null) {
       return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
     } else {
-      return 'time is null';
+      return '${local?.errorParsingTime}';
     }
   }
 
@@ -52,6 +53,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
     Size _size = MediaQuery.of(context).size;
     OvertimeAttendance record = widget.record;
     OvertimeCheckin? checkIn = record.checkin;
@@ -67,13 +69,13 @@ class _ViewOvertimeState extends State<ViewOvertime> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'View Overtime',
-                style: kHeadingTwo,
+              Text(
+                '${local?.viewOvertime}',
+                style: kHeadingThree,
               ),
               TextButton(
                 style: TextButton.styleFrom(
-                  padding: kPadding.copyWith(top: 10, bottom: 10),
+                  padding: EdgeInsets.zero,
                   primary: Colors.white,
                   textStyle: kParagraph.copyWith(fontWeight: FontWeight.w700),
                   backgroundColor: kBlack.withOpacity(0.3),
@@ -82,7 +84,11 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                   ),
                 ),
                 onPressed: _closePanel,
-                child: const Text('Close'),
+                child: const Icon(
+                  MdiIcons.close,
+                  color: Colors.redAccent,
+                  size: 16,
+                ),
               ),
             ],
           ),
@@ -94,26 +100,24 @@ class _ViewOvertimeState extends State<ViewOvertime> {
           Row(
             children: [
               Text(
-                "Date",
+                "${local?.date}",
                 style: kParagraph.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(
                 width: 20,
               ),
               Text(
-                DateFormat('dd/MM/yyyy')
-                    .format(checkIn?.date as DateTime)
-                    .toString(),
+                getDateStringFromDateTime(checkIn?.date as DateTime),
                 style: kParagraph,
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          _buildSpacer(),
           // from/to
           Row(
             children: [
               Text(
-                "From",
+                "${local?.from}",
                 style: kParagraph.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(
@@ -127,7 +131,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                 width: 20,
               ),
               Text(
-                "To",
+                "${local?.to}",
                 style: kParagraph.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(
@@ -139,12 +143,12 @@ class _ViewOvertimeState extends State<ViewOvertime> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          _buildSpacer(),
           // total
           Row(
             children: [
               Text(
-                "Total",
+                "${local?.total}",
                 style: kParagraph.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(
@@ -153,19 +157,25 @@ class _ViewOvertimeState extends State<ViewOvertime> {
               Text("${_time.hour}h ${_time.minute}mn", style: kParagraph),
             ],
           ),
-          const SizedBox(height: 10),
+          _buildSpacer(),
           // note
-          Text('Note', style: kParagraph.copyWith(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 10),
-          Text(checkIn?.note ?? "No note", style: kParagraph),
-          const SizedBox(height: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${local?.note}',
+                  style: kParagraph.copyWith(fontWeight: FontWeight.w700)),
+              _buildSpacer(),
+              Text(checkIn?.note ?? "", style: kParagraph),
+              const SizedBox(height: 20),
+            ],
+          ),
           // error
           Visibility(
             visible: error.isNotEmpty,
             child: Column(
-              children: const [
-                StatusError(text: "Error"),
-                SizedBox(height: 20),
+              children: [
+                StatusError(text: "${local?.error}"),
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -175,6 +185,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
   }
 
   Widget _buildUserInfo(Size _size) {
+    AppLocalizations? local = AppLocalizations.of(context);
     OvertimeAttendance record = widget.record;
     User? user = record.user;
     return Container(
@@ -214,7 +225,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
               Row(
                 children: [
                   Text(
-                    'Name',
+                    '${local?.name}',
                     style: kParagraph.copyWith(fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(width: 5),
@@ -237,4 +248,6 @@ class _ViewOvertimeState extends State<ViewOvertime> {
       ),
     );
   }
+
+  Widget _buildSpacer() => SizedBox(height: isInEnglish(context) ? 10 : 6);
 }

@@ -25,7 +25,7 @@ class StatusWidget extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding:
-          EdgeInsets.symmetric(horizontal: 10, vertical: isEnglish ? 5 : 0),
+          EdgeInsets.symmetric(horizontal: 10, vertical: isEnglish ? 5 : 3),
       decoration: BoxDecoration(
           color: backgroundColor, borderRadius: BorderRadius.circular(6)),
       child: Row(
