@@ -6,11 +6,11 @@ class AttendanceInfoPresent extends StatelessWidget {
   final String text;
   final bool afternoon;
   final bool multipleDay;
-  final String presentAfternoon;
-  final String countPresentNoon;
-  final String presentMorning;
-  final String countPresent;
-  const AttendanceInfoPresent({
+  dynamic presentAfternoon;
+  dynamic countPresentNoon;
+  dynamic presentMorning;
+  dynamic countPresent;
+  AttendanceInfoPresent({
     Key? key,
     required this.text,
     required this.afternoon,
@@ -23,21 +23,29 @@ class AttendanceInfoPresent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var counted = afternoon
+        ? multipleDay
+            ? presentAfternoon
+            : countPresentNoon
+        : multipleDay
+            ? presentMorning
+            : countPresent;
     return Row(
       children: [
         Text(
           text,
           style: kHeadingFour.copyWith(color: kWhite),
         ),
-        Text(
-          afternoon
-              ? multipleDay
-                  ? presentAfternoon
-                  : countPresentNoon
-              : multipleDay
-                  ? presentMorning
-                  : countPresent,
-          style: kHeadingFour.copyWith(color: kWhite),
+        Visibility(
+          visible: counted == null,
+          child: CircularProgressIndicator(),
+        ),
+        Visibility(
+          visible: counted != null,
+          child: Text(
+            counted,
+            style: kHeadingFour.copyWith(color: kWhite),
+          ),
         )
       ],
     );
