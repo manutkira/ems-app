@@ -12,7 +12,7 @@ class InputField extends StatefulWidget {
   final bool isPassword;
   final TextInputAction textInputAction;
 
-  InputField(
+  const InputField(
       {Key? key,
       this.textInputAction = TextInputAction.next,
       required this.labelText,
@@ -48,9 +48,9 @@ class _InputFieldState extends State<InputField> {
           textInputAction: widget.textInputAction,
           obscureText: widget.isPassword & !showPassword,
           cursorColor: kWhite,
-          style: kSubtitle,
           decoration: InputDecoration(
             hintText: widget.textHint,
+            hintStyle: const TextStyle(fontSize: 0),
             prefixIcon: widget.prefixIcon,
             suffixIcon: widget.isPassword
                 ? GestureDetector(

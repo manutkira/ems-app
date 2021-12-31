@@ -26,9 +26,11 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
   bool isAfternoonCheckOut = false;
 
   void getStatus() async {
-    setState(() {
-      isFetchingStatus = true;
-    });
+    if (mounted) {
+      setState(() {
+        isFetchingStatus = true;
+      });
+    }
 
     AttendanceService attservice = AttendanceService.instance;
     int userId = ref.read(currentUserProvider).user.id as int;
@@ -38,6 +40,7 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
       start: DateTime.now(),
       end: DateTime.now(),
     );
+    if (!mounted) return;
     if (listofAttendance.isNotEmpty) {
       listofAttendance[0].list.map((e) {
         switch (e.code) {

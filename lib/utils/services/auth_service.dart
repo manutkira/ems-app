@@ -84,17 +84,17 @@ class AuthService extends BaseService {
   Future<bool> logout() async {
     final userBox = Hive.box<User>(currentUserBoxName);
     var tokenBox = Hive.box<String>(tokenBoxName);
-    await tokenBox.delete('token');
     var currentUserId = userBox.get(currentUserBoxName)?.id;
     try {
       Response response = await post(
         Uri.parse(
-          '$baseUrl/logout/$currentUserId',
+          '$baseUrl/logout',
         ),
         headers: headers(),
       );
 
       if (response.statusCode == 200) {
+        await tokenBox.delete('token');
         return true;
       } else {
         _code = response.statusCode;

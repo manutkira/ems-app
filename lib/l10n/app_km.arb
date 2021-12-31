@@ -132,5 +132,8 @@
   "save": "រក្សាទុក",
   "takePicture": "ថតរូបភាព",
   "fromGallery": "ក្នុង Gallery",
-  "doYouWantToAdd": "តើអ្នកចង់បន្ថែមបុគ្គលិកថ្មីមែនឬទេ?"
+  "doYouWantToAdd": "តើអ្នកចង់បន្ថែមបុគ្គលិកថ្មីមែនឬទេ?",
+  "login": "ចូល",
+  "loggingIn": "កំពុងចូល",
+  "employeeManager": "គ្រប់គ្រងបុគ្គលិក"
 }

@@ -543,7 +543,7 @@
     "description": "add new employee"
   },
   "save": "Save",
-  "@no": {
+  "@save": {
     "description": "add new employee"
   },
   "takePicture": "Take a picture",
@@ -557,5 +557,17 @@
   "doYouWantToAdd": "Do you want to add new employee?",
   "@doYouWantToAdd": {
     "description": "add new employee"
+  },
+  "login": "Login",
+  "@login": {
+    "description": "login button @ login screen"
+  },
+  "loggingIn": "Logging in",
+  "@loggingIn": {
+    "description": "login button @ login screen"
+  },
+  "employeeManager": "Employee Manager",
+  "@employeeManager": {
+    "description": "employee manager button @ admin home screen"
   }
 }

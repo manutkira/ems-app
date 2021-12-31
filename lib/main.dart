@@ -69,7 +69,7 @@ class MyApp extends ConsumerWidget {
                 final currentUserData = box.values.toList();
                 return box.isEmpty || currentUserData[0].isEmpty
                     ? const LoginScreen()
-                    : currentUserData[0].role?.toLowerCase() == 'admin'
+                    : currentUserData[0].role?.toLowerCase() != 'admin'
                         ? const HomeScreenAdmin()
                         : const HomeScreenEmployee();
               },

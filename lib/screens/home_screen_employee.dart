@@ -102,7 +102,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
       appBar: EMSAppBar(
         openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
       ),
-      drawer: MenuDrawer(),
+      drawer: const MenuDrawer(),
       body: SafeArea(
         bottom: false,
         child: ListView(
