@@ -5,6 +5,8 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
+import 'package:ems/screens/overtime/widgets/blank_panel.dart';
+import 'package:ems/screens/take_attendance/widgets/confirmation.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/widgets/statuses/info.dart';
 import 'package:flutter/foundation.dart';
@@ -28,6 +30,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   bool noPermission = false;
   bool isAddingAttendance = false;
   final AttendanceService _attService = AttendanceService.instance;
+  Attendance? attendance;
 
   /// helps with hotreload
   @override
@@ -39,21 +42,38 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     controller!.resumeCamera();
   }
 
+  void _closePanel() {
+    // if (!isLoading) {
+    Navigator.of(context).pop();
+    // }
+  }
+
   addAttendance(Barcode _result) async {
     // TODO:
     // maybe check password from qr code?
-    setState(() {
-      isAddingAttendance = true;
-    });
 
     User _currentUser = ref.read(currentUserProvider).user;
 
+    setState(() {
+      attendance = Attendance(
+        userId: _currentUser.id,
+        type: widget.type,
+        date: DateTime.now(),
+      );
+    });
+
+    bool confirmed = await confirmScan();
+
+    if (!confirmed) {
+      return;
+    }
+
+    setState(() {
+      isAddingAttendance = true;
+    });
     try {
       await _attService.createOne(
-        attendance: Attendance(
-          userId: _currentUser.id,
-          type: widget.type,
-        ),
+        attendance: attendance as Attendance,
       );
       setState(() {
         isAddingAttendance = false;
@@ -65,6 +85,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
           type: widget.type,
         ),
       );
+      _closePanel();
     } catch (err) {
       setState(() {
         isAddingAttendance = false;
@@ -104,6 +125,27 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
         ),
       ),
     );
+  }
+
+  Future<bool> confirmScan() async {
+    bool confirmation = false;
+    void ok(String str) {
+      setState(() {
+        attendance = attendance?.copyWith(note: str);
+      });
+      confirmation = true;
+    }
+
+    await modalBottomSheetBuilder(
+      isDismissible: false,
+      isScrollControlled: false,
+      context: context,
+      maxHeight: MediaQuery.of(context).size.height * 0.6,
+      minHeight: MediaQuery.of(context).size.height * 0.4,
+      child: ScanConfirmation(attendance: attendance as Attendance, ok: ok),
+    );
+
+    return confirmation;
   }
 
   @override
@@ -199,6 +241,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
         }
         // add attendance
         await addAttendance(scanData);
+        await this.controller!.resumeCamera();
       }
     });
   }

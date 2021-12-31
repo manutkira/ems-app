@@ -161,8 +161,10 @@ class _ViewOvertimeState extends State<ViewOvertime> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${local?.note}',
-                  style: kParagraph.copyWith(fontWeight: FontWeight.w700)),
+              Text(
+                '${local?.note}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+              ),
               _buildSpacer(),
               Text(checkIn?.note ?? "", style: kParagraph),
               const SizedBox(height: 20),

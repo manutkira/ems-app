@@ -569,5 +569,14 @@
   "employeeManager": "Employee Manager",
   "@employeeManager": {
     "description": "employee manager button @ admin home screen"
+  },
+  "time": "Time",
+  "@time": {
+    "description": "scan confirm panel"
+  },
+  "type": "Type",
+  "@type": {
+    "description": "scan confirm panel"
   }
+
 }

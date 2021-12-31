@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../constants.dart';
 
@@ -10,46 +11,44 @@ Future<void> modalBottomSheetBuilder({
   double maxHeight = 440.0,
   double minHeight = 400.0,
   bool isDismissible = true,
+  bool isScrollControlled = true,
   required Widget child,
 }) async {
-  return showModalBottomSheet(
-    constraints: BoxConstraints(maxHeight: maxHeight, minHeight: minHeight),
+  return showMaterialModalBottomSheet(
+    // constraints: BoxConstraints(maxHeight: maxHeight, minHeight: minHeight),
     backgroundColor: Colors.transparent,
-    isScrollControlled: true,
+    // isScrollControlled: isScrollControlled,
     isDismissible: isDismissible,
+    enableDrag: isScrollControlled,
     context: context,
     builder: (BuildContext context) {
-      return SingleChildScrollView(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Container(
-          height: maxHeight,
-          decoration: const BoxDecoration(
-            color: kBlue,
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(30),
-              topLeft: Radius.circular(30),
-            ),
+      return Container(
+        height: maxHeight,
+        decoration: const BoxDecoration(
+          color: kBlue,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(30),
+            topLeft: Radius.circular(30),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              // top center panel thingy
-              Center(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  width: 75,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            // top center panel thingy
+            Center(
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                width: 75,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child,
-            ],
-          ),
+            ),
+            child,
+          ],
         ),
       );
     },
