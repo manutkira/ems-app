@@ -5,7 +5,9 @@ import 'package:ems/screens/attendances_api/tap_screen.dart';
 import 'package:ems/screens/attendances_api/tap_screen_alltime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/attendance/attendacne_all_time_list.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
@@ -34,7 +36,6 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     List<Attendance> att2 = attendancesFromAttendancesByDay(atts);
     setState(() {
       attendanceDisplay = att2;
-      print(attendanceDisplay);
       attendanceDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
     });
   }
@@ -55,7 +56,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
   final yearController = TextEditingController();
   var _controller = TextEditingController();
   var pickedYear;
-  String dropDownValue = 'Morning';
+  String dropDownValue = '';
   bool afternoon = false;
 
   void clearText() {
@@ -107,6 +108,13 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    setState(() {
+      if (dropDownValue.isEmpty) {
+        dropDownValue = local!.morning;
+      }
+    });
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -118,10 +126,10 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
               color: Color(0xff43c3c52),
               onSelected: (item) => onSelected(context, item as int),
               icon: Icon(Icons.filter_list),
-              itemBuilder: (_) => const [
+              itemBuilder: (_) => [
                     PopupMenuItem(
                       child: Text(
-                        'By Day',
+                        '${local?.byDay}',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -131,7 +139,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                     ),
                     PopupMenuItem(
                       child: Text(
-                        'By All-Time',
+                        '${local?.byAllTime}',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -157,11 +165,14 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                   children: [
                     Text(
                       _selectMonth == null
-                          ? 'Pick a Month'
-                          : 'Date: $_selectMonth/$pickedYear',
+                          ? '${local?.monthYear}: ____'
+                          : '${local?.monthYear}: $_selectMonth/$pickedYear',
                       style: kParagraph.copyWith(fontSize: 14),
                     ),
-                    FlatButton(
+                    RaisedButton(
+                      color: kDarkestBlue,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -169,9 +180,9 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10.0))),
-                            title: Text('Pick a month'),
+                            title: Text('${local?.pickMonth}'),
                             content: Container(
-                              height: 280,
+                              height: 300,
                               width: 400,
                               child: Column(
                                 children: [
@@ -181,9 +192,9 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                         keyboardType: TextInputType.number,
                                         decoration: InputDecoration(
                                             errorText: _validate
-                                                ? 'Please Enter 4 digits'
-                                                : 'Please Enter 4 digits',
-                                            hintText: 'Enter year'),
+                                                ? '${local?.enter4Digits}'
+                                                : '${local?.enter4Digits}',
+                                            hintText: '${local?.enterYear}'),
                                         controller: yearController,
                                       ),
                                       const SizedBox(
@@ -208,7 +219,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: const Text('Jan'),
+                                            child: Text('${local?.jan}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -235,7 +246,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: const Text('Feb'),
+                                            child: Text('${local?.feb}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -262,7 +273,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: Text('Mar'),
+                                            child: Text('${local?.mar}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -295,7 +306,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: const Text('Apr'),
+                                            child: Text('${local?.apr}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -322,7 +333,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: const Text('May'),
+                                            child: Text('${local?.may}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -349,7 +360,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: const Text('Jun'),
+                                            child: Text('${local?.jun}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -382,7 +393,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: const Text('Jul'),
+                                            child: Text('${local?.jun}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -409,7 +420,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: const Text('Aug'),
+                                            child: Text('${local?.aug}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -436,7 +447,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: const Text('Sep'),
+                                            child: Text('${local?.sep}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -469,7 +480,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: const Text('Oct'),
+                                            child: Text('${local?.oct}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -496,7 +507,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: const Text('Nov'),
+                                            child: Text('${local?.nov}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -523,7 +534,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     })
                                                   : _validate = true;
                                             },
-                                            child: const Text('Dec'),
+                                            child: Text('${local?.dec}'),
                                             style: ButtonStyle(
                                                 shape: MaterialStateProperty.all<
                                                         RoundedRectangleBorder>(
@@ -545,15 +556,15 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                           ),
                         );
                       },
-                      child: const Text(
-                        'Pick A Month',
+                      child: Text(
+                        '${local?.pickMonth}',
                         style: kParagraph,
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
-                        vertical: 6,
+                        vertical: 8,
                       ),
                       decoration: BoxDecoration(
                         color: kDarkestBlue,
@@ -568,13 +579,13 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                         icon: const Icon(Icons.expand_more),
                         value: dropDownValue,
                         onChanged: (String? newValue) {
-                          if (newValue == 'Afternoon') {
+                          if (newValue == '${local?.afternoon}') {
                             setState(() {
                               afternoon = true;
                               dropDownValue = newValue!;
                             });
                           }
-                          if (newValue == 'Morning') {
+                          if (newValue == '${local?.morning}') {
                             setState(() {
                               afternoon = false;
                               dropDownValue = newValue!;
@@ -582,8 +593,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                           }
                         },
                         items: <String>[
-                          'Morning',
-                          'Afternoon',
+                          '${local?.morning}',
+                          '${local?.afternoon}',
                         ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -601,7 +612,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                       child: Column(
                         children: [
                           Text(
-                            'Please pick a month!!',
+                            '${local?.plsPickMonth}',
                             style: kHeadingTwo.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -643,7 +654,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          'Employee not found!!',
+                                          '${local?.employeeNotFound}',
                                           style: kHeadingThree.copyWith(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black,
@@ -685,8 +696,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                               Row(
                                                 children: [
                                                   Container(
-                                                    width: 75,
-                                                    height: 75,
+                                                    width: 60,
+                                                    height: 60,
                                                     decoration: BoxDecoration(
                                                         borderRadius:
                                                             const BorderRadius
@@ -706,7 +717,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                               null
                                                           ? Image.asset(
                                                               'assets/images/profile-icon-png-910.png',
-                                                              width: 75,
+                                                              width: 60,
                                                             )
                                                           : Image.network(
                                                               userDisplay[index]
@@ -728,19 +739,26 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          const Text(
-                                                            'Name: ',
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: isEnglish
+                                                                        ? 0
+                                                                        : 3),
+                                                            child: Text(
+                                                              '${local?.name}: ',
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
                                                           ),
                                                           Text(
                                                             userDisplay[index]
                                                                         .name
                                                                         .length >=
                                                                     13
-                                                                ? '${userDisplay[index].name.substring(0, 11).toString()}...'
+                                                                ? '${userDisplay[index].name.substring(0, 8).toString()}...'
                                                                 : userDisplay[
                                                                         index]
                                                                     .name
@@ -752,12 +770,19 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       ),
                                                       Row(
                                                         children: [
-                                                          const Text(
-                                                            'ID: ',
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: isEnglish
+                                                                        ? 0
+                                                                        : 3),
+                                                            child: Text(
+                                                              '${local?.id}: ',
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
                                                           ),
                                                           Text(
                                                               userDisplay[index]
@@ -776,7 +801,15 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          const Text('P:'),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: isEnglish
+                                                                        ? 0
+                                                                        : 3),
+                                                            child: Text(
+                                                                '${local?.shortPresent}: '),
+                                                          ),
                                                           afternoon
                                                               ? Text(attendanceDisplay
                                                                   .where((element) {
@@ -829,7 +862,15 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       ),
                                                       Row(
                                                         children: [
-                                                          const Text('A:'),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: isEnglish
+                                                                        ? 0
+                                                                        : 3),
+                                                            child: Text(
+                                                                '${local?.shortAbsent}: '),
+                                                          ),
                                                           afternoon
                                                               ? Text(
                                                                   attendanceDisplay
@@ -873,7 +914,15 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          const Text('L:'),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: isEnglish
+                                                                        ? 0
+                                                                        : 3),
+                                                            child: Text(
+                                                                '${local?.shortLate}: '),
+                                                          ),
                                                           afternoon
                                                               ? Text(
                                                                   attendanceDisplay
@@ -918,7 +967,15 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       ),
                                                       Row(
                                                         children: [
-                                                          Text('PM:'),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: isEnglish
+                                                                        ? 0
+                                                                        : 3),
+                                                            child: Text(
+                                                                '${local?.shortPermission}: '),
+                                                          ),
                                                           afternoon
                                                               ? Text(
                                                                   attendanceDisplay
@@ -972,6 +1029,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
   }
 
   _searchBar() {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -1000,7 +1059,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                           color: Colors.white,
                         ),
                       ),
-                hintText: 'Search...',
+                hintText: '${local?.search}...',
                 errorStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -1040,17 +1099,32 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                 });
               }
             },
-            itemBuilder: (_) => const [
+            itemBuilder: (_) => [
               PopupMenuItem(
-                child: Text('From A-Z'),
+                child: Text(
+                  '${local?.fromAtoZ}',
+                  style: TextStyle(
+                    fontSize: isEnglish ? 15 : 16,
+                  ),
+                ),
                 value: 0,
               ),
               PopupMenuItem(
-                child: Text('From Z-A'),
+                child: Text(
+                  '${local?.fromZtoA}',
+                  style: TextStyle(
+                    fontSize: isEnglish ? 15 : 16,
+                  ),
+                ),
                 value: 1,
               ),
               PopupMenuItem(
-                child: Text('by ID'),
+                child: Text(
+                  '${local?.byId}',
+                  style: TextStyle(
+                    fontSize: isEnglish ? 15 : 16,
+                  ),
+                ),
                 value: 2,
               ),
             ],

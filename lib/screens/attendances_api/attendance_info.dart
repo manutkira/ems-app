@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 import '../../models/attendance.dart';
@@ -30,7 +31,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<AttendanceWithDate> _attendanceDisplay = [];
   List<AttendanceWithDate> _attendanceNoDateDisplay = [];
 
-  String dropDownValue = 'Morning';
+  String dropDownValue = '';
   bool afternoon = false;
   dynamic countPresent,
       countPresentNoon,
@@ -385,6 +386,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    setState(() {
+      if (dropDownValue.isEmpty) {
+        dropDownValue = local!.morning;
+      }
+    });
     return Scaffold(
       appBar: AppBar(
         title: const Text('Attendance'),
@@ -396,8 +404,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
-                    Text('Fetching Data'),
+                  children: [
+                    Text('${local?.fetchData}'),
                     SizedBox(
                       height: 10,
                     ),
@@ -415,8 +423,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                   child: Center(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Text('Fetching Data'),
+                      children: [
+                        Text('${local?.fetchData}'),
                         SizedBox(
                           height: 10,
                         ),
@@ -457,13 +465,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   icon: const Icon(Icons.expand_more),
                                   value: dropDownValue,
                                   onChanged: (String? newValue) {
-                                    if (newValue == 'Afternoon') {
+                                    if (newValue == '${local?.afternoon}') {
                                       setState(() {
                                         afternoon = true;
                                         dropDownValue = newValue!;
                                       });
                                     }
-                                    if (newValue == 'Morning') {
+                                    if (newValue == '${local?.morning}') {
                                       setState(() {
                                         afternoon = false;
                                         dropDownValue = newValue!;
@@ -471,8 +479,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     }
                                   },
                                   items: <String>[
-                                    'Morning',
-                                    'Afternoon',
+                                    '${local?.morning}',
+                                    '${local?.afternoon}',
                                   ].map<DropdownMenuItem<String>>(
                                       (String value) {
                                     return DropdownMenuItem<String>(
@@ -772,10 +780,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                 .image
                                 .toString()),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const SizedBox(
-                              width: 50,
-                            ),
+                            // const SizedBox(
+                            //   width: 50,
+                            // ),
                             Container(
                               padding: const EdgeInsets.only(top: 15),
                               child: Column(
@@ -784,7 +793,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 10),
                                     child: AttendanceInfoPresent(
-                                        text: 'Present: ',
+                                        text: '${local?.present}: ',
                                         afternoon: afternoon,
                                         multipleDay: multipleDay,
                                         presentAfternoon:
@@ -803,7 +812,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             : countPresent.toString()),
                                   ),
                                   AttendanceInfoPresent(
-                                      text: 'Permission: ',
+                                      text: '${local?.permission}: ',
                                       afternoon: afternoon,
                                       multipleDay: multipleDay,
                                       presentAfternoon:
@@ -835,7 +844,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                       padding:
                                           const EdgeInsets.only(bottom: 10),
                                       child: AttendanceInfoPresent(
-                                          text: 'Late: ',
+                                          text: '${local?.late}: ',
                                           afternoon: afternoon,
                                           multipleDay: multipleDay,
                                           presentAfternoon:
@@ -853,7 +862,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                               ? '♽'
                                               : countLate.toString())),
                                   AttendanceInfoPresent(
-                                      text: 'Absent: ',
+                                      text: '${local?.absent}: ',
                                       afternoon: afternoon,
                                       multipleDay: multipleDay,
                                       presentAfternoon: absentAfternoon == null
@@ -883,16 +892,20 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                 height: 10,
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(12.0),
                                 child: Row(
-                                  children: const [
+                                  children: [
                                     Text(
-                                      'Attendance ',
-                                      style: kHeadingFour,
+                                      isEnglish
+                                          ? '${local?.attendance} '
+                                          : '${local?.list} ',
+                                      style: kHeadingThree,
                                     ),
                                     Text(
-                                      'List ',
-                                      style: kHeadingFour,
+                                      isEnglish
+                                          ? '${local?.list} '
+                                          : '${local?.attendance} ',
+                                      style: kHeadingThree,
                                     ),
                                   ],
                                 ),

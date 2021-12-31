@@ -1,3 +1,4 @@
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
@@ -23,6 +24,7 @@ class AttendanceInfoPresent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isEnglish = isInEnglish(context);
     var counted = afternoon
         ? multipleDay
             ? presentAfternoon
@@ -32,9 +34,12 @@ class AttendanceInfoPresent extends StatelessWidget {
             : countPresent;
     return Row(
       children: [
-        Text(
-          text,
-          style: kHeadingFour.copyWith(color: kWhite),
+        Padding(
+          padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+          child: Text(
+            text,
+            style: kHeadingFour.copyWith(color: kWhite),
+          ),
         ),
         Visibility(
           visible: counted == null,

@@ -1,4 +1,6 @@
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 
@@ -15,6 +17,8 @@ class AttendanceInfoNameId extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Container(
       margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
       height: 120,
@@ -54,7 +58,7 @@ class AttendanceInfoNameId extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    height: 50,
+                    height: isEnglish ? 50 : 74,
                     margin: const EdgeInsets.only(left: 25, top: 25),
                     child: Expanded(
                       flex: 7,
@@ -64,7 +68,7 @@ class AttendanceInfoNameId extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                'ID: ',
+                                '${local?.id} : ',
                                 style: kParagraph.copyWith(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
@@ -80,13 +84,13 @@ class AttendanceInfoNameId extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 10,
+                          SizedBox(
+                            height: isEnglish ? 10 : 0,
                           ),
                           Row(
                             children: [
                               Text(
-                                'Name: ',
+                                '${local?.name} : ',
                                 style: kParagraph.copyWith(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),

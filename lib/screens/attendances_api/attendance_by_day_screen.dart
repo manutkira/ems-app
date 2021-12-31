@@ -3,8 +3,10 @@ import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
 import 'package:ems/screens/attendances_api/tap_screen_alltime.dart';
 import 'package:ems/screens/attendances_api/tap_screen_month.dart';
 import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 import '../../models/attendance.dart';
@@ -29,7 +31,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   List<Attendance> checkedDate = [];
   List<Attendance> checkedDateNoon = [];
   List<Attendance> users = [];
-  String dropDownValue = 'Morning';
+  String dropDownValue = '';
   bool afternoon = false;
 
   var _controller = TextEditingController();
@@ -81,51 +83,56 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     setState(() {
       users = checkingDate.toList();
       checkedDateNoon = users;
+      print(checkedDateNoon[0].type);
       checkedDateNoon.sort((a, b) => a.userId!.compareTo(b.userId as int));
     });
   }
 
   String checkAttendance(Attendance attendance) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     if (attendance.type == 'checkin' &&
         attendance.date!.hour == 7 &&
         attendance.date!.minute <= 15 &&
         attendance.code == 'cin1') {
-      return 'Present';
+      return '${local?.present}';
     }
     if (attendance.type == 'checkin' &&
         attendance.date!.hour >= 7 &&
         attendance.date!.minute >= 16 &&
         attendance.code == 'cin1') {
-      return 'Late';
+      return '${local?.late}';
     }
     if (attendance.type == 'permission' && attendance.code == 'cin1') {
-      return 'Permission';
+      return '${local?.permission}';
     }
     if (attendance.type == 'absent' && attendance.code == 'cin1') {
-      return 'Absent';
+      return '${local?.absent}';
     } else {
       return '';
     }
   }
 
   String checkAttendanceNoon(Attendance attendance) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     if (attendance.type == 'checkin' &&
         attendance.date!.hour == 13 &&
         attendance.date!.minute <= 15 &&
         attendance.code == 'cin2') {
-      return 'Present';
+      return '${local?.present}';
     }
     if (attendance.type == 'checkin' &&
         attendance.date!.hour >= 13 &&
         attendance.date!.minute >= 16 &&
         attendance.code == 'cin2') {
-      return 'Late';
+      return '${local?.late}';
     }
     if (attendance.type == 'permission' && attendance.code == 'cin2') {
-      return 'Permission';
+      return '${local?.permission}';
     }
     if (attendance.type == 'absent' && attendance.code == 'cin2') {
-      return 'Absent';
+      return '${local?.absent}';
     } else {
       return '';
     }
@@ -156,6 +163,14 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+
+    setState(() {
+      if (dropDownValue.isEmpty) {
+        dropDownValue = local!.morning;
+      }
+    });
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -170,7 +185,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                 itemBuilder: (_) => [
                       PopupMenuItem(
                         child: Text(
-                          'By Month',
+                          '${local?.byMonth}',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -180,7 +195,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                       ),
                       PopupMenuItem(
                         child: Text(
-                          'By All-Time',
+                          '${local?.byAllTime}',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -199,7 +214,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Fetching Data'),
+                      Text('${local?.fetchData}'),
                       SizedBox(
                         height: 10,
                       ),
@@ -213,32 +228,40 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
             : Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 15),
+                    padding: const EdgeInsets.only(left: 10),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
                           _selectDate == null
-                              ? 'Pick a Date'
-                              : 'Date: ${DateFormat.yMd().format(_selectDate as DateTime)}',
+                              ? '${local?.date}: _______'
+                              : '${local?.date}: ${DateFormat.yMd().format(_selectDate as DateTime)}',
                           style: kParagraph.copyWith(fontSize: 14),
                         ),
-                        FlatButton(
+                        RaisedButton(
+                          padding: EdgeInsets.only(
+                              top: 0, bottom: 0, left: 7, right: 7),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          // elevation: 10,
+                          color: kDarkestBlue,
                           onPressed: () {
-                            setState(() {
-                              _byDayDatePicker();
-                            });
+                            setState(
+                              () {
+                                _byDayDatePicker();
+                              },
+                            );
                           },
                           child: Text(
-                            'Choose Date',
-                            style: TextStyle(fontSize: 14),
+                            '${local?.pickDate}',
+                            style: TextStyle(fontSize: 12),
                           ),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
-                            vertical: 6,
+                            vertical: 7,
                           ),
                           decoration: BoxDecoration(
                             color: kDarkestBlue,
@@ -254,13 +277,13 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                             icon: const Icon(Icons.expand_more),
                             value: dropDownValue,
                             onChanged: (String? newValue) {
-                              if (newValue == 'Afternoon') {
+                              if (newValue == '${local?.afternoon}') {
                                 setState(() {
                                   afternoon = true;
                                   dropDownValue = newValue!;
                                 });
                               }
-                              if (newValue == 'Morning') {
+                              if (newValue == '${local?.morning}') {
                                 setState(() {
                                   afternoon = false;
                                   dropDownValue = newValue!;
@@ -268,8 +291,8 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                               }
                             },
                             items: <String>[
-                              'Morning',
-                              'Afternoon',
+                              '${local?.morning}',
+                              '${local?.afternoon}',
                             ].map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -288,7 +311,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                             child: Column(
                               children: [
                                 Text(
-                                  'Please pick a date!!',
+                                  '${local?.plsPickDate}',
                                   style: kHeadingTwo.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
@@ -305,6 +328,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                             ),
                           )
                         : Container(
+                            margin: EdgeInsets.only(top: 15),
                             width: double.infinity,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.only(
@@ -319,48 +343,49 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                 )),
-                            child: checkedDate.isEmpty
-                                ? Column(
-                                    children: [
-                                      _searchBar(),
-                                      Container(
-                                        padding: EdgeInsets.only(top: 150),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              'NO ATTENDANCE ADDED YET!!',
-                                              style: kHeadingThree.copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                              ),
+                            child:
+                                checkedDate.isEmpty && checkedDateNoon.isEmpty
+                                    ? Column(
+                                        children: [
+                                          _searchBar(),
+                                          Container(
+                                            padding: EdgeInsets.only(top: 150),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  '${local?.noAttendance}',
+                                                  style: kHeadingThree.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Image.asset(
+                                                  'assets/images/attendanceicon.png',
+                                                  width: 220,
+                                                ),
+                                              ],
                                             ),
-                                            SizedBox(
-                                              height: 30,
+                                          ),
+                                        ],
+                                      )
+                                    : Column(
+                                        children: [
+                                          _searchBar(),
+                                          Expanded(
+                                            child: ListView.builder(
+                                              itemBuilder: (ctx, index) {
+                                                return _listItem(index);
+                                              },
+                                              itemCount: afternoon
+                                                  ? checkedDateNoon.length
+                                                  : checkedDate.length,
                                             ),
-                                            Image.asset(
-                                              'assets/images/attendanceicon.png',
-                                              width: 220,
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  )
-                                : Column(
-                                    children: [
-                                      _searchBar(),
-                                      Expanded(
-                                        child: ListView.builder(
-                                          itemBuilder: (ctx, index) {
-                                            return _listItem(index);
-                                          },
-                                          itemCount: afternoon
-                                              ? checkedDateNoon.length
-                                              : checkedDate.length,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                           ),
                   ),
                 ],
@@ -368,6 +393,8 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   }
 
   _searchBar() {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Padding(
       padding: EdgeInsets.all(10),
       child: Row(
@@ -396,7 +423,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                           color: Colors.white,
                         ),
                       ),
-                hintText: 'Search...',
+                hintText: '${local?.search}...',
                 errorStyle: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -441,15 +468,30 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
             },
             itemBuilder: (_) => [
               PopupMenuItem(
-                child: Text('From A-Z'),
+                child: Text(
+                  '${local?.fromAtoZ}',
+                  style: TextStyle(
+                    fontSize: isEnglish ? 15 : 16,
+                  ),
+                ),
                 value: 0,
               ),
               PopupMenuItem(
-                child: Text('From Z-A'),
+                child: Text(
+                  '${local?.fromZtoA}',
+                  style: TextStyle(
+                    fontSize: isEnglish ? 15 : 16,
+                  ),
+                ),
                 value: 1,
               ),
               PopupMenuItem(
-                child: Text('by ID'),
+                child: Text(
+                  '${local?.byId}',
+                  style: TextStyle(
+                    fontSize: isEnglish ? 15 : 16,
+                  ),
+                ),
                 value: 2,
               ),
             ],
@@ -461,6 +503,8 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   }
 
   _listItem(index) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(bottom: 10),
@@ -486,13 +530,23 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                     )),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(150),
-                  child: checkedDate[index].users!.image == null
-                      ? Image.asset('assets/images/profile-icon-png-910.png')
-                      : Image.network(
-                          checkedDate[index].users!.image.toString(),
-                          fit: BoxFit.cover,
-                          height: 75,
-                        ),
+                  child: afternoon
+                      ? checkedDateNoon[index].users!.image == null
+                          ? Image.asset(
+                              'assets/images/profile-icon-png-910.png')
+                          : Image.network(
+                              checkedDateNoon[index].users!.image.toString(),
+                              fit: BoxFit.cover,
+                              height: 75,
+                            )
+                      : checkedDate[index].users!.image == null
+                          ? Image.asset(
+                              'assets/images/profile-icon-png-910.png')
+                          : Image.network(
+                              checkedDate[index].users!.image.toString(),
+                              fit: BoxFit.cover,
+                              height: 75,
+                            ),
                 ),
               ),
               SizedBox(
@@ -503,14 +557,38 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                 children: [
                   Row(
                     children: [
-                      Text('Name: '),
-                      Text(checkedDate[index].users!.name.toString()),
+                      Container(
+                        padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                        child: Text(
+                          '${local?.name}: ',
+                          style: TextStyle(
+                            fontSize: isEnglish ? 15 : 15,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        afternoon
+                            ? checkedDateNoon[index].users!.name.toString()
+                            : checkedDate[index].users!.name.toString(),
+                      ),
                     ],
                   ),
                   Row(
                     children: [
-                      Text('ID: '),
-                      Text(checkedDate[index].userId.toString()),
+                      Container(
+                        padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                        child: Text(
+                          '${local?.id}: ',
+                          style: TextStyle(
+                            fontSize: isEnglish ? 15 : 15,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        afternoon
+                            ? checkedDateNoon[index].users!.id.toString()
+                            : checkedDate[index].userId.toString(),
+                      ),
                     ],
                   ),
                 ],

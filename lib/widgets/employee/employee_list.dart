@@ -381,15 +381,15 @@ class _EmployeeListState extends State<EmployeeList> {
                         showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
-                            title: Text('Are you sure?'),
-                            content: Text('This action cannot be undone!'),
+                            title: Text('${local?.areYouSure}'),
+                            content: Text('${local?.cannotUndone}'),
                             actions: [
                               OutlineButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                   deleteData(userDisplay[index].id as int);
                                 },
-                                child: Text('Yes'),
+                                child: Text('${local?.yes}'),
                                 borderSide: BorderSide(color: Colors.green),
                               ),
                               OutlineButton(
@@ -397,7 +397,7 @@ class _EmployeeListState extends State<EmployeeList> {
                                   Navigator.of(context).pop();
                                 },
                                 borderSide: BorderSide(color: Colors.red),
-                                child: Text('No'),
+                                child: Text('${local?.no}'),
                               )
                             ],
                           ),

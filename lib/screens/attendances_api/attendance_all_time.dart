@@ -5,7 +5,9 @@ import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
 import 'package:ems/screens/attendances_api/tap_screen.dart';
 import 'package:ems/screens/attendances_api/tap_screen_month.dart';
 import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 import '../../utils/services/attendance_service.dart';
@@ -27,7 +29,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   bool _isLoading = true;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
-  String dropDownValue = 'Morning';
+  String dropDownValue = '';
   bool afternoon = false;
 
   var _controller = TextEditingController();
@@ -76,6 +78,13 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    setState(() {
+      if (dropDownValue.isEmpty) {
+        dropDownValue = local!.morning;
+      }
+    });
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -90,7 +99,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                 itemBuilder: (_) => [
                       PopupMenuItem(
                         child: Text(
-                          'By Day',
+                          '${local?.byDay}',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -100,7 +109,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                       ),
                       PopupMenuItem(
                         child: Text(
-                          'By Month',
+                          '${local?.pickMonth}',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -134,7 +143,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Fetching Data'),
+                        Text('${local?.fetchData}'),
                         SizedBox(
                           height: 10,
                         ),
@@ -154,7 +163,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           child: Column(
                             children: [
                               Text(
-                                'Employee not found!!',
+                                '${local?.employeeNotFound}',
                                 style: kHeadingThree.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -189,6 +198,8 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   }
 
   _listItem(index) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(bottom: 20),
@@ -201,8 +212,8 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              width: 75,
-              height: 75,
+              width: 60,
+              height: 60,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(100)),
                   border: Border.all(
@@ -214,13 +225,13 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                 child: userDisplay[index].image == null
                     ? Image.asset(
                         'assets/images/profile-icon-png-910.png',
-                        width: 75,
+                        width: 60,
                       )
                     : Image.network(
                         userDisplay[index].image.toString(),
                         fit: BoxFit.cover,
-                        width: 65,
-                        height: 75,
+                        width: 60,
+                        height: 70,
                       ),
               ),
             ),
@@ -228,7 +239,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
               width: 10,
             ),
             Container(
-              width: 240,
+              width: 270,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -237,10 +248,13 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                     children: [
                       Row(
                         children: [
-                          Text('Name: '),
+                          Padding(
+                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                            child: Text('${local?.name}: '),
+                          ),
                           Text(
                             userDisplay[index].name.length >= 13
-                                ? '${userDisplay[index].name.substring(0, 11).toString()}...'
+                                ? '${userDisplay[index].name.substring(0, 8).toString()}...'
                                 : userDisplay[index]
                                     .name
                                     // .substring(
@@ -254,7 +268,10 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                       ),
                       Row(
                         children: [
-                          Text('ID: '),
+                          Padding(
+                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                            child: Text('${local?.id}: '),
+                          ),
                           Text(userDisplay[index].id.toString()),
                         ],
                       )
@@ -266,7 +283,11 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                         children: [
                           Row(
                             children: [
-                              Text('P:'),
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
+                                child: Text('${local?.shortPresent}: '),
+                              ),
                               afternoon
                                   ? Text(attendancedisplay
                                       .where(
@@ -299,7 +320,11 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           ),
                           Row(
                             children: [
-                              Text('A:'),
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
+                                child: Text('${local?.shortAbsent}: '),
+                              ),
                               afternoon
                                   ? Text(
                                       attendancedisplay
@@ -333,7 +358,11 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                         children: [
                           Row(
                             children: [
-                              Text('L:'),
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
+                                child: Text('${local?.shortLate}: '),
+                              ),
                               afternoon
                                   ? Text(attendancedisplay
                                       .where((element) =>
@@ -360,26 +389,13 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          // Row(
-                          //   children: [
-                          //     Text('E:'),
-                          //     Text(attendancedisplay
-                          //         .where((element) =>
-                          //             element.userId == userDisplay[index].id &&
-                          //             element.type == 'checkout' &&
-                          //             element.code == 'cin1' &&
-                          //             element.date!.hour > 8 &&
-                          //             element.date!.hour < 17)
-                          //         .length
-                          //         .toString()),
-                          //   ],
-                          // ),
-                          // SizedBox(
-                          //   height: 10,
-                          // ),
                           Row(
                             children: [
-                              Text('PM:'),
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
+                                child: Text('${local?.shortPermission}: '),
+                              ),
                               afternoon
                                   ? Text(attendancedisplay
                                       .where((element) =>
@@ -413,6 +429,8 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   }
 
   _searchBar() {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Padding(
       padding: EdgeInsets.all(10),
       child: Row(
@@ -442,7 +460,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           color: Colors.white,
                         ),
                       ),
-                hintText: 'Search...',
+                hintText: '${local?.search}...',
                 errorStyle: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -465,7 +483,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
           Container(
             padding: const EdgeInsets.symmetric(
               horizontal: 5,
-              vertical: 3,
+              vertical: 8,
             ),
             decoration: BoxDecoration(
               color: kDarkestBlue,
@@ -480,13 +498,13 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
               icon: const Icon(Icons.expand_more),
               value: dropDownValue,
               onChanged: (String? newValue) {
-                if (newValue == 'Afternoon') {
+                if (newValue == '${local?.afternoon}') {
                   setState(() {
                     afternoon = true;
                     dropDownValue = newValue!;
                   });
                 }
-                if (newValue == 'Morning') {
+                if (newValue == '${local?.morning}') {
                   setState(() {
                     afternoon = false;
                     dropDownValue = newValue!;
@@ -494,8 +512,8 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                 }
               },
               items: <String>[
-                'Morning',
-                'Afternoon',
+                '${local?.morning}',
+                '${local?.afternoon}',
               ].map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,

@@ -1,3 +1,5 @@
+import 'package:ems/utils/utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
@@ -7,20 +9,22 @@ class AttendanceInfoNoData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Expanded(
       child: Container(
         padding: const EdgeInsets.only(top: 50, left: 0),
         child: Column(
           children: [
             Text(
-              'NO ATTENDANCE ADDED YET!!',
+              '${local?.noAttendance}',
               style: kHeadingThree.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
-            const SizedBox(
-              height: 30,
+            SizedBox(
+              height: isEnglish ? 30 : 10,
             ),
             Text(
               '🤷🏼',
