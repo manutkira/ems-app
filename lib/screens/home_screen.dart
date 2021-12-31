@@ -4,6 +4,7 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/attendances_screen.dart';
+import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/overtime/overtime_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/check_in_screen.dart';
@@ -91,6 +92,14 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
     Navigator.of(context).push(
       CupertinoPageRoute(
         builder: (context) => const OvertimeScreen(),
+      ),
+    );
+  }
+
+  void _goToEmployeeManager() {
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => EmployeeListScreen(),
       ),
     );
   }
@@ -225,21 +234,20 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
 
             /// current user attendance
             _buildTitle('${local?.attendance}'),
-
-            ValueListenableBuilder(
-                valueListenable:
-                    ref.watch(currentUserProvider).currentUserListenable,
-                builder: (_, Box<User> box, __) {
-                  final listFromBox = box.values.toList();
-                  final currentUser =
-                      listFromBox.isNotEmpty ? listFromBox[0] : null;
-                  return Container(
-                    height: 170,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 15,
-                      vertical: 12,
-                    ),
-                    child: Row(
+            Container(
+              height: 170,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 12,
+              ),
+              child: ValueListenableBuilder(
+                  valueListenable:
+                      ref.watch(currentUserProvider).currentUserListenable,
+                  builder: (_, Box<User> box, __) {
+                    final listFromBox = box.values.toList();
+                    final currentUser =
+                        listFromBox.isNotEmpty ? listFromBox[0] : null;
+                    return Row(
                       children: [
                         Expanded(
                           flex: 1,
@@ -266,9 +274,9 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                           ),
                         ),
                       ],
-                    ),
-                  );
-                }),
+                    );
+                  }),
+            ),
             _buildSpacerVertical,
 
             /// current user overtime
@@ -351,6 +359,62 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                 },
               ),
             ),
+            _buildSpacerVertical,
+
+            /// current user overtime
+            _buildTitle('${local?.employee}'),
+            Container(
+              height: 170,
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 15,
+              ),
+              child: ValueListenableBuilder(
+                valueListenable:
+                    ref.watch(currentUserProvider).currentUserListenable,
+                builder: (_, Box<User> box, __) {
+                  final listFromBox = box.values.toList();
+                  final currentUser =
+                      listFromBox.isNotEmpty ? listFromBox[0] : null;
+
+                  return GestureDetector(
+                    onTap: _goToEmployeeManager,
+                    child: SizedBox(
+                      width: _size.width,
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: Container(
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                            color: kLightBlue,
+                            borderRadius: BorderRadius.all(kBorderRadius),
+                          ),
+                          padding: kPaddingAll,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/images/employees-group.svg',
+                                height: 82,
+                              ),
+                              SizedBox(height: isEnglish ? 10 : 2),
+                              Text(
+                                "${local?.employeeManager}",
+                                style: kSubtitle.copyWith(
+                                    color: kBlack, fontWeight: FontWeight.w700),
+                                textAlign: TextAlign.center,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            _buildSpacerVertical,
           ],
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
 import 'package:ems/screens/your_profile/your_profile_edit.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -48,7 +49,7 @@ class YourProfileViewScreen extends ConsumerWidget {
         builder: (BuildContext context, Box<User> box, Widget? child) {
           final listFromBox = box.values.toList();
           final _currentUser = listFromBox.isNotEmpty ? listFromBox[0] : null;
-
+          print("${_currentUser?.email}");
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(20),
@@ -103,116 +104,175 @@ class YourProfileViewScreen extends ConsumerWidget {
                     "${local?.basicInfo}",
                     style: _sectionTitleStyle,
                   ),
-                  Visibility(
-                    visible: isEnglish,
-                    child: const SizedBox(height: 20),
-                  ),
-                  SizedBox(
-                    height: 200,
-                    child: GridView.count(
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 2,
-                      childAspectRatio: 4.5,
-                      children: [
-                        Text(
-                          "${local?.name}",
-                          style: _labelStyle,
+                  _buildSpacer(context),
+                  BaselineRow(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          child: Text(
+                            "${local?.name}",
+                            style: _labelStyle,
+                          ),
                         ),
-                        Text(
+                      ),
+                      Expanded(
+                        child: Text(
                           _currentUser?.name ?? notAvailable,
                           style: kParagraph,
                         ),
-                        Text(
-                          "${local?.phoneNumber}",
-                          style: _labelStyle,
+                      ),
+                    ],
+                  ),
+                  _buildSpacer(context),
+                  BaselineRow(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          child: Text(
+                            "${local?.phoneNumber}",
+                            style: _labelStyle,
+                          ),
                         ),
-                        Text(
+                      ),
+                      Expanded(
+                        child: Text(
                           _currentUser?.phone ?? notAvailable,
                           style: kParagraph,
                         ),
-                        Text(
+                      ),
+                    ],
+                  ),
+                  _buildSpacer(context),
+                  BaselineRow(
+                    children: [
+                      Expanded(
+                        child: Text(
                           "${local?.email}",
                           style: _labelStyle,
                         ),
-                        Text(
-                          _currentUser?.email ?? notAvailable,
-                          style: kParagraph,
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          padding: EdgeInsets.only(
+                              top: _currentUser!.email != null ? 4 : 0),
+                          scrollDirection: Axis.horizontal,
+                          child: Text(
+                            _currentUser.email ?? notAvailable,
+                            style: kParagraph,
+                          ),
                         ),
-                        Text(
+                      ),
+                    ],
+                  ),
+                  _buildSpacer(context),
+                  BaselineRow(
+                    children: [
+                      Expanded(
+                        child: Text(
                           "${local?.address}",
                           style: _labelStyle,
                         ),
-                        Text(
-                          _currentUser?.address ?? notAvailable,
+                      ),
+                      Expanded(
+                        child: Text(
+                          _currentUser.address ?? notAvailable,
                           style: kParagraph,
                         ),
-                        Text(
+                      ),
+                    ],
+                  ),
+                  _buildSpacer(context),
+                  BaselineRow(
+                    children: [
+                      Expanded(
+                        child: Text(
                           "${local?.accountType}",
                           style: _labelStyle,
                         ),
-                        Text(
-                          _currentUser?.role ?? notAvailable,
+                      ),
+                      Expanded(
+                        child: Text(
+                          _currentUser.role ?? notAvailable,
                           style: kParagraph,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: isEnglish ? 30 : 16),
+                  const SizedBox(height: 30),
                   // employee info
                   Text(
                     "${local?.employeeInfo}",
                     style: _sectionTitleStyle,
                   ),
-                  Visibility(
-                    visible: isEnglish,
-                    child: const SizedBox(height: 20),
-                  ),
-                  SizedBox(
-                    height: 160,
-                    child: GridView.count(
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 2,
-                      childAspectRatio: 4.5,
-                      children: [
-                        Text(
+                  _buildSpacer(context),
+                  BaselineRow(
+                    children: [
+                      Expanded(
+                        child: Text(
                           "${local?.position}",
                           style: _labelStyle,
                         ),
-                        Text(
-                          _currentUser?.position ?? notAvailable,
+                      ),
+                      Expanded(
+                        child: Text(
+                          _currentUser.position ?? notAvailable,
                           style: kParagraph,
                         ),
-                        Text(
+                      ),
+                    ],
+                  ),
+                  _buildSpacer(context),
+                  BaselineRow(
+                    children: [
+                      Expanded(
+                        child: Text(
                           "${local?.skill}",
                           style: _labelStyle,
                         ),
-                        Text(
-                          _currentUser?.skill ?? notAvailable,
+                      ),
+                      Expanded(
+                        child: Text(
+                          _currentUser.skill ?? notAvailable,
                           style: kParagraph,
                         ),
-                        Text(
+                      ),
+                    ],
+                  ),
+                  _buildSpacer(context),
+                  BaselineRow(
+                    children: [
+                      Expanded(
+                        child: Text(
                           "${local?.salary}",
                           style: _labelStyle,
                         ),
-                        Text(
-                          _currentUser?.salary ?? notAvailable,
+                      ),
+                      Expanded(
+                        child: Text(
+                          _currentUser.salary ?? notAvailable,
                           style: kParagraph,
                         ),
-                        Text(
+                      ),
+                    ],
+                  ),
+                  _buildSpacer(context),
+                  BaselineRow(
+                    children: [
+                      Expanded(
+                        child: Text(
                           "${local?.rate}",
                           style: _labelStyle,
                         ),
-                        Text(
-                          _currentUser?.rate ?? notAvailable,
+                      ),
+                      Expanded(
+                        child: Text(
+                          _currentUser.rate ?? notAvailable,
                           style: kParagraph,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Visibility(
-                    visible: isEnglish,
-                    child: const SizedBox(height: 10),
-                  ),
+                  _buildSpacer(context),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -227,10 +287,14 @@ class YourProfileViewScreen extends ConsumerWidget {
                         ),
                       ),
                       Text(
-                        _currentUser?.background ?? notAvailable,
+                        _currentUser.background ?? notAvailable,
                         style: kParagraph,
                       ),
                     ],
+                  ),
+                  Visibility(
+                    visible: isEnglish,
+                    child: const SizedBox(height: 20),
                   ),
                 ],
               ),
@@ -239,5 +303,10 @@ class YourProfileViewScreen extends ConsumerWidget {
         },
       ),
     );
+  }
+
+  Widget _buildSpacer(BuildContext context) {
+    bool isEnglish = isInEnglish(context);
+    return SizedBox(height: isEnglish ? 16 : 10);
   }
 }

@@ -7,6 +7,7 @@ import 'package:ems/screens/overtime/view_overtime.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/utils/services/overtime_service.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,6 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
   /// fetching data from service
   void fetchOvertimeRecord() async {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     int userId = widget.user.id ?? 0;
     setState(() {
       isFetching = true;
@@ -647,31 +647,29 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
               size: 60,
             ),
             const SizedBox(width: 10),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                BaselineRow(
                   children: [
                     Text(
-                      'ID',
+                      '${local?.id}',
                       style: kParagraph.copyWith(fontWeight: FontWeight.w700),
                     ),
-                    const SizedBox(height: 5),
-                    Text(
-                      '${local?.name}',
-                      style: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                    const SizedBox(width: 10),
                     Text(
                       '${user.id ?? placeholder}',
                       style: kParagraph,
                     ),
-                    const SizedBox(height: 5),
+                  ],
+                ),
+                BaselineRow(
+                  children: [
+                    Text(
+                      '${local?.name}',
+                      style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(width: 10),
                     Text(
                       user.name ?? placeholder,
                       style: kParagraph,

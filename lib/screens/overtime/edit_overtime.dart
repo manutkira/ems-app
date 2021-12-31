@@ -3,6 +3,7 @@ import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class _EditOvertimeState extends State<EditOvertime> {
           isLoading = false;
         });
         _closePanel();
-      } catch (err, stk) {
+      } catch (err) {
         setState(() {
           isLoading = false;
           error = err.toString();
@@ -186,10 +187,10 @@ class _EditOvertimeState extends State<EditOvertime> {
               ),
             ],
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           _buildUserInfo(_size, user),
           const SizedBox(height: 20),
-          Row(
+          BaselineRow(
             children: [
               Text(
                 "${local?.date}",
@@ -232,7 +233,7 @@ class _EditOvertimeState extends State<EditOvertime> {
             ],
           ),
           SizedBox(height: isEnglish ? 10 : 0),
-          Row(
+          BaselineRow(
             children: [
               Text(
                 "${local?.from}",
@@ -403,7 +404,7 @@ class _EditOvertimeState extends State<EditOvertime> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
+              BaselineRow(
                 children: [
                   Text(
                     'ID',
@@ -416,7 +417,7 @@ class _EditOvertimeState extends State<EditOvertime> {
                   ),
                 ],
               ),
-              Row(
+              BaselineRow(
                 children: [
                   Text(
                     'Name',

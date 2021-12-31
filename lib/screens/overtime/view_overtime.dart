@@ -1,6 +1,7 @@
 import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +67,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // title
-          Row(
+          BaselineRow(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
@@ -92,12 +93,12 @@ class _ViewOvertimeState extends State<ViewOvertime> {
               ),
             ],
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           //user info
           _buildUserInfo(_size),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           //date
-          Row(
+          BaselineRow(
             children: [
               Text(
                 "${local?.date}",
@@ -114,7 +115,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
           ),
           _buildSpacer(),
           // from/to
-          Row(
+          BaselineRow(
             children: [
               Text(
                 "${local?.from}",
@@ -145,15 +146,13 @@ class _ViewOvertimeState extends State<ViewOvertime> {
           ),
           _buildSpacer(),
           // total
-          Row(
+          BaselineRow(
             children: [
               Text(
                 "${local?.total}",
                 style: kParagraph.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(
-                width: 20,
-              ),
+              const SizedBox(width: 20),
               Text("${_time.hour}h ${_time.minute}mn", style: kParagraph),
             ],
           ),
@@ -162,8 +161,10 @@ class _ViewOvertimeState extends State<ViewOvertime> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${local?.note}',
-                  style: kParagraph.copyWith(fontWeight: FontWeight.w700)),
+              Text(
+                '${local?.note}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.w700),
+              ),
               _buildSpacer(),
               Text(checkIn?.note ?? "", style: kParagraph),
               const SizedBox(height: 20),
@@ -186,6 +187,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
 
   Widget _buildUserInfo(Size _size) {
     AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     OvertimeAttendance record = widget.record;
     User? user = record.user;
     return Container(
@@ -207,9 +209,10 @@ class _ViewOvertimeState extends State<ViewOvertime> {
           const SizedBox(width: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment:
+                isEnglish ? MainAxisAlignment.center : MainAxisAlignment.end,
             children: [
-              Row(
+              BaselineRow(
                 children: [
                   Text(
                     'ID',
@@ -222,7 +225,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                   ),
                 ],
               ),
-              Row(
+              BaselineRow(
                 children: [
                   Text(
                     '${local?.name}',

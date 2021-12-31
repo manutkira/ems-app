@@ -167,5 +167,10 @@
   "shortLate": "យឺត",
   "shortAbsent": "អ.មាន",
   "monthYear": "ខែ/ឆ្នាំ",
-  "list": "តារាង"
+  "list": "តារាង",
+  "login": "ចូល",
+  "loggingIn": "កំពុងចូល",
+  "employeeManager": "គ្រប់គ្រងបុគ្គលិក",
+  "time": "ពេល",
+  "type": "ប្រភេទ"
 }

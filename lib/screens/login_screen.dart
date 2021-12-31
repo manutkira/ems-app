@@ -1,16 +1,17 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
-import 'package:ems/screens/home_screen_employee.dart';
 import 'package:ems/utils/services/auth_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/inputfield.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 import '../constants.dart';
 import 'home_screen.dart';
+import 'home_screen_employee.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -25,33 +26,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String error = "";
   bool isLoading = false;
 
-  final AuthService _authService = AuthService.instance;
+  void setStateIfMounted(f) {
+    if (mounted) setState(f);
+  }
 
+  final AuthService _authService = AuthService.instance;
   Future<void> logUserIn() async {
     // reset error, start loading
-    setState(() {
-      if (mounted) {
-        error = "";
-        isLoading = true;
-      }
+    setStateIfMounted(() {
+      error = "";
+      isLoading = true;
     });
 
     // call the api
     try {
       await _authService.login(phone: phone, password: password);
+      if (!mounted) return;
     } catch (err) {
-      setState(() {
-        if (mounted) {
-          error = err.toString();
-        }
+      setStateIfMounted(() {
+        error = err.toString();
       });
     }
 
     // after finished the api call, stop loading.
-    setState(() {
-      if (mounted) {
-        isLoading = false;
-      }
+    setStateIfMounted(() {
+      isLoading = false;
     });
 
     // if there's an error, stop.
@@ -59,29 +58,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       return;
     }
 
-    var currentUserBox = Hive.box<User>(currentUserBoxName);
-    User? user = currentUserBox.get(currentUserBoxName);
-
-    // if there's no user in the local storage, stop.
-    if (user == null) {
-      return;
-    }
-
     // otherwise, move to home screen
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) {
-        // if user is an admin, load the admin screen
-        if (user.role!.toLowerCase() == 'admin') {
-          return const HomeScreenAdmin();
-        }
-        // otherwise, load the employee screen
-        return const HomeScreenEmployee();
-      }),
+      MaterialPageRoute(
+        builder: (_) {
+          User user = ref.read(currentUserProvider).user;
+          // if user is an admin, load the admin screen
+          if (user.role!.toLowerCase() == 'admin') {
+            return const HomeScreenAdmin();
+          } else {
+            // otherwise, load the employee screen
+            return const HomeScreenEmployee();
+          }
+        },
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -122,14 +119,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     InputField(
                       getValue: (value) {
-                        setState(() {
-                          if (mounted) {
-                            phone = value;
-                          }
+                        setStateIfMounted(() {
+                          phone = value;
                         });
                       },
-                      labelText: "Phone",
-                      textHint: "phone number",
+                      labelText: "${local?.phoneNumber}",
+                      textHint: "${local?.phoneNumber}",
                       prefixIcon: const Icon(
                         Icons.phone,
                         color: kWhite,
@@ -140,16 +135,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     InputField(
                       getValue: (value) {
-                        setState(() {
-                          if (mounted) {
-                            password = value;
-                          }
+                        setStateIfMounted(() {
+                          password = value;
                         });
                       },
                       textInputAction: TextInputAction.done,
                       isPassword: true,
-                      labelText: "Password",
-                      textHint: "password",
+                      labelText: "${local?.password}",
+                      textHint: "${local?.password}",
                       prefixIcon: const Icon(
                         Icons.lock,
                         color: kWhite,
@@ -165,7 +158,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ? _buildLoading
                   : TextButton(
                       style: TextButton.styleFrom(
-                        padding: kPadding.copyWith(top: 10, bottom: 10),
+                        padding: EdgeInsets.only(
+                          top: isEnglish ? 10 : 4,
+                          bottom: isEnglish ? 10 : 2,
+                          right: isEnglish ? 14 : 16,
+                          left: isEnglish ? 14 : 16,
+                        ),
                         primary: Colors.white,
                         textStyle: kParagraph,
                         backgroundColor: kDarkestBlue,
@@ -178,9 +176,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Login',
+                            '${local?.login}',
                             style: kParagraph.copyWith(
-                                fontWeight: FontWeight.bold),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(
                             width: 10,
@@ -200,10 +199,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget get _buildLoading {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5),
       // width: MediaQuery.of(context).size.width / 2,
-      padding: kPadding.copyWith(top: 10, bottom: 10),
+      padding: EdgeInsets.only(
+        top: isEnglish ? 10 : 4,
+        bottom: isEnglish ? 10 : 2,
+        right: isEnglish ? 14 : 16,
+        left: isEnglish ? 14 : 16,
+      ),
       decoration: const BoxDecoration(
         color: kDarkestBlue,
         borderRadius: BorderRadius.all(kBorderRadius),
@@ -217,14 +223,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             width: 20,
             child: CircularProgressIndicator(
               color: kWhite,
-              strokeWidth: 3,
+              strokeWidth: 2,
             ),
           ),
           const SizedBox(
             width: 10,
           ),
           Text(
-            'Logging in',
+            '${local?.loggingIn}',
             style: kParagraph.copyWith(fontWeight: FontWeight.bold),
           ),
         ],
