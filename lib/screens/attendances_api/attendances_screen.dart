@@ -8,7 +8,9 @@ import 'package:ems/screens/attendances_api/tap_screen_alltime.dart';
 import 'package:ems/screens/attendances_api/tap_screen_month.dart';
 import 'package:ems/screens/attendances_api/test.dart';
 import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 
@@ -54,6 +56,8 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -66,9 +70,9 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                 onSelected: (item) => onSelected(context, item as int),
                 icon: const Icon(Icons.filter_list),
                 itemBuilder: (_) => [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         child: Text(
-                          'By Day',
+                          '${local?.byDay}',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -76,9 +80,9 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                         ),
                         value: 0,
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         child: Text(
-                          'By All-Time',
+                          '${local?.byAllTime}',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -86,9 +90,9 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                         ),
                         value: 1,
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         child: Text(
-                          'By Month',
+                          '${local?.byMonth}',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -121,8 +125,8 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                   child: Center(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Text('Fetching Data'),
+                      children: [
+                        Text('${local?.fetchData}'),
                         SizedBox(
                           height: 10,
                         ),
@@ -142,7 +146,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                           child: Column(
                             children: [
                               Text(
-                                'Employee not found!!',
+                                '${local?.employeeNotFound}',
                                 style: kHeadingTwo.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -177,6 +181,8 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
   }
 
   _searchBar() {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -204,7 +210,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                           Icons.clear,
                           color: Colors.white,
                         )),
-                hintText: 'Search...',
+                hintText: '${local?.search}...',
                 errorStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -228,6 +234,8 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
   }
 
   _listItem(index) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(bottom: 20),
@@ -272,7 +280,15 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                     children: [
                       Row(
                         children: [
-                          const Text('Name: '),
+                          Container(
+                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                            child: Text(
+                              '${local?.name}: ',
+                              style: TextStyle(
+                                fontSize: isEnglish ? 15 : 15,
+                              ),
+                            ),
+                          ),
                           Text(
                             userDisplay[index].name.toString(),
                           ),
@@ -280,7 +296,15 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                       ),
                       Row(
                         children: [
-                          const Text('ID: '),
+                          Container(
+                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                            child: Text(
+                              '${local?.id}: ',
+                              style: TextStyle(
+                                fontSize: isEnglish ? 15 : 15,
+                              ),
+                            ),
+                          ),
                           Text(userDisplay[index].id.toString()),
                         ],
                       )
@@ -296,38 +320,10 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => AttendancesInfoScreen(id)));
                       }
-                      if (selectedValue == 1) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => AttendanceByDayScreen()));
-                      }
-                      if (selectedValue == 2) {
-                        showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: const Text('Are you sure?'),
-                            content:
-                                const Text('This action cannot be undone!'),
-                            actions: [
-                              OutlineButton(
-                                onPressed: () {},
-                                child: Text('Yes'),
-                                borderSide: BorderSide(color: Colors.green),
-                              ),
-                              OutlineButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                borderSide: BorderSide(color: Colors.red),
-                                child: Text('No'),
-                              )
-                            ],
-                          ),
-                        );
-                      }
                     },
                     itemBuilder: (_) => [
-                      const PopupMenuItem(
-                        child: Text('att Info'),
+                      PopupMenuItem(
+                        child: Text('${local?.info}'),
                         value: 0,
                       ),
                     ],

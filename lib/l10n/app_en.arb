@@ -557,5 +557,145 @@
   "doYouWantToAdd": "Do you want to add new employee?",
   "@doYouWantToAdd": {
     "description": "add new employee"
+  },
+  "employeeNotFound": "Employee not found!!",
+  "@employeeNotFound": {
+    "description": "add new employee"
+  },
+  "byDay": "By Day",
+  "@byDay": {
+    "description": "add new employee"
+  },
+  "byAllTime": "By All-Time",
+  "@byAllTime": {
+    "description": "add new employee"
+  },
+  "byMonth": "By Month",
+  "@byMonth": {
+    "description": "add new employee"
+  },
+  "cannotUndone": "This action cannot be undone!",
+  "@cannotUndone": {
+    "description": "add new employee"
+  },
+  "pickDate": "Pick a Date",
+  "@pickDate": {
+    "description": "add new employee"
+  },
+  "chooseDate": "Choose Date",
+  "@chooseDate": {
+    "description": "add new employee"
+  },
+  "plsPickDate": "Please pick a date!!",
+  "@plsPickDate": {
+    "description": "add new employee"
+  },
+  "noAttendance": "NO ATTENDANCE ADDED YET!!",
+  "@noAttendance": {
+    "description": "add new employee"
+  },
+  "present": "Present",
+  "@present": {
+    "description": "add new employee"
+  },
+  "absent": "Absent",
+  "@absent": {
+    "description": "add new employee"
+  },
+  "permission": "Permission",
+  "@permission": {
+    "description": "add new employee"
+  },
+  "late": "Late",
+  "@late": {
+    "description": "add new employee"
+  },
+  "pickMonth": "Pick A Month",
+  "@pickMonth": {
+    "description": "add new employee"
+  },
+  "enterYear": "Enter year",
+  "@enterYear": {
+    "description": "add new employee"
+  },
+  "jan": "Jan",
+  "@jan": {
+    "description": "add new employee"
+  },
+  "feb": "Feb",
+  "@feb": {
+    "description": "add new employee"
+  },
+  "mar": "Mar",
+  "@mar": {
+    "description": "add new employee"
+  },
+  "apr": "Apr",
+  "@apr": {
+    "description": "add new employee"
+  },
+  "may": "May",
+  "@may": {
+    "description": "add new employee"
+  },
+  "jun": "Jun",
+  "@jun": {
+    "description": "add new employee"
+  },
+  "jul": "Jul",
+  "@jul": {
+    "description": "add new employee"
+  },
+  "aug": "Aug",
+  "@aug": {
+    "description": "add new employee"
+  },
+  "sep": "Sep",
+  "@sep": {
+    "description": "add new employee"
+  },
+  "oct": "Oct",
+  "@oct": {
+    "description": "add new employee"
+  },
+  "nov": "Nov",
+  "@nov": {
+    "description": "add new employee"
+  },
+  "dec": "Dec",
+  "@dec": {
+    "description": "add new employee"
+  },
+  "enter4Digits": "Please Enter 4 digits",
+  "@enter4Digits": {
+    "description": "add new employee"
+  },
+  "plsPickMonth": "Please pick a Month!!",
+  "@plsPickMonth": {
+    "description": "add new employee"
+  },
+  "shortPresent": "P",
+  "@shortPresent": {
+    "description": "add new employee"
+  },
+  "shortPermission": "PM",
+  "@shortPermission": {
+    "description": "add new employee"
+  },
+  "shortLate": "L",
+  "@shortLate": {
+    "description": "add new employee"
+  },
+  "shortAbsent": "A",
+  "@shortAbsent": {
+    "description": "add new employee"
+  },
+  "monthYear": "M/Y",
+  "@monthYear": {
+    "description": "add new employee"
+  },
+  "list": "List",
+  "@list": {
+    "description": "add new employee"
   }
 }
