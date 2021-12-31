@@ -4,6 +4,7 @@ import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
 import 'package:ems/screens/your_profile/your_profile_edit.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -104,9 +105,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     style: _sectionTitleStyle,
                   ),
                   _buildSpacer(context),
-                  Row(
-                    textBaseline: TextBaseline.alphabetic,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                  BaselineRow(
                     children: [
                       Expanded(
                         child: Container(
@@ -125,9 +124,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
-                  Row(
-                    textBaseline: TextBaseline.alphabetic,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                  BaselineRow(
                     children: [
                       Expanded(
                         child: Container(
@@ -146,9 +143,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
-                  Row(
-                    textBaseline: TextBaseline.alphabetic,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                  BaselineRow(
                     children: [
                       Expanded(
                         child: Text(
@@ -170,9 +165,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
-                  Row(
-                    textBaseline: TextBaseline.alphabetic,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                  BaselineRow(
                     children: [
                       Expanded(
                         child: Text(
@@ -189,9 +182,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
-                  Row(
-                    textBaseline: TextBaseline.alphabetic,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                  BaselineRow(
                     children: [
                       Expanded(
                         child: Text(
@@ -214,9 +205,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     style: _sectionTitleStyle,
                   ),
                   _buildSpacer(context),
-                  Row(
-                    textBaseline: TextBaseline.alphabetic,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                  BaselineRow(
                     children: [
                       Expanded(
                         child: Text(
@@ -233,9 +222,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
-                  Row(
-                    textBaseline: TextBaseline.alphabetic,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                  BaselineRow(
                     children: [
                       Expanded(
                         child: Text(
@@ -252,9 +239,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
-                  Row(
-                    textBaseline: TextBaseline.alphabetic,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                  BaselineRow(
                     children: [
                       Expanded(
                         child: Text(
@@ -271,9 +256,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
-                  Row(
-                    textBaseline: TextBaseline.alphabetic,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                  BaselineRow(
                     children: [
                       Expanded(
                         child: Text(

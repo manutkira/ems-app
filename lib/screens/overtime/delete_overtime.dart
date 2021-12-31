@@ -1,6 +1,7 @@
 import 'package:ems/models/overtime.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -82,7 +83,7 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          BaselineRow(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
