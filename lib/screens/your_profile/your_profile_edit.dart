@@ -160,6 +160,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     AppLocalizations? local = AppLocalizations.of(context);
+    bool isAdmin = _user.role?.toLowerCase() == 'admin';
 
     return Scaffold(
       appBar: AppBar(
@@ -384,66 +385,73 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                 ],
               ),
               const SizedBox(height: 40),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "${local?.employeeInfo}",
-                    style: kHeadingThree.copyWith(fontWeight: FontWeight.w400),
-                  ),
-                  const SizedBox(height: 20),
-                  rowWithInput(
-                    size: _size,
-                    defaultText: _user.position,
-                    label: "${local?.position}",
-                    textHint: "${local?.position}",
-                    getValue: (value) {
-                      setState(() {
-                        _user.position = "$value";
-                      });
-                    },
-                  ),
-                  _buildSpacerHeight(),
-                  rowWithInput(
-                    size: _size,
-                    defaultText: _user.skill,
-                    label: "${local?.skill}",
-                    textHint: "${local?.design}...",
-                    getValue: (value) {
-                      setState(() {
-                        _user.skill = "$value";
-                      });
-                    },
-                  ),
-                  _buildSpacerHeight(),
-                  rowWithInput(
-                    size: _size,
-                    icon: MdiIcons.currencyUsd,
-                    defaultText: _user.salary,
-                    label: "${local?.salary}",
-                    textHint: "${local?.salary}",
-                    getValue: (value) {
-                      setState(() {
-                        _user.salary = "$value";
-                      });
-                    },
-                  ),
-                  _buildSpacerHeight(),
-                  rowWithInput(
-                    size: _size,
-                    defaultText: _user.rate,
-                    label: 'Rate',
-                    textHint: 'Good',
-                    getValue: (value) {
-                      setState(() {
-                        _user.rate = "$value";
-                      });
-                    },
-                  ),
-                  _buildSpacerHeight(),
-                ],
+              Visibility(
+                visible: isAdmin,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${local?.employeeInfo}",
+                      style:
+                          kHeadingThree.copyWith(fontWeight: FontWeight.w400),
+                    ),
+                    const SizedBox(height: 20),
+                    rowWithInput(
+                      size: _size,
+                      defaultText: _user.position,
+                      label: "${local?.position}",
+                      textHint: "${local?.position}",
+                      getValue: (value) {
+                        setState(() {
+                          _user.position = "$value";
+                        });
+                      },
+                    ),
+                    _buildSpacerHeight(),
+                    rowWithInput(
+                      size: _size,
+                      defaultText: _user.skill,
+                      label: "${local?.skill}",
+                      textHint: "${local?.design}...",
+                      getValue: (value) {
+                        setState(() {
+                          _user.skill = "$value";
+                        });
+                      },
+                    ),
+                    _buildSpacerHeight(),
+                    rowWithInput(
+                      size: _size,
+                      icon: MdiIcons.currencyUsd,
+                      defaultText: _user.salary,
+                      label: "${local?.salary}",
+                      textHint: "${local?.salary}",
+                      getValue: (value) {
+                        setState(() {
+                          _user.salary = "$value";
+                        });
+                      },
+                    ),
+                    _buildSpacerHeight(),
+                    rowWithInput(
+                      size: _size,
+                      defaultText: _user.rate,
+                      label: 'Rate',
+                      textHint: 'Good',
+                      getValue: (value) {
+                        setState(() {
+                          _user.rate = "$value";
+                        });
+                      },
+                    ),
+                    _buildSpacerHeight(),
+                  ],
+                ),
               ), // Employment Info
-              const SizedBox(height: 40),
+              Visibility(
+                visible: isAdmin,
+                child: const SizedBox(height: 40),
+              ),
             ],
           ),
         ),

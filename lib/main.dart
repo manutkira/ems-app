@@ -28,20 +28,28 @@ void main() async {
   runApp(
     ProviderScope(
       overrides: [
-        currentUserProvider.overrideWithValue(dataStore),
         settingsProvider.overrideWithValue(settingsStore),
+        currentUserProvider.overrideWithValue(dataStore),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends ConsumerStatefulWidget {
+  const MyApp({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  ConsumerState createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
   final navigatorKey = GlobalKey<NavigatorState>();
 
-  MyApp({Key? key}) : super(key: key);
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -67,11 +75,14 @@ class MyApp extends ConsumerWidget {
                   ref.watch(currentUserProvider).currentUserListenable,
               builder: (BuildContext context, Box<User> box, Widget? child) {
                 final currentUserData = box.values.toList();
-                return box.isEmpty || currentUserData[0].isEmpty
-                    ? const LoginScreen()
-                    : currentUserData[0].role?.toLowerCase() != 'admin'
-                        ? const HomeScreenAdmin()
-                        : const HomeScreenEmployee();
+                if (box.isEmpty || currentUserData[0].isEmpty) {
+                  return const LoginScreen();
+                }
+                if (currentUserData[0].role?.toLowerCase() == 'admin') {
+                  return const HomeScreenAdmin();
+                } else {
+                  return const HomeScreenEmployee();
+                }
               },
             ),
             localizationsDelegates: const [

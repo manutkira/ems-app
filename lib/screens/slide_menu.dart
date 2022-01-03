@@ -1,6 +1,5 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
-import 'package:ems/persistence/setting.dart';
 import 'package:ems/screens/login_screen.dart';
 import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
 import 'package:ems/screens/your_profile/your_profile_edit.dart';
@@ -8,12 +7,12 @@ import 'package:ems/screens/your_profile/your_profile_password.dart';
 import 'package:ems/screens/your_profile/your_profile_view.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/language_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -30,38 +29,10 @@ class MenuDrawer extends ConsumerStatefulWidget {
 
 class _MenuDrawerState extends ConsumerState<MenuDrawer> {
   final AuthService _auth = AuthService.instance;
-  final List<Languages> supportedLanguages = Languages.supported;
-  String defaultLanguage = '';
-
-  void switchLanguage(String? language) async {
-    // final languageBox = Hive.box<int>(languageBoxName);
-    // // if (language.isEmpty) return;
-    // if (language!.toLowerCase() == 'ខ្មែរ') {
-    //   languageBox.put(
-    //     languageBoxName,
-    //     0,
-    //   );
-    // }
-    // if (language.toLowerCase() == 'english') {
-    //   languageBox.put(
-    //     languageBoxName,
-    //     1,
-    //   );
-    // }
-    print(ref.read(settingsProvider).getLanguage());
-
-    /// make this work
-
-    ref.read(settingsProvider).switchLanguage("$language");
-    setState(() {
-      defaultLanguage = ref.read(settingsProvider).getLanguage();
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    defaultLanguage = ref.read(settingsProvider).getLanguage();
   }
 
   @override
@@ -214,9 +185,9 @@ class _MenuDrawerState extends ConsumerState<MenuDrawer> {
                   ),
                 ],
               ),
-              Positioned(
+              const Positioned(
                 right: 15,
-                child: _buildLanguageMenu,
+                child: LanguageMenu(),
               ),
               const Positioned(
                 bottom: 0,
@@ -239,68 +210,4 @@ class _MenuDrawerState extends ConsumerState<MenuDrawer> {
       ),
     );
   }
-
-  Widget get _buildLanguageMenu {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 6,
-      ),
-      margin: const EdgeInsets.only(top: 16),
-      decoration: BoxDecoration(
-        color: Colors.black26,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: DropdownButton(
-        isDense: true,
-        iconSize: 0,
-        elevation: 4,
-        itemHeight: 50,
-        dropdownColor: kBlue,
-        underline: Container(),
-        borderRadius: BorderRadius.circular(6),
-        value: defaultLanguage,
-        items: [
-          ...supportedLanguages.map(
-            (e) {
-              String flag = e.flag;
-              String name = e.name;
-              return DropdownMenuItem(
-                value: name,
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      flag,
-                      width: 20,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-        onChanged: (String? language) => switchLanguage(language),
-      ),
-    );
-  }
-}
-
-class Languages {
-  String flag;
-  String name;
-  Languages({required this.flag, required this.name});
-
-  static List<Languages> supported = [
-    Languages(flag: 'assets/images/flag-cambodia.svg', name: 'ខ្មែរ'),
-    Languages(flag: 'assets/images/flag-united-states.svg', name: 'English'),
-  ];
 }
