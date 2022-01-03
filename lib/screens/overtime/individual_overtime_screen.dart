@@ -458,7 +458,7 @@ class _IndividualOvertimeScreenState
               ),
               // date range card
               Visibility(
-                visible: !isFetching && error.isEmpty,
+                visible: error.isEmpty,
                 child: Container(
                   margin: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -492,7 +492,7 @@ class _IndividualOvertimeScreenState
                   ),
                 ),
               ),
-              //loading
+              // loading
               Visibility(
                 visible: isFetching,
                 child: Flexible(
@@ -529,11 +529,20 @@ class _IndividualOvertimeScreenState
               ),
               // results
               Expanded(
-                child: ListView.builder(
-                  itemCount: overtimeRecords.length,
-                  itemBuilder: (context, i) {
-                    return _buildListItem(i);
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    fetchOvertimeRecord();
                   },
+                  strokeWidth: 2,
+                  backgroundColor: Colors.transparent,
+                  displacement: 3 + 0,
+                  color: kWhite,
+                  child: ListView.builder(
+                    itemCount: overtimeRecords.length,
+                    itemBuilder: (context, i) {
+                      return _buildListItem(i);
+                    },
+                  ),
                 ),
               ),
             ],
