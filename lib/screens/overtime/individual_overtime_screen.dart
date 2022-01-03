@@ -1,6 +1,7 @@
 import 'package:ems/constants.dart';
 import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
+import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/overtime/delete_overtime.dart';
 import 'package:ems/screens/overtime/edit_overtime.dart';
 import 'package:ems/screens/overtime/view_overtime.dart';
@@ -12,18 +13,19 @@ import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class IndividualOvertimeScreen extends StatefulWidget {
+class IndividualOvertimeScreen extends ConsumerStatefulWidget {
   const IndividualOvertimeScreen({Key? key, required this.user})
       : super(key: key);
   final User user;
   @override
-  State<IndividualOvertimeScreen> createState() =>
-      _IndividualOvertimeScreenState();
+  ConsumerState createState() => _IndividualOvertimeScreenState();
 }
 
-class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
+class _IndividualOvertimeScreenState
+    extends ConsumerState<IndividualOvertimeScreen> {
   late User user;
   String error = '';
   String total = '00:00:00';
@@ -40,7 +42,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
   DateTime endDate = DateTime.now();
 
   /// more menu
-  void moreMenu(String value, OvertimeAttendance record) async {
+  void handleMoreMenu(String value, OvertimeAttendance record) async {
     AppLocalizations? local = AppLocalizations.of(context);
     if (value == local?.optionView) {
       await modalBottomSheetBuilder(
@@ -169,16 +171,24 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
   }
 
   init() {
+    User _currentUser = ref.read(currentUserProvider).user;
+    bool isAdmin = _currentUser.role?.toLowerCase() == 'admin';
     AppLocalizations? local = AppLocalizations.of(context);
     setState(() {
       if (sortByValue.isEmpty) {
         sortByValue = '${local?.optionAllTime}';
       }
-      options = [
-        "${local?.optionView}",
-        "${local?.optionEdit}",
-        "${local?.optionDelete}",
-      ];
+      if (isAdmin) {
+        options = [
+          "${local?.optionView}",
+          "${local?.optionEdit}",
+          "${local?.optionDelete}",
+        ];
+      } else {
+        options = [
+          "${local?.optionView}",
+        ];
+      }
       dropdownItems = [
         '${local?.optionDay}',
         '${local?.optionMultiDay}',
@@ -597,7 +607,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
               PopupMenuButton<String>(
                 padding: EdgeInsets.zero,
                 elevation: 200,
-                color: kDarkestBlue,
+                color: kBlueBackground,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -605,7 +615,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
                 itemBuilder: (BuildContext context) => options.map((option) {
                   return _buildMoreMenu(option);
                 }).toList(),
-                onSelected: (selected) => moreMenu(selected, record),
+                onSelected: (selected) => handleMoreMenu(selected, record),
               ),
             ],
           )
@@ -626,6 +636,7 @@ class _IndividualOvertimeScreenState extends State<IndividualOvertimeScreen> {
         option,
         style: const TextStyle(
           fontSize: 14,
+          color: kBlueText,
         ),
       ),
     );

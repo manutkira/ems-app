@@ -1,18 +1,18 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
-import 'package:ems/persistence/setting.dart';
-import 'package:ems/screens/slide_menu.dart';
+import 'package:ems/screens/home_screen.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/inputfield.dart';
+import 'package:ems/widgets/language_menu.dart';
 import 'package:ems/widgets/statuses/error.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../constants.dart';
-import 'home_screen.dart';
 import 'home_screen_employee.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -27,17 +27,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String phone = "";
   String error = "";
   bool isLoading = false;
-  final List<Languages> supportedLanguages = Languages.supported;
-  String defaultLanguage = '';
-
-  void switchLanguage(String? language) {
-    ref.read(settingsProvider).switchLanguage("$language");
-    if (mounted) {
-      setState(() {
-        defaultLanguage = ref.read(settingsProvider).getLanguage();
-      });
-    }
-  }
 
   void setStateIfMounted(f) {
     if (mounted) setState(f);
@@ -72,10 +61,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
 
     // otherwise, move to home screen
+    User user = ref.read(currentUserProvider).user;
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) {
-          User user = ref.read(currentUserProvider).user;
+      CupertinoPageRoute(
+        builder: (context) {
           // if user is an admin, load the admin screen
           if (user.role!.toLowerCase() == 'admin') {
             return const HomeScreenAdmin();
@@ -91,7 +80,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    defaultLanguage = ref.read(settingsProvider).getLanguage();
   }
 
   @override
@@ -117,11 +105,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 "Internal EMS",
                 style: kHeadingOne.copyWith(fontSize: 42),
               ),
-              // Container(
-              //   alignment: Alignment.centerRight,
-              //   padding: kPadding,
-              //   child: _buildLanguageMenu,
-              // ),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: kPadding,
+                child: const LanguageMenu(),
+              ),
               const SizedBox(height: 20),
               Container(
                 padding: kPadding,
@@ -190,7 +178,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           borderRadius: BorderRadius.all(kBorderRadius),
                         ),
                       ),
-                      onPressed: logUserIn,
+                      onPressed: () async {
+                        await logUserIn();
+                      },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -213,59 +203,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget get _buildLanguageMenu {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 6,
-      ),
-      margin: const EdgeInsets.only(top: 16),
-      decoration: BoxDecoration(
-        color: Colors.black26,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: DropdownButton(
-        isDense: true,
-        iconSize: 0,
-        elevation: 4,
-        itemHeight: 50,
-        dropdownColor: kDarkestBlue,
-        underline: Container(),
-        borderRadius: BorderRadius.circular(6),
-        value: defaultLanguage,
-        items: [
-          ...supportedLanguages.map(
-            (e) {
-              String flag = e.flag;
-              String name = e.name;
-              return DropdownMenuItem(
-                value: name,
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      flag,
-                      width: 20,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-        onChanged: (String? language) => switchLanguage(language),
       ),
     );
   }

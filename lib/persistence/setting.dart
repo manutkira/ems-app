@@ -6,6 +6,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 const languageBoxName = 'languageBox';
 
 class SettingsStore {
+  static String get khmerLanguage => "ខ្មែរ";
+  static String get englishLanguage => "English";
   init() async {
     await Hive.initFlutter();
     await Hive.openBox<int>(languageBoxName);
@@ -13,12 +15,10 @@ class SettingsStore {
     final languageBox = Hive.box<int>(languageBoxName);
     var language = languageBox.get(languageBoxName);
     if (language == null) {
-      var khmer = L10n.all[0];
       languageBox.put(
         languageBoxName,
         0,
       );
-      print(languageBox.get(languageBoxName));
     }
   }
 
@@ -27,26 +27,20 @@ class SettingsStore {
     var language = languageBox.get(languageBoxName);
     bool isInKhmer = L10n.all[language ?? 0] == L10n.all[0];
     if (isInKhmer) {
-      return "ខ្មែរ";
+      return khmerLanguage;
     } else {
-      return "English";
+      return englishLanguage;
     }
   }
 
-  void switchLanguage(String language) async {
+  Future<void> switchLanguage(String language) async {
     final languageBox = Hive.box<int>(languageBoxName);
     if (language.isEmpty) return;
-    if (language.toLowerCase() == 'ខ្មែរ') {
-      await languageBox.put(
-        languageBoxName,
-        0,
-      );
+    if (language.toLowerCase() == khmerLanguage.toLowerCase()) {
+      await languageBox.put(languageBoxName, 0);
     }
-    if (language.toLowerCase() == 'english') {
-      await languageBox.put(
-        languageBoxName,
-        1,
-      );
+    if (language.toLowerCase() == englishLanguage.toLowerCase()) {
+      await languageBox.put(languageBoxName, 1);
     }
   }
 
@@ -55,15 +49,9 @@ class SettingsStore {
     var language = languageBox.get(languageBoxName);
     bool isInKhmer = L10n.all[language ?? 0] == L10n.all[0];
     if (isInKhmer) {
-      languageBox.put(
-        languageBoxName,
-        1,
-      );
+      languageBox.put(languageBoxName, 1);
     } else {
-      languageBox.put(
-        languageBoxName,
-        0,
-      );
+      languageBox.put(languageBoxName, 0);
     }
   }
 
