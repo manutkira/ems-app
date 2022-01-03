@@ -97,7 +97,6 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
       } else {
         records = await _overtimeService.findMany();
       }
-      print(records);
 
       setState(() {
         // set newly received data to as overtime records
@@ -410,30 +409,10 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                   ],
                 ),
               ),
-              // Loading
-              Visibility(
-                visible: isFetching,
-                child: Container(
-                  margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * .35,
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const CircularProgressIndicator(
-                          color: Colors.white,
-                        ),
-                        const SizedBox(height: 10),
-                        Text('${local?.loadingOvertime}'),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+
               // date range card
               Visibility(
-                visible: !isFetching && error.isEmpty,
+                visible: error.isEmpty,
                 child: Container(
                   margin: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -467,6 +446,27 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                   ),
                 ),
               ),
+              // Loading
+              Visibility(
+                visible: isFetching,
+                child: Container(
+                  margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * .35,
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 10),
+                        Text('${local?.loadingOvertime}'),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               // no record
               Visibility(
                 visible: overtimeRecords.isEmpty && !isFetching,
@@ -489,13 +489,22 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
               Visibility(
                 visible: !isFetching && overtimeRecords.isNotEmpty,
                 child: Expanded(
-                  child: ListView.builder(
-                    itemCount: overtimeRecords.length,
-                    itemBuilder: (context, i) {
-                      OvertimeByDay record = overtimeRecords[i];
-                      // title date
-                      return _buildResult(record);
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      fetchOvertimeRecord();
                     },
+                    strokeWidth: 2,
+                    backgroundColor: Colors.transparent,
+                    displacement: 30,
+                    color: kWhite,
+                    child: ListView.builder(
+                      itemCount: overtimeRecords.length,
+                      itemBuilder: (context, i) {
+                        OvertimeByDay record = overtimeRecords[i];
+                        // title date
+                        return _buildResult(record);
+                      },
+                    ),
                   ),
                 ),
               ),
