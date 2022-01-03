@@ -33,7 +33,25 @@ class _MenuDrawerState extends ConsumerState<MenuDrawer> {
   final List<Languages> supportedLanguages = Languages.supported;
   String defaultLanguage = '';
 
-  void switchLanguage(String? language) {
+  void switchLanguage(String? language) async {
+    // final languageBox = Hive.box<int>(languageBoxName);
+    // // if (language.isEmpty) return;
+    // if (language!.toLowerCase() == 'ខ្មែរ') {
+    //   languageBox.put(
+    //     languageBoxName,
+    //     0,
+    //   );
+    // }
+    // if (language.toLowerCase() == 'english') {
+    //   languageBox.put(
+    //     languageBoxName,
+    //     1,
+    //   );
+    // }
+    print(ref.read(settingsProvider).getLanguage());
+
+    /// make this work
+
     ref.read(settingsProvider).switchLanguage("$language");
     setState(() {
       defaultLanguage = ref.read(settingsProvider).getLanguage();

@@ -33,17 +33,17 @@ class SettingsStore {
     }
   }
 
-  void switchLanguage(String language) {
+  void switchLanguage(String language) async {
     final languageBox = Hive.box<int>(languageBoxName);
     if (language.isEmpty) return;
     if (language.toLowerCase() == 'ខ្មែរ') {
-      languageBox.put(
+      await languageBox.put(
         languageBoxName,
         0,
       );
     }
     if (language.toLowerCase() == 'english') {
-      languageBox.put(
+      await languageBox.put(
         languageBoxName,
         1,
       );
