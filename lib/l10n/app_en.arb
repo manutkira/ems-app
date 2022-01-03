@@ -697,7 +697,7 @@
   "list": "List",
   "@list": {
     "description": "add new employee"
-  }
+  },
   "login": "Login",
   "@login": {
     "description": "login button @ login screen"

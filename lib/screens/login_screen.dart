@@ -1,5 +1,7 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
+import 'package:ems/persistence/setting.dart';
+import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/inputfield.dart';
@@ -25,6 +27,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String phone = "";
   String error = "";
   bool isLoading = false;
+  final List<Languages> supportedLanguages = Languages.supported;
+  String defaultLanguage = '';
+
+  void switchLanguage(String? language) {
+    ref.read(settingsProvider).switchLanguage("$language");
+    if (mounted) {
+      setState(() {
+        defaultLanguage = ref.read(settingsProvider).getLanguage();
+      });
+    }
+  }
 
   void setStateIfMounted(f) {
     if (mounted) setState(f);
@@ -76,6 +89,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    defaultLanguage = ref.read(settingsProvider).getLanguage();
+  }
+
+  @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
@@ -84,9 +103,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(
-                height: 50,
-              ),
+              const SizedBox(height: 50),
               Container(
                 padding: kPadding,
                 width: MediaQuery.of(context).size.width,
@@ -95,13 +112,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   semanticsLabel: "graph illustration",
                 ),
               ),
-              const SizedBox(
-                height: 10,
+              const SizedBox(height: 10),
+              Text(
+                "Internal EMS",
+                style: kHeadingOne.copyWith(fontSize: 42),
               ),
-              Text("Internal EMS", style: kHeadingOne.copyWith(fontSize: 42)),
-              const SizedBox(
-                height: 50,
-              ),
+              // Container(
+              //   alignment: Alignment.centerRight,
+              //   padding: kPadding,
+              //   child: _buildLanguageMenu,
+              // ),
+              const SizedBox(height: 20),
               Container(
                 padding: kPadding,
                 child: error.isNotEmpty
@@ -110,9 +131,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       )
                     : null,
               ),
-              const SizedBox(
-                height: 50,
-              ),
+              const SizedBox(height: 50),
               Padding(
                 padding: kPadding,
                 child: Column(
@@ -194,6 +213,59 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget get _buildLanguageMenu {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 6,
+      ),
+      margin: const EdgeInsets.only(top: 16),
+      decoration: BoxDecoration(
+        color: Colors.black26,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: DropdownButton(
+        isDense: true,
+        iconSize: 0,
+        elevation: 4,
+        itemHeight: 50,
+        dropdownColor: kDarkestBlue,
+        underline: Container(),
+        borderRadius: BorderRadius.circular(6),
+        value: defaultLanguage,
+        items: [
+          ...supportedLanguages.map(
+            (e) {
+              String flag = e.flag;
+              String name = e.name;
+              return DropdownMenuItem(
+                value: name,
+                child: Row(
+                  children: [
+                    SvgPicture.asset(
+                      flag,
+                      width: 20,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+        onChanged: (String? language) => switchLanguage(language),
       ),
     );
   }
