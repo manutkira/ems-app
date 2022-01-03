@@ -1,5 +1,6 @@
 import 'package:ems/screens/card/card.screen.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -37,524 +38,490 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
     final color = const Color(0xff05445E);
     final color1 = const Color(0xff3982A0);
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Employee'),
-        ),
-        body: FutureBuilder(
-          future: fetchData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('${local?.fetchData}'),
-                    const CircularProgressIndicator(
-                      color: kWhite,
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-                      height: 139,
-                      width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        color: kLightBlue,
-                        child: Row(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(
-                                left: 10,
-                              ),
-                              child: Expanded(
-                                flex: 3,
-                                child: Container(
-                                  width: 85,
-                                  height: 85,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(100)),
-                                      border: Border.all(
-                                        width: 1,
-                                        color: Colors.white,
-                                      )),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(150),
-                                    child: (snapshot.data
-                                                as dynamic)['image'] ==
-                                            null
-                                        ? Image.asset(
-                                            'assets/images/profile-icon-png-910.png')
-                                        : Image.network(
-                                            (snapshot.data as dynamic)['image'],
-                                            fit: BoxFit.cover,
-                                            width: double.infinity,
-                                            height: 75,
-                                          ),
-                                  ),
+      appBar: AppBar(
+        title: Text('Employee'),
+      ),
+      body: FutureBuilder(
+        future: fetchData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('${local?.fetchData}'),
+                  const CircularProgressIndicator(
+                    color: kWhite,
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+                    height: 139,
+                    width: double.infinity,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      color: kLightBlue,
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(
+                              left: 10,
+                            ),
+                            child: Expanded(
+                              flex: 3,
+                              child: Container(
+                                width: 85,
+                                height: 85,
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(100)),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.white,
+                                    )),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(150),
+                                  child: (snapshot.data as dynamic)['image'] ==
+                                          null
+                                      ? Image.asset(
+                                          'assets/images/profile-icon-png-910.png')
+                                      : Image.network(
+                                          (snapshot.data as dynamic)['image'],
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: 75,
+                                        ),
                                 ),
                               ),
                             ),
-                            Container(
-                              height: 65,
-                              margin: EdgeInsets.only(left: 15, top: 13),
-                              child: Expanded(
-                                flex: 7,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          '${local?.id} : ',
-                                          style: kParagraph.copyWith(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        SizedBox(
-                                          width: isEnglish ? 45 : 20,
-                                        ),
-                                        Text(
-                                          (snapshot.data as dynamic)['id']
-                                              .toString(),
-                                          style: kParagraph.copyWith(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              top: isEnglish ? 3 : 00),
-                                          child: Text(
-                                            '${local?.name} : ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              top: isEnglish ? 4 : 0),
-                                          child: Text(
-                                            (snapshot.data as dynamic)['name'],
-                                            style: kParagraph.copyWith(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          InkWell(
-                              onTap: () {
-                                int id =
-                                    (snapshot.data as dynamic)['id'] as int;
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (ctx) => NationalIdScreen(
-                                      id: id.toString(),
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Text('view')),
-                          IconButton(
-                              onPressed: () {
-                                int id =
-                                    (snapshot.data as dynamic)['id'] as int;
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (ctx) => NationalIdScreen(
-                                      id: id.toString(),
-                                    ),
-                                  ),
-                                );
-                              },
-                              icon: Icon(Icons.credit_card)),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 0),
-                      width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        )),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                              ),
-                              gradient: LinearGradient(
-                                colors: [
-                                  color1,
-                                  color,
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              )),
-                          child: Container(
-                            margin: EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 11),
-                                          child: Text(
-                                            'Name ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 26),
-                                          child: Text(
-                                            'ID ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          child: Text(
-                                            'Email ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          child: Text(
-                                            'Position ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          child: Text(
-                                            'Skill ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          child: Text(
-                                            'Salary ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          child: Text(
-                                            'Role ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          child: Text(
-                                            'Status ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          child: Text(
-                                            'Work-Rate ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          child: Text(
-                                            'Phone ',
-                                            style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            height: 34,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 10, left: 55),
-                                              child: Text(
-                                                (snapshot.data
-                                                    as dynamic)['name'],
-                                                style: kParagraph.copyWith(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20, left: 55),
-                                            child: Text(
-                                              (snapshot.data as dynamic)['id']
-                                                  .toString(),
-                                              style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20, left: 55, bottom: 8),
-                                            child: Text(
-                                              (snapshot.data
-                                                      as dynamic)['email']
-                                                  .toString(),
-                                              style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            height: 35,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                top: 11,
-                                                left: 55,
-                                              ),
-                                              child: Text(
-                                                (snapshot.data
-                                                        as dynamic)['position']
-                                                    .toString(),
-                                                style: kParagraph.copyWith(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            height: 35,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 15, left: 55),
-                                              child: Text(
-                                                (snapshot.data
-                                                        as dynamic)['skill']
-                                                    .toString(),
-                                                style: kParagraph.copyWith(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20, left: 55),
-                                            child: Text(
-                                              '\$${(snapshot.data as dynamic)['salary'].toString()}',
-                                              style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20, left: 55),
-                                            child: Text(
-                                              (snapshot.data as dynamic)['role']
-                                                  .toString(),
-                                              style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20, left: 55),
-                                            child: Text(
-                                              (snapshot.data
-                                                      as dynamic)['status']
-                                                  .toString(),
-                                              style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20, left: 55),
-                                            child: Text(
-                                              (snapshot.data as dynamic)['rate']
-                                                  .toString(),
-                                              style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 25, left: 55),
-                                            child: Text(
-                                              (snapshot.data
-                                                      as dynamic)['phone']
-                                                  .toString(),
-                                              style: kParagraph.copyWith(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                          ),
+                          Container(
+                            height: 65,
+                            margin: EdgeInsets.only(left: 15, top: 13),
+                            child: Expanded(
+                              flex: 7,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  BaselineRow(
                                     children: [
                                       Text(
-                                        'Address ',
+                                        '${local?.id} : ',
                                         style: kParagraph.copyWith(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(
-                                        height: 15,
+                                        width: isEnglish ? 45 : 20,
                                       ),
-                                      Container(
-                                        height: 35,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            left: 15,
-                                          ),
-                                          child: Text(
-                                            (snapshot.data
-                                                    as dynamic)['address']
-                                                .toString(),
-                                            style: kParagraph.copyWith(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
+                                      Text(
+                                        (snapshot.data as dynamic)['id']
+                                            .toString(),
+                                        style: kParagraph.copyWith(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  SizedBox(
+                                    height: isEnglish ? 10 : 0,
+                                  ),
+                                  BaselineRow(
                                     children: [
                                       Text(
-                                        'Work-Background: ',
+                                        '${local?.name} : ',
                                         style: kParagraph.copyWith(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(
-                                        height: 15,
+                                        width: isEnglish ? 19 : 30,
                                       ),
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 15),
+                                        padding: EdgeInsets.only(
+                                            top: isEnglish ? 4 : 0),
                                         child: Text(
-                                          (snapshot.data
-                                                  as dynamic)['background']
+                                          (snapshot.data as dynamic)['name'],
+                                          style: kParagraph.copyWith(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        InkWell(
+                            onTap: () {
+                              int id = (snapshot.data as dynamic)['id'] as int;
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (ctx) => NationalIdScreen(
+                                    id: id.toString(),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Text('${local?.optionView}')),
+                        IconButton(
+                            onPressed: () {
+                              int id = (snapshot.data as dynamic)['id'] as int;
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (ctx) => NationalIdScreen(
+                                    id: id.toString(),
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: Icon(Icons.credit_card)),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 0),
+                    width: double.infinity,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      )),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                            gradient: LinearGradient(
+                              colors: [
+                                color1,
+                                color,
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            )),
+                        child: Container(
+                          margin: EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              BaselineRow(
+                                children: [
+                                  Text(
+                                    '${local?.name} ',
+                                    style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    width: isEnglish ? 80 : 90,
+                                  ),
+                                  Text(
+                                    (snapshot.data as dynamic)['name'],
+                                    style: kParagraph.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: isEnglish ? 20 : 10,
+                              ),
+                              BaselineRow(
+                                children: [
+                                  Text(
+                                    '${local?.id} ',
+                                    style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    width: isEnglish ? 110 : 80,
+                                  ),
+                                  Text(
+                                    (snapshot.data as dynamic)['id'].toString(),
+                                    style: kParagraph.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: isEnglish ? 20 : 10,
+                              ),
+                              BaselineRow(
+                                children: [
+                                  Text(
+                                    '${local?.email} ',
+                                    style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    width: isEnglish ? 85 : 90,
+                                  ),
+                                  Text(
+                                    (snapshot.data as dynamic)['email']
+                                        .toString(),
+                                    style: kParagraph.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: isEnglish ? 20 : 10,
+                              ),
+                              BaselineRow(
+                                children: [
+                                  Text(
+                                    '${local?.position} ',
+                                    style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    width: isEnglish ? 65 : 85,
+                                  ),
+                                  Text(
+                                    (snapshot.data as dynamic)['position']
+                                        .toString(),
+                                    style: kParagraph.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: isEnglish ? 20 : 10,
+                              ),
+                              BaselineRow(
+                                children: [
+                                  Text(
+                                    '${local?.skill} ',
+                                    style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    width: isEnglish ? 95 : 92,
+                                  ),
+                                  Text(
+                                    (snapshot.data as dynamic)['skill']
+                                        .toString(),
+                                    style: kParagraph.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: isEnglish ? 20 : 10,
+                              ),
+                              BaselineRow(
+                                children: [
+                                  Text(
+                                    '${local?.salary} ',
+                                    style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    width: isEnglish ? 78 : 85,
+                                  ),
+                                  Text(
+                                    '\$${(snapshot.data as dynamic)['salary'].toString()}',
+                                    style: kParagraph.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: isEnglish ? 20 : 10,
+                              ),
+                              BaselineRow(
+                                children: [
+                                  Text(
+                                    '${local?.role} ',
+                                    style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    width: isEnglish ? 95 : 99,
+                                  ),
+                                  Text(
+                                    (snapshot.data as dynamic)['role']
+                                        .toString(),
+                                    style: kParagraph.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: isEnglish ? 20 : 10,
+                              ),
+                              BaselineRow(
+                                children: [
+                                  Text(
+                                    '${local?.status} ',
+                                    style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    width: isEnglish ? 78 : 78,
+                                  ),
+                                  Text(
+                                    (snapshot.data as dynamic)['status']
+                                        .toString(),
+                                    style: kParagraph.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: isEnglish ? 20 : 10,
+                              ),
+                              BaselineRow(
+                                children: [
+                                  Text(
+                                    '${local?.rate} ',
+                                    style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    width: isEnglish ? 93 : 77,
+                                  ),
+                                  Text(
+                                    (snapshot.data as dynamic)['rate']
+                                        .toString(),
+                                    style: kParagraph.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: isEnglish ? 20 : 10,
+                              ),
+                              BaselineRow(
+                                children: [
+                                  Text(
+                                    '${local?.phoneNumber} ',
+                                    style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    width: isEnglish ? 80 : 63,
+                                  ),
+                                  Text(
+                                    (snapshot.data as dynamic)['phone']
+                                        .toString(),
+                                    style: kParagraph.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${local?.address} ',
+                                      style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Container(
+                                      height: 35,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 15,
+                                        ),
+                                        child: Text(
+                                          (snapshot.data as dynamic)['address']
                                               .toString(),
                                           style: kParagraph.copyWith(
                                             color: Colors.white,
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${local?.background}: ',
+                                      style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 15),
+                                      child: Text(
+                                        (snapshot.data as dynamic)['background']
+                                            .toString(),
+                                        style: kParagraph.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    )
-                  ],
-                ),
-              );
-            }
-          },
-        ));
+                    ),
+                  )
+                ],
+              ),
+            );
+          }
+        },
+      ),
+    );
   }
 }

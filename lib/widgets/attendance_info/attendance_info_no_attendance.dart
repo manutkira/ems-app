@@ -12,7 +12,7 @@ class AttendanceInfoNoAttenance extends StatelessWidget {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     return Container(
-      padding: const EdgeInsets.only(top: 200, left: 40),
+      padding: const EdgeInsets.only(top: 200, left: 90),
       child: Column(
         children: [
           Text(
