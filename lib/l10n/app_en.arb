@@ -717,6 +717,22 @@
   "type": "Type",
   "@type": {
     "description": "scan confirm panel"
+  },
+  "userId": "User ID",
+  "@userId": {
+    "description": "edit attendance"
+  },
+  "checkIn": "checkin",
+  "@checkIn": {
+    "description": "edit attendance"
+  },
+  "checkOut": "checkout",
+  "@checkOut": {
+    "description": "edit attendance"
+  },
+  "saveChanges": "Do you want to save the changes",
+  "@saveChanges": {
+    "description": "edit attendance"
   }
 
 }

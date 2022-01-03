@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 
@@ -37,14 +38,14 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
   String? _hour, _minute, _time;
   DateTime? dateTime;
-  String type = 'checkin';
+  String type = '';
 
   bool pick = false;
   late DateTime? _selectDate;
 
   @override
   void initState() {
-    type = widget.type;
+    // type = widget.type;
     id.text = widget.id.toString();
     _selectDate = widget.date;
     selectedTime = TimeOfDay(
@@ -99,6 +100,27 @@ class _AttedancesEditState extends State<AttedancesEdit> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    checkType() {
+      if (widget.type == 'checkin') {
+        return local!.checkIn;
+      }
+      if (widget.type == 'checkout') {
+        return local!.checkOut;
+      }
+      if (widget.type == 'absent') {
+        return local!.absent;
+      } else {
+        return local!.permission;
+      }
+    }
+
+    setState(() {
+      if (type.isEmpty) {
+        type = checkType();
+      }
+    });
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -112,7 +134,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'ID ',
+                  '${local?.id} ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
@@ -131,15 +153,17 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'User ID ',
-                  style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                  '${local?.userId} ',
+                  style: kParagraph.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: isEnglish ? 15 : 15.5),
                 ),
                 SizedBox(
                   width: 20,
@@ -171,7 +195,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Type ',
+                  '${local?.type} ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
@@ -180,6 +204,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                 Container(
                   width: 233,
                   child: DropdownButtonFormField(
+                    dropdownColor: kDarkestBlue,
                     icon: Icon(Icons.expand_more),
                     value: type,
                     onChanged: (String? newValue) {
@@ -189,10 +214,10 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                       widget.type;
                     },
                     items: <String>[
-                      'checkin',
-                      'checkout',
-                      'absent',
-                      'permission',
+                      '${local?.checkIn}',
+                      '${local?.checkOut}',
+                      '${local?.absent}',
+                      '${local?.permission}',
                     ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                           value: value,
@@ -211,7 +236,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Date ',
+                  '${local?.date} ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
@@ -249,7 +274,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Time ',
+                  '${local?.time} ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
@@ -291,14 +316,13 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                         showDialog(
                             context: context,
                             builder: (ctx) => AlertDialog(
-                                  title: Text('Are you sure?'),
-                                  content:
-                                      Text('Do you want to save the changes'),
+                                  title: Text('${local?.areYouSure}'),
+                                  content: Text('${local?.saveChanges}'),
                                   actions: [
                                     OutlineButton(
                                       borderSide:
                                           BorderSide(color: Colors.green),
-                                      child: Text('Yes'),
+                                      child: Text('${local?.yes}'),
                                       onPressed: () {
                                         uploadImage();
                                         Navigator.pop(context);
@@ -308,44 +332,21 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text('No'),
+                                      child: Text('${local?.no}'),
                                       borderSide: BorderSide(color: Colors.red),
                                     )
                                   ],
                                 ));
                       },
-                      child: Text('Save'),
+                      child: Text('${local?.save}'),
                       color: Theme.of(context).primaryColor,
                     ),
                   ),
                   RaisedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      // showDialog(
-                      //     context: context,
-                      //     builder: (ctx) => AlertDialog(
-                      //           title: Text('Are you Sure?'),
-                      //           content: Text('Your changes will be lost.'),
-                      //           actions: [
-                      //             OutlineButton(
-                      //               onPressed: () async {
-                      //                 Navigator.of(context).pop();
-                      //                 await Navigator.of(context).pop;
-                      //               },
-                      //               child: Text('Yes'),
-                      //               borderSide: BorderSide(color: Colors.green),
-                      //             ),
-                      //             OutlineButton(
-                      //               onPressed: () {
-                      //                 Navigator.of(context).pop();
-                      //               },
-                      //               child: Text('No'),
-                      //               borderSide: BorderSide(color: Colors.red),
-                      //             )
-                      //           ],
-                      //         ));
                     },
-                    child: Text('Cancel'),
+                    child: Text('${local?.cancel}'),
                     color: Colors.red,
                   ),
                 ],
@@ -358,6 +359,8 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   }
 
   uploadImage() async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     var aUserId = idController.text;
     var aType = type;
     DateTime aDate = _selectDate?.copyWith(
@@ -372,7 +375,24 @@ class _AttedancesEditState extends State<AttedancesEdit> {
       "Content": "charset-UTF-8",
     };
     request.files.add(http.MultipartFile.fromString('user_id', aUserId));
-    request.files.add(http.MultipartFile.fromString('type', aType));
+    String checkType() {
+      if (aType == local?.checkIn) {
+        return 'checkin';
+      }
+      if (aType == local?.checkOut) {
+        return 'checkout';
+      }
+      if (aType == local?.absent) {
+        return 'absent';
+      }
+      if (aType == local?.permission) {
+        return 'permission';
+      } else {
+        return '';
+      }
+    }
+
+    request.files.add(http.MultipartFile.fromString('type', checkType()));
     request.files.add(http.MultipartFile.fromString('date', aDate.toString()));
 
     request.headers.addAll(headers);

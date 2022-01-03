@@ -4,6 +4,7 @@ import 'package:ems/screens/attendances_api/tap_screen_alltime.dart';
 import 'package:ems/screens/attendances_api/tap_screen_month.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -555,15 +556,12 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  BaselineRow(
                     children: [
-                      Container(
-                        padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
-                        child: Text(
-                          '${local?.name}: ',
-                          style: TextStyle(
-                            fontSize: isEnglish ? 15 : 15,
-                          ),
+                      Text(
+                        '${local?.name}: ',
+                        style: TextStyle(
+                          fontSize: isEnglish ? 15 : 15,
                         ),
                       ),
                       Text(
@@ -573,15 +571,15 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                       ),
                     ],
                   ),
-                  Row(
+                  SizedBox(
+                    height: isEnglish ? 8 : 0,
+                  ),
+                  BaselineRow(
                     children: [
-                      Container(
-                        padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
-                        child: Text(
-                          '${local?.id}: ',
-                          style: TextStyle(
-                            fontSize: isEnglish ? 15 : 15,
-                          ),
+                      Text(
+                        '${local?.id}: ',
+                        style: TextStyle(
+                          fontSize: isEnglish ? 15 : 15,
                         ),
                       ),
                       Text(

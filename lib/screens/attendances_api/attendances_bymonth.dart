@@ -53,7 +53,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
 
   DateTime? _selectDate;
   var _selectMonth;
-  final yearController = TextEditingController();
+  TextEditingController yearController = TextEditingController();
   var _controller = TextEditingController();
   var pickedYear;
   String dropDownValue = '';

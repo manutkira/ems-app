@@ -73,8 +73,8 @@ class AttendanceInfoNameId extends StatelessWidget {
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
                               ),
-                              const SizedBox(
-                                width: 45,
+                              SizedBox(
+                                width: isEnglish ? 47 : 20,
                               ),
                               Text(
                                 id,
@@ -95,8 +95,8 @@ class AttendanceInfoNameId extends StatelessWidget {
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
                               ),
-                              const SizedBox(
-                                width: 20,
+                              SizedBox(
+                                width: isEnglish ? 20 : 32,
                               ),
                               Text(
                                 name,

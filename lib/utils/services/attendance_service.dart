@@ -332,6 +332,70 @@ class AttendanceService extends BaseService {
     }
   }
 
+  Future<int> countAbsentAll(int id) async {
+    try {
+      Response response =
+          await get(Uri.parse('$baseUrl/attendance_count?absent=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countLateAll(int id) async {
+    try {
+      Response response =
+          await get(Uri.parse('$baseUrl/attendance_count?late=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countPresentAll(int id) async {
+    try {
+      Response response =
+          await get(Uri.parse('$baseUrl/attendance_count?present=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countPermissionAll(int id) async {
+    try {
+      Response response =
+          await get(Uri.parse('$baseUrl/attendance_count?permission=$id'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
   Future<List<dynamic>> findAll() async {
     try {
       Response response = await get(Uri.parse('$baseUrl/showAll'));

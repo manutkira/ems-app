@@ -7,6 +7,7 @@ import 'package:ems/screens/employee/employee_edit_screen.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
@@ -301,30 +302,33 @@ class _EmployeeListState extends State<EmployeeList> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      BaselineRow(
                         children: [
-                          Container(
-                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
-                            child: Text(
-                              '${local?.name}: ',
-                              style: TextStyle(
-                                fontSize: isEnglish ? 15 : 15,
-                              ),
+                          Text(
+                            '${local?.name}: ',
+                            style: TextStyle(
+                              fontSize: isEnglish ? 15 : 15,
                             ),
+                          ),
+                          SizedBox(
+                            width: isEnglish ? 2 : 4,
                           ),
                           Text(
                             userDisplay[index].name.toString(),
                           ),
                         ],
                       ),
-                      Row(
+                      SizedBox(
+                        height: isEnglish ? 10 : 0,
+                      ),
+                      BaselineRow(
                         children: [
-                          Container(
-                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
-                            child: Text('${local?.id}: ',
-                                style: TextStyle(
-                                  fontSize: isEnglish ? 15 : 15,
-                                )),
+                          Text('${local?.id}: ',
+                              style: TextStyle(
+                                fontSize: isEnglish ? 15 : 15,
+                              )),
+                          SizedBox(
+                            width: 1,
                           ),
                           Text(userDisplay[index].id.toString()),
                         ],

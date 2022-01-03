@@ -1,4 +1,5 @@
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/attendance/attendacne_all_time_list.dart';
 import 'package:ems/widgets/attendance_info/attendance_info_attendacnace_list.dart';
 import 'package:ems/widgets/attendance_info/attendance_info_name_id.dart';
 import 'package:ems/widgets/attendance_info/attendance_info_no_attendance.dart';
@@ -30,6 +31,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<Attendance> attendanceAllDisplay = [];
   List<AttendanceWithDate> _attendanceDisplay = [];
   List<AttendanceWithDate> _attendanceNoDateDisplay = [];
+  List<AttendanceWithDate> _attendanceAll = [];
 
   String dropDownValue = '';
   bool afternoon = false;
@@ -48,8 +50,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       permissionMorning,
       permissionAfternoon,
       presentMorning,
-      presentAfternoon;
+      presentAfternoon,
+      presentAll,
+      lateAll,
+      permissionAll,
+      absentAll;
   bool multipleDay = false;
+  bool alltime = false;
   bool _isLoading = true;
   bool _isLoadingNoDate = true;
   bool order = false;
@@ -64,12 +71,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   DateTime endDate = DateTime.now();
   List attendanceList = [];
   List attendanceListNoon = [];
+  List attendanceListAll = [];
 
-  String sortByValue = 'All Time';
-  var dropdownItems = [
-    'Multiple Days',
-    'All Time',
-  ];
+  String sortByValue = '';
+  List<String> dropdownItems = [];
   fetchNoDate() async {
     try {
       List<AttendanceWithDate> attendanceNoDateDisplay =
@@ -79,6 +84,20 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
         _isLoadingNoDate = false;
       });
     } catch (e) {}
+  }
+
+  fetchAllAttendance() async {
+    try {
+      List<AttendanceWithDate> attendanceDisplay =
+          await _attendanceService.findManyByUserId(userId: widget.id);
+      setState(() {
+        _attendanceAll = attendanceDisplay;
+      });
+      List flat = _attendanceAll.expand((element) => element.list).toList();
+      attendanceListAll = flat.toList();
+    } catch (e) {
+      print(e);
+    }
   }
 
   fetchAttendanceById() async {
@@ -352,6 +371,43 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
+  getPresentAll() async {
+    var pc = await _attendanceService.countPresentAll(widget.id);
+    if (mounted) {
+      setState(() {
+        presentAll = pc;
+        print(presentAll);
+      });
+    }
+  }
+
+  getAbsentAll() async {
+    var pc = await _attendanceService.countAbsentAll(widget.id);
+    if (mounted) {
+      setState(() {
+        absentAll = pc;
+      });
+    }
+  }
+
+  getLateAll() async {
+    var pc = await _attendanceService.countLateAll(widget.id);
+    if (mounted) {
+      setState(() {
+        lateAll = pc;
+      });
+    }
+  }
+
+  getPermissionAll() async {
+    var pc = await _attendanceService.countPermissionAll(widget.id);
+    if (mounted) {
+      setState(() {
+        permissionAll = pc;
+      });
+    }
+  }
+
   void toggleFilter() {
     setState(() {
       isFilterExpanded = !isFilterExpanded;
@@ -362,6 +418,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   void initState() {
     super.initState();
     try {
+      getAbsentAll();
+      getPermissionAll();
+      getPresentAll();
+      getLateAll();
       getPresent();
       getPresentNoon();
       getLate();
@@ -381,6 +441,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       fetchPermissionNoon();
       fetchPresent();
       fetchPresentNoon();
+      fetchAllAttendance();
     } catch (err) {}
   }
 
@@ -391,6 +452,15 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     setState(() {
       if (dropDownValue.isEmpty) {
         dropDownValue = local!.morning;
+      }
+      if (dropdownItems.isEmpty) {
+        dropdownItems = [
+          '${local?.optionMultiDay}',
+          '${local?.optionAllTime}',
+        ];
+      }
+      if (sortByValue.isEmpty) {
+        sortByValue = local!.optionAllTime;
       }
     });
     return Scaffold(
@@ -444,51 +514,57 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Container(
-                                margin: const EdgeInsets.only(top: 0),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: kDarkestBlue,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: DropdownButton(
-                                  underline: Container(),
-                                  style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.bold),
-                                  isDense: true,
-                                  borderRadius:
-                                      const BorderRadius.all(kBorderRadius),
-                                  dropdownColor: kDarkestBlue,
-                                  icon: const Icon(Icons.expand_more),
-                                  value: dropDownValue,
-                                  onChanged: (String? newValue) {
-                                    if (newValue == '${local?.afternoon}') {
-                                      setState(() {
-                                        afternoon = true;
-                                        dropDownValue = newValue!;
-                                      });
-                                    }
-                                    if (newValue == '${local?.morning}') {
-                                      setState(() {
-                                        afternoon = false;
-                                        dropDownValue = newValue!;
-                                      });
-                                    }
-                                  },
-                                  items: <String>[
-                                    '${local?.morning}',
-                                    '${local?.afternoon}',
-                                  ].map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                ),
+                              !alltime
+                                  ? Container(
+                                      margin: const EdgeInsets.only(top: 0),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: kDarkestBlue,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: DropdownButton(
+                                        underline: Container(),
+                                        style: kParagraph.copyWith(
+                                            fontWeight: FontWeight.bold),
+                                        isDense: true,
+                                        borderRadius: const BorderRadius.all(
+                                            kBorderRadius),
+                                        dropdownColor: kDarkestBlue,
+                                        icon: const Icon(Icons.expand_more),
+                                        value: dropDownValue,
+                                        onChanged: (String? newValue) {
+                                          if (newValue ==
+                                              '${local?.afternoon}') {
+                                            setState(() {
+                                              afternoon = true;
+                                              dropDownValue = newValue!;
+                                            });
+                                          }
+                                          if (newValue == '${local?.morning}') {
+                                            setState(() {
+                                              afternoon = false;
+                                              dropDownValue = newValue!;
+                                            });
+                                          }
+                                        },
+                                        items: <String>[
+                                          '${local?.morning}',
+                                          '${local?.afternoon}',
+                                        ].map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    )
+                                  : Container(),
+                              SizedBox(
+                                height: 10,
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -501,7 +577,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          'Filter',
+                                          '${local?.filter}',
                                           style: kParagraph.copyWith(
                                             fontSize: 20,
                                           ),
@@ -573,7 +649,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
                                         /// FROM FILTER
                                         Visibility(
-                                          visible: sortByValue != 'All Time',
+                                          visible: sortByValue !=
+                                              '${local?.optionAllTime}',
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
@@ -581,7 +658,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                               Text(
                                                 sortByValue == 'Day'
                                                     ? "Date"
-                                                    : 'From',
+                                                    : '${local?.from}',
                                                 style: kParagraph,
                                               ),
                                               TextButton(
@@ -635,13 +712,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
                                         /// TO FILTER
                                         Visibility(
-                                          visible:
-                                              sortByValue == 'Multiple Days',
+                                          visible: sortByValue ==
+                                              '${local?.optionMultiDay}',
                                           child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              const Text('To',
+                                              Text('${local?.to}',
                                                   style: kParagraph),
                                               TextButton(
                                                 style: TextButton.styleFrom(
@@ -715,8 +792,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                               ),
                                               onPressed: () {
                                                 if (sortByValue ==
-                                                    'Multiple Days') {
+                                                    '${local?.optionMultiDay}') {
                                                   setState(() {
+                                                    alltime = false;
                                                     multipleDay = true;
                                                     now = false;
                                                   });
@@ -731,10 +809,18 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                   fetchAttendanceById();
                                                   fetchAttendanceByIdNoon();
                                                 }
-                                                if (sortByValue == 'All Time') {
+                                                if (sortByValue ==
+                                                    '${local?.optionAllTime}') {
                                                   setState(() {
                                                     multipleDay = false;
+                                                    now = false;
+                                                    alltime = true;
                                                   });
+                                                  fetchAllAttendance();
+                                                  getAbsentAll();
+                                                  getPermissionAll();
+                                                  getPresentAll();
+                                                  getLateAll();
                                                 }
                                               },
                                               child: Row(
@@ -793,6 +879,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 10),
                                     child: AttendanceInfoPresent(
+                                        presentAll: presentAll.toString(),
+                                        alltime: alltime,
                                         text: '${local?.present}: ',
                                         afternoon: afternoon,
                                         multipleDay: multipleDay,
@@ -812,6 +900,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             : countPresent.toString()),
                                   ),
                                   AttendanceInfoPresent(
+                                      presentAll: permissionAll.toString(),
+                                      alltime: alltime,
                                       text: '${local?.permission}: ',
                                       afternoon: afternoon,
                                       multipleDay: multipleDay,
@@ -844,6 +934,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                       padding:
                                           const EdgeInsets.only(bottom: 10),
                                       child: AttendanceInfoPresent(
+                                          presentAll: lateAll.toString(),
+                                          alltime: alltime,
                                           text: '${local?.late}: ',
                                           afternoon: afternoon,
                                           multipleDay: multipleDay,
@@ -862,6 +954,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                               ? '♽'
                                               : countLate.toString())),
                                   AttendanceInfoPresent(
+                                      presentAll: absentAll.toString(),
+                                      alltime: alltime,
                                       text: '${local?.absent}: ',
                                       afternoon: afternoon,
                                       multipleDay: multipleDay,
@@ -888,8 +982,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                         Expanded(
                           child: Column(
                             children: [
-                              const SizedBox(
-                                height: 10,
+                              SizedBox(
+                                height: isEnglish ? 10 : 0,
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(12.0),
@@ -910,12 +1004,17 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   ],
                                 ),
                               ),
-                              _attendanceDisplay.isEmpty
+                              _attendanceDisplay.isEmpty && now
                                   ? AttendanceInfoNoData()
                                   : Expanded(
                                       child: Padding(
                                         padding: const EdgeInsets.only(top: 15),
                                         child: AttendanceInfoAttendanceList(
+                                            multiple: multipleDay,
+                                            fetchAllAttendance:
+                                                fetchAllAttendance,
+                                            alltime: alltime,
+                                            attendanceAll: attendanceListAll,
                                             now: now,
                                             afternoon: afternoon,
                                             isTodayNoon: isTodayNoon,

@@ -1,5 +1,6 @@
-import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
+
+import 'package:ems/utils/utils.dart';
 
 import '../../constants.dart';
 
@@ -11,6 +12,11 @@ class AttendanceInfoPresent extends StatelessWidget {
   dynamic countPresentNoon;
   dynamic presentMorning;
   dynamic countPresent;
+  dynamic presentAll;
+  // dynamic lateAll;
+  // dynamic permissionAll;
+  // dynamic absentAll;
+  bool alltime;
   AttendanceInfoPresent({
     Key? key,
     required this.text,
@@ -20,6 +26,11 @@ class AttendanceInfoPresent extends StatelessWidget {
     required this.countPresentNoon,
     required this.presentMorning,
     required this.countPresent,
+    required this.presentAll,
+    // required this.lateAll,
+    // required this.permissionAll,
+    // required this.absentAll,
+    required this.alltime,
   }) : super(key: key);
 
   @override
@@ -48,7 +59,7 @@ class AttendanceInfoPresent extends StatelessWidget {
         Visibility(
           visible: counted != null,
           child: Text(
-            counted,
+            alltime ? presentAll : counted,
             style: kHeadingFour.copyWith(color: kWhite),
           ),
         )

@@ -13,7 +13,7 @@ class AttendanceInfoNoData extends StatelessWidget {
     bool isEnglish = isInEnglish(context);
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.only(top: 50, left: 0),
+        padding: EdgeInsets.only(top: isEnglish ? 50 : 0, left: 0),
         child: Column(
           children: [
             Text(
@@ -24,12 +24,12 @@ class AttendanceInfoNoData extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: isEnglish ? 30 : 10,
+              height: isEnglish ? 30 : 0,
             ),
             Text(
               '🤷🏼',
               style: TextStyle(
-                fontSize: 80,
+                fontSize: 60,
               ),
             ),
           ],
