@@ -45,6 +45,7 @@ class _EditOvertimeState extends State<EditOvertime> {
       setState(() {
         isLoading = true;
       });
+
       try {
         /// creating Attendance objects
         Attendance checkInAttendance = Attendance(
