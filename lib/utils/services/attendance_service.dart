@@ -523,6 +523,7 @@ class AttendanceService extends BaseService {
 
     int? attId = attendance.id;
     var jsons = attendance.toJson();
+
     try {
       Response response = await put(
         Uri.parse(
@@ -531,6 +532,7 @@ class AttendanceService extends BaseService {
         headers: headers(),
         body: json.encode(jsons),
       );
+
       if (response.statusCode == 200) {
         var jsondata = json.decode(response.body);
         var attendance = Attendance.fromJson(jsondata);
