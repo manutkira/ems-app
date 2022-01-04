@@ -57,6 +57,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       absentAll;
   bool multipleDay = false;
   bool alltime = false;
+  bool isOneDay = false;
   bool _isLoading = true;
   bool _isLoadingNoDate = true;
   bool order = false;
@@ -66,6 +67,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   final color1 = const Color(0xff3982A0);
   List isToday = [];
   List isTodayNoon = [];
+  List oneDayMorning = [];
+  List oneDayNoon = [];
   bool now = true;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
@@ -125,8 +128,19 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                 element.code != 'cout3' &&
                 element.code != 'cin3')
             .toList();
+        var oneDay = attendanceDisplay.where((element) =>
+            element.date.day == startDate.day &&
+            element.date.month == startDate.month &&
+            element.date.year == startDate.year);
+        List oneDayFlat = oneDay.expand((element) => element.list).toList();
+        oneDayMorning = oneDayFlat
+            .where((element) =>
+                element.code != 'cin2' &&
+                element.code != 'cout2' &&
+                element.code != 'cin3' &&
+                element.code != 'cout3')
+            .toList();
       });
-      print('istoday1: ${isToday.isEmpty}');
       List flat = _attendanceDisplay.expand((element) => element.list).toList();
       attendanceList = flat
           .where((element) =>
@@ -162,8 +176,19 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                 element.code != 'cout3' &&
                 element.code != 'cin3')
             .toList();
+        var oneDay = attendanceDisplay.where((element) =>
+            element.date.day == startDate.day &&
+            element.date.month == startDate.month &&
+            element.date.year == startDate.year);
+        List oneDayFlat = oneDay.expand((element) => element.list).toList();
+        oneDayNoon = oneDayFlat
+            .where((element) =>
+                element.code != 'cin1' &&
+                element.code != 'cout1' &&
+                element.code != 'cin3' &&
+                element.code != 'cout3')
+            .toList();
       });
-      print('istoday2: ${isTodayNoon.isEmpty}');
       List flat = _attendanceDisplay.expand((element) => element.list).toList();
       attendanceListNoon = flat
           .where((element) =>
@@ -284,6 +309,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     if (mounted) {
       setState(() {
         presentMorning = pc;
+        print(presentMorning);
       });
     }
   }
@@ -378,7 +404,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     if (mounted) {
       setState(() {
         presentAll = pc;
-        print(presentAll);
       });
     }
   }
@@ -457,6 +482,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       }
       if (dropdownItems.isEmpty) {
         dropdownItems = [
+          '${local?.optionDay}',
           '${local?.optionMultiDay}',
           '${local?.optionAllTime}',
         ];
@@ -658,7 +684,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                sortByValue == 'Day'
+                                                sortByValue ==
+                                                        '${local?.optionDay}'
                                                     ? "Date"
                                                     : '${local?.from}',
                                                 style: kParagraph,
@@ -800,6 +827,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                     multipleDay = true;
                                                     now = false;
                                                     isFilterExpanded = false;
+                                                    isOneDay = false;
                                                   });
                                                   fetchLate();
                                                   fetchLateNoon();
@@ -819,12 +847,33 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                     now = false;
                                                     alltime = true;
                                                     isFilterExpanded = false;
+                                                    isOneDay = false;
                                                   });
                                                   fetchAllAttendance();
                                                   getAbsentAll();
                                                   getPermissionAll();
                                                   getPresentAll();
                                                   getLateAll();
+                                                }
+                                                if (sortByValue ==
+                                                    '${local?.optionDay}') {
+                                                  setState(() {
+                                                    multipleDay = false;
+                                                    now = false;
+                                                    alltime = false;
+                                                    isFilterExpanded = false;
+                                                    isOneDay = true;
+                                                  });
+                                                  fetchLate();
+                                                  fetchLateNoon();
+                                                  fetchAbsent();
+                                                  fetchAbsentNoon();
+                                                  fetchPermission();
+                                                  fetchPermissionNoon();
+                                                  fetchPresent();
+                                                  fetchPresentNoon();
+                                                  fetchAttendanceById();
+                                                  fetchAttendanceByIdNoon();
                                                 }
                                               },
                                               child: Row(
@@ -883,6 +932,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 10),
                                     child: AttendanceInfoPresent(
+                                        isOneday: isOneDay,
+                                        onedayMorning:
+                                            presentMorning.toString(),
+                                        onedayAfternoon:
+                                            presentAfternoon.toString(),
                                         presentAll: presentAll.toString(),
                                         alltime: alltime,
                                         text: '${local?.present}: ',
@@ -904,6 +958,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             : countPresent.toString()),
                                   ),
                                   AttendanceInfoPresent(
+                                      isOneday: isOneDay,
+                                      onedayMorning:
+                                          permissionMorning.toString(),
+                                      onedayAfternoon:
+                                          permissionAfternoon.toString(),
                                       presentAll: permissionAll.toString(),
                                       alltime: alltime,
                                       text: '${local?.permission}: ',
@@ -938,6 +997,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                       padding:
                                           const EdgeInsets.only(bottom: 10),
                                       child: AttendanceInfoPresent(
+                                          isOneday: isOneDay,
+                                          onedayMorning: lateMorning.toString(),
+                                          onedayAfternoon:
+                                              lateAfternoon.toString(),
                                           presentAll: lateAll.toString(),
                                           alltime: alltime,
                                           text: '${local?.late}: ',
@@ -958,6 +1021,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                               ? '♽'
                                               : countLate.toString())),
                                   AttendanceInfoPresent(
+                                      isOneday: isOneDay,
+                                      onedayMorning: absentMorning.toString(),
+                                      onedayAfternoon:
+                                          absentAfternoon.toString(),
                                       presentAll: absentAll.toString(),
                                       alltime: alltime,
                                       text: '${local?.absent}: ',
@@ -1014,6 +1081,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                       child: Padding(
                                         padding: const EdgeInsets.only(top: 15),
                                         child: AttendanceInfoAttendanceList(
+                                            oneDayMorning: oneDayMorning,
+                                            oneDayNoon: oneDayNoon,
+                                            isOneDay: isOneDay,
                                             multiple: multipleDay,
                                             fetchAllAttendance:
                                                 fetchAllAttendance,

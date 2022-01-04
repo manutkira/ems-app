@@ -56,10 +56,8 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(image);
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    print(widget.userName);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(

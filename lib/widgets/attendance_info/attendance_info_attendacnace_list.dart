@@ -1,10 +1,10 @@
-import 'package:ems/screens/attendances_api/view_attendance.dart';
-import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
+import 'package:ems/screens/attendances_api/view_attendance.dart';
+import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/utils/utils.dart';
 
 import '../../constants.dart';
@@ -14,8 +14,11 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
   final bool alltime;
   final bool afternoon;
   final bool multiple;
+  final bool isOneDay;
   final List isTodayNoon;
   final List isToday;
+  final List oneDayMorning;
+  final List oneDayNoon;
   final List attendanceList;
   List attendanceAll;
   List attendanceListNoon;
@@ -32,8 +35,11 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     required this.alltime,
     required this.afternoon,
     required this.multiple,
+    required this.isOneDay,
     required this.isTodayNoon,
     required this.isToday,
+    required this.oneDayMorning,
+    required this.oneDayNoon,
     required this.attendanceList,
     required this.attendanceAll,
     required this.attendanceListNoon,
@@ -51,7 +57,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     bool isEnglish = isInEnglish(context);
     return ListView.builder(
       itemBuilder: (ctx, index) {
-        return alltime && !multiple && !now
+        return !alltime && !multiple && !now && isOneDay
             ? Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 25,
@@ -61,140 +67,231 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      DateFormat('dd/MM/yyyy HH:mm')
-                          .format(attendanceAll[index].date),
-                    ),
+                    afternoon
+                        ? Text(DateFormat('dd/MM/yyyy HH:mm')
+                            .format(oneDayNoon[index].date as DateTime))
+                        : Text(
+                            DateFormat('dd/MM/yyyy HH:mm')
+                                .format(oneDayMorning[index].date as DateTime),
+                          ),
                     Row(
                       children: [
-                        Text(
-                          attendanceAll[index].type == 'checkin'
-                              ? '${local?.checkIn}'
-                              : attendanceAll[index].type == 'checkout'
-                                  ? '${local?.checkOut}'
-                                  : attendanceAll[index].type == 'absent'
-                                      ? '${local?.absent}'
-                                      : attendanceAll[index].type ==
-                                              'permission'
-                                          ? '${local?.permission}'
-                                          : attendanceAll[index]
-                                              .type
-                                              .toString(),
-                        ),
+                        afternoon
+                            ? Text(
+                                oneDayNoon[index].type == 'checkin'
+                                    ? '${local?.checkIn}'
+                                    : oneDayNoon[index].type == 'checkout'
+                                        ? '${local?.checkOut}'
+                                        : oneDayNoon[index].type == 'absent'
+                                            ? '${local?.absent}'
+                                            : oneDayNoon[index].type ==
+                                                    'permission'
+                                                ? '${local?.permission}'
+                                                : oneDayNoon[index]
+                                                    .type
+                                                    .toString(),
+                                style: kParagraph)
+                            : Text(
+                                oneDayMorning[index].type == 'checkin'
+                                    ? '${local?.checkIn}'
+                                    : oneDayMorning[index].type == 'checkout'
+                                        ? '${local?.checkOut}'
+                                        : oneDayMorning[index].type == 'absent'
+                                            ? '${local?.absent}'
+                                            : oneDayMorning[index].type ==
+                                                    'permission'
+                                                ? '${local?.permission}'
+                                                : oneDayMorning[index]
+                                                    .type
+                                                    .toString(),
+                                style: kParagraph),
                         PopupMenuButton(
                           color: Colors.black,
                           shape: const RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10))),
                           onSelected: (int selectedValue) async {
-                            if (selectedValue == 0) {
-                              final int userId = attendanceAll[index].userId;
-                              final int id = attendanceAll[index].id;
-                              final String type = attendanceAll[index].type;
-                              final DateTime date = attendanceAll[index].date;
-                              final String? note = attendanceAll[index].note;
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (ctx) => AttedancesEdit(
-                                    id: id,
-                                    userId: userId,
-                                    type: type,
-                                    date: date,
-                                    note: note,
-                                  ),
-                                ),
-                              );
-                              attendanceAll = [];
-                              fetchAllAttendance();
-                            }
-                            if (selectedValue == 1) {
-                              print(attendanceList[index].id);
-                              showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: Text('${local?.areYouSure}'),
-                                  content: Text('${local?.cannotUndone}'),
-                                  actions: [
-                                    OutlineButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        deleteData(
-                                            attendanceAll[index].id as int);
-                                      },
-                                      child: Text('${local?.yes}'),
-                                      borderSide:
-                                          BorderSide(color: Colors.green),
+                            if (afternoon == false) {
+                              if (selectedValue == 0) {
+                                final int userId = oneDayMorning[index].userId;
+                                final int id = oneDayMorning[index].id;
+                                final String type = oneDayMorning[index].type;
+                                final DateTime date = oneDayMorning[index].date;
+                                final String? note = oneDayMorning[index].note;
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => AttedancesEdit(
+                                      id: id,
+                                      userId: userId,
+                                      type: type,
+                                      date: date,
+                                      note: note,
                                     ),
-                                    OutlineButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      borderSide: BorderSide(color: Colors.red),
-                                      child: Text('${local?.no}'),
-                                    )
-                                  ],
-                                ),
-                              );
-                            }
-                            if (selectedValue == 2) {
-                              final int userId = attendanceAll[index].userId;
-                              final int id = attendanceAll[index].id;
-                              final String type = attendanceAll[index].type;
-                              final DateTime date = attendanceAll[index].date;
-                              final String? note = attendanceAll[index].note;
-                              final String userName =
-                                  attendanceAll[index].users!.name;
-                              final String image =
-                                  attendanceAll[index].users.image;
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (ctx) => ViewAttendanceScreen(
-                                    id: id,
-                                    userId: userId,
-                                    type: type,
-                                    date: date,
-                                    note: note,
-                                    userName: userName,
-                                    image: image,
                                   ),
-                                ),
-                              );
+                                );
+                                attendanceAllDisplay = [];
+                                fetchAttendanceById();
+                              }
+                              if (selectedValue == 1) {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: Text('${local?.areYouSure}'),
+                                    content: Text('${local?.cannotUndone}'),
+                                    actions: [
+                                      OutlineButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          deleteData(
+                                              oneDayMorning[index].id as int);
+                                        },
+                                        child: Text('Yes'),
+                                        borderSide:
+                                            BorderSide(color: Colors.green),
+                                      ),
+                                      OutlineButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        borderSide:
+                                            BorderSide(color: Colors.red),
+                                        child: Text('No'),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }
+                              if (selectedValue == 2) {
+                                final int userId = oneDayMorning[index].userId;
+                                final int id = oneDayMorning[index].id;
+                                final String type = oneDayMorning[index].type;
+                                final DateTime date = oneDayMorning[index].date;
+                                final String? note = oneDayMorning[index].note;
+                                final String userName =
+                                    oneDayMorning[index].users!.name;
+                                final String image =
+                                    oneDayMorning[index].users.image;
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => ViewAttendanceScreen(
+                                      id: id,
+                                      userId: userId,
+                                      type: type,
+                                      date: date,
+                                      note: note,
+                                      userName: userName,
+                                      image: image,
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+                            if (afternoon == true) {
+                              if (selectedValue == 0) {
+                                final int userId = oneDayNoon[index].userId;
+                                final int id = oneDayNoon[index].id;
+                                final String type = oneDayNoon[index].type;
+                                final DateTime date = oneDayNoon[index].date;
+                                final String? note = oneDayNoon[index].note;
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => AttedancesEdit(
+                                      id: id,
+                                      userId: userId,
+                                      type: type,
+                                      date: date,
+                                      note: note,
+                                    ),
+                                  ),
+                                );
+                                attendanceAllDisplay = [];
+                                fetchAttendanceByIdNoon();
+                              }
+                              if (selectedValue == 1) {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: Text('${local?.areYouSure}'),
+                                    content: Text('${local?.cannotUndone}'),
+                                    actions: [
+                                      OutlineButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          deleteData(
+                                              oneDayNoon[index].id as int);
+                                        },
+                                        child: Text('Yes'),
+                                        borderSide:
+                                            BorderSide(color: Colors.green),
+                                      ),
+                                      OutlineButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        borderSide:
+                                            BorderSide(color: Colors.red),
+                                        child: Text('No'),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }
+                              if (selectedValue == 2) {
+                                final int userId = oneDayMorning[index].userId;
+                                final int id = oneDayMorning[index].id;
+                                final String type = oneDayMorning[index].type;
+                                final DateTime date = oneDayMorning[index].date;
+                                final String note = oneDayMorning[index].note;
+                                final String userName =
+                                    oneDayMorning[index].users!.name;
+                                final String image =
+                                    oneDayMorning[index].users.image;
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => ViewAttendanceScreen(
+                                      id: id,
+                                      userId: userId,
+                                      type: type,
+                                      date: date,
+                                      note: note,
+                                      userName: userName,
+                                      image: image,
+                                    ),
+                                  ),
+                                );
+                              }
                             }
                           },
                           itemBuilder: (_) => [
                             PopupMenuItem(
-                              child: Text(
-                                '${local?.optionView}',
-                                style: kParagraph.copyWith(
-                                    fontWeight: FontWeight.bold),
-                              ),
+                              child: Text('${local?.optionView}',
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.bold)),
                               value: 2,
                             ),
-                            PopupMenuItem(
-                              child: Text(
-                                '${local?.edit}',
-                                style: kParagraph.copyWith(
-                                    fontWeight: FontWeight.bold),
+                            if (attendanceList[0].users!.role == 'admin')
+                              PopupMenuItem(
+                                child: Text('${local?.edit}',
+                                    style: kParagraph.copyWith(
+                                        fontWeight: FontWeight.bold)),
+                                value: 0,
                               ),
-                              value: 0,
-                            ),
-                            PopupMenuItem(
-                              child: Text(
-                                '${local?.delete}',
-                                style: kParagraph.copyWith(
-                                    fontWeight: FontWeight.bold),
+                            if (attendanceList[0].users!.role == 'admin')
+                              PopupMenuItem(
+                                child: Text('${local?.delete}',
+                                    style: kParagraph.copyWith(
+                                        fontWeight: FontWeight.bold)),
+                                value: 1,
                               ),
-                              value: 1,
-                            ),
                           ],
                           icon: const Icon(Icons.more_vert),
-                        ),
+                        )
                       ],
                     ),
                   ],
                 ),
               )
-            : now
+            : alltime && !multiple && !now && !isOneDay
                 ? Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 25,
@@ -204,460 +301,111 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        afternoon
-                            ? Text(DateFormat('dd/MM/yyyy HH:mm')
-                                .format(isTodayNoon[index].date as DateTime))
-                            : Text(
-                                DateFormat('dd/MM/yyyy HH:mm')
-                                    .format(isToday[index].date as DateTime),
-                              ),
-                        Row(
-                          children: [
-                            afternoon
-                                ? Text(
-                                    isTodayNoon[index].type == 'checkin'
-                                        ? '${local?.checkIn}'
-                                        : isTodayNoon[index].type == 'checkout'
-                                            ? '${local?.checkOut}'
-                                            : isTodayNoon[index].type ==
-                                                    'absent'
-                                                ? '${local?.absent}'
-                                                : isTodayNoon[index].type ==
-                                                        'permission'
-                                                    ? '${local?.permission}'
-                                                    : isTodayNoon[index]
-                                                        .type
-                                                        .toString(),
-                                    style: kParagraph)
-                                : Text(
-                                    isToday[index].type == 'checkin'
-                                        ? '${local?.checkIn}'
-                                        : isToday[index].type == 'checkout'
-                                            ? '${local?.checkOut}'
-                                            : isToday[index].type == 'absent'
-                                                ? '${local?.absent}'
-                                                : isToday[index].type ==
-                                                        'permission'
-                                                    ? '${local?.permission}'
-                                                    : isToday[index]
-                                                        .type
-                                                        .toString(),
-                                    style: kParagraph),
-                            PopupMenuButton(
-                              color: Colors.black,
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              onSelected: (int selectedValue) async {
-                                if (afternoon == false) {
-                                  if (selectedValue == 0) {
-                                    final int userId = isToday[index].userId;
-                                    final int id = isToday[index].id;
-                                    final String type = isToday[index].type;
-                                    final DateTime date = isToday[index].date;
-                                    final String? note = isToday[index].note;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          userId: userId,
-                                          type: type,
-                                          date: date,
-                                          note: note,
-                                        ),
-                                      ),
-                                    );
-                                    attendanceAllDisplay = [];
-                                    fetchAttendanceById();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(
-                                                  isToday[index].id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int userId = isToday[index].userId;
-                                    final int id = isToday[index].id;
-                                    final String type = isToday[index].type;
-                                    final DateTime date = isToday[index].date;
-                                    final String? note = isToday[index].note;
-                                    final String userName =
-                                        isToday[index].users!.name;
-                                    final String image =
-                                        isToday[index].users.image;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          userId: userId,
-                                          type: type,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                }
-                                if (afternoon == true) {
-                                  if (selectedValue == 0) {
-                                    final int userId =
-                                        isTodayNoon[index].userId;
-                                    final int id = isTodayNoon[index].id;
-                                    final String type = isTodayNoon[index].type;
-                                    final DateTime date =
-                                        isTodayNoon[index].date;
-                                    final String? note =
-                                        attendanceAll[index].note;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          userId: userId,
-                                          type: type,
-                                          date: date,
-                                          note: note,
-                                        ),
-                                      ),
-                                    );
-                                    attendanceAllDisplay = [];
-                                    fetchAttendanceByIdNoon();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(
-                                                  isTodayNoon[index].id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int userId = isToday[index].userId;
-                                    final int id = isToday[index].id;
-                                    final String type = isToday[index].type;
-                                    final DateTime date = isToday[index].date;
-                                    final String note = isToday[index].note;
-                                    final String userName =
-                                        isToday[index].users!.name;
-                                    final String image =
-                                        isToday[index].users.image;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          userId: userId,
-                                          type: type,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                }
-                              },
-                              itemBuilder: (_) => [
-                                PopupMenuItem(
-                                  child: Text('${local?.optionView}',
-                                      style: kParagraph.copyWith(
-                                          fontWeight: FontWeight.bold)),
-                                  value: 2,
-                                ),
-                                PopupMenuItem(
-                                  child: Text('${local?.edit}',
-                                      style: kParagraph.copyWith(
-                                          fontWeight: FontWeight.bold)),
-                                  value: 0,
-                                ),
-                                PopupMenuItem(
-                                  child: Text('${local?.delete}',
-                                      style: kParagraph.copyWith(
-                                          fontWeight: FontWeight.bold)),
-                                  value: 1,
-                                ),
-                              ],
-                              icon: const Icon(Icons.more_vert),
-                            )
-                          ],
+                        Text(
+                          DateFormat('dd/MM/yyyy HH:mm')
+                              .format(attendanceAll[index].date),
                         ),
-                      ],
-                    ),
-                  )
-                : Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 25,
-                      vertical: 8,
-                    ),
-                    color: index % 2 == 0 ? kDarkestBlue : kBlue,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        afternoon
-                            ? Text(
-                                DateFormat('dd/MM/yyyy HH:mm')
-                                    .format(attendanceListNoon[index].date),
-                              )
-                            : Text(
-                                DateFormat('dd/MM/yyyy HH:mm')
-                                    .format(attendanceList[index].date),
-                              ),
                         Row(
                           children: [
-                            afternoon
-                                ? Text(
-                                    attendanceListNoon[index].type == 'checkin'
-                                        ? '${local?.checkIn}'
-                                        : attendanceListNoon[index].type ==
-                                                'checkout'
-                                            ? '${local?.checkOut}'
-                                            : attendanceListNoon[index].type ==
-                                                    'absent'
-                                                ? '${local?.absent}'
-                                                : attendanceListNoon[index]
-                                                            .type ==
-                                                        'permission'
-                                                    ? '${local?.permission}'
-                                                    : attendanceListNoon[index]
-                                                        .type
-                                                        .toString(),
-                                  )
-                                : Text(
-                                    attendanceList[index].type == 'checkin'
-                                        ? '${local?.checkIn}'
-                                        : attendanceList[index].type ==
-                                                'checkout'
-                                            ? '${local?.checkOut}'
-                                            : attendanceList[index].type ==
-                                                    'absent'
-                                                ? '${local?.absent}'
-                                                : attendanceList[index].type ==
-                                                        'permission'
-                                                    ? '${local?.permission}'
-                                                    : attendanceList[index]
-                                                        .type
-                                                        .toString(),
-                                  ),
+                            Text(
+                              attendanceAll[index].type == 'checkin'
+                                  ? '${local?.checkIn}'
+                                  : attendanceAll[index].type == 'checkout'
+                                      ? '${local?.checkOut}'
+                                      : attendanceAll[index].type == 'absent'
+                                          ? '${local?.absent}'
+                                          : attendanceAll[index].type ==
+                                                  'permission'
+                                              ? '${local?.permission}'
+                                              : attendanceAll[index]
+                                                  .type
+                                                  .toString(),
+                            ),
                             PopupMenuButton(
                               color: Colors.black,
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
                               onSelected: (int selectedValue) async {
-                                if (afternoon == false) {
-                                  if (selectedValue == 0) {
-                                    final int userId =
-                                        attendanceList[index].userId;
-                                    final int id = attendanceList[index].id;
-                                    final String type =
-                                        attendanceList[index].type;
-                                    final DateTime date =
-                                        attendanceList[index].date;
-                                    final String? note =
-                                        attendanceList[index].note;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          userId: userId,
-                                          type: type,
-                                          date: date,
-                                          note: note,
-                                        ),
+                                if (selectedValue == 0) {
+                                  final int userId =
+                                      attendanceAll[index].userId;
+                                  final int id = attendanceAll[index].id;
+                                  final String type = attendanceAll[index].type;
+                                  final DateTime date =
+                                      attendanceAll[index].date;
+                                  final String? note =
+                                      attendanceAll[index].note;
+                                  await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (ctx) => AttedancesEdit(
+                                        id: id,
+                                        userId: userId,
+                                        type: type,
+                                        date: date,
+                                        note: note,
                                       ),
-                                    );
-                                    attendanceAllDisplay = [];
-                                    fetchAttendanceById();
-                                  }
-                                  if (selectedValue == 1) {
-                                    print(attendanceList[index].id);
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(attendanceList[index]
-                                                  .id as int);
-                                            },
-                                            child: Text('${local?.yes}'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('${local?.no}'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int userId =
-                                        attendanceList[index].userId;
-                                    final int id = attendanceList[index].id;
-                                    final String type =
-                                        attendanceList[index].type;
-                                    final DateTime date =
-                                        attendanceList[index].date;
-                                    final String note =
-                                        attendanceList[index].note;
-                                    final String userName =
-                                        attendanceList[index].users!.name;
-                                    final String image =
-                                        attendanceList[index].users.image;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          userId: userId,
-                                          type: type,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                        ),
-                                      ),
-                                    );
-                                  }
+                                    ),
+                                  );
+                                  attendanceAll = [];
+                                  fetchAllAttendance();
                                 }
-                                if (afternoon == true) {
-                                  if (selectedValue == 0) {
-                                    final int userId =
-                                        attendanceListNoon[index].userId;
-                                    final int id = attendanceListNoon[index].id;
-                                    final String type =
-                                        attendanceListNoon[index].type;
-                                    final DateTime date =
-                                        attendanceListNoon[index].date;
-                                    final String? note =
-                                        attendanceAll[index].note;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          userId: userId,
-                                          type: type,
-                                          date: date,
-                                          note: note,
+                                if (selectedValue == 1) {
+                                  print(attendanceList[index].id);
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: Text('${local?.areYouSure}'),
+                                      content: Text('${local?.cannotUndone}'),
+                                      actions: [
+                                        OutlineButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            deleteData(
+                                                attendanceAll[index].id as int);
+                                          },
+                                          child: Text('${local?.yes}'),
+                                          borderSide:
+                                              BorderSide(color: Colors.green),
                                         ),
+                                        OutlineButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          borderSide:
+                                              BorderSide(color: Colors.red),
+                                          child: Text('${local?.no}'),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }
+                                if (selectedValue == 2) {
+                                  final int userId =
+                                      attendanceAll[index].userId;
+                                  final int id = attendanceAll[index].id;
+                                  final String type = attendanceAll[index].type;
+                                  final DateTime date =
+                                      attendanceAll[index].date;
+                                  final String? note =
+                                      attendanceAll[index].note;
+                                  final String userName =
+                                      attendanceAll[index].users!.name;
+                                  final String image =
+                                      attendanceAll[index].users.image;
+                                  await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (ctx) => ViewAttendanceScreen(
+                                        id: id,
+                                        userId: userId,
+                                        type: type,
+                                        date: date,
+                                        note: note,
+                                        userName: userName,
+                                        image: image,
                                       ),
-                                    );
-                                    attendanceAllDisplay = [];
-                                    fetchAttendanceByIdNoon();
-                                  }
-                                  if (selectedValue == 1) {
-                                    print(attendanceListNoon[index].id);
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData1(
-                                                  attendanceListNoon[index].id
-                                                      as int);
-                                            },
-                                            child: Text('${local?.yes}'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('${local?.no}'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int userId =
-                                        attendanceListNoon[index].userId;
-                                    final int id = attendanceListNoon[index].id;
-                                    final String type =
-                                        attendanceListNoon[index].type;
-                                    final DateTime date =
-                                        attendanceListNoon[index].date;
-                                    final String? note =
-                                        attendanceListNoon[index].note;
-                                    final String userName =
-                                        attendanceListNoon[index].users!.name;
-                                    final String image =
-                                        attendanceListNoon[index].users.image;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          userId: userId,
-                                          type: type,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                        ),
-                                      ),
-                                    );
-                                  }
+                                    ),
+                                  );
                                 }
                               },
                               itemBuilder: (_) => [
@@ -669,22 +417,24 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                   ),
                                   value: 2,
                                 ),
-                                PopupMenuItem(
-                                  child: Text(
-                                    '${local?.edit}',
-                                    style: kParagraph.copyWith(
-                                        fontWeight: FontWeight.bold),
+                                if (attendanceList[0].users!.role == 'admin')
+                                  PopupMenuItem(
+                                    child: Text(
+                                      '${local?.edit}',
+                                      style: kParagraph.copyWith(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    value: 0,
                                   ),
-                                  value: 0,
-                                ),
-                                PopupMenuItem(
-                                  child: Text(
-                                    '${local?.delete}',
-                                    style: kParagraph.copyWith(
-                                        fontWeight: FontWeight.bold),
+                                if (attendanceList[0].users!.role == 'admin')
+                                  PopupMenuItem(
+                                    child: Text(
+                                      '${local?.delete}',
+                                      style: kParagraph.copyWith(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    value: 1,
                                   ),
-                                  value: 1,
-                                ),
                               ],
                               icon: const Icon(Icons.more_vert),
                             ),
@@ -692,17 +442,558 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                         ),
                       ],
                     ),
-                  );
+                  )
+                : now
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 25,
+                          vertical: 8,
+                        ),
+                        color: index % 2 == 0 ? kDarkestBlue : kBlue,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            afternoon
+                                ? Text(DateFormat('dd/MM/yyyy HH:mm').format(
+                                    isTodayNoon[index].date as DateTime))
+                                : Text(
+                                    DateFormat('dd/MM/yyyy HH:mm').format(
+                                        isToday[index].date as DateTime),
+                                  ),
+                            Row(
+                              children: [
+                                afternoon
+                                    ? Text(
+                                        isTodayNoon[index].type == 'checkin'
+                                            ? '${local?.checkIn}'
+                                            : isTodayNoon[index].type ==
+                                                    'checkout'
+                                                ? '${local?.checkOut}'
+                                                : isTodayNoon[index].type ==
+                                                        'absent'
+                                                    ? '${local?.absent}'
+                                                    : isTodayNoon[index].type ==
+                                                            'permission'
+                                                        ? '${local?.permission}'
+                                                        : isTodayNoon[index]
+                                                            .type
+                                                            .toString(),
+                                        style: kParagraph)
+                                    : Text(
+                                        isToday[index].type == 'checkin'
+                                            ? '${local?.checkIn}'
+                                            : isToday[index].type == 'checkout'
+                                                ? '${local?.checkOut}'
+                                                : isToday[index].type ==
+                                                        'absent'
+                                                    ? '${local?.absent}'
+                                                    : isToday[index].type ==
+                                                            'permission'
+                                                        ? '${local?.permission}'
+                                                        : isToday[index]
+                                                            .type
+                                                            .toString(),
+                                        style: kParagraph),
+                                PopupMenuButton(
+                                  color: Colors.black,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  onSelected: (int selectedValue) async {
+                                    if (afternoon == false) {
+                                      if (selectedValue == 0) {
+                                        final int userId =
+                                            isToday[index].userId;
+                                        final int id = isToday[index].id;
+                                        final String type = isToday[index].type;
+                                        final DateTime date =
+                                            isToday[index].date;
+                                        final String? note =
+                                            isToday[index].note;
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) => AttedancesEdit(
+                                              id: id,
+                                              userId: userId,
+                                              type: type,
+                                              date: date,
+                                              note: note,
+                                            ),
+                                          ),
+                                        );
+                                        attendanceAllDisplay = [];
+                                        fetchAttendanceById();
+                                      }
+                                      if (selectedValue == 1) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            title: Text('${local?.areYouSure}'),
+                                            content:
+                                                Text('${local?.cannotUndone}'),
+                                            actions: [
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  deleteData(
+                                                      isToday[index].id as int);
+                                                },
+                                                child: Text('Yes'),
+                                                borderSide: BorderSide(
+                                                    color: Colors.green),
+                                              ),
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                borderSide: BorderSide(
+                                                    color: Colors.red),
+                                                child: Text('No'),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                      if (selectedValue == 2) {
+                                        final int userId =
+                                            isToday[index].userId;
+                                        final int id = isToday[index].id;
+                                        final String type = isToday[index].type;
+                                        final DateTime date =
+                                            isToday[index].date;
+                                        final String? note =
+                                            isToday[index].note;
+                                        final String userName =
+                                            isToday[index].users!.name;
+                                        final String image =
+                                            isToday[index].users.image;
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                ViewAttendanceScreen(
+                                              id: id,
+                                              userId: userId,
+                                              type: type,
+                                              date: date,
+                                              note: note,
+                                              userName: userName,
+                                              image: image,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                    if (afternoon == true) {
+                                      if (selectedValue == 0) {
+                                        final int userId =
+                                            isTodayNoon[index].userId;
+                                        final int id = isTodayNoon[index].id;
+                                        final String type =
+                                            isTodayNoon[index].type;
+                                        final DateTime date =
+                                            isTodayNoon[index].date;
+                                        final String? note =
+                                            attendanceAll[index].note;
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) => AttedancesEdit(
+                                              id: id,
+                                              userId: userId,
+                                              type: type,
+                                              date: date,
+                                              note: note,
+                                            ),
+                                          ),
+                                        );
+                                        attendanceAllDisplay = [];
+                                        fetchAttendanceByIdNoon();
+                                      }
+                                      if (selectedValue == 1) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            title: Text('${local?.areYouSure}'),
+                                            content:
+                                                Text('${local?.cannotUndone}'),
+                                            actions: [
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  deleteData(isTodayNoon[index]
+                                                      .id as int);
+                                                },
+                                                child: Text('Yes'),
+                                                borderSide: BorderSide(
+                                                    color: Colors.green),
+                                              ),
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                borderSide: BorderSide(
+                                                    color: Colors.red),
+                                                child: Text('No'),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                      if (selectedValue == 2) {
+                                        final int userId =
+                                            isToday[index].userId;
+                                        final int id = isToday[index].id;
+                                        final String type = isToday[index].type;
+                                        final DateTime date =
+                                            isToday[index].date;
+                                        final String note = isToday[index].note;
+                                        final String userName =
+                                            isToday[index].users!.name;
+                                        final String image =
+                                            isToday[index].users.image;
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                ViewAttendanceScreen(
+                                              id: id,
+                                              userId: userId,
+                                              type: type,
+                                              date: date,
+                                              note: note,
+                                              userName: userName,
+                                              image: image,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  itemBuilder: (_) => [
+                                    PopupMenuItem(
+                                      child: Text('${local?.optionView}',
+                                          style: kParagraph.copyWith(
+                                              fontWeight: FontWeight.bold)),
+                                      value: 2,
+                                    ),
+                                    if (attendanceList[0].users!.role ==
+                                        'admin')
+                                      PopupMenuItem(
+                                        child: Text('${local?.edit}',
+                                            style: kParagraph.copyWith(
+                                                fontWeight: FontWeight.bold)),
+                                        value: 0,
+                                      ),
+                                    if (attendanceList[0].users!.role ==
+                                        'admin')
+                                      PopupMenuItem(
+                                        child: Text('${local?.delete}',
+                                            style: kParagraph.copyWith(
+                                                fontWeight: FontWeight.bold)),
+                                        value: 1,
+                                      ),
+                                  ],
+                                  icon: const Icon(Icons.more_vert),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 25,
+                          vertical: 8,
+                        ),
+                        color: index % 2 == 0 ? kDarkestBlue : kBlue,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            afternoon
+                                ? Text(
+                                    DateFormat('dd/MM/yyyy HH:mm')
+                                        .format(attendanceListNoon[index].date),
+                                  )
+                                : Text(
+                                    DateFormat('dd/MM/yyyy HH:mm')
+                                        .format(attendanceList[index].date),
+                                  ),
+                            Row(
+                              children: [
+                                afternoon
+                                    ? Text(
+                                        attendanceListNoon[index].type ==
+                                                'checkin'
+                                            ? '${local?.checkIn}'
+                                            : attendanceListNoon[index].type ==
+                                                    'checkout'
+                                                ? '${local?.checkOut}'
+                                                : attendanceListNoon[index]
+                                                            .type ==
+                                                        'absent'
+                                                    ? '${local?.absent}'
+                                                    : attendanceListNoon[index]
+                                                                .type ==
+                                                            'permission'
+                                                        ? '${local?.permission}'
+                                                        : attendanceListNoon[
+                                                                index]
+                                                            .type
+                                                            .toString(),
+                                      )
+                                    : Text(
+                                        attendanceList[index].type == 'checkin'
+                                            ? '${local?.checkIn}'
+                                            : attendanceList[index].type ==
+                                                    'checkout'
+                                                ? '${local?.checkOut}'
+                                                : attendanceList[index].type ==
+                                                        'absent'
+                                                    ? '${local?.absent}'
+                                                    : attendanceList[index]
+                                                                .type ==
+                                                            'permission'
+                                                        ? '${local?.permission}'
+                                                        : attendanceList[index]
+                                                            .type
+                                                            .toString(),
+                                      ),
+                                PopupMenuButton(
+                                  color: Colors.black,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  onSelected: (int selectedValue) async {
+                                    if (afternoon == false) {
+                                      if (selectedValue == 0) {
+                                        final int userId =
+                                            attendanceList[index].userId;
+                                        final int id = attendanceList[index].id;
+                                        final String type =
+                                            attendanceList[index].type;
+                                        final DateTime date =
+                                            attendanceList[index].date;
+                                        final String? note =
+                                            attendanceList[index].note;
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) => AttedancesEdit(
+                                              id: id,
+                                              userId: userId,
+                                              type: type,
+                                              date: date,
+                                              note: note,
+                                            ),
+                                          ),
+                                        );
+                                        attendanceAllDisplay = [];
+                                        fetchAttendanceById();
+                                      }
+                                      if (selectedValue == 1) {
+                                        print(attendanceList[index].id);
+                                        showDialog(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            title: Text('${local?.areYouSure}'),
+                                            content:
+                                                Text('${local?.cannotUndone}'),
+                                            actions: [
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  deleteData(
+                                                      attendanceList[index].id
+                                                          as int);
+                                                },
+                                                child: Text('${local?.yes}'),
+                                                borderSide: BorderSide(
+                                                    color: Colors.green),
+                                              ),
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                borderSide: BorderSide(
+                                                    color: Colors.red),
+                                                child: Text('${local?.no}'),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                      if (selectedValue == 2) {
+                                        final int userId =
+                                            attendanceList[index].userId;
+                                        final int id = attendanceList[index].id;
+                                        final String type =
+                                            attendanceList[index].type;
+                                        final DateTime date =
+                                            attendanceList[index].date;
+                                        final String note =
+                                            attendanceList[index].note;
+                                        final String userName =
+                                            attendanceList[index].users!.name;
+                                        final String image =
+                                            attendanceList[index].users.image;
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                ViewAttendanceScreen(
+                                              id: id,
+                                              userId: userId,
+                                              type: type,
+                                              date: date,
+                                              note: note,
+                                              userName: userName,
+                                              image: image,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                    if (afternoon == true) {
+                                      if (selectedValue == 0) {
+                                        final int userId =
+                                            attendanceListNoon[index].userId;
+                                        final int id =
+                                            attendanceListNoon[index].id;
+                                        final String type =
+                                            attendanceListNoon[index].type;
+                                        final DateTime date =
+                                            attendanceListNoon[index].date;
+                                        final String? note =
+                                            attendanceAll[index].note;
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) => AttedancesEdit(
+                                              id: id,
+                                              userId: userId,
+                                              type: type,
+                                              date: date,
+                                              note: note,
+                                            ),
+                                          ),
+                                        );
+                                        attendanceAllDisplay = [];
+                                        fetchAttendanceByIdNoon();
+                                      }
+                                      if (selectedValue == 1) {
+                                        print(attendanceListNoon[index].id);
+                                        showDialog(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            title: Text('${local?.areYouSure}'),
+                                            content:
+                                                Text('${local?.cannotUndone}'),
+                                            actions: [
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  deleteData1(
+                                                      attendanceListNoon[index]
+                                                          .id as int);
+                                                },
+                                                child: Text('${local?.yes}'),
+                                                borderSide: BorderSide(
+                                                    color: Colors.green),
+                                              ),
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                borderSide: BorderSide(
+                                                    color: Colors.red),
+                                                child: Text('${local?.no}'),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                      if (selectedValue == 2) {
+                                        final int userId =
+                                            attendanceListNoon[index].userId;
+                                        final int id =
+                                            attendanceListNoon[index].id;
+                                        final String type =
+                                            attendanceListNoon[index].type;
+                                        final DateTime date =
+                                            attendanceListNoon[index].date;
+                                        final String? note =
+                                            attendanceListNoon[index].note;
+                                        final String userName =
+                                            attendanceListNoon[index]
+                                                .users!
+                                                .name;
+                                        final String image =
+                                            attendanceListNoon[index]
+                                                .users
+                                                .image;
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (ctx) =>
+                                                ViewAttendanceScreen(
+                                              id: id,
+                                              userId: userId,
+                                              type: type,
+                                              date: date,
+                                              note: note,
+                                              userName: userName,
+                                              image: image,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                                  itemBuilder: (_) => [
+                                    PopupMenuItem(
+                                      child: Text(
+                                        '${local?.optionView}',
+                                        style: kParagraph.copyWith(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      value: 2,
+                                    ),
+                                    if (attendanceList[0].users!.role ==
+                                        'admin')
+                                      PopupMenuItem(
+                                        child: Text(
+                                          '${local?.edit}',
+                                          style: kParagraph.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        value: 0,
+                                      ),
+                                    if (attendanceList[0].users!.role ==
+                                        'admin')
+                                      PopupMenuItem(
+                                        child: Text(
+                                          '${local?.delete}',
+                                          style: kParagraph.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        value: 1,
+                                      ),
+                                  ],
+                                  icon: const Icon(Icons.more_vert),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
       },
-      itemCount: alltime
-          ? attendanceAll.length
-          : now
-              ? afternoon
-                  ? isTodayNoon.length
-                  : isToday.length
-              : afternoon
-                  ? attendanceListNoon.length
-                  : attendanceList.length,
+      itemCount: isOneDay
+          ? afternoon
+              ? oneDayNoon.length
+              : oneDayMorning.length
+          : alltime
+              ? attendanceAll.length
+              : now
+                  ? afternoon
+                      ? isTodayNoon.length
+                      : isToday.length
+                  : afternoon
+                      ? attendanceListNoon.length
+                      : attendanceList.length,
     );
   }
 }
