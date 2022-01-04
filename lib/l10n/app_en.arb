@@ -733,6 +733,9 @@
   "saveChanges": "Do you want to save the changes",
   "@saveChanges": {
     "description": "edit attendance"
+  },
+  "back": "Back",
+  "@back": {
+    "description": "edit attendance"
   }
-
 }

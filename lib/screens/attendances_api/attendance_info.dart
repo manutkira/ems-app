@@ -126,6 +126,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                 element.code != 'cin3')
             .toList();
       });
+      print('istoday1: ${isToday.isEmpty}');
       List flat = _attendanceDisplay.expand((element) => element.list).toList();
       attendanceList = flat
           .where((element) =>
@@ -162,6 +163,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                 element.code != 'cin3')
             .toList();
       });
+      print('istoday2: ${isTodayNoon.isEmpty}');
       List flat = _attendanceDisplay.expand((element) => element.list).toList();
       attendanceListNoon = flat
           .where((element) =>
@@ -797,6 +799,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                     alltime = false;
                                                     multipleDay = true;
                                                     now = false;
+                                                    isFilterExpanded = false;
                                                   });
                                                   fetchLate();
                                                   fetchLateNoon();
@@ -815,6 +818,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                     multipleDay = false;
                                                     now = false;
                                                     alltime = true;
+                                                    isFilterExpanded = false;
                                                   });
                                                   fetchAllAttendance();
                                                   getAbsentAll();
@@ -1004,7 +1008,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   ],
                                 ),
                               ),
-                              _attendanceDisplay.isEmpty && now
+                              isToday.isEmpty && now && isTodayNoon.isEmpty
                                   ? AttendanceInfoNoData()
                                   : Expanded(
                                       child: Padding(
