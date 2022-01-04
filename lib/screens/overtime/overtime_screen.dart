@@ -3,6 +3,8 @@ import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/overtime/view_overtime.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
+import 'package:ems/screens/overtime/widgets/drop_down_menu.dart';
+import 'package:ems/screens/overtime/widgets/more_menu_item.dart';
 import 'package:ems/utils/services/overtime_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
@@ -603,14 +605,16 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                       ),
                       const SizedBox(width: 10),
                       PopupMenuButton<String>(
-                        color: kDarkestBlue,
+                        padding: EdgeInsets.zero,
+                        elevation: 200,
+                        color: kBlueText,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                         icon: const Icon(MdiIcons.dotsVertical),
                         itemBuilder: (BuildContext context) {
                           return options.map((option) {
-                            return _buildMoreMenu(option);
+                            return buildMoreMenu(option);
                           }).toList();
                         },
                         onSelected: (value) => moreMenu(value, overtime),
@@ -626,39 +630,11 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     );
   }
 
-  /// more menu
-  PopupMenuEntry<String> _buildMoreMenu(String option) {
-    return PopupMenuItem<String>(
-      height: 40,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-      ),
-      value: option,
-      child: Text(
-        option,
-        style: const TextStyle(
-          fontSize: 14,
-        ),
-      ),
-    );
-  }
-
   /// drop down menu for filter
   Widget get _buildDropdownMenu {
-    return DropdownButton(
-      borderRadius: const BorderRadius.all(kBorderRadius),
-      dropdownColor: kDarkestBlue,
-      underline: Container(),
-      style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-      isDense: true,
-      value: sortByValue,
-      icon: const Icon(Icons.keyboard_arrow_down),
-      items: dropdownItems.map((String items) {
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
+    return DropDownMenu(
+      dropDownItems: dropdownItems,
+      sortByValue: sortByValue,
       onChanged: (String? newValue) {
         if (sortByValue == newValue) return;
         setState(() {

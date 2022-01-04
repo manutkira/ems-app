@@ -49,8 +49,8 @@ String attendancesToJson(List<Attendance> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class AttendanceType {
-  static String get typeCheckIn => "check in";
-  static String get typeCheckOut => "check out";
+  static String get typeCheckIn => "checkin";
+  static String get typeCheckOut => "checkout";
 }
 
 class Attendance {
@@ -119,6 +119,14 @@ class Attendance {
             : DateTime.parse(json["updated_at"]),
         users: json["users"] == null ? null : User.fromJson(json["users"]),
       );
+
+  Map<String, dynamic> toCleanJson() {
+    return {
+      "user_id": userId,
+      "date": date!.toIso8601String().toString(),
+      "type": type
+    };
+  }
 
   Map<String, dynamic> toJson() {
     // user object is not necessary.

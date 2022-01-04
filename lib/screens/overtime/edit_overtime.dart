@@ -155,232 +155,236 @@ class _EditOvertimeState extends State<EditOvertime> {
 
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.65,
-      child: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${local?.viewOvertime}',
-                    style: kHeadingThree,
-                  ),
-                  Visibility(
-                    visible: isEnglish,
-                    child: const SizedBox(height: 5),
-                  ),
-                  Text(
-                    '${local?.enterAllInfo}',
-                    style: kSubtitle.copyWith(
-                      color: kSubtitle.color?.withOpacity(0.75),
-                    ),
-                  ),
-                ],
-              ),
-              Visibility(
-                visible: isLoading,
-                child: const CircularProgressIndicator(color: kWhite),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          _buildUserInfo(_size, user),
-          const SizedBox(height: 20),
-          BaselineRow(
-            children: [
-              Text(
-                "${local?.date}",
-                style: kParagraph,
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  primary: Colors.white,
-                  textStyle: kParagraph,
-                  backgroundColor: kDarkestBlue,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(kBorderRadius),
-                  ),
-                ),
-                onPressed: () async {
-                  final DateTime? picked = await buildDateTimePicker(
-                    context: context,
-                    date: selectedDate,
-                  );
-                  if (picked != null && picked != selectedDate) {
-                    setState(() {
-                      selectedDate = picked;
-                    });
-                  }
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      getDateStringFromDateTime(selectedDate),
-                    ),
-                    const SizedBox(width: 10),
-                    const Icon(MdiIcons.calendar),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: isEnglish ? 10 : 0),
-          BaselineRow(
-            children: [
-              Text(
-                "${local?.from}",
-                style: kParagraph,
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  primary: Colors.white,
-                  textStyle: kParagraph,
-                  backgroundColor: kDarkestBlue,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(kBorderRadius),
-                  ),
-                ),
-                onPressed: () async {
-                  final TimeOfDay? picked = await buildTimePicker(
-                    context: context,
-                    time: startedTime,
-                  );
-
-                  if (picked != null && picked != startedTime) {
-                    setState(() {
-                      startedTime = picked;
-                    });
-                  }
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                        "${startedTime.hour.toString().padLeft(2, '0')}:${startedTime.minute.toString().padLeft(2, '0')}"),
-                    const SizedBox(width: 10),
-                    const Icon(MdiIcons.clockOutline),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              Text(
-                "${local?.to}",
-                style: kParagraph,
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  primary: Colors.white,
-                  textStyle: kParagraph,
-                  backgroundColor: kDarkestBlue,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(kBorderRadius),
-                  ),
-                ),
-                onPressed: () async {
-                  final TimeOfDay? picked = await buildTimePicker(
-                    context: context,
-                    time: endedTime,
-                  );
-
-                  if (picked != null && picked != endedTime) {
-                    setState(() {
-                      endedTime = picked;
-                    });
-                  }
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      formatToHourAndMinute(endedTime),
-                    ),
-                    const SizedBox(width: 10),
-                    const Icon(MdiIcons.clockOutline),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: isEnglish ? 10 : 0),
-          Text("${local?.note}", style: kParagraph),
-          SizedBox(height: isEnglish ? 10 : 0),
-          TextField(
-            minLines: 5,
-            maxLines: 5,
-            keyboardType: TextInputType.multiline,
-            controller: _noteController,
-          ),
-          const SizedBox(height: 20),
-          Visibility(
-            visible: error.isNotEmpty,
-            child: Column(
+      child: Scaffold(
+        body: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                StatusError(text: "Error: $error"),
-                const SizedBox(height: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${local?.viewOvertime}',
+                      style: kHeadingThree,
+                    ),
+                    Visibility(
+                      visible: isEnglish,
+                      child: const SizedBox(height: 5),
+                    ),
+                    Text(
+                      '${local?.enterAllInfo}',
+                      style: kSubtitle.copyWith(
+                        color: kSubtitle.color?.withOpacity(0.75),
+                      ),
+                    ),
+                  ],
+                ),
+                Visibility(
+                  visible: isLoading,
+                  child: const CircularProgressIndicator(color: kWhite),
+                ),
               ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  padding: kPadding.copyWith(
-                      top: isEnglish ? 10 : 4, bottom: isEnglish ? 10 : 4),
-                  primary: Colors.white,
-                  textStyle: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                  backgroundColor: kBlack.withOpacity(0.3),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(kBorderRadius),
+            const SizedBox(height: 20),
+            _buildUserInfo(_size, user),
+            const SizedBox(height: 20),
+            BaselineRow(
+              children: [
+                Text(
+                  "${local?.date}",
+                  style: kParagraph,
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    primary: Colors.white,
+                    textStyle: kParagraph,
+                    backgroundColor: kDarkestBlue,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(kBorderRadius),
+                    ),
+                  ),
+                  onPressed: () async {
+                    final DateTime? picked = await buildDateTimePicker(
+                      context: context,
+                      date: selectedDate,
+                    );
+                    if (picked != null && picked != selectedDate) {
+                      setState(() {
+                        selectedDate = picked;
+                      });
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        getDateStringFromDateTime(selectedDate),
+                      ),
+                      const SizedBox(width: 10),
+                      const Icon(MdiIcons.calendar),
+                    ],
                   ),
                 ),
-                onPressed: _updateOvertime,
-                child: Text(
-                  '${local?.update}',
-                  style: const TextStyle(fontSize: 14),
+              ],
+            ),
+            _buildSpacer,
+            BaselineRow(
+              children: [
+                Text(
+                  "${local?.from}",
+                  style: kParagraph,
                 ),
-              ),
-              const SizedBox(width: 10),
-              TextButton(
-                autofocus: true,
-                style: TextButton.styleFrom(
-                  padding: kPadding.copyWith(
-                      top: isEnglish ? 10 : 4, bottom: isEnglish ? 10 : 4),
-                  primary: Colors.white,
-                  textStyle: kParagraph.copyWith(fontWeight: FontWeight.w700),
-                  backgroundColor: kRedText,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(kBorderRadius),
+                const SizedBox(
+                  width: 20,
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    primary: Colors.white,
+                    textStyle: kParagraph,
+                    backgroundColor: kDarkestBlue,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(kBorderRadius),
+                    ),
+                  ),
+                  onPressed: () async {
+                    final TimeOfDay? picked = await buildTimePicker(
+                      context: context,
+                      time: startedTime,
+                    );
+
+                    if (picked != null && picked != startedTime) {
+                      setState(() {
+                        startedTime = picked;
+                      });
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                          "${startedTime.hour.toString().padLeft(2, '0')}:${startedTime.minute.toString().padLeft(2, '0')}"),
+                      const SizedBox(width: 10),
+                      const Icon(MdiIcons.clockOutline),
+                    ],
                   ),
                 ),
-                onPressed: _closePanel,
-                child: Text(
-                  '${local?.cancel}',
-                  style: const TextStyle(fontSize: 14),
+                const SizedBox(
+                  width: 20,
                 ),
+                Text(
+                  "${local?.to}",
+                  style: kParagraph,
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    primary: Colors.white,
+                    textStyle: kParagraph,
+                    backgroundColor: kDarkestBlue,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(kBorderRadius),
+                    ),
+                  ),
+                  onPressed: () async {
+                    final TimeOfDay? picked = await buildTimePicker(
+                      context: context,
+                      time: endedTime,
+                    );
+
+                    if (picked != null && picked != endedTime) {
+                      setState(() {
+                        endedTime = picked;
+                      });
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        formatToHourAndMinute(endedTime),
+                      ),
+                      const SizedBox(width: 10),
+                      const Icon(MdiIcons.clockOutline),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            _buildSpacer,
+            Text("${local?.note}", style: kParagraph),
+            _buildSpacer,
+            TextField(
+              minLines: 5,
+              maxLines: 5,
+              keyboardType: TextInputType.multiline,
+              controller: _noteController,
+            ),
+            const SizedBox(height: 20),
+            Visibility(
+              visible: error.isNotEmpty,
+              child: Column(
+                children: [
+                  StatusError(text: "Error: $error"),
+                  const SizedBox(height: 16),
+                ],
               ),
-            ],
-          ),
-        ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                    padding: kPadding.copyWith(
+                        top: isEnglish ? 10 : 4, bottom: isEnglish ? 10 : 4),
+                    primary: Colors.white,
+                    textStyle: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                    backgroundColor: kBlack.withOpacity(0.3),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(kBorderRadius),
+                    ),
+                  ),
+                  onPressed: _updateOvertime,
+                  child: Text(
+                    '${local?.update}',
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                TextButton(
+                  autofocus: true,
+                  style: TextButton.styleFrom(
+                    padding: kPadding.copyWith(
+                        top: isEnglish ? 10 : 4, bottom: isEnglish ? 10 : 4),
+                    primary: Colors.white,
+                    textStyle: kParagraph.copyWith(fontWeight: FontWeight.w700),
+                    backgroundColor: kRedText,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(kBorderRadius),
+                    ),
+                  ),
+                  onPressed: _closePanel,
+                  child: Text(
+                    '${local?.cancel}',
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
+
+  Widget get _buildSpacer => SizedBox(height: isInEnglish(context) ? 10 : 14);
 
   Widget _buildUserInfo(Size size, User? user) {
     return Container(
