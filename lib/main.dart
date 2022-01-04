@@ -88,6 +88,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
             ],
             supportedLocales: L10n.all,

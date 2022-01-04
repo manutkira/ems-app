@@ -14,9 +14,9 @@ class AttedancesEdit extends StatefulWidget {
   final int userId;
   final String type;
   final DateTime date;
-  final String? note;
+  String? note;
 
-  const AttedancesEdit(
+  AttedancesEdit(
       {Key? key,
       required this.id,
       required this.userId,
@@ -35,6 +35,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   TextEditingController typeController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
+  TextEditingController? _noteController = TextEditingController();
   TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
   String? _hour, _minute, _time;
   DateTime? dateTime;
@@ -52,6 +53,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
         hour: _selectDate?.hour as int, minute: _selectDate?.minute as int);
     idController.text = widget.userId.toString();
     typeController.text = widget.type;
+    _noteController?.text = widget.note.toString();
     dateController.text = DateFormat('dd-MM-yyyy').format(widget.date);
     _timeController.text = DateFormat('HH:mm:ss').format(widget.date);
     super.initState();
@@ -102,6 +104,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
+    print('note: ${widget.note}');
     checkType() {
       if (widget.type == 'checkin') {
         return local!.checkIn;
@@ -120,239 +123,279 @@ class _AttedancesEditState extends State<AttedancesEdit> {
       if (type.isEmpty) {
         type = checkType();
       }
+      // if (widget.note == null) {
+      //   _noteController!.text = 'null';
+      // }
     });
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text('Edit Attendance'),
       ),
-      body: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${local?.id} ',
-                  style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.6),
-                  child: Flexible(
-                    child: TextFormField(
-                      enabled: false,
-                      controller: id,
-                      textInputAction: TextInputAction.next,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${local?.userId} ',
-                  style: kParagraph.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: isEnglish ? 15 : 15.5),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.6),
-                  child: Flexible(
-                    child: TextFormField(
-                      enabled: false,
-                      decoration: InputDecoration(
-                        hintText: 'Enter Name',
-                        errorStyle: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      controller: idController,
-                      textInputAction: TextInputAction.next,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${local?.type} ',
-                  style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Container(
-                  width: 233,
-                  child: DropdownButtonFormField(
-                    dropdownColor: kDarkestBlue,
-                    icon: Icon(Icons.expand_more),
-                    value: type,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        type = newValue!;
-                      });
-                      widget.type;
-                    },
-                    items: <String>[
-                      '${local?.checkIn}',
-                      '${local?.checkOut}',
-                      '${local?.absent}',
-                      '${local?.permission}',
-                    ].map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                          ));
-                    }).toList(),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${local?.date} ',
-                  style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.6),
-                  child: Flexible(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              // _fullTime();
-                              _byDayDatePicker();
-                            },
-                            icon: Icon(Icons.calendar_today)),
-                        hintText: 'Enter Name',
-                        errorStyle: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      controller: dateController,
-                      textInputAction: TextInputAction.next,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${local?.time} ',
-                  style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                Container(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.6),
-                  child: Flexible(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              _selectTime();
-                            },
-                            icon: Icon(MdiIcons.clockOutline)),
-                        hintText: 'Enter Name',
-                        errorStyle: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      controller: _timeController,
-                      textInputAction: TextInputAction.next,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              padding: EdgeInsets.all(15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: EdgeInsets.only(right: 10),
-                    child: RaisedButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                                  title: Text('${local?.areYouSure}'),
-                                  content: Text('${local?.saveChanges}'),
-                                  actions: [
-                                    OutlineButton(
-                                      borderSide:
-                                          BorderSide(color: Colors.green),
-                                      child: Text('${local?.yes}'),
-                                      onPressed: () {
-                                        uploadImage();
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    OutlineButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text('${local?.no}'),
-                                      borderSide: BorderSide(color: Colors.red),
-                                    )
-                                  ],
-                                ));
-                      },
-                      child: Text('${local?.save}'),
-                      color: Theme.of(context).primaryColor,
-                    ),
+                  Text(
+                    '${local?.id} ',
+                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  RaisedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('${local?.cancel}'),
-                    color: Colors.red,
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6),
+                    child: Flexible(
+                      child: TextFormField(
+                        readOnly: true,
+                        controller: id,
+                        textInputAction: TextInputAction.next,
+                      ),
+                    ),
                   ),
                 ],
               ),
-            )
-          ],
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${local?.userId} ',
+                    style: kParagraph.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: isEnglish ? 15 : 15.5),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6),
+                    child: Flexible(
+                      child: TextFormField(
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          hintText: 'Enter Name',
+                          errorStyle: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        controller: idController,
+                        textInputAction: TextInputAction.next,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${local?.type} ',
+                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Container(
+                    width: 233,
+                    child: DropdownButtonFormField(
+                      dropdownColor: kDarkestBlue,
+                      icon: Icon(Icons.expand_more),
+                      value: type,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          type = newValue!;
+                        });
+                        widget.type;
+                      },
+                      items: <String>[
+                        '${local?.checkIn}',
+                        '${local?.checkOut}',
+                        '${local?.absent}',
+                        '${local?.permission}',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                            ));
+                      }).toList(),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${local?.date} ',
+                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6),
+                    child: Flexible(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                              onPressed: () {
+                                // _fullTime();
+                                _byDayDatePicker();
+                              },
+                              icon: Icon(Icons.calendar_today)),
+                          hintText: 'Enter Name',
+                          errorStyle: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        controller: dateController,
+                        textInputAction: TextInputAction.next,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${local?.time} ',
+                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6),
+                    child: Flexible(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                              onPressed: () {
+                                _selectTime();
+                              },
+                              icon: Icon(MdiIcons.clockOutline)),
+                          errorStyle: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        controller: _timeController,
+                        textInputAction: TextInputAction.next,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '${local?.note} ',
+                    style: kParagraph.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: isEnglish ? 15 : 15.5),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6),
+                    child: Flexible(
+                      child: TextFormField(
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                          errorStyle: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        controller: _noteController,
+                        textInputAction: TextInputAction.next,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.all(15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(right: 10),
+                      child: RaisedButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                    title: Text('${local?.areYouSure}'),
+                                    content: Text('${local?.saveChanges}'),
+                                    actions: [
+                                      OutlineButton(
+                                        borderSide:
+                                            BorderSide(color: Colors.green),
+                                        child: Text('${local?.yes}'),
+                                        onPressed: () {
+                                          uploadImage();
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      OutlineButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('${local?.no}'),
+                                        borderSide:
+                                            BorderSide(color: Colors.red),
+                                      )
+                                    ],
+                                  ));
+                        },
+                        child: Text('${local?.save}'),
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    RaisedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('${local?.cancel}'),
+                      color: Colors.red,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -363,6 +406,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     bool isEnglish = isInEnglish(context);
     var aUserId = idController.text;
     var aType = type;
+    var aNote = _noteController?.text;
     DateTime aDate = _selectDate?.copyWith(
         hour: selectedTime.hour,
         minute: selectedTime.minute,
@@ -392,6 +436,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
       }
     }
 
+    request.files.add(http.MultipartFile.fromString('note', aNote.toString()));
     request.files.add(http.MultipartFile.fromString('type', checkType()));
     request.files.add(http.MultipartFile.fromString('date', aDate.toString()));
 

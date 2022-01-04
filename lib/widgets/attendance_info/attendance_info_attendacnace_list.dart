@@ -1,3 +1,5 @@
+import 'package:ems/screens/attendances_api/view_attendance.dart';
+import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -65,7 +67,20 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        Text(attendanceAll[index].type.toString()),
+                        Text(
+                          attendanceAll[index].type == 'checkin'
+                              ? '${local?.checkIn}'
+                              : attendanceAll[index].type == 'checkout'
+                                  ? '${local?.checkOut}'
+                                  : attendanceAll[index].type == 'absent'
+                                      ? '${local?.absent}'
+                                      : attendanceAll[index].type ==
+                                              'permission'
+                                          ? '${local?.permission}'
+                                          : attendanceAll[index]
+                                              .type
+                                              .toString(),
+                        ),
                         PopupMenuButton(
                           color: Colors.black,
                           shape: const RoundedRectangleBorder(
@@ -77,6 +92,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                               final int id = attendanceAll[index].id;
                               final String type = attendanceAll[index].type;
                               final DateTime date = attendanceAll[index].date;
+                              final String? note = attendanceAll[index].note;
                               await Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (ctx) => AttedancesEdit(
@@ -84,6 +100,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     userId: userId,
                                     type: type,
                                     date: date,
+                                    note: note,
                                   ),
                                 ),
                               );
@@ -119,8 +136,40 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                 ),
                               );
                             }
+                            if (selectedValue == 2) {
+                              final int userId = attendanceAll[index].userId;
+                              final int id = attendanceAll[index].id;
+                              final String type = attendanceAll[index].type;
+                              final DateTime date = attendanceAll[index].date;
+                              final String? note = attendanceAll[index].note;
+                              final String userName =
+                                  attendanceAll[index].users!.name;
+                              final String image =
+                                  attendanceAll[index].users.image;
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (ctx) => ViewAttendanceScreen(
+                                    id: id,
+                                    userId: userId,
+                                    type: type,
+                                    date: date,
+                                    note: note,
+                                    userName: userName,
+                                    image: image,
+                                  ),
+                                ),
+                              );
+                            }
                           },
                           itemBuilder: (_) => [
+                            PopupMenuItem(
+                              child: Text(
+                                '${local?.optionView}',
+                                style: kParagraph.copyWith(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              value: 2,
+                            ),
                             PopupMenuItem(
                               child: Text(
                                 '${local?.edit}',
@@ -165,9 +214,34 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                         Row(
                           children: [
                             afternoon
-                                ? Text(isTodayNoon[index].type.toString(),
+                                ? Text(
+                                    isTodayNoon[index].type == 'checkin'
+                                        ? '${local?.checkIn}'
+                                        : isTodayNoon[index].type == 'checkout'
+                                            ? '${local?.checkOut}'
+                                            : isTodayNoon[index].type ==
+                                                    'absent'
+                                                ? '${local?.absent}'
+                                                : isTodayNoon[index].type ==
+                                                        'permission'
+                                                    ? '${local?.permission}'
+                                                    : isTodayNoon[index]
+                                                        .type
+                                                        .toString(),
                                     style: kParagraph)
-                                : Text(isToday[index].type.toString(),
+                                : Text(
+                                    isToday[index].type == 'checkin'
+                                        ? '${local?.checkIn}'
+                                        : isToday[index].type == 'checkout'
+                                            ? '${local?.checkOut}'
+                                            : isToday[index].type == 'absent'
+                                                ? '${local?.absent}'
+                                                : isToday[index].type ==
+                                                        'permission'
+                                                    ? '${local?.permission}'
+                                                    : isToday[index]
+                                                        .type
+                                                        .toString(),
                                     style: kParagraph),
                             PopupMenuButton(
                               color: Colors.black,
@@ -181,6 +255,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     final int id = isToday[index].id;
                                     final String type = isToday[index].type;
                                     final DateTime date = isToday[index].date;
+                                    final String? note = isToday[index].note;
                                     await Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (ctx) => AttedancesEdit(
@@ -188,6 +263,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           userId: userId,
                                           type: type,
                                           date: date,
+                                          note: note,
                                         ),
                                       ),
                                     );
@@ -223,6 +299,30 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                       ),
                                     );
                                   }
+                                  if (selectedValue == 2) {
+                                    final int userId = isToday[index].userId;
+                                    final int id = isToday[index].id;
+                                    final String type = isToday[index].type;
+                                    final DateTime date = isToday[index].date;
+                                    final String? note = isToday[index].note;
+                                    final String userName =
+                                        isToday[index].users!.name;
+                                    final String image =
+                                        isToday[index].users.image;
+                                    await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (ctx) => ViewAttendanceScreen(
+                                          id: id,
+                                          userId: userId,
+                                          type: type,
+                                          date: date,
+                                          note: note,
+                                          userName: userName,
+                                          image: image,
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 }
                                 if (afternoon == true) {
                                   if (selectedValue == 0) {
@@ -232,6 +332,8 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     final String type = isTodayNoon[index].type;
                                     final DateTime date =
                                         isTodayNoon[index].date;
+                                    final String? note =
+                                        attendanceAll[index].note;
                                     await Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (ctx) => AttedancesEdit(
@@ -239,6 +341,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           userId: userId,
                                           type: type,
                                           date: date,
+                                          note: note,
                                         ),
                                       ),
                                     );
@@ -274,17 +377,47 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                       ),
                                     );
                                   }
+                                  if (selectedValue == 2) {
+                                    final int userId = isToday[index].userId;
+                                    final int id = isToday[index].id;
+                                    final String type = isToday[index].type;
+                                    final DateTime date = isToday[index].date;
+                                    final String note = isToday[index].note;
+                                    final String userName =
+                                        isToday[index].users!.name;
+                                    final String image =
+                                        isToday[index].users.image;
+                                    await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (ctx) => ViewAttendanceScreen(
+                                          id: id,
+                                          userId: userId,
+                                          type: type,
+                                          date: date,
+                                          note: note,
+                                          userName: userName,
+                                          image: image,
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 }
                               },
                               itemBuilder: (_) => [
                                 PopupMenuItem(
-                                  child: Text('Edit',
+                                  child: Text('${local?.optionView}',
+                                      style: kParagraph.copyWith(
+                                          fontWeight: FontWeight.bold)),
+                                  value: 2,
+                                ),
+                                PopupMenuItem(
+                                  child: Text('${local?.edit}',
                                       style: kParagraph.copyWith(
                                           fontWeight: FontWeight.bold)),
                                   value: 0,
                                 ),
                                 PopupMenuItem(
-                                  child: Text('Delete',
+                                  child: Text('${local?.delete}',
                                       style: kParagraph.copyWith(
                                           fontWeight: FontWeight.bold)),
                                   value: 1,
@@ -319,8 +452,38 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                           children: [
                             afternoon
                                 ? Text(
-                                    attendanceListNoon[index].type.toString())
-                                : Text(attendanceList[index].type.toString()),
+                                    attendanceListNoon[index].type == 'checkin'
+                                        ? '${local?.checkIn}'
+                                        : attendanceListNoon[index].type ==
+                                                'checkout'
+                                            ? '${local?.checkOut}'
+                                            : attendanceListNoon[index].type ==
+                                                    'absent'
+                                                ? '${local?.absent}'
+                                                : attendanceListNoon[index]
+                                                            .type ==
+                                                        'permission'
+                                                    ? '${local?.permission}'
+                                                    : attendanceListNoon[index]
+                                                        .type
+                                                        .toString(),
+                                  )
+                                : Text(
+                                    attendanceList[index].type == 'checkin'
+                                        ? '${local?.checkIn}'
+                                        : attendanceList[index].type ==
+                                                'checkout'
+                                            ? '${local?.checkOut}'
+                                            : attendanceList[index].type ==
+                                                    'absent'
+                                                ? '${local?.absent}'
+                                                : attendanceList[index].type ==
+                                                        'permission'
+                                                    ? '${local?.permission}'
+                                                    : attendanceList[index]
+                                                        .type
+                                                        .toString(),
+                                  ),
                             PopupMenuButton(
                               color: Colors.black,
                               shape: const RoundedRectangleBorder(
@@ -336,6 +499,8 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                         attendanceList[index].type;
                                     final DateTime date =
                                         attendanceList[index].date;
+                                    final String? note =
+                                        attendanceList[index].note;
                                     await Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (ctx) => AttedancesEdit(
@@ -343,6 +508,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           userId: userId,
                                           type: type,
                                           date: date,
+                                          note: note,
                                         ),
                                       ),
                                     );
@@ -379,6 +545,34 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                       ),
                                     );
                                   }
+                                  if (selectedValue == 2) {
+                                    final int userId =
+                                        attendanceList[index].userId;
+                                    final int id = attendanceList[index].id;
+                                    final String type =
+                                        attendanceList[index].type;
+                                    final DateTime date =
+                                        attendanceList[index].date;
+                                    final String note =
+                                        attendanceList[index].note;
+                                    final String userName =
+                                        attendanceList[index].users!.name;
+                                    final String image =
+                                        attendanceList[index].users.image;
+                                    await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (ctx) => ViewAttendanceScreen(
+                                          id: id,
+                                          userId: userId,
+                                          type: type,
+                                          date: date,
+                                          note: note,
+                                          userName: userName,
+                                          image: image,
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 }
                                 if (afternoon == true) {
                                   if (selectedValue == 0) {
@@ -389,6 +583,8 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                         attendanceListNoon[index].type;
                                     final DateTime date =
                                         attendanceListNoon[index].date;
+                                    final String? note =
+                                        attendanceAll[index].note;
                                     await Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (ctx) => AttedancesEdit(
@@ -396,6 +592,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           userId: userId,
                                           type: type,
                                           date: date,
+                                          note: note,
                                         ),
                                       ),
                                     );
@@ -433,9 +630,45 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                       ),
                                     );
                                   }
+                                  if (selectedValue == 2) {
+                                    final int userId =
+                                        attendanceListNoon[index].userId;
+                                    final int id = attendanceListNoon[index].id;
+                                    final String type =
+                                        attendanceListNoon[index].type;
+                                    final DateTime date =
+                                        attendanceListNoon[index].date;
+                                    final String? note =
+                                        attendanceListNoon[index].note;
+                                    final String userName =
+                                        attendanceListNoon[index].users!.name;
+                                    final String image =
+                                        attendanceListNoon[index].users.image;
+                                    await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (ctx) => ViewAttendanceScreen(
+                                          id: id,
+                                          userId: userId,
+                                          type: type,
+                                          date: date,
+                                          note: note,
+                                          userName: userName,
+                                          image: image,
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 }
                               },
                               itemBuilder: (_) => [
+                                PopupMenuItem(
+                                  child: Text(
+                                    '${local?.optionView}',
+                                    style: kParagraph.copyWith(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  value: 2,
+                                ),
                                 PopupMenuItem(
                                   child: Text(
                                     '${local?.edit}',

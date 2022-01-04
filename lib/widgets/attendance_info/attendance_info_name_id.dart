@@ -1,4 +1,5 @@
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -27,7 +28,7 @@ class AttendanceInfoNameId extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        color: kLightBlue,
+        color: kDarkestBlue,
         child: Padding(
           padding: const EdgeInsets.only(left: 10),
           child: Column(
@@ -65,12 +66,12 @@ class AttendanceInfoNameId extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          BaselineRow(
                             children: [
                               Text(
                                 '${local?.id} : ',
                                 style: kParagraph.copyWith(
-                                    color: Colors.black,
+                                    color: kLightBlue,
                                     fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
@@ -79,7 +80,7 @@ class AttendanceInfoNameId extends StatelessWidget {
                               Text(
                                 id,
                                 style: kParagraph.copyWith(
-                                    color: Colors.black,
+                                    color: kLightBlue,
                                     fontWeight: FontWeight.bold),
                               ),
                             ],
@@ -87,12 +88,12 @@ class AttendanceInfoNameId extends StatelessWidget {
                           SizedBox(
                             height: isEnglish ? 10 : 0,
                           ),
-                          Row(
+                          BaselineRow(
                             children: [
                               Text(
                                 '${local?.name} : ',
                                 style: kParagraph.copyWith(
-                                    color: Colors.black,
+                                    color: kLightBlue,
                                     fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
@@ -101,7 +102,7 @@ class AttendanceInfoNameId extends StatelessWidget {
                               Text(
                                 name,
                                 style: kParagraph.copyWith(
-                                    color: Colors.black,
+                                    color: kLightBlue,
                                     fontWeight: FontWeight.bold),
                               )
                             ],
