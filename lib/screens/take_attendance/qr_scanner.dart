@@ -51,6 +51,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   addAttendance(Barcode _result) async {
     // TODO:
     // maybe check password from qr code?
+    // _result.code;
 
     User _currentUser = ref.read(currentUserProvider).user;
 
@@ -72,6 +73,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
       isAddingAttendance = true;
     });
     try {
+      print('hello from scanner');
       await _attService.createOne(
         attendance: attendance as Attendance,
       );
@@ -83,10 +85,12 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
           textColor: kGreenText,
           backgroundColor: kGreenBackground,
           type: widget.type,
+          message: '${widget.type} successfully!',
         ),
       );
       _closePanel();
     } catch (err) {
+      print(" ERROR $err");
       setState(() {
         isAddingAttendance = false;
       });
@@ -95,6 +99,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
           textColor: kRedText,
           backgroundColor: kRedBackground,
           type: widget.type,
+          message: '${widget.type} failed!',
         ),
       );
     }
@@ -104,7 +109,8 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   SnackBar _buildSnackBar(
       {required backgroundColor,
       required Color textColor,
-      required String type}) {
+      required String type,
+      required String message}) {
     return SnackBar(
       duration: const Duration(seconds: 2),
       backgroundColor: backgroundColor,
@@ -118,7 +124,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
               color: textColor,
             ),
             Text(
-              '$type successfully!',
+              message,
               style: kParagraph.copyWith(color: textColor),
             ),
           ],
@@ -130,9 +136,12 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   Future<bool> confirmScan() async {
     bool confirmation = false;
     void ok(String str) {
-      setState(() {
-        attendance = attendance?.copyWith(note: str);
-      });
+      if (str.isNotEmpty) {
+        setState(() {
+          attendance = attendance?.copyWith(note: str);
+        });
+      }
+      print("what ${attendance?.toCleanJson()}");
       confirmation = true;
     }
 
@@ -155,6 +164,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
 
   @override
   Widget build(BuildContext context) {
+    print(DateTime.now());
     return Scaffold(
         body: isAddingAttendance ? _loading(context) : _buildScanner(context));
   }
