@@ -603,7 +603,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                       ),
                       const SizedBox(width: 10),
                       PopupMenuButton<String>(
-                        color: kDarkestBlue,
+                        color: kBlueText,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

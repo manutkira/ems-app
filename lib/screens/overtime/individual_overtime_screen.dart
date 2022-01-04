@@ -616,7 +616,7 @@ class _IndividualOvertimeScreenState
               PopupMenuButton<String>(
                 padding: EdgeInsets.zero,
                 elevation: 200,
-                color: kBlueBackground,
+                color: kBlueText,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -645,7 +645,6 @@ class _IndividualOvertimeScreenState
         option,
         style: const TextStyle(
           fontSize: 14,
-          color: kBlueText,
         ),
       ),
     );

@@ -190,7 +190,7 @@
   "@nationalId": {
     "description": "Edit Profile screen"
   },
-  "employee": "employee",
+  "employee": "Employee",
   "@employee": {
     "description": "Edit Profile screen"
   },

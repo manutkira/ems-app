@@ -1,3 +1,6 @@
+//
+
+import 'package:animate_do/animate_do.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/home_screen.dart';
@@ -8,6 +11,7 @@ import 'package:ems/widgets/language_menu.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -86,121 +90,143 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 50),
-              Container(
-                padding: kPadding,
-                width: MediaQuery.of(context).size.width,
-                child: SvgPicture.asset(
-                  'assets/images/graph.svg',
-                  semanticsLabel: "graph illustration",
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                "Internal EMS",
-                style: kHeadingOne.copyWith(fontSize: 42),
-              ),
-              Container(
-                alignment: Alignment.centerRight,
-                padding: kPadding,
-                child: const LanguageMenu(),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                padding: kPadding,
-                child: error.isNotEmpty
-                    ? StatusError(
-                        text: error,
-                      )
-                    : null,
-              ),
-              const SizedBox(height: 50),
-              Padding(
-                padding: kPadding,
-                child: Column(
-                  children: [
-                    InputField(
-                      getValue: (value) {
-                        setStateIfMounted(() {
-                          phone = value;
-                        });
-                      },
-                      labelText: "${local?.phoneNumber}",
-                      textHint: "${local?.phoneNumber}",
-                      prefixIcon: const Icon(
-                        Icons.phone,
-                        color: kWhite,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    InputField(
-                      getValue: (value) {
-                        setStateIfMounted(() {
-                          password = value;
-                        });
-                      },
-                      textInputAction: TextInputAction.done,
-                      isPassword: true,
-                      labelText: "${local?.password}",
-                      textHint: "${local?.password}",
-                      prefixIcon: const Icon(
-                        Icons.lock,
-                        color: kWhite,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 35.0,
-              ),
-              isLoading
-                  ? _buildLoading
-                  : TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.only(
-                          top: isEnglish ? 10 : 4,
-                          bottom: isEnglish ? 10 : 2,
-                          right: isEnglish ? 14 : 16,
-                          left: isEnglish ? 14 : 16,
-                        ),
-                        primary: Colors.white,
-                        textStyle: kParagraph,
-                        backgroundColor: kDarkestBlue,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(kBorderRadius),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: SafeArea(
+            child: Column(
+              children: [
+                const SizedBox(height: 50),
+                FadeIn(
+                  duration: Duration(milliseconds: 250),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: kPadding,
+                        width: MediaQuery.of(context).size.width,
+                        child: SvgPicture.asset(
+                          'assets/images/graph.svg',
+                          semanticsLabel: "graph illustration",
                         ),
                       ),
-                      onPressed: () async {
-                        await logUserIn();
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '${local?.login}',
-                            style: kParagraph.copyWith(
-                              fontWeight: FontWeight.bold,
+                      const SizedBox(height: 10),
+                      Text(
+                        "Internal EMS",
+                        style: kHeadingOne.copyWith(fontSize: 42),
+                      ),
+                    ],
+                  ),
+                ),
+                FadeIn(
+                  duration: Duration(milliseconds: 250),
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    padding: kPadding,
+                    child: const LanguageMenu(),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: kPadding,
+                  child: error.isNotEmpty
+                      ? StatusError(
+                          text: error,
+                        )
+                      : null,
+                ),
+                const SizedBox(height: 50),
+                Padding(
+                  padding: kPadding,
+                  child: Column(
+                    children: [
+                      FadeIn(
+                        duration: Duration(milliseconds: 250),
+                        child: InputField(
+                          getValue: (value) {
+                            setStateIfMounted(() {
+                              phone = value;
+                            });
+                          },
+                          labelText: "${local?.phoneNumber}",
+                          textHint: "${local?.phoneNumber}",
+                          prefixIcon: const Icon(
+                            Icons.phone,
+                            color: kWhite,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      FadeIn(
+                        duration: Duration(milliseconds: 250),
+                        child: InputField(
+                          getValue: (value) {
+                            setStateIfMounted(() {
+                              password = value;
+                            });
+                          },
+                          textInputAction: TextInputAction.done,
+                          isPassword: true,
+                          labelText: "${local?.password}",
+                          textHint: "${local?.password}",
+                          prefixIcon: const Icon(
+                            Icons.lock,
+                            color: kWhite,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 35.0,
+                ),
+                FadeIn(
+                  duration: Duration(milliseconds: 250),
+                  child: isLoading
+                      ? _buildLoading
+                      : TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.only(
+                              top: isEnglish ? 10 : 4,
+                              bottom: isEnglish ? 10 : 2,
+                              right: isEnglish ? 14 : 16,
+                              left: isEnglish ? 14 : 16,
+                            ),
+                            primary: Colors.white,
+                            textStyle: kParagraph,
+                            backgroundColor: kDarkestBlue,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(kBorderRadius),
                             ),
                           ),
-                          const SizedBox(
-                            width: 10,
+                          onPressed: () async {
+                            await logUserIn();
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '${local?.login}',
+                                style: kParagraph.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              const Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                              ),
+                            ],
                           ),
-                          const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                          ),
-                        ],
-                      ),
-                    ),
-            ],
+                        ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
