@@ -209,8 +209,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
           const SizedBox(width: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment:
-                isEnglish ? MainAxisAlignment.center : MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               BaselineRow(
                 children: [
@@ -252,5 +251,5 @@ class _ViewOvertimeState extends State<ViewOvertime> {
     );
   }
 
-  Widget _buildSpacer() => SizedBox(height: isInEnglish(context) ? 10 : 6);
+  Widget _buildSpacer() => SizedBox(height: isInEnglish(context) ? 10 : 14);
 }

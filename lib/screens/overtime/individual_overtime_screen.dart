@@ -636,7 +636,7 @@ class _IndividualOvertimeScreenState
   /// more menu
   PopupMenuEntry<String> _buildMoreMenu(String option) {
     return PopupMenuItem<String>(
-      height: 24,
+      height: 32,
       padding: const EdgeInsets.symmetric(
         horizontal: 8,
       ),

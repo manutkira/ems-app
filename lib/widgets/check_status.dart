@@ -32,17 +32,17 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
       });
     }
 
-    AttendanceService attservice = AttendanceService.instance;
+    AttendanceService attService = AttendanceService.instance;
     int userId = ref.read(currentUserProvider).user.id as int;
-    List<AttendanceWithDate> listofAttendance = [];
-    listofAttendance = await attservice.findManyByUserId(
+    List<AttendanceWithDate> listOfAttendance = [];
+    listOfAttendance = await attService.findManyByUserId(
       userId: userId,
       start: DateTime.now(),
       end: DateTime.now(),
     );
     if (!mounted) return;
-    if (listofAttendance.isNotEmpty) {
-      listofAttendance[0].list.map((e) {
+    if (listOfAttendance.isNotEmpty) {
+      listOfAttendance[0].list.map((e) {
         switch (e.code) {
           case 'cin1':
             {
@@ -65,7 +65,7 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
           case 'cout2':
             {
               return setState(() {
-                isAfternoonCheckIn = true;
+                isAfternoonCheckOut = true;
               });
             }
         }
