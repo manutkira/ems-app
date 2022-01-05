@@ -122,6 +122,10 @@
   "@successfully": {
     "description": "qr code screen"
   },
+  "failed": "failed",
+  "@failed": {
+    "description": "qr code screen"
+  },
   "basicInfo": "Basic Info",
   "@basicInfo": {
     "description": "My Profile screen"

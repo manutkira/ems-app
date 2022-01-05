@@ -72,8 +72,11 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     setState(() {
       isAddingAttendance = true;
     });
+    AppLocalizations? local = AppLocalizations.of(context);
+    String localType = widget.type == AttendanceType.typeCheckIn
+        ? "${local?.checkin}"
+        : "${local?.checkout}";
     try {
-      print('hello from scanner');
       await _attService.createOne(
         attendance: attendance as Attendance,
       );
@@ -85,12 +88,11 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
           textColor: kGreenText,
           backgroundColor: kGreenBackground,
           type: widget.type,
-          message: '${widget.type} successfully!',
+          message: '$localType ${local?.successfully}!',
         ),
       );
       _closePanel();
     } catch (err) {
-      print(" ERROR $err");
       setState(() {
         isAddingAttendance = false;
       });
@@ -99,7 +101,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
           textColor: kRedText,
           backgroundColor: kRedBackground,
           type: widget.type,
-          message: '${widget.type} failed!',
+          message: '$localType ${local?.failed}!',
         ),
       );
     }
