@@ -548,10 +548,53 @@ class AttendanceService extends BaseService {
 
   Future<bool> deleteOne(int id) async {
     try {
-      Response response = await delete(Uri.parse('$baseUrl/attendances/$id'));
+      Response response = await delete(
+        Uri.parse('$baseUrl/attendances/$id'),
+        headers: headers(),
+      );
 
       if (response.statusCode == 200) {
         return true;
+      } else {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+    } catch (e) {
+      throw AttendanceException(code: _code);
+      //
+    }
+  }
+
+  Future<String> generateQRCode() async {
+    try {
+      Response response = await get(
+        Uri.parse('$baseUrl/generateqrcode'),
+        headers: headers(),
+      );
+
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<bool> verifyQRCode(String code) async {
+    try {
+      Response response = await get(
+        Uri.parse('$baseUrl/verifyqrcode?code=$code'),
+        headers: headers(),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+      if (response.statusCode == 404) {
+        return false;
       } else {
         _code = response.statusCode;
         throw AttendanceException(code: _code);

@@ -178,5 +178,7 @@
   "checkIn": "ចូល",
   "checkOut": "ចេញ",
   "saveChanges": "តើអ្នកចង់រក្សាទុកការផ្លាស់ប្តូរមែនទេឯ?",
-  "back": "ថយក្រោយ"
+  "back": "ថយក្រោយ",
+  "verifyingQRCode": "កំពុងបញ្ចាក់QRកូដ",
+  "verifyingQRCodeFailed": "ការបញ្ចាក់QRកូដបានបរាជ័យ។"
 }

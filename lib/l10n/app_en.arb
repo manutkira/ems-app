@@ -741,5 +741,13 @@
   "back": "Back",
   "@back": {
     "description": "edit attendance"
+  },
+  "verifyingQRCode": "Verifying QR code",
+  "@verifyingQRCode": {
+    "description": "scan"
+  },
+  "verifyingQRCodeFailed": "qr code verification failed.",
+  "@verifyingQRCodeFailed": {
+    "description": "scan"
   }
 }
