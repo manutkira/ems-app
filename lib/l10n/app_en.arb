@@ -122,6 +122,10 @@
   "@successfully": {
     "description": "qr code screen"
   },
+  "failed": "failed",
+  "@failed": {
+    "description": "qr code screen"
+  },
   "basicInfo": "Basic Info",
   "@basicInfo": {
     "description": "My Profile screen"
@@ -737,5 +741,13 @@
   "back": "Back",
   "@back": {
     "description": "edit attendance"
+  },
+  "verifyingQRCode": "Verifying QR code",
+  "@verifyingQRCode": {
+    "description": "scan"
+  },
+  "verifyingQRCodeFailed": "qr code verification failed.",
+  "@verifyingQRCodeFailed": {
+    "description": "scan"
   }
 }
