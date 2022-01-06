@@ -95,7 +95,7 @@ class _MyAppState extends ConsumerState<MyApp> {
               IndividualAttendanceScreen.routeName: (ctx) =>
                   IndividualAttendanceScreen(),
               // EmployeeEditScreen.routeName: (ctx) => EmployeeEditScreen(),
-              EmployeeInfoScreen.routeName: (ctx) => EmployeeInfoScreen(),
+              // EmployeeInfoScreen.routeName: (ctx) => EmployeeInfoScreen(),
               EmployeeListScreen.routeName: (ctx) => EmployeeListScreen(),
             },
           );

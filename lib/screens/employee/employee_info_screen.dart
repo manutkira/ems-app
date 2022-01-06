@@ -1,14 +1,24 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:ems/models/user.dart';
 import 'package:ems/screens/card/card.screen.dart';
+import 'package:ems/screens/employee/employee_edit_screen.dart';
+import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 
 class EmployeeInfoScreen extends StatefulWidget {
+  final int id;
+  const EmployeeInfoScreen({
+    Key? key,
+    required this.id,
+  }) : super(key: key);
   static const routeName = '/employee-infomation';
 
   @override
@@ -16,19 +26,32 @@ class EmployeeInfoScreen extends StatefulWidget {
 }
 
 class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
-  late int employeeId;
+  // late int employeeId;
+  Object snapshotData = '';
+  final UserService _userService = UserService.instance;
+  List<User> userDisplay = [];
+  List<User> user = [];
+  bool _isloading = true;
 
-  Future fetchData() async {
-    final response = await http.get(Uri.parse(
-        "http://rest-api-laravel-flutter.herokuapp.com/api/users/$employeeId"));
-
-    return json.decode(response.body);
+  fetchUserById() async {
+    try {
+      _userService.findOne(widget.id).then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            _isloading = true;
+            user.add(usersFromServer);
+            userDisplay = user;
+            _isloading = false;
+          });
+        }
+      });
+    } catch (err) {}
   }
 
   @override
-  void didChangeDependencies() {
-    employeeId = ModalRoute.of(context)!.settings.arguments as int;
-    super.didChangeDependencies();
+  void initState() {
+    fetchUserById();
+    super.initState();
   }
 
   @override
@@ -40,12 +63,37 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Employee'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => EmployeeEditScreen(
+                          userDisplay[0].id as int,
+                          userDisplay[0].name.toString(),
+                          userDisplay[0].phone.toString(),
+                          userDisplay[0].email.toString(),
+                          userDisplay[0].address.toString(),
+                          userDisplay[0].position.toString(),
+                          userDisplay[0].skill.toString(),
+                          userDisplay[0].salary.toString(),
+                          userDisplay[0].role.toString(),
+                          userDisplay[0].status.toString(),
+                          userDisplay[0].rate.toString(),
+                          userDisplay[0].background.toString(),
+                          userDisplay[0].image.toString(),
+                          userDisplay[0].imageId.toString())));
+              user = [];
+              userDisplay = [];
+              fetchUserById();
+            },
+            icon: Icon(Icons.edit),
+          ),
+        ],
       ),
-      body: FutureBuilder(
-        future: fetchData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+      body: _isloading
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -55,13 +103,12 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                   ),
                 ],
               ),
-            );
-          } else {
-            return SingleChildScrollView(
+            )
+          : SingleChildScrollView(
               child: Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 40),
+                    margin: EdgeInsets.only(top: 10),
                     padding: EdgeInsets.all(30),
                     width: MediaQuery.of(context).size.width * 0.9,
                     decoration: BoxDecoration(
@@ -82,13 +129,13 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                               )),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(150),
-                            child: (snapshot.data as dynamic)['image'] == null
+                            child: userDisplay[0].image == null
                                 ? Image.asset(
                                     'assets/images/profile-icon-png-910.png',
                                     width: 70,
                                   )
                                 : Image.network(
-                                    (snapshot.data as dynamic)['image'],
+                                    userDisplay[0].image.toString(),
                                     height: 70,
                                   ),
                           ),
@@ -109,8 +156,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                 SizedBox(
                                   width: 20,
                                 ),
-                                Text((snapshot.data as dynamic)['name']
-                                    .toString()),
+                                Text(userDisplay[0].name.toString()),
                               ],
                             ),
                             BaselineRow(
@@ -123,8 +169,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                 SizedBox(
                                   width: 20,
                                 ),
-                                Text((snapshot.data as dynamic)['id']
-                                    .toString()),
+                                Text(userDisplay[0].id.toString()),
                               ],
                             ),
                           ],
@@ -132,9 +177,6 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                       ],
                     ),
                   ),
-                  // SizedBox(
-                  //   height: 30,
-                  // ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: Row(
@@ -142,7 +184,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                       children: [
                         InkWell(
                             onTap: () {
-                              int id = (snapshot.data as dynamic)['id'] as int;
+                              int id = userDisplay[0].id as int;
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (ctx) => NationalIdScreen(
@@ -154,7 +196,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                             child: Text('${local?.optionView}')),
                         IconButton(
                             onPressed: () {
-                              int id = (snapshot.data as dynamic)['id'] as int;
+                              int id = userDisplay[0].id as int;
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (ctx) => NationalIdScreen(
@@ -207,7 +249,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     width: isEnglish ? 80 : 90,
                                   ),
                                   Text(
-                                    (snapshot.data as dynamic)['name'],
+                                    userDisplay[0].name.toString(),
                                     style: kParagraph.copyWith(
                                       color: Colors.white,
                                     ),
@@ -229,7 +271,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     width: isEnglish ? 110 : 80,
                                   ),
                                   Text(
-                                    (snapshot.data as dynamic)['id'].toString(),
+                                    userDisplay[0].id.toString(),
                                     style: kParagraph.copyWith(
                                       color: Colors.white,
                                     ),
@@ -251,8 +293,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     width: isEnglish ? 85 : 90,
                                   ),
                                   Text(
-                                    (snapshot.data as dynamic)['email']
-                                        .toString(),
+                                    userDisplay[0].email.toString(),
                                     style: kParagraph.copyWith(
                                       color: Colors.white,
                                     ),
@@ -274,8 +315,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     width: isEnglish ? 65 : 85,
                                   ),
                                   Text(
-                                    (snapshot.data as dynamic)['position']
-                                        .toString(),
+                                    userDisplay[0].position.toString(),
                                     style: kParagraph.copyWith(
                                       color: Colors.white,
                                     ),
@@ -297,8 +337,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     width: isEnglish ? 95 : 92,
                                   ),
                                   Text(
-                                    (snapshot.data as dynamic)['skill']
-                                        .toString(),
+                                    userDisplay[0].skill.toString(),
                                     style: kParagraph.copyWith(
                                       color: Colors.white,
                                     ),
@@ -320,7 +359,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     width: isEnglish ? 78 : 85,
                                   ),
                                   Text(
-                                    '\$${(snapshot.data as dynamic)['salary'].toString()}',
+                                    '\$${userDisplay[0].salary.toString()}',
                                     style: kParagraph.copyWith(
                                       color: Colors.white,
                                     ),
@@ -342,8 +381,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     width: isEnglish ? 95 : 99,
                                   ),
                                   Text(
-                                    (snapshot.data as dynamic)['role']
-                                        .toString(),
+                                    userDisplay[0].role.toString(),
                                     style: kParagraph.copyWith(
                                       color: Colors.white,
                                     ),
@@ -365,8 +403,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     width: isEnglish ? 78 : 78,
                                   ),
                                   Text(
-                                    (snapshot.data as dynamic)['status']
-                                        .toString(),
+                                    userDisplay[0].status.toString(),
                                     style: kParagraph.copyWith(
                                       color: Colors.white,
                                     ),
@@ -388,8 +425,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     width: isEnglish ? 93 : 77,
                                   ),
                                   Text(
-                                    (snapshot.data as dynamic)['rate']
-                                        .toString(),
+                                    userDisplay[0].rate.toString(),
                                     style: kParagraph.copyWith(
                                       color: Colors.white,
                                     ),
@@ -411,8 +447,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     width: isEnglish ? 80 : 63,
                                   ),
                                   Text(
-                                    (snapshot.data as dynamic)['phone']
-                                        .toString(),
+                                    userDisplay[0].phone.toString(),
                                     style: kParagraph.copyWith(
                                       color: Colors.white,
                                     ),
@@ -441,8 +476,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                           left: 15,
                                         ),
                                         child: Text(
-                                          (snapshot.data as dynamic)['address']
-                                              .toString(),
+                                          userDisplay[0].address.toString(),
                                           style: kParagraph.copyWith(
                                             color: Colors.white,
                                           ),
@@ -470,8 +504,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                     Padding(
                                       padding: const EdgeInsets.only(left: 15),
                                       child: Text(
-                                        (snapshot.data as dynamic)['background']
-                                            .toString(),
+                                        userDisplay[0].background.toString(),
                                         style: kParagraph.copyWith(
                                           color: Colors.white,
                                         ),
@@ -488,10 +521,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                   )
                 ],
               ),
-            );
-          }
-        },
-      ),
+            ),
     );
   }
 }

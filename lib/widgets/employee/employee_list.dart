@@ -27,6 +27,22 @@ class _EmployeeListState extends State<EmployeeList> {
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
+  fetchData() async {
+    try {
+      _userService.findMany().then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            user.addAll(usersFromServer);
+            userDisplay = user;
+
+            userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+          });
+        }
+      });
+    } catch (err) {}
+  }
+
   Future deleteData(int id) async {
     final response = await http.delete(Uri.parse("$url/$id"));
     if (response.statusCode == 200) {
@@ -57,20 +73,8 @@ class _EmployeeListState extends State<EmployeeList> {
 
   @override
   void initState() {
-    try {
-      _userService.findMany().then((usersFromServer) {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-            user.addAll(usersFromServer);
-            userDisplay = user;
-
-            userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-          });
-        }
-      });
-      super.initState();
-    } catch (err) {}
+    fetchData();
+    super.initState();
   }
 
   @override
@@ -341,7 +345,7 @@ class _EmployeeListState extends State<EmployeeList> {
                     color: kDarkestBlue,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
-                    onSelected: (int selectedValue) {
+                    onSelected: (int selectedValue) async {
                       if (selectedValue == 1) {
                         int id = userDisplay[index].id as int;
                         String name = userDisplay[index].name.toString();
@@ -359,8 +363,7 @@ class _EmployeeListState extends State<EmployeeList> {
                             userDisplay[index].background.toString();
                         String image = userDisplay[index].image.toString();
                         String imageId = userDisplay[index].imageId.toString();
-                        print(imageId);
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        await Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => EmployeeEditScreen(
                                 id,
                                 name,
@@ -376,12 +379,18 @@ class _EmployeeListState extends State<EmployeeList> {
                                 background,
                                 image,
                                 imageId)));
+                        userDisplay = [];
+                        user = [];
+                        fetchData();
                       }
                       if (selectedValue == 0) {
-                        Navigator.of(context).pushNamed(
-                          EmployeeInfoScreen.routeName,
-                          arguments: userDisplay[index].id,
-                        );
+                        int id = userDisplay[index].id as int;
+                        await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => EmployeeInfoScreen(id: id),
+                        ));
+                        userDisplay = [];
+                        user = [];
+                        fetchData();
                       }
                       if (selectedValue == 2) {
                         showDialog(

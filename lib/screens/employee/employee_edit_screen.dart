@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/check_status.dart';
@@ -178,12 +179,9 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                           content: Text('Your changes will be lost.'),
                           actions: [
                             OutlineButton(
-                              onPressed: () async {
+                              onPressed: () {
                                 Navigator.of(context).pop();
-                                await Navigator.of(context)
-                                    .pushReplacementNamed(
-                                  EmployeeListScreen.routeName,
-                                );
+                                Navigator.of(context).pop();
                               },
                               child: Text('${local?.yes}'),
                               borderSide: BorderSide(color: Colors.green),
@@ -846,8 +844,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
 
     var res = await request.send();
     if (res.statusCode == 200) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => EmployeeListScreen()));
+      Navigator.pop(context);
     }
     res.stream.transform(utf8.decoder).listen((event) {});
   }
