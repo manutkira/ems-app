@@ -128,25 +128,27 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           constraints: BoxConstraints(
                               maxWidth:
                                   MediaQuery.of(context).size.width * 0.6),
-                          child: Flexible(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                hintText: '${local?.enterName} ',
-                                errorStyle: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
+                          child: Flex(direction: Axis.horizontal, children: [
+                            Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: '${local?.enterName} ',
+                                  errorStyle: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
+                                controller: name,
+                                textInputAction: TextInputAction.next,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return '${local?.errorName}';
+                                  }
+                                  return null;
+                                },
                               ),
-                              controller: name,
-                              textInputAction: TextInputAction.next,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return '${local?.errorName}';
-                                }
-                                return null;
-                              },
                             ),
-                          ),
+                          ]),
                         ),
                       ],
                     ),
@@ -168,26 +170,31 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           constraints: BoxConstraints(
                               maxWidth:
                                   MediaQuery.of(context).size.width * 0.6),
-                          child: Flexible(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                hintText: '${local?.enterPhone} ',
-                                errorStyle: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: [
+                              Flexible(
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    hintText: '${local?.enterPhone} ',
+                                    errorStyle: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  controller: phone,
+                                  textInputAction: TextInputAction.next,
+                                  validator: (value) {
+                                    if (value!.isEmpty ||
+                                        !RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$')
+                                            .hasMatch(value)) {
+                                      return '${local?.errorPhone}';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
-                              controller: phone,
-                              textInputAction: TextInputAction.next,
-                              validator: (value) {
-                                if (value!.isEmpty ||
-                                    !RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$')
-                                        .hasMatch(value)) {
-                                  return '${local?.errorPhone}';
-                                }
-                                return null;
-                              },
-                            ),
+                            ],
                           ),
                         ),
                       ],
@@ -210,27 +217,32 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           constraints: BoxConstraints(
                               maxWidth:
                                   MediaQuery.of(context).size.width * 0.6),
-                          child: Flexible(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                hintText: '${local?.enterEmail} ',
-                                errorStyle: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: [
+                              Flexible(
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    hintText: '${local?.enterEmail} ',
+                                    errorStyle: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  controller: email,
+                                  keyboardType: TextInputType.emailAddress,
+                                  textInputAction: TextInputAction.next,
+                                  validator: (value) {
+                                    if (value!.isEmpty ||
+                                        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
+                                            .hasMatch(value)) {
+                                      return '${local?.errorEmail}';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
-                              controller: email,
-                              keyboardType: TextInputType.emailAddress,
-                              textInputAction: TextInputAction.next,
-                              validator: (value) {
-                                if (value!.isEmpty ||
-                                    !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
-                                        .hasMatch(value)) {
-                                  return '${local?.errorEmail}';
-                                }
-                                return null;
-                              },
-                            ),
+                            ],
                           ),
                         ),
                       ],
@@ -253,27 +265,32 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           constraints: BoxConstraints(
                               maxWidth:
                                   MediaQuery.of(context).size.width * 0.6),
-                          child: Flexible(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                hintText: '${local?.enterPassword} ',
-                                errorStyle: const TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: [
+                              Flexible(
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    hintText: '${local?.enterPassword} ',
+                                    errorStyle: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  controller: password,
+                                  textInputAction: TextInputAction.next,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return '${local?.errorPassword}';
+                                    }
+                                    if (value.length < 8) {
+                                      return '${local?.errorPasswordLength}';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
-                              controller: password,
-                              textInputAction: TextInputAction.next,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return '${local?.errorPassword}';
-                                }
-                                if (value.length < 8) {
-                                  return '${local?.errorPasswordLength}';
-                                }
-                                return null;
-                              },
-                            ),
+                            ],
                           ),
                         ),
                       ],
@@ -296,17 +313,22 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           constraints: BoxConstraints(
                               maxWidth:
                                   MediaQuery.of(context).size.width * 0.6),
-                          child: Flexible(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  hintText: '${local?.enterPosition} ',
-                                  errorStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              controller: position,
-                              textInputAction: TextInputAction.next,
-                            ),
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: [
+                              Flexible(
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                      hintText: '${local?.enterPosition} ',
+                                      errorStyle: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                  controller: position,
+                                  textInputAction: TextInputAction.next,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -329,17 +351,22 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           constraints: BoxConstraints(
                               maxWidth:
                                   MediaQuery.of(context).size.width * 0.6),
-                          child: Flexible(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  hintText: '${local?.enterSkill} ',
-                                  errorStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              controller: skill,
-                              textInputAction: TextInputAction.next,
-                            ),
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: [
+                              Flexible(
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                      hintText: '${local?.enterSkill} ',
+                                      errorStyle: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                  controller: skill,
+                                  textInputAction: TextInputAction.next,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -362,20 +389,25 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                           constraints: BoxConstraints(
                               maxWidth:
                                   MediaQuery.of(context).size.width * 0.6),
-                          child: Flexible(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  prefixIcon: const Icon(
-                                    MdiIcons.currencyUsd,
-                                    color: kWhite,
-                                  ),
-                                  hintText: '${local?.enterSalary} ',
-                                  errorStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              controller: salary,
-                            ),
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: [
+                              Flexible(
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        MdiIcons.currencyUsd,
+                                        color: kWhite,
+                                      ),
+                                      hintText: '${local?.enterSalary} ',
+                                      errorStyle: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                  controller: salary,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -514,18 +546,23 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         Container(
                           constraints: BoxConstraints(
                               maxWidth: MediaQuery.of(context).size.width * 1),
-                          child: Flexible(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  hintText: '${local?.enterAddress} ',
-                                  errorStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              controller: address,
-                              textInputAction: TextInputAction.next,
-                              maxLines: 3,
-                            ),
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: [
+                              Flexible(
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                      hintText: '${local?.enterAddress} ',
+                                      errorStyle: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                  controller: address,
+                                  textInputAction: TextInputAction.next,
+                                  maxLines: 3,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -547,18 +584,23 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         Container(
                           constraints: BoxConstraints(
                               maxWidth: MediaQuery.of(context).size.width * 1),
-                          child: Flexible(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  hintText: '${local?.enterBackground} ',
-                                  errorStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              controller: background,
-                              textInputAction: TextInputAction.done,
-                              maxLines: 3,
-                            ),
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: [
+                              Flexible(
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                      hintText: '${local?.enterBackground} ',
+                                      errorStyle: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                  controller: background,
+                                  textInputAction: TextInputAction.done,
+                                  maxLines: 3,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(

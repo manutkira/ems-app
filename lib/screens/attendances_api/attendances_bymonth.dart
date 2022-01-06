@@ -63,12 +63,12 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     _controller.clear();
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    yearController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   yearController.dispose();
+  //   super.dispose();
+  // }
 
   void _byDayDatePicker() {
     showDatePicker(

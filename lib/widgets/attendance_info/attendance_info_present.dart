@@ -9,6 +9,10 @@ class AttendanceInfoPresent extends StatelessWidget {
   final bool afternoon;
   final bool multipleDay;
   final bool isOneday;
+  final bool isLoading;
+  final bool now;
+  dynamic todayMorning;
+  dynamic todayAfternoon;
   dynamic presentAfternoon;
   dynamic countPresentNoon;
   dynamic presentMorning;
@@ -23,6 +27,10 @@ class AttendanceInfoPresent extends StatelessWidget {
     required this.afternoon,
     required this.multipleDay,
     required this.isOneday,
+    required this.isLoading,
+    required this.now,
+    required this.todayMorning,
+    required this.todayAfternoon,
     required this.presentAfternoon,
     required this.countPresentNoon,
     required this.presentMorning,
@@ -56,19 +64,31 @@ class AttendanceInfoPresent extends StatelessWidget {
           visible: counted == null,
           child: CircularProgressIndicator(),
         ),
-        Visibility(
-          visible: counted != null,
-          child: Text(
-            isOneday && !alltime
-                ? afternoon
-                    ? onedayAfternoon
-                    : onedayMorning
-                : alltime
-                    ? presentAll
-                    : counted,
-            style: kHeadingFour.copyWith(color: kWhite),
-          ),
-        )
+        isLoading
+            ? SizedBox(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+                height: 10,
+                width: 10,
+              )
+            : Visibility(
+                visible: counted != null,
+                child: Text(
+                  now
+                      ? afternoon
+                          ? todayAfternoon
+                          : todayMorning
+                      : isOneday && !alltime
+                          ? afternoon
+                              ? onedayAfternoon
+                              : onedayMorning
+                          : alltime
+                              ? presentAll
+                              : counted,
+                  style: kHeadingFour.copyWith(color: kWhite),
+                ),
+              )
       ],
     );
   }

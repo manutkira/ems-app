@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/utils/utils.dart';
@@ -106,7 +107,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    print(widget.status);
 
     String checkRole() {
       if (widget.role == 'admin') {
@@ -224,24 +224,29 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                       Container(
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: Flexible(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: '${local?.enterName}',
-                              errorStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                        child: Flex(
+                          direction: Axis.horizontal,
+                          children: [
+                            Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: '${local?.enterName}',
+                                  errorStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                controller: nameController,
+                                textInputAction: TextInputAction.next,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return '${local?.errorName}';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
-                            controller: nameController,
-                            textInputAction: TextInputAction.next,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return '${local?.errorName}';
-                              }
-                              return null;
-                            },
-                          ),
+                          ],
                         ),
                       ),
                     ],
@@ -262,30 +267,35 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                       Container(
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: Flexible(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: '${local?.enterPhone}',
-                              errorStyle: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                        child: Flex(
+                          direction: Axis.horizontal,
+                          children: [
+                            Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: '${local?.enterPhone}',
+                                  errorStyle: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                controller: phoneController,
+                                textInputAction: TextInputAction.next,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return '${local?.errorPhone}';
+                                  }
+                                  if (double.tryParse(value) == null) {
+                                    return 'Please Enter valid number';
+                                  }
+                                  if (value.length < 9 || value.length > 10) {
+                                    return 'Enter Between 8-9 Digits';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
-                            controller: phoneController,
-                            textInputAction: TextInputAction.next,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return '${local?.errorPhone}';
-                              }
-                              if (double.tryParse(value) == null) {
-                                return 'Please Enter valid number';
-                              }
-                              if (value.length < 9 || value.length > 10) {
-                                return 'Enter Between 8-9 Digits';
-                              }
-                              return null;
-                            },
-                          ),
+                          ],
                         ),
                       ),
                     ],
@@ -306,26 +316,31 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                       Container(
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: Flexible(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: '${local?.enterEmail}',
-                              errorStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                        child: Flex(
+                          direction: Axis.horizontal,
+                          children: [
+                            Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: '${local?.enterEmail}',
+                                  errorStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                controller: emailController,
+                                textInputAction: TextInputAction.next,
+                                validator: (value) {
+                                  if (value!.isEmpty ||
+                                      !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
+                                          .hasMatch(value)) {
+                                    return '${local?.errorEmail}';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
-                            controller: emailController,
-                            textInputAction: TextInputAction.next,
-                            validator: (value) {
-                              if (value!.isEmpty ||
-                                  !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
-                                      .hasMatch(value)) {
-                                return '${local?.errorEmail}';
-                              }
-                              return null;
-                            },
-                          ),
+                          ],
                         ),
                       ),
                     ],
@@ -346,18 +361,23 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                       Container(
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: Flexible(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: '${local?.enterPosition}',
-                              errorStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                        child: Flex(
+                          direction: Axis.horizontal,
+                          children: [
+                            Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: '${local?.enterPosition}',
+                                  errorStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                controller: positionController,
+                                textInputAction: TextInputAction.next,
                               ),
                             ),
-                            controller: positionController,
-                            textInputAction: TextInputAction.next,
-                          ),
+                          ],
                         ),
                       ),
                     ],
@@ -378,18 +398,23 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                       Container(
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: Flexible(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: '${local?.enterSkill}',
-                              errorStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                        child: Flex(
+                          direction: Axis.horizontal,
+                          children: [
+                            Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: '${local?.enterSkill}',
+                                  errorStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                controller: skillController,
+                                textInputAction: TextInputAction.next,
                               ),
                             ),
-                            controller: skillController,
-                            textInputAction: TextInputAction.next,
-                          ),
+                          ],
                         ),
                       ),
                     ],
@@ -410,21 +435,26 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                       Container(
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: Flexible(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(
-                                MdiIcons.currencyUsd,
-                                color: kWhite,
-                              ),
-                              hintText: '${local?.enterSalary}',
-                              errorStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                        child: Flex(
+                          direction: Axis.horizontal,
+                          children: [
+                            Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(
+                                    MdiIcons.currencyUsd,
+                                    color: kWhite,
+                                  ),
+                                  hintText: '${local?.enterSalary}',
+                                  errorStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                controller: salaryController,
                               ),
                             ),
-                            controller: salaryController,
-                          ),
+                          ],
                         ),
                       ),
                     ],
@@ -568,19 +598,24 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             constraints: BoxConstraints(
                                 maxWidth:
                                     MediaQuery.of(context).size.width * 1),
-                            child: Flexible(
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  hintText: '${local?.enterAddress}',
-                                  errorStyle: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
+                            child: Flex(
+                              direction: Axis.horizontal,
+                              children: [
+                                Flexible(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: '${local?.enterAddress}',
+                                      errorStyle: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    controller: addressController,
+                                    textInputAction: TextInputAction.next,
+                                    maxLines: 3,
                                   ),
                                 ),
-                                controller: addressController,
-                                textInputAction: TextInputAction.next,
-                                maxLines: 3,
-                              ),
+                              ],
                             ),
                           ),
                         ],
@@ -603,19 +638,24 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             constraints: BoxConstraints(
                                 maxWidth:
                                     MediaQuery.of(context).size.width * 1),
-                            child: Flexible(
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  hintText: '${local?.enterBackground}',
-                                  errorStyle: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
+                            child: Flex(
+                              direction: Axis.horizontal,
+                              children: [
+                                Flexible(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: '${local?.enterBackground}',
+                                      errorStyle: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    controller: backgroundController,
+                                    textInputAction: TextInputAction.done,
+                                    maxLines: 3,
                                   ),
                                 ),
-                                controller: backgroundController,
-                                textInputAction: TextInputAction.done,
-                                maxLines: 3,
-                              ),
+                              ],
                             ),
                           ),
                         ],
@@ -809,8 +849,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (ctx) => EmployeeListScreen()));
     }
-    res.stream.transform(utf8.decoder).listen((event) {
-      print(event);
-    });
+    res.stream.transform(utf8.decoder).listen((event) {});
   }
 }

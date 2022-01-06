@@ -1,3 +1,4 @@
+import 'package:ems/widgets/attendance_info/attendance_info_no_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -347,7 +348,6 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                       ),
                                     ),
                                   );
-                                  attendanceAll = [];
                                   fetchAllAttendance();
                                 }
                                 if (selectedValue == 1) {
@@ -417,7 +417,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                   ),
                                   value: 2,
                                 ),
-                                if (attendanceList[0].users!.role == 'admin')
+                                if (attendanceAll[0].users!.role == 'admin')
                                   PopupMenuItem(
                                     child: Text(
                                       '${local?.edit}',
@@ -426,7 +426,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     ),
                                     value: 0,
                                   ),
-                                if (attendanceList[0].users!.role == 'admin')
+                                if (attendanceAll[0].users!.role == 'admin')
                                   PopupMenuItem(
                                     child: Text(
                                       '${local?.delete}',
@@ -784,11 +784,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                             ),
                                           ),
                                         );
-                                        attendanceAllDisplay = [];
                                         fetchAttendanceById();
                                       }
                                       if (selectedValue == 1) {
-                                        print(attendanceList[index].id);
                                         showDialog(
                                           context: context,
                                           builder: (ctx) => AlertDialog(
@@ -860,7 +858,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                         final DateTime date =
                                             attendanceListNoon[index].date;
                                         final String? note =
-                                            attendanceAll[index].note;
+                                            attendanceListNoon[index].note;
                                         await Navigator.of(context).push(
                                           MaterialPageRoute(
                                             builder: (ctx) => AttedancesEdit(
@@ -872,7 +870,6 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                             ),
                                           ),
                                         );
-                                        attendanceAllDisplay = [];
                                         fetchAttendanceByIdNoon();
                                       }
                                       if (selectedValue == 1) {

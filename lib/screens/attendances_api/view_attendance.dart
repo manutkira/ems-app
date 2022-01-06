@@ -216,22 +216,27 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                   Container(
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextFormField(
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                        readOnly: true,
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          errorStyle: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
+                    child: Flex(
+                      direction: Axis.horizontal,
+                      children: [
+                        Flexible(
+                          child: TextFormField(
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            readOnly: true,
+                            maxLines: 5,
+                            decoration: InputDecoration(
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: note,
+                            textInputAction: TextInputAction.next,
                           ),
                         ),
-                        controller: note,
-                        textInputAction: TextInputAction.next,
-                      ),
+                      ],
                     ),
                   ),
                 ],

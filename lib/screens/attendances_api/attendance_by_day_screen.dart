@@ -84,7 +84,6 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     setState(() {
       users = checkingDate.toList();
       checkedDateNoon = users;
-      print(checkedDateNoon[0].type);
       checkedDateNoon.sort((a, b) => a.userId!.compareTo(b.userId as int));
     });
   }
@@ -344,8 +343,34 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                 )),
-                            child:
-                                checkedDate.isEmpty && checkedDateNoon.isEmpty
+                            child: !afternoon && checkedDate.isEmpty
+                                ? Column(
+                                    children: [
+                                      _searchBar(),
+                                      Container(
+                                        padding: EdgeInsets.only(top: 150),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              '${local?.noAttendance}',
+                                              style: kHeadingThree.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 30,
+                                            ),
+                                            Image.asset(
+                                              'assets/images/attendanceicon.png',
+                                              width: 220,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : afternoon && checkedDateNoon.isEmpty
                                     ? Column(
                                         children: [
                                           _searchBar(),

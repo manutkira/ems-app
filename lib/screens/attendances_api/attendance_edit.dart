@@ -104,7 +104,6 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    print('note: ${widget.note}');
     checkType() {
       if (widget.type == 'checkin') {
         return local!.checkIn;
@@ -150,12 +149,17 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   Container(
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextFormField(
-                        readOnly: true,
-                        controller: id,
-                        textInputAction: TextInputAction.next,
-                      ),
+                    child: Flex(
+                      direction: Axis.horizontal,
+                      children: [
+                        Flexible(
+                          child: TextFormField(
+                            readOnly: true,
+                            controller: id,
+                            textInputAction: TextInputAction.next,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -178,19 +182,24 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   Container(
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextFormField(
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          hintText: 'Enter Name',
-                          errorStyle: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
+                    child: Flex(
+                      direction: Axis.horizontal,
+                      children: [
+                        Flexible(
+                          child: TextFormField(
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              hintText: 'Enter Name',
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: idController,
+                            textInputAction: TextInputAction.next,
                           ),
                         ),
-                        controller: idController,
-                        textInputAction: TextInputAction.next,
-                      ),
+                      ],
                     ),
                   ),
                 ],
@@ -252,24 +261,29 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   Container(
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                              onPressed: () {
-                                // _fullTime();
-                                _byDayDatePicker();
-                              },
-                              icon: Icon(Icons.calendar_today)),
-                          hintText: 'Enter Name',
-                          errorStyle: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
+                    child: Flex(
+                      direction: Axis.horizontal,
+                      children: [
+                        Flexible(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    // _fullTime();
+                                    _byDayDatePicker();
+                                  },
+                                  icon: Icon(Icons.calendar_today)),
+                              hintText: 'Enter Name',
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: dateController,
+                            textInputAction: TextInputAction.next,
                           ),
                         ),
-                        controller: dateController,
-                        textInputAction: TextInputAction.next,
-                      ),
+                      ],
                     ),
                   ),
                 ],
@@ -290,22 +304,27 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   Container(
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                              onPressed: () {
-                                _selectTime();
-                              },
-                              icon: Icon(MdiIcons.clockOutline)),
-                          errorStyle: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
+                    child: Flex(
+                      direction: Axis.horizontal,
+                      children: [
+                        Flexible(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    _selectTime();
+                                  },
+                                  icon: Icon(MdiIcons.clockOutline)),
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: _timeController,
+                            textInputAction: TextInputAction.next,
                           ),
                         ),
-                        controller: _timeController,
-                        textInputAction: TextInputAction.next,
-                      ),
+                      ],
                     ),
                   ),
                 ],
@@ -329,18 +348,23 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   Container(
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flexible(
-                      child: TextFormField(
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          errorStyle: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
+                    child: Flex(
+                      direction: Axis.horizontal,
+                      children: [
+                        Flexible(
+                          child: TextFormField(
+                            maxLines: 5,
+                            decoration: InputDecoration(
+                              errorStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            controller: _noteController,
+                            textInputAction: TextInputAction.next,
                           ),
                         ),
-                        controller: _noteController,
-                        textInputAction: TextInputAction.next,
-                      ),
+                      ],
                     ),
                   ),
                 ],
@@ -447,8 +471,6 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     if (res.statusCode == 200) {
       Navigator.pop(context);
     }
-    res.stream.transform(utf8.decoder).listen((event) {
-      print(event);
-    });
+    res.stream.transform(utf8.decoder).listen((event) {});
   }
 }

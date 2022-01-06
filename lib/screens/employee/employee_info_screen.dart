@@ -61,110 +61,69 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
               child: Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-                    height: 139,
-                    width: double.infinity,
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      color: kLightBlue,
-                      child: Row(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(
-                              left: 10,
-                            ),
-                            child: Expanded(
-                              flex: 3,
-                              child: Container(
-                                width: 85,
-                                height: 85,
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(100)),
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.white,
-                                    )),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(150),
-                                  child: (snapshot.data as dynamic)['image'] ==
-                                          null
-                                      ? Image.asset(
-                                          'assets/images/profile-icon-png-910.png')
-                                      : Image.network(
-                                          (snapshot.data as dynamic)['image'],
-                                          fit: BoxFit.cover,
-                                          width: double.infinity,
-                                          height: 75,
-                                        ),
+                    margin: EdgeInsets.only(top: 40),
+                    padding: EdgeInsets.all(30),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: BoxDecoration(
+                      color: kDarkestBlue,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(150),
+                          child: (snapshot.data as dynamic)['image'] == null
+                              ? Image.asset(
+                                  'assets/images/profile-icon-png-910.png',
+                                  width: 60,
+                                )
+                              : Image.network(
+                                  (snapshot.data as dynamic)['image'],
+                                  height: 60,
                                 ),
-                              ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            BaselineRow(
+                              children: [
+                                Text(
+                                  '${local?.name} : ',
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Text((snapshot.data as dynamic)['name']
+                                    .toString()),
+                              ],
                             ),
-                          ),
-                          Container(
-                            height: 65,
-                            margin: EdgeInsets.only(left: 15, top: 13),
-                            child: Expanded(
-                              flex: 7,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  BaselineRow(
-                                    children: [
-                                      Text(
-                                        '${local?.id} : ',
-                                        style: kParagraph.copyWith(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        width: isEnglish ? 45 : 20,
-                                      ),
-                                      Text(
-                                        (snapshot.data as dynamic)['id']
-                                            .toString(),
-                                        style: kParagraph.copyWith(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: isEnglish ? 10 : 0,
-                                  ),
-                                  BaselineRow(
-                                    children: [
-                                      Text(
-                                        '${local?.name} : ',
-                                        style: kParagraph.copyWith(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        width: isEnglish ? 19 : 30,
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: isEnglish ? 4 : 0),
-                                        child: Text(
-                                          (snapshot.data as dynamic)['name'],
-                                          style: kParagraph.copyWith(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
+                            BaselineRow(
+                              children: [
+                                Text(
+                                  '${local?.id} : ',
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Text((snapshot.data as dynamic)['id']
+                                    .toString()),
+                              ],
                             ),
-                          )
-                        ],
-                      ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
+                  // SizedBox(
+                  //   height: 30,
+                  // ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: Row(

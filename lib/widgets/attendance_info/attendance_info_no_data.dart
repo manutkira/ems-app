@@ -11,29 +11,27 @@ class AttendanceInfoNoData extends StatelessWidget {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.only(top: isEnglish ? 50 : 0, left: 0),
-        child: Column(
-          children: [
-            Text(
-              '${local?.noAttendance}',
-              style: kHeadingThree.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+    return Container(
+      padding: EdgeInsets.only(top: isEnglish ? 50 : 0, left: 0),
+      child: Column(
+        children: [
+          Text(
+            '${local?.noAttendance}',
+            style: kHeadingThree.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-            SizedBox(
-              height: isEnglish ? 30 : 0,
+          ),
+          SizedBox(
+            height: isEnglish ? 30 : 0,
+          ),
+          Text(
+            '🤷🏼',
+            style: TextStyle(
+              fontSize: 60,
             ),
-            Text(
-              '🤷🏼',
-              style: TextStyle(
-                fontSize: 60,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

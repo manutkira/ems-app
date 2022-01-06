@@ -21,9 +21,8 @@ class AttendanceAllTimeScreen extends StatefulWidget {
 class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   AttendanceService _attendanceService = AttendanceService.instance;
   UserService _userService = UserService.instance;
-  dynamic countPresent = '';
 
-  List attendancedisplay = [];
+  List<Attendance> attendancedisplay = [];
   List userDisplay = [];
   List<User> users = [];
   bool _isLoading = true;
@@ -44,9 +43,140 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
     List<Attendance> att2 = attendancesFromAttendancesByDay(atts);
     setState(() {
       attendancedisplay = att2;
-      print(attendancedisplay);
       attendancedisplay.sort((a, b) => a.id!.compareTo(b.id as int));
     });
+  }
+
+  checkLateNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour == 13) {
+          if (element.date!.minute >= 16) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (element.date!.hour > 13) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPresent(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour <= 7) {
+          if (element.date!.minute <= 15) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsent(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'absent') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsentNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'absent') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPermission(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'permission') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissionNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'permission') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPresentNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour <= 13) {
+          if (element.date!.minute <= 15) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkLate(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour == 7) {
+          if (element.date!.minute >= 16) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (element.date!.hour > 7) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   @override
@@ -61,19 +191,9 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
           users.addAll(value);
           userDisplay = users;
           userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-          var pc = _attendanceService
-              .countPresent(int.parse(users.map((e) => e.id).toString()));
-          if (mounted) {
-            setState(() {
-              countPresent = pc;
-              print(countPresent);
-            });
-          }
         });
       });
-    } catch (err) {
-      print(err);
-    }
+    } catch (err) {}
   }
 
   @override
@@ -294,10 +414,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                         (element) =>
                                             element.userId ==
                                                 userDisplay[index].id &&
-                                            element.type == 'checkin' &&
-                                            element.code == 'cin2' &&
-                                            element.date!.hour == 13 &&
-                                            element.date!.minute <= 15,
+                                            checkPresentNoon(element),
                                       )
                                       .length
                                       .toString())
@@ -306,10 +423,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                         (element) =>
                                             element.userId ==
                                                 userDisplay[index].id &&
-                                            element.type == 'checkin' &&
-                                            element.code == 'cin1' &&
-                                            element.date!.hour == 7 &&
-                                            element.date!.minute <= 15,
+                                            checkPresent(element),
                                       )
                                       .length
                                       .toString()),
@@ -331,8 +445,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                           .where((element) =>
                                               element.userId ==
                                                   userDisplay[index].id &&
-                                              element.code == 'cin2' &&
-                                              element.type == 'absent')
+                                              checkAbsentNoon(element))
                                           .length
                                           .toString(),
                                     )
@@ -341,8 +454,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                           .where((element) =>
                                               element.userId ==
                                                   userDisplay[index].id &&
-                                              element.code == 'cin1' &&
-                                              element.type == 'absent')
+                                              checkAbsent(element))
                                           .length
                                           .toString(),
                                     ),
@@ -368,20 +480,14 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                       .where((element) =>
                                           element.userId ==
                                               userDisplay[index].id &&
-                                          element.code == 'cin2' &&
-                                          element.type == 'checkin' &&
-                                          element.date!.hour == 13 &&
-                                          element.date!.minute <= 15)
+                                          checkLateNoon(element))
                                       .length
                                       .toString())
                                   : Text(attendancedisplay
                                       .where((element) =>
                                           element.userId ==
                                               userDisplay[index].id &&
-                                          element.code == 'cin1' &&
-                                          element.type == 'checkin' &&
-                                          element.date!.hour == 7 &&
-                                          element.date!.minute <= 15)
+                                          checkLate(element))
                                       .length
                                       .toString()),
                             ],
@@ -401,16 +507,14 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                       .where((element) =>
                                           element.userId ==
                                               userDisplay[index].id &&
-                                          element.code == 'cin2' &&
-                                          element.type == 'permission')
+                                          checkPermissionNoon(element))
                                       .length
                                       .toString())
                                   : Text(attendancedisplay
                                       .where((element) =>
                                           element.userId ==
                                               userDisplay[index].id &&
-                                          element.code == 'cin1' &&
-                                          element.type == 'permission')
+                                          checkPermission(element))
                                       .length
                                       .toString()),
                             ],
@@ -450,7 +554,6 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                             clearText();
                             userDisplay = users.where((user) {
                               var userName = user.name!.toLowerCase();
-                              print(userName);
                               return userName.contains(_controller.text);
                             }).toList();
                           });
