@@ -30,17 +30,27 @@ class AttendanceInfoNameId extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(150),
-            child: image == null
-                ? Image.asset(
-                    'assets/images/profile-icon-png-910.png',
-                    width: 60,
-                  )
-                : Image.network(
-                    image,
-                    height: 60,
-                  ),
+          Container(
+            width: 65,
+            height: 65,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+                border: Border.all(
+                  width: 1,
+                  color: Colors.white,
+                )),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(150),
+              child: image == null
+                  ? Image.asset(
+                      'assets/images/profile-icon-png-910.png',
+                      width: 50,
+                    )
+                  : Image.network(
+                      image,
+                      height: 50,
+                    ),
+            ),
           ),
           SizedBox(
             width: 20,

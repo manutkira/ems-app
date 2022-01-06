@@ -77,11 +77,24 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                 ),
                 child: Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.network(
-                        image!,
-                        width: 60,
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.white,
+                          )),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image.network(
+                          image!,
+                          width: 60,
+                        ),
                       ),
                     ),
                     SizedBox(

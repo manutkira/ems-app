@@ -70,17 +70,28 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                     ),
                     child: Row(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(150),
-                          child: (snapshot.data as dynamic)['image'] == null
-                              ? Image.asset(
-                                  'assets/images/profile-icon-png-910.png',
-                                  width: 60,
-                                )
-                              : Image.network(
-                                  (snapshot.data as dynamic)['image'],
-                                  height: 60,
-                                ),
+                        Container(
+                          width: 75,
+                          height: 75,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              border: Border.all(
+                                width: 1,
+                                color: Colors.white,
+                              )),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(150),
+                            child: (snapshot.data as dynamic)['image'] == null
+                                ? Image.asset(
+                                    'assets/images/profile-icon-png-910.png',
+                                    width: 70,
+                                  )
+                                : Image.network(
+                                    (snapshot.data as dynamic)['image'],
+                                    height: 70,
+                                  ),
+                          ),
                         ),
                         SizedBox(
                           width: 20,
