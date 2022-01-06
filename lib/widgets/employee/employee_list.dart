@@ -59,13 +59,15 @@ class _EmployeeListState extends State<EmployeeList> {
   void initState() {
     try {
       _userService.findMany().then((usersFromServer) {
-        setState(() {
-          _isLoading = false;
-          user.addAll(usersFromServer);
-          userDisplay = user;
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            user.addAll(usersFromServer);
+            userDisplay = user;
 
-          userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-        });
+            userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+          });
+        }
       });
       super.initState();
     } catch (err) {}

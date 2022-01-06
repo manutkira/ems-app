@@ -39,15 +39,17 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
 
     try {
       _userService.findMany().then((usersFromServer) {
-        setState(() {
-          _isLoading = false;
-          userDisplay.addAll(usersFromServer);
-          user = userDisplay;
-          if (order) {
-          } else {
-            userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-          }
-        });
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            userDisplay.addAll(usersFromServer);
+            user = userDisplay;
+            if (order) {
+            } else {
+              userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+            }
+          });
+        }
       });
     } catch (err) {
       //

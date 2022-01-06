@@ -116,9 +116,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       });
       List flat = _attendanceAll.expand((element) => element.list).toList();
       attendanceListAll = flat.toList();
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   fetchAttendanceById() async {
@@ -419,7 +417,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     if (mounted) {
       setState(() {
         presentMorning = pc;
-        print(presentMorning);
       });
     }
   }

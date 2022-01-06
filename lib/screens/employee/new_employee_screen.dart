@@ -800,8 +800,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (ctx) => EmployeeListScreen()));
     }
-    res.stream.transform(utf8.decoder).listen((event) {
-      print(event);
-    });
+    res.stream.transform(utf8.decoder).listen((event) {});
   }
 }
