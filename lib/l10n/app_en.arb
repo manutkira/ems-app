@@ -749,5 +749,37 @@
   "verifyingQRCodeFailed": "qr code verification failed.",
   "@verifyingQRCodeFailed": {
     "description": "scan"
+  },
+  "adding": "Adding Data",
+  "@adding": {
+    "description": "add employee"
+  },
+  "success": "Success",
+  "@success": {
+    "description": "add employee"
+  },
+  "newEmpAdded": "New employee has been added",
+  "@newEmpAdded": {
+    "description": "add employee"
+  },
+  "done": "Done",
+  "@done": {
+    "description": "add employee"
+  },
+  "addFail": "Adding new employee have failed.",
+  "@addFail": {
+    "description": "add employee"
+  },
+  "editing": "Editing Data",
+  "@editing": {
+    "description": "add employee"
+  },
+  "edited": "Data has been updated.",
+  "@edited": {
+    "description": "add employee"
+  },
+  "editFailed": "Updating data have failed.",
+  "@editFailed": {
+    "description": "add employee"
   }
 }

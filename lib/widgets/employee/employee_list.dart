@@ -6,6 +6,7 @@ import 'package:ems/models/user.dart';
 import 'package:ems/screens/employee/employee_edit_screen.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
+import 'package:ems/screens/employee/new_employee_screen.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -81,79 +82,104 @@ class _EmployeeListState extends State<EmployeeList> {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Employee'),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Icon(Icons.arrow_back)),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => NewEmployeeScreen(),
+                ),
+              );
+              userDisplay = [];
+              user = [];
+              fetchData();
+            },
+            icon: Icon(Icons.add),
           ),
-          gradient: LinearGradient(
-            colors: [
-              color1,
-              color,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          )),
-      child: _isLoading
-          ? Container(
-              padding: EdgeInsets.only(top: 320),
-              alignment: Alignment.center,
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('${local?.fetchData}'),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    const CircularProgressIndicator(
-                      color: kWhite,
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : userDisplay.isEmpty
-              ? Column(
-                  children: [
-                    _searchBar(),
-                    Container(
-                      padding: EdgeInsets.only(top: 150),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Employee not found!!',
-                            style: kHeadingTwo.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Image.asset(
-                            'assets/images/notfound.png',
-                            width: 220,
-                          ),
-                        ],
+        ],
+      ),
+      body: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            gradient: LinearGradient(
+              colors: [
+                color1,
+                color,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            )),
+        child: _isLoading
+            ? Container(
+                padding: EdgeInsets.only(top: 320),
+                alignment: Alignment.center,
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('${local?.fetchData}'),
+                      SizedBox(
+                        height: 10,
                       ),
-                    ),
-                  ],
-                )
-              : Column(
-                  children: [
-                    _searchBar(),
-                    Expanded(
-                      child: ListView.builder(
-                          itemCount: userDisplay.length,
-                          itemBuilder: (context, index) {
-                            return _listItem(index);
-                          }),
-                    ),
-                  ],
+                      const CircularProgressIndicator(
+                        color: kWhite,
+                      ),
+                    ],
+                  ),
                 ),
+              )
+            : userDisplay.isEmpty
+                ? Column(
+                    children: [
+                      _searchBar(),
+                      Container(
+                        padding: EdgeInsets.only(top: 150),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Employee not found!!',
+                              style: kHeadingTwo.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Image.asset(
+                              'assets/images/notfound.png',
+                              width: 220,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      _searchBar(),
+                      Expanded(
+                        child: ListView.builder(
+                            itemCount: userDisplay.length,
+                            itemBuilder: (context, index) {
+                              return _listItem(index);
+                            }),
+                      ),
+                    ],
+                  ),
+      ),
     );
   }
 

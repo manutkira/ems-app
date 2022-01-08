@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:ems/utils/utils.dart';
-import 'package:ems/screens/attendances_api/attendance_info.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -129,11 +128,11 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text('Edit Attendance'),
+        title: const Text('Edit Attendance'),
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               Row(
@@ -143,7 +142,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                     '${local?.id} ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Container(
@@ -176,7 +175,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                         fontWeight: FontWeight.bold,
                         fontSize: isEnglish ? 15 : 15.5),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Container(
@@ -188,7 +187,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                         Flexible(
                           child: TextFormField(
                             readOnly: true,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: 'Enter Name',
                               errorStyle: TextStyle(
                                 fontSize: 15,
@@ -204,7 +203,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
@@ -214,14 +213,14 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                     '${local?.type} ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Container(
                     width: 233,
                     child: DropdownButtonFormField(
                       dropdownColor: kDarkestBlue,
-                      icon: Icon(Icons.expand_more),
+                      icon: const Icon(Icons.expand_more),
                       value: type,
                       onChanged: (String? newValue) {
                         setState(() {
@@ -245,7 +244,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   )
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
@@ -255,7 +254,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                     '${local?.date} ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Container(
@@ -272,9 +271,9 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                                     // _fullTime();
                                     _byDayDatePicker();
                                   },
-                                  icon: Icon(Icons.calendar_today)),
+                                  icon: const Icon(Icons.calendar_today)),
                               hintText: 'Enter Name',
-                              errorStyle: TextStyle(
+                              errorStyle: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -288,7 +287,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Row(
@@ -298,7 +297,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                     '${local?.time} ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Container(
@@ -314,8 +313,8 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                                   onPressed: () {
                                     _selectTime();
                                   },
-                                  icon: Icon(MdiIcons.clockOutline)),
-                              errorStyle: TextStyle(
+                                  icon: const Icon(MdiIcons.clockOutline)),
+                              errorStyle: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -342,7 +341,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                         fontWeight: FontWeight.bold,
                         fontSize: isEnglish ? 15 : 15.5),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Container(
@@ -354,7 +353,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                         Flexible(
                           child: TextFormField(
                             maxLines: 5,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               errorStyle: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -370,12 +369,12 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                 ],
               ),
               Container(
-                padding: EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Container(
-                      padding: EdgeInsets.only(right: 10),
+                      padding: const EdgeInsets.only(right: 10),
                       child: RaisedButton(
                         onPressed: () {
                           showDialog(
@@ -385,12 +384,36 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                                     content: Text('${local?.saveChanges}'),
                                     actions: [
                                       OutlineButton(
-                                        borderSide:
-                                            BorderSide(color: Colors.green),
+                                        borderSide: const BorderSide(
+                                            color: Colors.green),
                                         child: Text('${local?.yes}'),
                                         onPressed: () {
                                           uploadImage();
                                           Navigator.pop(context);
+                                          showDialog(
+                                              context: context,
+                                              builder: (ctx) => AlertDialog(
+                                                    title: Text(
+                                                        '${local?.editing}'),
+                                                    content: Flex(
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      children: const [
+                                                        Flexible(
+                                                          child: Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: 100),
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ));
                                         },
                                       ),
                                       OutlineButton(
@@ -399,7 +422,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                                         },
                                         child: Text('${local?.no}'),
                                         borderSide:
-                                            BorderSide(color: Colors.red),
+                                            const BorderSide(color: Colors.red),
                                       )
                                     ],
                                   ));
@@ -470,6 +493,29 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     print(res.statusCode);
     if (res.statusCode == 200) {
       Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.success}'),
+                content: Text('${local?.edited}'),
+                actions: [
+                  OutlineButton(
+                    borderSide: BorderSide(color: Colors.grey),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.done}'),
+                  ),
+                  OutlineButton(
+                    borderSide: BorderSide(color: Colors.green),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.back}'),
+                  ),
+                ],
+              ));
     }
     res.stream.transform(utf8.decoder).listen((event) {});
   }

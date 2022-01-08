@@ -82,10 +82,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               OutlineButton(
                                 onPressed: () async {
                                   Navigator.of(context).pop();
-                                  await Navigator.of(context)
-                                      .pushReplacementNamed(
-                                    EmployeeListScreen.routeName,
-                                  );
+                                  Navigator.of(context).pop();
                                 },
                                 child: Text('${local?.yes}'),
                                 borderSide: BorderSide(color: Colors.green),
@@ -629,12 +626,39 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                               borderSide: const BorderSide(
                                                   color: Colors.green),
                                               onPressed: () {
-                                                if (_form.currentState!
+                                                if (!_form.currentState!
                                                     .validate()) {
-                                                  uploadImage();
-                                                  // addNew();
+                                                  return Navigator.of(context)
+                                                      .pop();
                                                 }
+                                                uploadImage();
                                                 Navigator.of(context).pop();
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (ctx) =>
+                                                        AlertDialog(
+                                                          title: Text(
+                                                              '${local?.adding}'),
+                                                          content: Flex(
+                                                            direction:
+                                                                Axis.horizontal,
+                                                            children: [
+                                                              Flexible(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      left:
+                                                                          100),
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ));
                                               },
                                               child: Text('${local?.yes}'),
                                             ),
@@ -667,13 +691,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                                 color: Colors.green),
                                             onPressed: () async {
                                               Navigator.of(context).pop();
-                                              await Navigator.of(context)
-                                                  .pushReplacement(
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      EmployeeListScreen(),
-                                                ),
-                                              );
+                                              Navigator.of(context).pop();
                                             },
                                             child: Text('${local?.yes}'),
                                           ),
@@ -796,9 +814,46 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     request.headers.addAll(headers);
 
     var res = await request.send();
+    print(res.statusCode);
+    if (res.statusCode != 201) {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.failed}',
+                    style: TextStyle(color: Colors.red)),
+                content: Text('${local?.addFail}'),
+                actions: [
+                  OutlineButton(
+                    borderSide: BorderSide(color: Colors.red),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      // Navigator.pop(context);
+                    },
+                    child: Text('${local?.back}',
+                        style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+              ));
+    }
     if (res.statusCode == 201) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => EmployeeListScreen()));
+      Navigator.of(context).pop();
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.success}'),
+                content: Text('${local?.newEmpAdded}'),
+                actions: [
+                  OutlineButton(
+                    borderSide: BorderSide(color: Colors.green),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.done}'),
+                  ),
+                ],
+              ));
     }
     res.stream.transform(utf8.decoder).listen((event) {});
   }

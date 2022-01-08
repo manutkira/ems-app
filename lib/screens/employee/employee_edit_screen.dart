@@ -677,19 +677,44 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                   context: context,
                                   builder: (ctx) => AlertDialog(
                                         title: Text('${local?.areYouSure}'),
-                                        content: Text(
-                                            'Do you want to save the changes'),
+                                        content: Text('${local?.saveChanges}'),
                                         actions: [
                                           OutlineButton(
                                             borderSide:
                                                 BorderSide(color: Colors.green),
                                             child: Text('${local?.yes}'),
                                             onPressed: () {
-                                              if (_form.currentState!
+                                              if (!_form.currentState!
                                                   .validate()) {
-                                                uploadImage();
+                                                return Navigator.of(context)
+                                                    .pop();
                                               }
+                                              uploadImage();
                                               Navigator.of(context).pop();
+                                              showDialog(
+                                                context: context,
+                                                builder: (ctx) => AlertDialog(
+                                                  title:
+                                                      Text('${local?.editing}'),
+                                                  content: Flex(
+                                                    direction: Axis.horizontal,
+                                                    children: [
+                                                      Flexible(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 100),
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
                                             },
                                           ),
                                           OutlineButton(
@@ -843,8 +868,52 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     request.headers.addAll(headers);
 
     var res = await request.send();
+    if (res.statusCode != 200) {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.failed}',
+                    style: TextStyle(color: Colors.red)),
+                content: Text('${local?.editFailed}'),
+                actions: [
+                  OutlineButton(
+                    borderSide: BorderSide(color: Colors.red),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      // Navigator.pop(context);
+                    },
+                    child: Text('${local?.back}',
+                        style: TextStyle(color: Colors.red)),
+                  ),
+                ],
+              ));
+    }
     if (res.statusCode == 200) {
       Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.success}'),
+                content: Text('${local?.edited}'),
+                actions: [
+                  OutlineButton(
+                    borderSide: BorderSide(color: Colors.grey),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.done}'),
+                  ),
+                  OutlineButton(
+                    borderSide: BorderSide(color: Colors.green),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.back}'),
+                  ),
+                ],
+              ));
     }
     res.stream.transform(utf8.decoder).listen((event) {});
   }
