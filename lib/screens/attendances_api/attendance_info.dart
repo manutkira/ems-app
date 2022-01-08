@@ -69,6 +69,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List isTodayNoon = [];
   List oneDayMorning = [];
   List oneDayNoon = [];
+  List onedayList = [];
   bool now = true;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
@@ -145,10 +146,12 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                 element.code != 'cout3' &&
                 element.code != 'cin3')
             .toList();
+
         var oneDay = attendanceDisplay.where((element) =>
             element.date.day == startDate.day &&
             element.date.month == startDate.month &&
             element.date.year == startDate.year);
+        onedayList = oneDay.toList();
         List oneDayFlat = oneDay.expand((element) => element.list).toList();
         oneDayMorning = oneDayFlat
             .where((element) =>
@@ -203,13 +206,14 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             .length;
       });
       List flat = _attendanceDisplay.expand((element) => element.list).toList();
-      attendanceList = flat
-          .where((element) =>
-              element.code != 'cin2' &&
-              element.code != 'cout2' &&
-              element.code != 'cout3' &&
-              element.code != 'cin3')
-          .toList();
+      // attendanceList = flat
+      //     .where((element) =>
+      //         element.code != 'cin2' &&
+      //         element.code != 'cout2' &&
+      //         element.code != 'cout3' &&
+      //         element.code != 'cin3')
+      //     .toList();
+      attendanceList = _attendanceDisplay;
     } catch (e) {}
   }
 
@@ -296,13 +300,16 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             .length;
       });
       List flat = _attendanceDisplay.expand((element) => element.list).toList();
-      attendanceListNoon = flat
-          .where((element) =>
-              element.code != 'cin1' &&
-              element.code != 'cout1' &&
-              element.code != 'cout3' &&
-              element.code != 'cin3')
-          .toList();
+      // attendanceListNoon = flat
+      //     .where((element) =>
+      //         element.code != 'cin1' &&
+      //         element.code != 'cout1' &&
+      //         element.code != 'cout3' &&
+      //         element.code != 'cin3')
+      //     .toList();
+      // List<AttendanceWithDate> list =
+      //     _attendanceDisplay.where((element) => element.list).toList();
+      attendanceListNoon = _attendanceDisplay;
     } catch (e) {}
   }
 
@@ -685,6 +692,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
+                                            Text('${local?.dateRange}',
+                                                style: kParagraph),
                                             Container(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -1244,7 +1253,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             padding:
                                                 const EdgeInsets.only(top: 15),
                                             child: AttendanceInfoAttendanceList(
-                                                oneDayMorning: oneDayMorning,
+                                                attendanceAllDis:
+                                                    _attendanceAll,
+                                                oneDayMorning: onedayList,
                                                 oneDayNoon: oneDayNoon,
                                                 isOneDay: isOneDay,
                                                 multiple: multipleDay,
