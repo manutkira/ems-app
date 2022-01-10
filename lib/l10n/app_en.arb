@@ -789,5 +789,13 @@
   "deleted": "Employee has been deleted.",
   "@deleted": {
     "description": "add employee"
+  },
+  "deletingAttendance": "Deleting attendance.",
+  "@deletingAttendance": {
+    "description": "add employee"
+  },
+  "deletedAttendance": "Attendance has been deleted.",
+  "@deletedAttendance": {
+    "description": "add employee"
   }
 }

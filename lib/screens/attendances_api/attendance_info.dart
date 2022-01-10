@@ -314,7 +314,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     final response = await http.delete(Uri.parse("$url/$id"));
-    showInSnackBar("${local?.deleting}");
+    showInSnackBar("${local?.deletingAttendance}");
     if (response.statusCode == 200) {
       attendanceAllDisplay = [];
       attendanceList = [];
@@ -322,7 +322,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       onedayList = [];
       fetchAttendanceById();
       fetchAllAttendance();
-      showInSnackBar("${local?.deleted}");
+      showInSnackBar("${local?.deletedAttendance}");
     } else {
       return false;
     }
@@ -332,7 +332,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     final response = await http.delete(Uri.parse("$url/$id"));
-    showInSnackBar("${local?.deleting}");
+    showInSnackBar("${local?.deletingAttendance}");
     if (response.statusCode == 200) {
       attendanceAllDisplay = [];
       attendanceList = [];
@@ -340,7 +340,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       onedayList = [];
       fetchAttendanceById();
       fetchAllAttendance();
-      showInSnackBar("${local?.deleted}");
+      showInSnackBar("${local?.deletedAttendance}");
     } else {
       return false;
     }
@@ -350,11 +350,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     _scaffoldKey.currentState!.showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
-        duration: Duration(milliseconds: 1500),
-        backgroundColor: kDarkestBlue,
+        duration: Duration(milliseconds: 2000),
+        backgroundColor: kBlueBackground,
         content: Text(
           value,
-          style: kHeadingFour,
+          style: kHeadingFour.copyWith(color: Colors.black),
         ),
       ),
     );
