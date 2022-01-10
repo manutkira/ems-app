@@ -17,13 +17,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
   final bool afternoon;
   final bool multiple;
   final bool isOneDay;
-  final List isTodayNoon;
-  final List isToday;
   final List oneDayMorning;
-  final List oneDayNoon;
-  final List attendanceList;
+  final List<AttendanceWithDate> attendanceList;
   List attendanceAll;
-  List attendanceListNoon;
   List attendanceAllDisplay;
   List<AttendanceWithDate> attendanceAllDis;
   final Function fetchAttendanceById;
@@ -39,13 +35,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     required this.afternoon,
     required this.multiple,
     required this.isOneDay,
-    required this.isTodayNoon,
-    required this.isToday,
     required this.oneDayMorning,
-    required this.oneDayNoon,
     required this.attendanceList,
     required this.attendanceAll,
-    required this.attendanceListNoon,
     required this.attendanceAllDisplay,
     required this.attendanceAllDis,
     required this.fetchAttendanceById,
@@ -135,43 +127,190 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
             itemBuilder: (context, index) {
               AppLocalizations? local = AppLocalizations.of(context);
               bool isEnglish = isInEnglish(context);
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 25,
-                  vertical: 8,
-                ),
-                color: index % 2 == 0 ? kDarkestBlue : kBlue,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    afternoon
-                        ? Text(
-                            DateFormat('dd/MM/yyyy HH:mm')
-                                .format(recordAfternoon[index].date),
-                          )
-                        : Text(
+              return afternoon
+                  ? recordAfternoon.isEmpty
+                      ? Text('data')
+                      : Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 25,
+                            vertical: 8,
+                          ),
+                          color: index % 2 == 0 ? kDarkestBlue : kBlue,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                DateFormat('dd/MM/yyyy HH:mm')
+                                    .format(recordAfternoon[index].date),
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    recordAfternoon[index].type == 'checkin'
+                                        ? '${local?.checkIn}'
+                                        : recordAfternoon[index].type ==
+                                                'checkout'
+                                            ? '${local?.checkOut}'
+                                            : recordAfternoon[index].type ==
+                                                    'absent'
+                                                ? '${local?.absent}'
+                                                : recordAfternoon[index].type ==
+                                                        'permission'
+                                                    ? '${local?.permission}'
+                                                    : recordAfternoon[index]
+                                                        .type
+                                                        .toString(),
+                                  ),
+                                  PopupMenuButton(
+                                    color: Colors.black,
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    onSelected: (int selectedValue) async {
+                                      if (afternoon == true) {
+                                        if (selectedValue == 0) {
+                                          final int userId =
+                                              recordAfternoon[index].userId;
+                                          final int id =
+                                              recordAfternoon[index].id;
+                                          final String type =
+                                              recordAfternoon[index].type;
+                                          final DateTime date =
+                                              recordAfternoon[index].date;
+                                          final String? note =
+                                              recordAfternoon[index].note;
+                                          await Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (ctx) => AttedancesEdit(
+                                                id: id,
+                                                userId: userId,
+                                                type: type,
+                                                date: date,
+                                                note: note,
+                                              ),
+                                            ),
+                                          );
+                                          fetchAttendanceByIdNoon();
+                                        }
+                                        if (selectedValue == 1) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (ctx) => AlertDialog(
+                                              title:
+                                                  Text('${local?.areYouSure}'),
+                                              content: Text(
+                                                  '${local?.cannotUndone}'),
+                                              actions: [
+                                                OutlineButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                    deleteData1(
+                                                        recordAfternoon[index]
+                                                            .id as int);
+                                                  },
+                                                  child: Text('${local?.yes}'),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.green),
+                                                ),
+                                                OutlineButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  borderSide: BorderSide(
+                                                      color: Colors.red),
+                                                  child: Text('${local?.no}'),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        }
+                                        if (selectedValue == 2) {
+                                          final int userId =
+                                              recordAfternoon[index].userId;
+                                          final int id =
+                                              recordAfternoon[index].id;
+                                          final String type =
+                                              recordAfternoon[index].type;
+                                          final DateTime date =
+                                              recordAfternoon[index].date;
+                                          final String? note =
+                                              recordAfternoon[index].note;
+                                          final String userName =
+                                              recordAfternoon[index]
+                                                  .users!
+                                                  .name;
+                                          final String image =
+                                              recordAfternoon[index]
+                                                  .users
+                                                  .image;
+                                          await Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (ctx) =>
+                                                  ViewAttendanceScreen(
+                                                id: id,
+                                                userId: userId,
+                                                type: type,
+                                                date: date,
+                                                note: note,
+                                                userName: userName,
+                                                image: image,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    },
+                                    itemBuilder: (_) => [
+                                      PopupMenuItem(
+                                        child: Text(
+                                          '${local?.optionView}',
+                                          style: kParagraph.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        value: 2,
+                                      ),
+                                      if (record.list[0].users!.role == 'admin')
+                                        PopupMenuItem(
+                                          child: Text(
+                                            '${local?.edit}',
+                                            style: kParagraph.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          value: 0,
+                                        ),
+                                      if (record.list[0].users!.role == 'admin')
+                                        PopupMenuItem(
+                                          child: Text(
+                                            '${local?.delete}',
+                                            style: kParagraph.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          value: 1,
+                                        ),
+                                    ],
+                                    icon: const Icon(Icons.more_vert),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                  : Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 25,
+                        vertical: 8,
+                      ),
+                      color: index % 2 == 0 ? kDarkestBlue : kBlue,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
                             DateFormat('dd/MM/yyyy HH:mm')
                                 .format(recordMorning[index].date),
                           ),
-                    Row(
-                      children: [
-                        afternoon
-                            ? Text(
-                                recordAfternoon[index].type == 'checkin'
-                                    ? '${local?.checkIn}'
-                                    : recordAfternoon[index].type == 'checkout'
-                                        ? '${local?.checkOut}'
-                                        : recordAfternoon[index].type ==
-                                                'absent'
-                                            ? '${local?.absent}'
-                                            : recordAfternoon[index].type ==
-                                                    'permission'
-                                                ? '${local?.permission}'
-                                                : recordAfternoon[index]
-                                                    .type
-                                                    .toString(),
-                              )
-                            : Text(
+                          Row(
+                            children: [
+                              Text(
                                 recordMorning[index].type == 'checkin'
                                     ? '${local?.checkIn}'
                                     : recordMorning[index].type == 'checkout'
@@ -185,203 +324,132 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                                     .type
                                                     .toString(),
                               ),
-                        PopupMenuButton(
-                          color: Colors.black,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          onSelected: (int selectedValue) async {
-                            if (afternoon == false) {
-                              if (selectedValue == 0) {
-                                final int userId = recordMorning[index].userId;
-                                final int id = recordMorning[index].id;
-                                final String type = recordMorning[index].type;
-                                final DateTime date = recordMorning[index].date;
-                                final String? note = recordMorning[index].note;
-                                await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (ctx) => AttedancesEdit(
-                                      id: id,
-                                      userId: userId,
-                                      type: type,
-                                      date: date,
-                                      note: note,
+                              PopupMenuButton(
+                                color: Colors.black,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                onSelected: (int selectedValue) async {
+                                  if (afternoon == false) {
+                                    if (selectedValue == 0) {
+                                      final int userId =
+                                          recordMorning[index].userId;
+                                      final int id = recordMorning[index].id;
+                                      final String type =
+                                          recordMorning[index].type;
+                                      final DateTime date =
+                                          recordMorning[index].date;
+                                      final String? note =
+                                          recordMorning[index].note;
+                                      await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (ctx) => AttedancesEdit(
+                                            id: id,
+                                            userId: userId,
+                                            type: type,
+                                            date: date,
+                                            note: note,
+                                          ),
+                                        ),
+                                      );
+                                      fetchAttendanceById();
+                                    }
+                                    if (selectedValue == 1) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (ctx) => AlertDialog(
+                                          title: Text('${local?.areYouSure}'),
+                                          content:
+                                              Text('${local?.cannotUndone}'),
+                                          actions: [
+                                            OutlineButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                deleteData(recordMorning[index]
+                                                    .id as int);
+                                              },
+                                              child: Text('${local?.yes}'),
+                                              borderSide: BorderSide(
+                                                  color: Colors.green),
+                                            ),
+                                            OutlineButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              borderSide:
+                                                  BorderSide(color: Colors.red),
+                                              child: Text('${local?.no}'),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    if (selectedValue == 2) {
+                                      final int userId =
+                                          recordMorning[index].userId;
+                                      final int id = recordMorning[index].id;
+                                      final String type =
+                                          recordMorning[index].type;
+                                      final DateTime date =
+                                          recordMorning[index].date;
+                                      final String note =
+                                          recordMorning[index].note;
+                                      final String userName =
+                                          recordMorning[index].users!.name;
+                                      final String image =
+                                          recordMorning[index].users.image;
+                                      await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (ctx) =>
+                                              ViewAttendanceScreen(
+                                            id: id,
+                                            userId: userId,
+                                            type: type,
+                                            date: date,
+                                            note: note,
+                                            userName: userName,
+                                            image: image,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
+                                itemBuilder: (_) => [
+                                  PopupMenuItem(
+                                    child: Text(
+                                      '${local?.optionView}',
+                                      style: kParagraph.copyWith(
+                                          fontWeight: FontWeight.bold),
                                     ),
+                                    value: 2,
                                   ),
-                                );
-                                fetchAttendanceById();
-                              }
-                              if (selectedValue == 1) {
-                                showDialog(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                    title: Text('${local?.areYouSure}'),
-                                    content: Text('${local?.cannotUndone}'),
-                                    actions: [
-                                      OutlineButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          deleteData(
-                                              recordMorning[index].id as int);
-                                        },
-                                        child: Text('${local?.yes}'),
-                                        borderSide:
-                                            BorderSide(color: Colors.green),
+                                  if (record.list[0].users!.role == 'admin')
+                                    PopupMenuItem(
+                                      child: Text(
+                                        '${local?.edit}',
+                                        style: kParagraph.copyWith(
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                      OutlineButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        borderSide:
-                                            BorderSide(color: Colors.red),
-                                        child: Text('${local?.no}'),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }
-                              if (selectedValue == 2) {
-                                final int userId = recordMorning[index].userId;
-                                final int id = recordMorning[index].id;
-                                final String type = recordMorning[index].type;
-                                final DateTime date = recordMorning[index].date;
-                                final String note = recordMorning[index].note;
-                                final String userName =
-                                    recordMorning[index].users!.name;
-                                final String image =
-                                    recordMorning[index].users.image;
-                                await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (ctx) => ViewAttendanceScreen(
-                                      id: id,
-                                      userId: userId,
-                                      type: type,
-                                      date: date,
-                                      note: note,
-                                      userName: userName,
-                                      image: image,
+                                      value: 0,
                                     ),
-                                  ),
-                                );
-                              }
-                            }
-                            if (afternoon == true) {
-                              if (selectedValue == 0) {
-                                final int userId =
-                                    recordAfternoon[index].userId;
-                                final int id = recordAfternoon[index].id;
-                                final String type = recordAfternoon[index].type;
-                                final DateTime date =
-                                    recordAfternoon[index].date;
-                                final String? note =
-                                    recordAfternoon[index].note;
-                                await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (ctx) => AttedancesEdit(
-                                      id: id,
-                                      userId: userId,
-                                      type: type,
-                                      date: date,
-                                      note: note,
-                                    ),
-                                  ),
-                                );
-                                fetchAttendanceByIdNoon();
-                              }
-                              if (selectedValue == 1) {
-                                print(recordAfternoon[index].id);
-                                showDialog(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                    title: Text('${local?.areYouSure}'),
-                                    content: Text('${local?.cannotUndone}'),
-                                    actions: [
-                                      OutlineButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          deleteData1(
-                                              recordAfternoon[index].id as int);
-                                        },
-                                        child: Text('${local?.yes}'),
-                                        borderSide:
-                                            BorderSide(color: Colors.green),
+                                  if (record.list[0].users!.role == 'admin')
+                                    PopupMenuItem(
+                                      child: Text(
+                                        '${local?.delete}',
+                                        style: kParagraph.copyWith(
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                      OutlineButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        borderSide:
-                                            BorderSide(color: Colors.red),
-                                        child: Text('${local?.no}'),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }
-                              if (selectedValue == 2) {
-                                final int userId =
-                                    recordAfternoon[index].userId;
-                                final int id = recordAfternoon[index].id;
-                                final String type = recordAfternoon[index].type;
-                                final DateTime date =
-                                    recordAfternoon[index].date;
-                                final String? note =
-                                    recordAfternoon[index].note;
-                                final String userName =
-                                    recordAfternoon[index].users!.name;
-                                final String image =
-                                    recordAfternoon[index].users.image;
-                                await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (ctx) => ViewAttendanceScreen(
-                                      id: id,
-                                      userId: userId,
-                                      type: type,
-                                      date: date,
-                                      note: note,
-                                      userName: userName,
-                                      image: image,
+                                      value: 1,
                                     ),
-                                  ),
-                                );
-                              }
-                            }
-                          },
-                          itemBuilder: (_) => [
-                            PopupMenuItem(
-                              child: Text(
-                                '${local?.optionView}',
-                                style: kParagraph.copyWith(
-                                    fontWeight: FontWeight.bold),
+                                ],
+                                icon: const Icon(Icons.more_vert),
                               ),
-                              value: 2,
-                            ),
-                            if (record.list[0].users!.role == 'admin')
-                              PopupMenuItem(
-                                child: Text(
-                                  '${local?.edit}',
-                                  style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                value: 0,
-                              ),
-                            if (record.list[0].users!.role == 'admin')
-                              PopupMenuItem(
-                                child: Text(
-                                  '${local?.delete}',
-                                  style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                value: 1,
-                              ),
-                          ],
-                          icon: const Icon(Icons.more_vert),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
             },
             itemCount:
                 afternoon ? recordAfternoon.length : recordMorning.length)
@@ -1018,7 +1086,6 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                             fetchAllAttendance();
                           }
                           if (selectedValue == 1) {
-                            print(record.list[index].id);
                             showDialog(
                               context: context,
                               builder: (ctx) => AlertDialog(

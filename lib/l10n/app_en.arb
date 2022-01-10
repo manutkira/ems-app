@@ -781,5 +781,13 @@
   "editFailed": "Updating data have failed.",
   "@editFailed": {
     "description": "add employee"
+  },
+  "deleting": "Deleting employee.",
+  "@deleting": {
+    "description": "add employee"
+  },
+  "deleted": "Employee has been deleted.",
+  "@deleted": {
+    "description": "add employee"
   }
 }

@@ -1,7 +1,5 @@
 import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
-import 'package:ems/screens/attendances_api/tap_screen_alltime.dart';
-import 'package:ems/screens/attendances_api/tap_screen_month.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';

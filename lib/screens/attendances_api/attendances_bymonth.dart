@@ -1,12 +1,9 @@
 import 'package:ems/models/attendance.dart';
 import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
-import 'package:ems/screens/attendances_api/tap_screen.dart';
-import 'package:ems/screens/attendances_api/tap_screen_alltime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
-import 'package:ems/widgets/attendance/attendacne_all_time_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 

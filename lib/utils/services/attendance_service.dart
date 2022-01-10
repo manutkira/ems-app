@@ -489,6 +489,55 @@ class AttendanceService extends BaseService {
     }
   }
 
+  Future<List<AttendanceWithDate>> findManyByUserIdNoOvertime({
+    required int userId,
+    DateTime? start,
+    DateTime? end,
+  }) async {
+    String startDate = _formatDate(start);
+    String endDate = _formatDate(end);
+
+    bool hasNoStartOrEndDate =
+        start == null || end == null || startDate.isEmpty || endDate.isEmpty;
+
+    String url = hasNoStartOrEndDate
+        ? '$baseUrl/users/$userId/attendances'
+        : '$baseUrl/users/$userId/attendances?start=$startDate&end=$endDate&overtime=null';
+    try {
+      Response response = await get(Uri.parse(url));
+
+      _code = response.statusCode;
+      if (response.statusCode == 200) {
+        var jsondata = json.decode(response.body);
+        // get the user object
+
+        User _user = User.fromJson(jsondata['data']['user']);
+        if (jsondata['data']["attendances"] != null &&
+            jsondata['data']["attendances"].length > 0) {
+          Map<String, dynamic>? map = jsondata['data']["attendances"];
+          List<AttendanceWithDate> _attendances =
+              attendancesByDayFromJson(map!);
+
+          //adding user object to the attendances
+          List<AttendanceWithDate> awds = _attendances.map((awd) {
+            List<Attendance> atts = awd.list.map((attendance) {
+              return attendance.copyWith(users: _user);
+            }).toList();
+
+            return awd.copyWith(list: atts);
+          }).toList();
+          return awds;
+        } else {
+          return [];
+        }
+      } else {
+        throw AttendanceException(code: _code);
+      }
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
   Future<Attendance> createOne({required Attendance attendance}) async {
     if (attendance.userId == null || attendance.type!.isEmpty) {
       throw AttendanceException(

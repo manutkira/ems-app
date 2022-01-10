@@ -2,8 +2,6 @@ import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
-import 'package:ems/screens/attendances_api/tap_screen.dart';
-import 'package:ems/screens/attendances_api/tap_screen_month.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';

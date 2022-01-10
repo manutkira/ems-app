@@ -73,7 +73,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   bool now = true;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
-  List attendanceList = [];
+  List<AttendanceWithDate> attendanceList = [];
   List attendanceListNoon = [];
   List attendanceListAll = [];
   int? onedayPresent;
@@ -95,10 +95,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
   String sortByValue = '';
   List<String> dropdownItems = [];
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   fetchNoDate() async {
     try {
       List<AttendanceWithDate> attendanceNoDateDisplay =
-          await _attendanceNoDateService.findManyByUserId(userId: widget.id);
+          await _attendanceNoDateService.findManyByUserIdNoOvertime(
+              userId: widget.id);
       setState(() {
         _attendanceNoDateDisplay = attendanceNoDateDisplay;
         _isLoadingNoDate = false;
@@ -109,8 +112,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   fetchAllAttendance() async {
     _isLoading = true;
     try {
-      List<AttendanceWithDate> attendanceDisplay =
-          await _attendanceService.findManyByUserId(userId: widget.id);
+      List<AttendanceWithDate> attendanceDisplay = await _attendanceService
+          .findManyByUserIdNoOvertime(userId: widget.id);
       setState(() {
         _attendanceAll = attendanceDisplay;
         _isLoading = false;
@@ -124,7 +127,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     try {
       _isLoading = true;
       List<AttendanceWithDate> attendanceDisplay =
-          await _attendanceService.findManyByUserId(
+          await _attendanceService.findManyByUserIdNoOvertime(
         userId: widget.id,
         start: startDate,
         end: endDate,
@@ -205,14 +208,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                 element.type == 'permission' && element.code == 'cin1')
             .length;
       });
-      List flat = _attendanceDisplay.expand((element) => element.list).toList();
-      // attendanceList = flat
-      //     .where((element) =>
-      //         element.code != 'cin2' &&
-      //         element.code != 'cout2' &&
-      //         element.code != 'cout3' &&
-      //         element.code != 'cin3')
-      //     .toList();
       attendanceList = _attendanceDisplay;
     } catch (e) {}
   }
@@ -221,7 +216,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     try {
       _isLoading = true;
       List<AttendanceWithDate> attendanceDisplay =
-          await _attendanceService.findManyByUserId(
+          await _attendanceService.findManyByUserIdNoOvertime(
         userId: widget.id,
         start: startDate,
         end: endDate,
@@ -316,23 +311,53 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/attendances";
 
   Future deleteData(int id) async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     final response = await http.delete(Uri.parse("$url/$id"));
+    showInSnackBar("${local?.deleting}");
     if (response.statusCode == 200) {
       attendanceAllDisplay = [];
+      attendanceList = [];
+      _attendanceAll = [];
+      onedayList = [];
       fetchAttendanceById();
+      fetchAllAttendance();
+      showInSnackBar("${local?.deleted}");
     } else {
       return false;
     }
   }
 
   Future deleteData1(int id) async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     final response = await http.delete(Uri.parse("$url/$id"));
+    showInSnackBar("${local?.deleting}");
     if (response.statusCode == 200) {
       attendanceAllDisplay = [];
-      fetchAttendanceByIdNoon();
+      attendanceList = [];
+      _attendanceAll = [];
+      onedayList = [];
+      fetchAttendanceById();
+      fetchAllAttendance();
+      showInSnackBar("${local?.deleted}");
     } else {
       return false;
     }
+  }
+
+  void showInSnackBar(String value) {
+    _scaffoldKey.currentState!.showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(milliseconds: 1500),
+        backgroundColor: kDarkestBlue,
+        content: Text(
+          value,
+          style: kHeadingFour,
+        ),
+      ),
+    );
   }
 
   fetchLate() async {
@@ -606,6 +631,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       }
     });
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('Attendance'),
       ),
@@ -1256,7 +1282,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                 attendanceAllDis:
                                                     _attendanceAll,
                                                 oneDayMorning: onedayList,
-                                                oneDayNoon: oneDayNoon,
                                                 isOneDay: isOneDay,
                                                 multiple: multipleDay,
                                                 fetchAllAttendance:
@@ -1266,11 +1291,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                     attendanceListAll,
                                                 now: now,
                                                 afternoon: afternoon,
-                                                isTodayNoon: isTodayNoon,
-                                                isToday: isToday,
                                                 attendanceList: attendanceList,
-                                                attendanceListNoon:
-                                                    attendanceListNoon,
                                                 attendanceAllDisplay:
                                                     attendanceAllDisplay,
                                                 fetchAttendanceById:

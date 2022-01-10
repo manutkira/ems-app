@@ -25,11 +25,17 @@ class _EmployeeListState extends State<EmployeeList> {
   final UserService _userService = UserService.instance;
   List<User> userDisplay = [];
   List<User> user = [];
+  bool _isLoading = true;
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
   fetchData() async {
+    setState(() {
+      userDisplay = [];
+      user = [];
+    });
     try {
+      _isLoading = true;
       _userService.findMany().then((usersFromServer) {
         if (mounted) {
           setState(() {
@@ -45,7 +51,10 @@ class _EmployeeListState extends State<EmployeeList> {
   }
 
   Future deleteData(int id) async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     final response = await http.delete(Uri.parse("$url/$id"));
+    showInSnackBar("${local?.deleting}");
     if (response.statusCode == 200) {
       userDisplay = [];
       user = [];
@@ -58,12 +67,12 @@ class _EmployeeListState extends State<EmployeeList> {
           userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
         });
       });
+      showInSnackBar("${local?.deleted}");
     } else {
       return false;
     }
   }
 
-  bool _isLoading = true;
   bool order = false;
 
   var _controller = TextEditingController();
@@ -76,6 +85,20 @@ class _EmployeeListState extends State<EmployeeList> {
   void initState() {
     fetchData();
     super.initState();
+  }
+
+  void showInSnackBar(String value) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(milliseconds: 1500),
+        backgroundColor: kDarkestBlue,
+        content: Text(
+          value,
+          style: kHeadingFour,
+        ),
+      ),
+    );
   }
 
   @override
@@ -302,25 +325,37 @@ class _EmployeeListState extends State<EmployeeList> {
         width: double.infinity,
         child: Row(
           children: [
-            Container(
-              width: 75,
-              height: 75,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.white,
-                  )),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(150),
-                child: userDisplay[index].image == null
-                    ? Image.asset('assets/images/profile-icon-png-910.png')
-                    : Image.network(
-                        userDisplay[index].image!,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 75,
-                      ),
+            GestureDetector(
+              onTap: () async {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => EmployeeInfoScreen(
+                            id: userDisplay[index].id as int)));
+                userDisplay = [];
+                user = [];
+                fetchData();
+              },
+              child: Container(
+                width: 75,
+                height: 75,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.white,
+                    )),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(150),
+                  child: userDisplay[index].image == null
+                      ? Image.asset('assets/images/profile-icon-png-910.png')
+                      : Image.network(
+                          userDisplay[index].image!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 75,
+                        ),
+                ),
               ),
             ),
             SizedBox(
@@ -331,41 +366,53 @@ class _EmployeeListState extends State<EmployeeList> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BaselineRow(
-                        children: [
-                          Text(
-                            '${local?.name}: ',
-                            style: TextStyle(
-                              fontSize: isEnglish ? 15 : 15,
-                            ),
-                          ),
-                          SizedBox(
-                            width: isEnglish ? 2 : 4,
-                          ),
-                          Text(
-                            userDisplay[index].name.toString(),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: isEnglish ? 10 : 0,
-                      ),
-                      BaselineRow(
-                        children: [
-                          Text('${local?.id}: ',
+                  GestureDetector(
+                    onTap: () async {
+                      await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => EmployeeInfoScreen(
+                                  id: userDisplay[index].id as int)));
+                      userDisplay = [];
+                      user = [];
+                      fetchData();
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BaselineRow(
+                          children: [
+                            Text(
+                              '${local?.name}: ',
                               style: TextStyle(
                                 fontSize: isEnglish ? 15 : 15,
-                              )),
-                          SizedBox(
-                            width: 1,
-                          ),
-                          Text(userDisplay[index].id.toString()),
-                        ],
-                      )
-                    ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: isEnglish ? 2 : 4,
+                            ),
+                            Text(
+                              userDisplay[index].name.toString(),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: isEnglish ? 10 : 0,
+                        ),
+                        BaselineRow(
+                          children: [
+                            Text('${local?.id}: ',
+                                style: TextStyle(
+                                  fontSize: isEnglish ? 15 : 15,
+                                )),
+                            SizedBox(
+                              width: 1,
+                            ),
+                            Text(userDisplay[index].id.toString()),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                   PopupMenuButton(
                     color: kDarkestBlue,
@@ -405,9 +452,10 @@ class _EmployeeListState extends State<EmployeeList> {
                                 background,
                                 image,
                                 imageId)));
-                        userDisplay = [];
-                        user = [];
+                        print(_isLoading);
+
                         fetchData();
+                        print(_isLoading);
                       }
                       if (selectedValue == 0) {
                         int id = userDisplay[index].id as int;
@@ -426,9 +474,10 @@ class _EmployeeListState extends State<EmployeeList> {
                             content: Text('${local?.cannotUndone}'),
                             actions: [
                               OutlineButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   Navigator.of(context).pop();
                                   deleteData(userDisplay[index].id as int);
+                                  // showInSnackBar('Deleting');
                                 },
                                 child: Text('${local?.yes}'),
                                 borderSide: BorderSide(color: Colors.green),
