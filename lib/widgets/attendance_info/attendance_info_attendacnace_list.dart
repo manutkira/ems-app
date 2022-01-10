@@ -64,6 +64,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
         late AttendanceWithDate all;
         late AttendanceWithDate todayAttendance;
         late AttendanceWithDate onedayAttendance;
+        late AttendanceWithDate multidayAttendance;
         if (alltime) {
           AttendanceWithDate allRecord = attendanceAllDis[index];
           all = allRecord;
@@ -76,18 +77,315 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
           AttendanceWithDate oneday = oneDayMorning[index];
           onedayAttendance = oneday;
         }
+        if (multiple) {
+          AttendanceWithDate multiday = attendanceList[index];
+          multidayAttendance = multiday;
+        }
 
-        return isOneDay
-            ? _buildOneDayResult(onedayAttendance)
-            : now
-                ? _buildNowResult(todayAttendance)
-                : _buildAllResult(all);
+        return multiple
+            ? _buildMultidayResult(multidayAttendance)
+            : isOneDay
+                ? _buildOneDayResult(onedayAttendance)
+                : now
+                    ? _buildNowResult(todayAttendance)
+                    : _buildAllResult(all);
       },
-      itemCount: isOneDay
-          ? oneDayMorning.length
-          : now
-              ? attendanceList.length
-              : attendanceAllDis.length,
+      itemCount: multiple
+          ? attendanceList.length
+          : isOneDay
+              ? oneDayMorning.length
+              : now
+                  ? attendanceList.length
+                  : attendanceAllDis.length,
+    );
+  }
+
+  Widget _buildMultidayResult(AttendanceWithDate record) {
+    List recordMorning = record.list
+        .where((element) =>
+            element.code != 'cin2' &&
+            element.code != 'cout2' &&
+            element.code != 'cin3' &&
+            element.code != 'cout3')
+        .toList();
+    List recordAfternoon = record.list
+        .where((element) =>
+            element.code != 'cin1' &&
+            element.code != 'cout1' &&
+            element.code != 'cin3' &&
+            element.code != 'cout3')
+        .toList();
+    return ExpansionTile(
+      collapsedBackgroundColor: Color(0xff254973),
+      backgroundColor: Color(0xff254973),
+      textColor: Colors.white,
+      iconColor: Colors.white,
+      initiallyExpanded: true,
+      title: Text(
+        getDateStringFromDateTime(record.date),
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      children: [
+        ListView.builder(
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
+            itemBuilder: (context, index) {
+              AppLocalizations? local = AppLocalizations.of(context);
+              bool isEnglish = isInEnglish(context);
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 25,
+                  vertical: 8,
+                ),
+                color: index % 2 == 0 ? kDarkestBlue : kBlue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    afternoon
+                        ? Text(
+                            DateFormat('dd/MM/yyyy HH:mm')
+                                .format(recordAfternoon[index].date),
+                          )
+                        : Text(
+                            DateFormat('dd/MM/yyyy HH:mm')
+                                .format(recordMorning[index].date),
+                          ),
+                    Row(
+                      children: [
+                        afternoon
+                            ? Text(
+                                recordAfternoon[index].type == 'checkin'
+                                    ? '${local?.checkIn}'
+                                    : recordAfternoon[index].type == 'checkout'
+                                        ? '${local?.checkOut}'
+                                        : recordAfternoon[index].type ==
+                                                'absent'
+                                            ? '${local?.absent}'
+                                            : recordAfternoon[index].type ==
+                                                    'permission'
+                                                ? '${local?.permission}'
+                                                : recordAfternoon[index]
+                                                    .type
+                                                    .toString(),
+                              )
+                            : Text(
+                                recordMorning[index].type == 'checkin'
+                                    ? '${local?.checkIn}'
+                                    : recordMorning[index].type == 'checkout'
+                                        ? '${local?.checkOut}'
+                                        : recordMorning[index].type == 'absent'
+                                            ? '${local?.absent}'
+                                            : recordMorning[index].type ==
+                                                    'permission'
+                                                ? '${local?.permission}'
+                                                : recordMorning[index]
+                                                    .type
+                                                    .toString(),
+                              ),
+                        PopupMenuButton(
+                          color: Colors.black,
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          onSelected: (int selectedValue) async {
+                            if (afternoon == false) {
+                              if (selectedValue == 0) {
+                                final int userId = recordMorning[index].userId;
+                                final int id = recordMorning[index].id;
+                                final String type = recordMorning[index].type;
+                                final DateTime date = recordMorning[index].date;
+                                final String? note = recordMorning[index].note;
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => AttedancesEdit(
+                                      id: id,
+                                      userId: userId,
+                                      type: type,
+                                      date: date,
+                                      note: note,
+                                    ),
+                                  ),
+                                );
+                                fetchAttendanceById();
+                              }
+                              if (selectedValue == 1) {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: Text('${local?.areYouSure}'),
+                                    content: Text('${local?.cannotUndone}'),
+                                    actions: [
+                                      OutlineButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          deleteData(
+                                              recordMorning[index].id as int);
+                                        },
+                                        child: Text('${local?.yes}'),
+                                        borderSide:
+                                            BorderSide(color: Colors.green),
+                                      ),
+                                      OutlineButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        borderSide:
+                                            BorderSide(color: Colors.red),
+                                        child: Text('${local?.no}'),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }
+                              if (selectedValue == 2) {
+                                final int userId = recordMorning[index].userId;
+                                final int id = recordMorning[index].id;
+                                final String type = recordMorning[index].type;
+                                final DateTime date = recordMorning[index].date;
+                                final String note = recordMorning[index].note;
+                                final String userName =
+                                    recordMorning[index].users!.name;
+                                final String image =
+                                    recordMorning[index].users.image;
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => ViewAttendanceScreen(
+                                      id: id,
+                                      userId: userId,
+                                      type: type,
+                                      date: date,
+                                      note: note,
+                                      userName: userName,
+                                      image: image,
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+                            if (afternoon == true) {
+                              if (selectedValue == 0) {
+                                final int userId =
+                                    recordAfternoon[index].userId;
+                                final int id = recordAfternoon[index].id;
+                                final String type = recordAfternoon[index].type;
+                                final DateTime date =
+                                    recordAfternoon[index].date;
+                                final String? note =
+                                    recordAfternoon[index].note;
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => AttedancesEdit(
+                                      id: id,
+                                      userId: userId,
+                                      type: type,
+                                      date: date,
+                                      note: note,
+                                    ),
+                                  ),
+                                );
+                                fetchAttendanceByIdNoon();
+                              }
+                              if (selectedValue == 1) {
+                                print(recordAfternoon[index].id);
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: Text('${local?.areYouSure}'),
+                                    content: Text('${local?.cannotUndone}'),
+                                    actions: [
+                                      OutlineButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          deleteData1(
+                                              recordAfternoon[index].id as int);
+                                        },
+                                        child: Text('${local?.yes}'),
+                                        borderSide:
+                                            BorderSide(color: Colors.green),
+                                      ),
+                                      OutlineButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        borderSide:
+                                            BorderSide(color: Colors.red),
+                                        child: Text('${local?.no}'),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }
+                              if (selectedValue == 2) {
+                                final int userId =
+                                    recordAfternoon[index].userId;
+                                final int id = recordAfternoon[index].id;
+                                final String type = recordAfternoon[index].type;
+                                final DateTime date =
+                                    recordAfternoon[index].date;
+                                final String? note =
+                                    recordAfternoon[index].note;
+                                final String userName =
+                                    recordAfternoon[index].users!.name;
+                                final String image =
+                                    recordAfternoon[index].users.image;
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (ctx) => ViewAttendanceScreen(
+                                      id: id,
+                                      userId: userId,
+                                      type: type,
+                                      date: date,
+                                      note: note,
+                                      userName: userName,
+                                      image: image,
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          itemBuilder: (_) => [
+                            PopupMenuItem(
+                              child: Text(
+                                '${local?.optionView}',
+                                style: kParagraph.copyWith(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              value: 2,
+                            ),
+                            if (record.list[0].users!.role == 'admin')
+                              PopupMenuItem(
+                                child: Text(
+                                  '${local?.edit}',
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                value: 0,
+                              ),
+                            if (record.list[0].users!.role == 'admin')
+                              PopupMenuItem(
+                                child: Text(
+                                  '${local?.delete}',
+                                  style: kParagraph.copyWith(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                value: 1,
+                              ),
+                          ],
+                          icon: const Icon(Icons.more_vert),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+            itemCount:
+                afternoon ? recordAfternoon.length : recordMorning.length)
+      ],
     );
   }
 
@@ -107,6 +405,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
             element.code != 'cout3')
         .toList();
     return ExpansionTile(
+      collapsedBackgroundColor: Color(0xff254973),
       backgroundColor: Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
@@ -334,14 +633,14 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     fontWeight: FontWeight.bold)),
                             value: 2,
                           ),
-                          if (attendanceList[0].users!.role == 'admin')
+                          if (record.list[0].users!.role == 'admin')
                             PopupMenuItem(
                               child: Text('${local?.edit}',
                                   style: kParagraph.copyWith(
                                       fontWeight: FontWeight.bold)),
                               value: 0,
                             ),
-                          if (attendanceList[0].users!.role == 'admin')
+                          if (record.list[0].users!.role == 'admin')
                             PopupMenuItem(
                               child: Text('${local?.delete}',
                                   style: kParagraph.copyWith(
@@ -379,6 +678,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
             element.code != 'cout3')
         .toList();
     return ExpansionTile(
+      collapsedBackgroundColor: Color(0xff254973),
       backgroundColor: Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
