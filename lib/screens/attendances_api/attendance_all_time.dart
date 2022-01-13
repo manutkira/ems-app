@@ -28,6 +28,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   final color1 = const Color(0xff3982A0);
   String dropDownValue = '';
   bool afternoon = false;
+  bool total = false;
 
   var _controller = TextEditingController();
 
@@ -406,25 +407,43 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                     EdgeInsets.only(top: isEnglish ? 0 : 3),
                                 child: Text('${local?.shortPresent}: '),
                               ),
-                              afternoon
-                                  ? Text(attendancedisplay
-                                      .where(
-                                        (element) =>
-                                            element.userId ==
-                                                userDisplay[index].id &&
-                                            checkPresentNoon(element),
-                                      )
-                                      .length
+                              total
+                                  ? Text((attendancedisplay
+                                              .where(
+                                                (element) =>
+                                                    element.userId ==
+                                                        userDisplay[index].id &&
+                                                    checkPresentNoon(element),
+                                              )
+                                              .length +
+                                          attendancedisplay
+                                              .where(
+                                                (element) =>
+                                                    element.userId ==
+                                                        userDisplay[index].id &&
+                                                    checkPresent(element),
+                                              )
+                                              .length)
                                       .toString())
-                                  : Text(attendancedisplay
-                                      .where(
-                                        (element) =>
-                                            element.userId ==
-                                                userDisplay[index].id &&
-                                            checkPresent(element),
-                                      )
-                                      .length
-                                      .toString()),
+                                  : afternoon
+                                      ? Text(attendancedisplay
+                                          .where(
+                                            (element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                checkPresentNoon(element),
+                                          )
+                                          .length
+                                          .toString())
+                                      : Text(attendancedisplay
+                                          .where(
+                                            (element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                checkPresent(element),
+                                          )
+                                          .length
+                                          .toString()),
                             ],
                           ),
                           SizedBox(
@@ -437,25 +456,39 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                     EdgeInsets.only(top: isEnglish ? 0 : 3),
                                 child: Text('${local?.shortAbsent}: '),
                               ),
-                              afternoon
-                                  ? Text(
-                                      attendancedisplay
-                                          .where((element) =>
-                                              element.userId ==
-                                                  userDisplay[index].id &&
-                                              checkAbsentNoon(element))
-                                          .length
-                                          .toString(),
-                                    )
-                                  : Text(
-                                      attendancedisplay
-                                          .where((element) =>
-                                              element.userId ==
-                                                  userDisplay[index].id &&
-                                              checkAbsent(element))
-                                          .length
-                                          .toString(),
-                                    ),
+                              total
+                                  ? Text((attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  checkAbsentNoon(element))
+                                              .length +
+                                          attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  checkAbsent(element))
+                                              .length)
+                                      .toString())
+                                  : afternoon
+                                      ? Text(
+                                          attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  checkAbsentNoon(element))
+                                              .length
+                                              .toString(),
+                                        )
+                                      : Text(
+                                          attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  checkAbsent(element))
+                                              .length
+                                              .toString(),
+                                        ),
                             ],
                           ),
                         ],
@@ -473,21 +506,35 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                     EdgeInsets.only(top: isEnglish ? 0 : 3),
                                 child: Text('${local?.shortLate}: '),
                               ),
-                              afternoon
-                                  ? Text(attendancedisplay
-                                      .where((element) =>
-                                          element.userId ==
-                                              userDisplay[index].id &&
-                                          checkLateNoon(element))
-                                      .length
+                              total
+                                  ? Text((attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  checkLateNoon(element))
+                                              .length +
+                                          attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  checkLate(element))
+                                              .length)
                                       .toString())
-                                  : Text(attendancedisplay
-                                      .where((element) =>
-                                          element.userId ==
-                                              userDisplay[index].id &&
-                                          checkLate(element))
-                                      .length
-                                      .toString()),
+                                  : afternoon
+                                      ? Text(attendancedisplay
+                                          .where((element) =>
+                                              element.userId ==
+                                                  userDisplay[index].id &&
+                                              checkLateNoon(element))
+                                          .length
+                                          .toString())
+                                      : Text(attendancedisplay
+                                          .where((element) =>
+                                              element.userId ==
+                                                  userDisplay[index].id &&
+                                              checkLate(element))
+                                          .length
+                                          .toString()),
                             ],
                           ),
                           SizedBox(
@@ -500,21 +547,35 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                     EdgeInsets.only(top: isEnglish ? 0 : 3),
                                 child: Text('${local?.shortPermission}: '),
                               ),
-                              afternoon
-                                  ? Text(attendancedisplay
-                                      .where((element) =>
-                                          element.userId ==
-                                              userDisplay[index].id &&
-                                          checkPermissionNoon(element))
-                                      .length
+                              total
+                                  ? Text((attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  checkPermissionNoon(element))
+                                              .length +
+                                          attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  checkPermission(element))
+                                              .length)
                                       .toString())
-                                  : Text(attendancedisplay
-                                      .where((element) =>
-                                          element.userId ==
-                                              userDisplay[index].id &&
-                                          checkPermission(element))
-                                      .length
-                                      .toString()),
+                                  : afternoon
+                                      ? Text(attendancedisplay
+                                          .where((element) =>
+                                              element.userId ==
+                                                  userDisplay[index].id &&
+                                              checkPermissionNoon(element))
+                                          .length
+                                          .toString())
+                                      : Text(attendancedisplay
+                                          .where((element) =>
+                                              element.userId ==
+                                                  userDisplay[index].id &&
+                                              checkPermission(element))
+                                          .length
+                                          .toString()),
                             ],
                           ),
                         ],
@@ -602,12 +663,21 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                 if (newValue == '${local?.afternoon}') {
                   setState(() {
                     afternoon = true;
+                    total = false;
                     dropDownValue = newValue!;
                   });
                 }
                 if (newValue == '${local?.morning}') {
                   setState(() {
                     afternoon = false;
+                    total = false;
+                    dropDownValue = newValue!;
+                  });
+                }
+                if (newValue == '${local?.total}') {
+                  setState(() {
+                    afternoon = false;
+                    total = true;
                     dropDownValue = newValue!;
                   });
                 }
@@ -615,6 +685,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
               items: <String>[
                 '${local?.morning}',
                 '${local?.afternoon}',
+                '${local?.total}',
               ].map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,

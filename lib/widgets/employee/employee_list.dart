@@ -391,8 +391,11 @@ class _EmployeeListState extends State<EmployeeList> {
                             SizedBox(
                               width: isEnglish ? 2 : 4,
                             ),
-                            Text(
-                              userDisplay[index].name.toString(),
+                            SizedBox(
+                              width: 140,
+                              child: Text(
+                                userDisplay[index].name.toString(),
+                              ),
                             ),
                           ],
                         ),
@@ -452,10 +455,7 @@ class _EmployeeListState extends State<EmployeeList> {
                                 background,
                                 image,
                                 imageId)));
-                        print(_isLoading);
-
                         fetchData();
-                        print(_isLoading);
                       }
                       if (selectedValue == 0) {
                         int id = userDisplay[index].id as int;

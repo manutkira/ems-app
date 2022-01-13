@@ -50,11 +50,15 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
 
   DateTime? _selectDate;
   var _selectMonth;
+
   TextEditingController yearController = TextEditingController();
   var _controller = TextEditingController();
   var pickedYear;
   String dropDownValue = '';
+  String dropDownValue1 = '';
   bool afternoon = false;
+  bool total = false;
+  List monthList = [];
 
   void clearText() {
     _controller.clear();
@@ -103,6 +107,143 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
+  checkLate(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour == 7) {
+          if (element.date!.minute >= 16) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (element.date!.hour > 7) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkLateNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour == 13) {
+          if (element.date!.minute >= 16) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (element.date!.hour > 13) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPresent(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour <= 7) {
+          if (element.date!.minute <= 15) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPresentNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour <= 13) {
+          if (element.date!.minute <= 15) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsent(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'absent') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsentNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'absent') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPermission(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'permission') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissionNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'permission') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  void monthPick() {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
@@ -110,6 +251,25 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     setState(() {
       if (dropDownValue.isEmpty) {
         dropDownValue = local!.morning;
+      }
+      if (dropDownValue1.isEmpty) {
+        dropDownValue1 = '2022';
+      }
+      if (monthList.isEmpty) {
+        monthList = [
+          '${local?.jan}',
+          '${local?.feb}',
+          '${local?.mar}',
+          '${local?.apr}',
+          '${local?.may}',
+          '${local?.jun}',
+          '${local?.jul}',
+          '${local?.aug}',
+          '${local?.sep}',
+          '${local?.oct}',
+          '${local?.nov}',
+          '${local?.dec}',
+        ];
       }
     });
     return Scaffold(
@@ -173,384 +333,135 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                       onPressed: () {
                         showDialog(
                           context: context,
-                          builder: (ctx) => AlertDialog(
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0))),
-                            title: Text('${local?.pickMonth}'),
-                            content: Container(
-                              height: 300,
-                              width: 400,
-                              child: Column(
-                                children: [
-                                  Column(
-                                    children: [
-                                      TextField(
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                            errorText: _validate
-                                                ? '${local?.enter4Digits}'
-                                                : '${local?.enter4Digits}',
-                                            hintText: '${local?.enterYear}'),
-                                        controller: yearController,
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 1;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.jan}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 2;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.feb}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 3;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.mar}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 4;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.apr}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 5;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.may}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 6;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.jun}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 7;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.jun}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 8;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.aug}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 9;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.sep}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 10;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.oct}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 11;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.nov}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              yearController.text.isNotEmpty &&
-                                                      yearController.value.text
-                                                              .length ==
-                                                          4
-                                                  ? setState(() {
-                                                      _selectMonth = 12;
-                                                      pickedYear =
-                                                          yearController.text;
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    })
-                                                  : _validate = true;
-                                            },
-                                            child: Text('${local?.dec}'),
-                                            style: ButtonStyle(
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                        side: const BorderSide(
-                                                            color: Colors.teal,
-                                                            width: 2.0)))),
-                                          )
-                                        ],
-                                      ),
-                                    ],
+                          builder: (context) {
+                            return StatefulBuilder(
+                              builder: (context, _setState) {
+                                return AlertDialog(
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0))),
+                                  title: Text('${local?.pickMonth}'),
+                                  content: Container(
+                                    height: 300,
+                                    width: 400,
+                                    child: Column(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            // TextField(
+                                            //   keyboardType: TextInputType.number,
+                                            //   decoration: InputDecoration(
+                                            //       errorText: _validate
+                                            //           ? '${local?.enter4Digits}'
+                                            //           : '${local?.enter4Digits}',
+                                            //       hintText: '${local?.enterYear}'),
+                                            //   controller: yearController,
+                                            // ),
+                                            // const SizedBox(
+                                            //   height: 10,
+                                            // ),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 10,
+                                                vertical: 8,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: kDarkestBlue,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: DropdownButton(
+                                                underline: Container(),
+                                                style: kParagraph.copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                isDense: true,
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        kBorderRadius),
+                                                dropdownColor: kDarkestBlue,
+                                                icon: const Icon(
+                                                    Icons.expand_more),
+                                                value: dropDownValue1,
+                                                onChanged: (String? newValue) {
+                                                  _setState(() {
+                                                    dropDownValue1 = newValue!;
+                                                  });
+                                                },
+                                                items: <String>[
+                                                  '2021',
+                                                  '2022',
+                                                  '2023',
+                                                  '2024',
+                                                  '2025',
+                                                  '2026',
+                                                ].map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 250,
+                                              child: GridView.count(
+                                                mainAxisSpacing: 15,
+                                                crossAxisSpacing: 15,
+                                                childAspectRatio: 2.2,
+                                                crossAxisCount: 3,
+                                                shrinkWrap: true,
+                                                physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                children: [
+                                                  ...monthList
+                                                      .asMap()
+                                                      .entries
+                                                      .map((e) {
+                                                    int index = e.key;
+                                                    String name = e.value;
+                                                    return ElevatedButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          _selectMonth =
+                                                              index + 1;
+                                                          pickedYear =
+                                                              dropDownValue1;
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        });
+                                                      },
+                                                      child: Text(name),
+                                                      style: ButtonStyle(
+                                                          shape: MaterialStateProperty.all<
+                                                                  RoundedRectangleBorder>(
+                                                              RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10.0),
+                                                                  side: const BorderSide(
+                                                                      color: Colors
+                                                                          .teal,
+                                                                      width:
+                                                                          2.0)))),
+                                                    );
+                                                  })
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
+                                );
+                              },
+                            );
+                          },
                         );
                       },
                       child: Text(
@@ -579,12 +490,21 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                           if (newValue == '${local?.afternoon}') {
                             setState(() {
                               afternoon = true;
+                              total = false;
                               dropDownValue = newValue!;
                             });
                           }
                           if (newValue == '${local?.morning}') {
                             setState(() {
                               afternoon = false;
+                              total = false;
+                              dropDownValue = newValue!;
+                            });
+                          }
+                          if (newValue == '${local?.total}') {
+                            setState(() {
+                              afternoon = false;
+                              total = true;
                               dropDownValue = newValue!;
                             });
                           }
@@ -592,6 +512,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                         items: <String>[
                           '${local?.morning}',
                           '${local?.afternoon}',
+                          '${local?.total}',
                         ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -603,7 +524,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                   ],
                 ),
               ),
-              yearController.text.isEmpty
+              pickedYear == null
                   ? Container(
                       padding: const EdgeInsets.only(top: 150, left: 70),
                       child: Column(
@@ -807,51 +728,55 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                             child: Text(
                                                                 '${local?.shortPresent}: '),
                                                           ),
-                                                          afternoon
-                                                              ? Text(attendanceDisplay
-                                                                  .where((element) {
-                                                                    return element
-                                                                                .userId ==
-                                                                            userDisplay[index]
-                                                                                .id &&
-                                                                        element.date
-                                                                                .month ==
-                                                                            _selectMonth &&
-                                                                        element.type ==
-                                                                            'checkin' &&
-                                                                        element.code ==
-                                                                            'cin2' &&
-                                                                        element.date
-                                                                                .hour ==
-                                                                            13 &&
-                                                                        element.date.minute <=
-                                                                            15 &&
-                                                                        element.date.year ==
-                                                                            int.parse(pickedYear);
-                                                                  })
-                                                                  .length
-                                                                  .toString())
-                                                              : Text(
-                                                                  attendanceDisplay
-                                                                      .where(
-                                                                          (element) {
+                                                          total
+                                                              ? Text((attendanceDisplay
+                                                                          .where(
+                                                                              (element) {
                                                                         return element.userId == userDisplay[index].id &&
                                                                             element.date.month ==
                                                                                 _selectMonth &&
-                                                                            element.type ==
-                                                                                'checkin' &&
-                                                                            element.code ==
-                                                                                'cin1' &&
-                                                                            element.date.hour ==
-                                                                                7 &&
-                                                                            element.date.minute <=
-                                                                                15 &&
+                                                                            checkPresent(
+                                                                                element) &&
+                                                                            element.date.year ==
+                                                                                int.parse(pickedYear);
+                                                                      }).length +
+                                                                      attendanceDisplay
+                                                                          .where(
+                                                                              (element) {
+                                                                        return element.userId == userDisplay[index].id &&
+                                                                            element.date.month ==
+                                                                                _selectMonth &&
+                                                                            checkPresentNoon(
+                                                                                element) &&
+                                                                            element.date.year ==
+                                                                                int.parse(pickedYear);
+                                                                      }).length)
+                                                                  .toString())
+                                                              : afternoon
+                                                                  ? Text(attendanceDisplay
+                                                                      .where((element) {
+                                                                        return element.userId == userDisplay[index].id &&
+                                                                            element.date.month ==
+                                                                                _selectMonth &&
+                                                                            checkPresentNoon(
+                                                                                element) &&
                                                                             element.date.year ==
                                                                                 int.parse(pickedYear);
                                                                       })
                                                                       .length
-                                                                      .toString(),
-                                                                ),
+                                                                      .toString())
+                                                                  : Text(
+                                                                      attendanceDisplay
+                                                                          .where(
+                                                                              (element) {
+                                                                            return element.userId == userDisplay[index].id &&
+                                                                                element.date.month == _selectMonth &&
+                                                                                checkPresent(element) &&
+                                                                                element.date.year == int.parse(pickedYear);
+                                                                          })
+                                                                          .length
+                                                                          .toString(),
+                                                                    ),
                                                         ],
                                                       ),
                                                       const SizedBox(
@@ -868,35 +793,43 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                             child: Text(
                                                                 '${local?.shortAbsent}: '),
                                                           ),
-                                                          afternoon
-                                                              ? Text(
-                                                                  attendanceDisplay
-                                                                      .where((element) => (element.userId == userDisplay[index].id &&
-                                                                          element.date.month ==
-                                                                              _selectMonth &&
-                                                                          element.code ==
-                                                                              'cin2' &&
-                                                                          element.type ==
-                                                                              'absent' &&
-                                                                          element.date.year ==
-                                                                              int.parse(pickedYear)))
-                                                                      .length
-                                                                      .toString(),
-                                                                )
-                                                              : Text(
-                                                                  attendanceDisplay
-                                                                      .where((element) => (element.userId == userDisplay[index].id &&
-                                                                          element.date.month ==
-                                                                              _selectMonth &&
-                                                                          element.code ==
-                                                                              'cin1' &&
-                                                                          element.type ==
-                                                                              'absent' &&
-                                                                          element.date.year ==
-                                                                              int.parse(pickedYear)))
-                                                                      .length
-                                                                      .toString(),
-                                                                ),
+                                                          total
+                                                              ? Text((attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month ==
+                                                                                  _selectMonth &&
+                                                                              checkAbsent(
+                                                                                  element) &&
+                                                                              element.date.year ==
+                                                                                  int.parse(
+                                                                                      pickedYear)))
+                                                                          .length +
+                                                                      attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month == _selectMonth &&
+                                                                              checkAbsentNoon(element) &&
+                                                                              element.date.year == int.parse(pickedYear)))
+                                                                          .length)
+                                                                  .toString())
+                                                              : afternoon
+                                                                  ? Text(
+                                                                      attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month == _selectMonth &&
+                                                                              checkAbsentNoon(element) &&
+                                                                              element.date.year == int.parse(pickedYear)))
+                                                                          .length
+                                                                          .toString(),
+                                                                    )
+                                                                  : Text(
+                                                                      attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month == _selectMonth &&
+                                                                              checkAbsent(element) &&
+                                                                              element.date.year == int.parse(pickedYear)))
+                                                                          .length
+                                                                          .toString(),
+                                                                    ),
                                                         ],
                                                       ),
                                                     ],
@@ -920,43 +853,43 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                             child: Text(
                                                                 '${local?.shortLate}: '),
                                                           ),
-                                                          afternoon
-                                                              ? Text(
-                                                                  attendanceDisplay
-                                                                      .where((element) => (element.userId == userDisplay[index].id &&
-                                                                          element.date.month ==
-                                                                              _selectMonth &&
-                                                                          element.code ==
-                                                                              'cin2' &&
-                                                                          element.type ==
-                                                                              'checkin' &&
-                                                                          element.date.hour ==
-                                                                              13 &&
-                                                                          element.date.minute >=
-                                                                              16 &&
-                                                                          element.date.year ==
-                                                                              int.parse(pickedYear)))
-                                                                      .length
-                                                                      .toString(),
-                                                                )
-                                                              : Text(
-                                                                  attendanceDisplay
-                                                                      .where((element) => (element.userId == userDisplay[index].id &&
-                                                                          element.date.month ==
-                                                                              _selectMonth &&
-                                                                          element.code ==
-                                                                              'cin1' &&
-                                                                          element.type ==
-                                                                              'checkin' &&
-                                                                          element.date.hour >=
-                                                                              7 &&
-                                                                          element.date.minute >=
-                                                                              16 &&
-                                                                          element.date.year ==
-                                                                              int.parse(pickedYear)))
-                                                                      .length
-                                                                      .toString(),
-                                                                ),
+                                                          total
+                                                              ? Text((attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month ==
+                                                                                  _selectMonth &&
+                                                                              checkLate(
+                                                                                  element) &&
+                                                                              element.date.year ==
+                                                                                  int.parse(
+                                                                                      pickedYear)))
+                                                                          .length +
+                                                                      attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month == _selectMonth &&
+                                                                              checkLateNoon(element) &&
+                                                                              element.date.year == int.parse(pickedYear)))
+                                                                          .length)
+                                                                  .toString())
+                                                              : afternoon
+                                                                  ? Text(
+                                                                      attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month == _selectMonth &&
+                                                                              checkLateNoon(element) &&
+                                                                              element.date.year == int.parse(pickedYear)))
+                                                                          .length
+                                                                          .toString(),
+                                                                    )
+                                                                  : Text(
+                                                                      attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month == _selectMonth &&
+                                                                              checkLate(element) &&
+                                                                              element.date.year == int.parse(pickedYear)))
+                                                                          .length
+                                                                          .toString(),
+                                                                    ),
                                                         ],
                                                       ),
                                                       const SizedBox(
@@ -973,35 +906,43 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                             child: Text(
                                                                 '${local?.shortPermission}: '),
                                                           ),
-                                                          afternoon
-                                                              ? Text(
-                                                                  attendanceDisplay
-                                                                      .where((element) => (element.userId == userDisplay[index].id &&
-                                                                          element.code ==
-                                                                              'cin2' &&
-                                                                          element.date.month ==
-                                                                              _selectMonth &&
-                                                                          element.type ==
-                                                                              'permission' &&
-                                                                          element.date.year ==
-                                                                              int.parse(pickedYear)))
-                                                                      .length
-                                                                      .toString(),
-                                                                )
-                                                              : Text(
-                                                                  attendanceDisplay
-                                                                      .where((element) => (element.userId == userDisplay[index].id &&
-                                                                          element.code ==
-                                                                              'cin1' &&
-                                                                          element.date.month ==
-                                                                              _selectMonth &&
-                                                                          element.type ==
-                                                                              'permission' &&
-                                                                          element.date.year ==
-                                                                              int.parse(pickedYear)))
-                                                                      .length
-                                                                      .toString(),
-                                                                ),
+                                                          total
+                                                              ? Text((attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month ==
+                                                                                  _selectMonth &&
+                                                                              checkPermission(
+                                                                                  element) &&
+                                                                              element.date.year ==
+                                                                                  int.parse(
+                                                                                      pickedYear)))
+                                                                          .length +
+                                                                      attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month == _selectMonth &&
+                                                                              checkPermissionNoon(element) &&
+                                                                              element.date.year == int.parse(pickedYear)))
+                                                                          .length)
+                                                                  .toString())
+                                                              : afternoon
+                                                                  ? Text(
+                                                                      attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month == _selectMonth &&
+                                                                              checkPermissionNoon(element) &&
+                                                                              element.date.year == int.parse(pickedYear)))
+                                                                          .length
+                                                                          .toString(),
+                                                                    )
+                                                                  : Text(
+                                                                      attendanceDisplay
+                                                                          .where((element) => (element.userId == userDisplay[index].id &&
+                                                                              element.date.month == _selectMonth &&
+                                                                              checkPermission(element) &&
+                                                                              element.date.year == int.parse(pickedYear)))
+                                                                          .length
+                                                                          .toString(),
+                                                                    ),
                                                         ],
                                                       ),
                                                     ],

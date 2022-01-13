@@ -336,10 +336,13 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen> {
                                   SizedBox(
                                     width: isEnglish ? 95 : 92,
                                   ),
-                                  Text(
-                                    userDisplay[0].skill.toString(),
-                                    style: kParagraph.copyWith(
-                                      color: Colors.white,
+                                  SizedBox(
+                                    width: 170,
+                                    child: Text(
+                                      userDisplay[0].skill.toString(),
+                                      style: kParagraph.copyWith(
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ],
