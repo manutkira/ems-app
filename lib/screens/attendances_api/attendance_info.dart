@@ -76,22 +76,22 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   List<AttendanceWithDate> attendanceList = [];
   List attendanceListNoon = [];
   List attendanceListAll = [];
-  int? onedayPresent;
-  int? onedayPresentNoon;
-  int? onedayLate;
-  int? onedayLateNoon;
-  int? onedayPermission;
-  int? onedayPermissionNoon;
-  int? onedayAbsent;
-  int? onedayAbsentNoon;
-  int? todayPresent;
-  int? todayPresentNoon;
-  int? todayLate;
-  int? todayLateNoon;
-  int? todayPermission;
-  int? todayPermissionNoon;
-  int? todayAbsent;
-  int? todayAbsentNoon;
+  int? onedayPresent,
+      onedayPresentNoon,
+      onedayLate,
+      onedayLateNoon,
+      onedayPermission,
+      onedayPermissionNoon,
+      onedayAbsent,
+      onedayAbsentNoon,
+      todayPresent,
+      todayPresentNoon,
+      todayLate,
+      todayLateNoon,
+      todayPermission,
+      todayPermissionNoon,
+      todayAbsent,
+      todayAbsentNoon;
 
   String sortByValue = '';
   List<String> dropdownItems = [];
@@ -121,6 +121,138 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       List flat = _attendanceAll.expand((element) => element.list).toList();
       attendanceListAll = flat.toList();
     } catch (e) {}
+  }
+
+  checkLate(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour == 7) {
+          if (element.date!.minute >= 16) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (element.date!.hour > 7) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkLateNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour == 13) {
+          if (element.date!.minute >= 16) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (element.date!.hour > 13) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPresent(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour <= 7) {
+          if (element.date!.minute <= 15) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPresentNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour <= 13) {
+          if (element.date!.minute <= 15) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsent(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'absent') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsentNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'absent') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPermission(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'permission') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissionNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'permission') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   fetchAttendanceById() async {
@@ -163,50 +295,50 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                 element.code != 'cin3' &&
                 element.code != 'cout3')
             .toList();
-        todayPresent = isToday
+        oneDayNoon = oneDayFlat
             .where((element) =>
-                element.type == 'checkin' &&
-                element.code == 'cin1' &&
-                element.date.hour == 7 &&
-                element.date.minute <= 15)
-            .length;
-        todayLate = isToday
+                element.code != 'cin1' &&
+                element.code != 'cout1' &&
+                element.code != 'cin3' &&
+                element.code != 'cout3')
+            .toList();
+        todayPresent = isToday.where((element) => checkPresent(element)).length;
+        todayLate = isToday.where((element) => checkLate(element)).length;
+        todayAbsent = isToday.where((element) => checkAbsent(element)).length;
+        todayPermission =
+            isToday.where((element) => checkPermission(element)).length;
+        onedayPresent =
+            oneDayMorning.where((element) => checkPresent(element)).length;
+        onedayLate =
+            oneDayMorning.where((element) => checkLate(element)).length;
+        onedayAbsent =
+            oneDayMorning.where((element) => checkAbsent(element)).length;
+        onedayPermission =
+            oneDayMorning.where((element) => checkPermission(element)).length;
+
+        isTodayNoon = todayFlat
             .where((element) =>
-                element.type == 'checkin' &&
-                element.code == 'cin1' &&
-                element.date.hour >= 7 &&
-                element.date.minute >= 16)
-            .length;
-        todayAbsent = isToday
-            .where(
-                (element) => element.type == 'absent' && element.code == 'cin1')
-            .length;
-        todayPermission = isToday
-            .where((element) =>
-                element.type == 'permission' && element.code == 'cin1')
-            .length;
-        onedayPresent = oneDayMorning
-            .where((element) =>
-                element.type == 'checkin' &&
-                element.code == 'cin1' &&
-                element.date.hour == 7 &&
-                element.date.minute <= 15)
-            .length;
-        onedayLate = oneDayMorning
-            .where((element) =>
-                element.type == 'checkin' &&
-                element.code == 'cin1' &&
-                element.date.hour >= 7 &&
-                element.date.minute >= 16)
-            .length;
-        onedayAbsent = oneDayMorning
-            .where(
-                (element) => element.type == 'absent' && element.code == 'cin1')
-            .length;
-        onedayPermission = oneDayMorning
-            .where((element) =>
-                element.type == 'permission' && element.code == 'cin1')
-            .length;
+                element.code != 'cin1' &&
+                element.code != 'cout1' &&
+                element.code != 'cout3' &&
+                element.code != 'cin3')
+            .toList();
+        todayPresentNoon =
+            isTodayNoon.where((element) => checkPresentNoon(element)).length;
+        todayLateNoon =
+            isTodayNoon.where((element) => checkLateNoon(element)).length;
+        todayAbsentNoon =
+            isTodayNoon.where((element) => checkAbsentNoon(element)).length;
+        todayPermissionNoon =
+            isTodayNoon.where((element) => checkPermissionNoon(element)).length;
+        onedayPresentNoon =
+            oneDayNoon.where((element) => checkPresentNoon(element)).length;
+        onedayLateNoon =
+            oneDayNoon.where((element) => checkLateNoon(element)).length;
+        onedayAbsentNoon =
+            oneDayNoon.where((element) => checkAbsentNoon(element)).length;
+        onedayPermissionNoon =
+            oneDayNoon.where((element) => checkPermissionNoon(element)).length;
       });
       attendanceList = _attendanceDisplay;
     } catch (e) {}
@@ -230,80 +362,12 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             element.date.month == now.month &&
             element.date.year == now.year);
         List todayFlat = today.expand((element) => element.list).toList();
-        isTodayNoon = todayFlat
-            .where((element) =>
-                element.code != 'cin1' &&
-                element.code != 'cout1' &&
-                element.code != 'cout3' &&
-                element.code != 'cin3')
-            .toList();
         var oneDay = attendanceDisplay.where((element) =>
             element.date.day == startDate.day &&
             element.date.month == startDate.month &&
             element.date.year == startDate.year);
         List oneDayFlat = oneDay.expand((element) => element.list).toList();
-        oneDayNoon = oneDayFlat
-            .where((element) =>
-                element.code != 'cin1' &&
-                element.code != 'cout1' &&
-                element.code != 'cin3' &&
-                element.code != 'cout3')
-            .toList();
-        todayPresentNoon = isTodayNoon
-            .where((element) =>
-                element.type == 'checkin' &&
-                element.code == 'cin2' &&
-                element.date.hour == 13 &&
-                element.date.minute <= 15)
-            .length;
-        todayLateNoon = isTodayNoon
-            .where((element) =>
-                element.type == 'checkin' &&
-                element.code == 'cin2' &&
-                element.date.hour >= 13 &&
-                element.date.minute >= 16)
-            .length;
-        todayAbsentNoon = isTodayNoon
-            .where(
-                (element) => element.type == 'absent' && element.code == 'cin2')
-            .length;
-        todayPermissionNoon = isTodayNoon
-            .where((element) =>
-                element.type == 'permission' && element.code == 'cin2')
-            .length;
-        onedayPresentNoon = oneDayNoon
-            .where((element) =>
-                element.type == 'checkin' &&
-                element.code == 'cin2' &&
-                element.date.hour == 13 &&
-                element.date.minute <= 15)
-            .length;
-        onedayLateNoon = oneDayNoon
-            .where((element) =>
-                element.type == 'checkin' &&
-                element.code == 'cin2' &&
-                element.date.hour >= 13 &&
-                element.date.minute >= 16)
-            .length;
-        onedayAbsentNoon = oneDayNoon
-            .where(
-                (element) => element.type == 'absent' && element.code == 'cin2')
-            .length;
-        onedayPermissionNoon = oneDayNoon
-            .where((element) =>
-                element.type == 'permission' && element.code == 'cin2')
-            .length;
       });
-      List flat = _attendanceDisplay.expand((element) => element.list).toList();
-      // attendanceListNoon = flat
-      //     .where((element) =>
-      //         element.code != 'cin1' &&
-      //         element.code != 'cout1' &&
-      //         element.code != 'cout3' &&
-      //         element.code != 'cin3')
-      //     .toList();
-      // List<AttendanceWithDate> list =
-      //     _attendanceDisplay.where((element) => element.list).toList();
       attendanceListNoon = _attendanceDisplay;
     } catch (e) {}
   }
@@ -647,9 +711,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    CircularProgressIndicator(
-                      color: kWhite,
-                    ),
+                    Image.asset(
+                      'assets/images/Gear-0.5s-200px.gif',
+                      width: 60,
+                    )
                   ],
                 ),
               ),
@@ -666,9 +731,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                         SizedBox(
                           height: 10,
                         ),
-                        CircularProgressIndicator(
-                          color: kWhite,
-                        ),
+                        Image.asset(
+                          'assets/images/Gear-0.5s-200px.gif',
+                          width: 60,
+                        )
                       ],
                     ),
                   ),
@@ -1266,9 +1332,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                 height: 10,
                                               ),
                                               Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  color: Colors.white,
+                                                child: Image.asset(
+                                                  'assets/images/Gear-0.5s-200px.gif',
+                                                  width: 60,
                                                 ),
                                               ),
                                             ],

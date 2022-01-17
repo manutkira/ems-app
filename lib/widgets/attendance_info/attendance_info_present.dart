@@ -66,11 +66,12 @@ class AttendanceInfoPresent extends StatelessWidget {
         ),
         isLoading
             ? SizedBox(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
+                child: Image.asset(
+                  'assets/images/Gear-0.5s-200px.gif',
+                  width: 20,
                 ),
-                height: 10,
-                width: 10,
+                // height: 10,
+                // width: 10,
               )
             : Visibility(
                 visible: counted != null,

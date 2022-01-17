@@ -105,6 +105,7 @@ flutter:
     - assets/images/flag-cambodia.svg
     - assets/images/flag-united-states.svg
     - assets/images/employees-group.svg
+    - assets/images/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

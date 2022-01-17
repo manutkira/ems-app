@@ -14,6 +14,7 @@ class AttedancesEdit extends StatefulWidget {
   final String type;
   final DateTime date;
   String? note;
+  String code;
 
   AttedancesEdit(
       {Key? key,
@@ -21,6 +22,7 @@ class AttedancesEdit extends StatefulWidget {
       required this.userId,
       required this.type,
       required this.date,
+      required this.code,
       this.note})
       : super(key: key);
   @override
@@ -35,10 +37,12 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   TextEditingController dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   TextEditingController? _noteController = TextEditingController();
+  TextEditingController? _codeController = TextEditingController();
   TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
   String? _hour, _minute, _time;
   DateTime? dateTime;
   String type = '';
+  String defualtCode = '';
 
   bool pick = false;
   late DateTime? _selectDate;
@@ -53,6 +57,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     idController.text = widget.userId.toString();
     typeController.text = widget.type;
     _noteController?.text = widget.note.toString();
+    _codeController?.text = widget.code;
     dateController.text = DateFormat('dd-MM-yyyy').format(widget.date);
     _timeController.text = DateFormat('HH:mm:ss').format(widget.date);
     super.initState();
@@ -465,7 +470,6 @@ class _AttedancesEditState extends State<AttedancesEdit> {
       "Accept": "application/json",
       "Content": "charset-UTF-8",
     };
-    request.files.add(http.MultipartFile.fromString('user_id', aUserId));
     String checkType() {
       if (aType == local?.checkIn) {
         return 'checkin';
@@ -483,6 +487,8 @@ class _AttedancesEditState extends State<AttedancesEdit> {
       }
     }
 
+    request.files
+        .add(http.MultipartFile.fromString('user_id', aUserId.toString()));
     request.files.add(http.MultipartFile.fromString('note', aNote.toString()));
     request.files.add(http.MultipartFile.fromString('type', checkType()));
     request.files.add(http.MultipartFile.fromString('date', aDate.toString()));
