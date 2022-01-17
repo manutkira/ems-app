@@ -4,6 +4,7 @@ import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
@@ -406,11 +407,14 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                 }).toList(),
                                               ),
                                             ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
                                             Container(
                                               height: 250,
                                               child: GridView.count(
-                                                mainAxisSpacing: 15,
-                                                crossAxisSpacing: 15,
+                                                mainAxisSpacing: 20,
+                                                crossAxisSpacing: 20,
                                                 childAspectRatio: 2.2,
                                                 crossAxisCount: 3,
                                                 shrinkWrap: true,
@@ -655,7 +659,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      Row(
+                                                      BaselineRow(
                                                         children: [
                                                           Padding(
                                                             padding:
@@ -686,7 +690,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                           ),
                                                         ],
                                                       ),
-                                                      Row(
+                                                      BaselineRow(
                                                         children: [
                                                           Padding(
                                                             padding:
@@ -717,7 +721,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                 children: [
                                                   Column(
                                                     children: [
-                                                      Row(
+                                                      BaselineRow(
                                                         children: [
                                                           Padding(
                                                             padding:
@@ -782,7 +786,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       const SizedBox(
                                                         height: 10,
                                                       ),
-                                                      Row(
+                                                      BaselineRow(
                                                         children: [
                                                           Padding(
                                                             padding:
@@ -842,7 +846,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      Row(
+                                                      BaselineRow(
                                                         children: [
                                                           Padding(
                                                             padding:
@@ -895,7 +899,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                       const SizedBox(
                                                         height: 10,
                                                       ),
-                                                      Row(
+                                                      BaselineRow(
                                                         children: [
                                                           Padding(
                                                             padding:

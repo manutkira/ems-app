@@ -4,6 +4,7 @@ import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -228,7 +229,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                       ),
                       PopupMenuItem(
                         child: Text(
-                          '${local?.pickMonth}',
+                          '${local?.byMonth}',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -365,7 +366,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      BaselineRow(
                         children: [
                           Padding(
                             padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
@@ -385,7 +386,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      Row(
+                      BaselineRow(
                         children: [
                           Padding(
                             padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
@@ -400,7 +401,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                     children: [
                       Column(
                         children: [
-                          Row(
+                          BaselineRow(
                             children: [
                               Padding(
                                 padding:
@@ -449,7 +450,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          Row(
+                          BaselineRow(
                             children: [
                               Padding(
                                 padding:
@@ -499,7 +500,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          BaselineRow(
                             children: [
                               Padding(
                                 padding:
@@ -540,7 +541,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          Row(
+                          BaselineRow(
                             children: [
                               Padding(
                                 padding:

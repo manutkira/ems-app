@@ -402,15 +402,15 @@
   "@byId": {
     "description": "by ID"
   },
-  "info": "info",
+  "info": "Info",
   "@info": {
     "description": "employee list"
   },
-  "edit": "edit",
+  "edit": "Edit",
   "@edit": {
     "description": "employee list"
   },
-  "delete": "delete",
+  "delete": "Delete",
   "@delete": {
     "description": "employee list"
   },
