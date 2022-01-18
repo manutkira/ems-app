@@ -742,12 +742,9 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                                           Text('Your changes will be lost.'),
                                       actions: [
                                         OutlineButton(
-                                          onPressed: () async {
+                                          onPressed: () {
                                             Navigator.of(context).pop();
-                                            await Navigator.of(context)
-                                                .pushReplacementNamed(
-                                              EmployeeListScreen.routeName,
-                                            );
+                                            Navigator.pop(context);
                                           },
                                           child: Text('${local?.yes}'),
                                           borderSide:
@@ -818,7 +815,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     request.files.add(http.MultipartFile.fromString('salary', aSalary));
     String checkRole() {
       if (aRole == local?.employee) {
-        return 'amployee';
+        return 'employee';
       }
       if (aRole == local?.admin) {
         return 'admin';

@@ -192,5 +192,8 @@
   "deleting": "កំពុងលុបបុគ្គលិក!",
   "deleted": "បុគ្គលិកត្រូវបានលុប!",
   "deletingAttendance": "កំពុងលុបវត្តមាន!",
-  "deletedAttendance": "វត្តមានត្រូវបានលុប!"
+  "deletedAttendance": "វត្តមានត្រូវបានលុប!",
+  "personal": "ព័ត៌មានផ្ទាល់ខ្លួន",
+  "employment": "ព័ត៌មានការងារ",
+  "noData": "មិនមានទិន្នន័យ"
 }

@@ -797,5 +797,17 @@
   "deletedAttendance": "Attendance has been deleted.",
   "@deletedAttendance": {
     "description": "add employee"
+  },
+  "personal": "Personal Info",
+  "@personal": {
+    "description": "add employee"
+  },
+  "employment": "Employment",
+  "@employment": {
+    "description": "add employee"
+  },
+  "noData": "No Data",
+  "@noData": {
+    "description": "add employee"
   }
 }
