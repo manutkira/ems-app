@@ -809,5 +809,13 @@
   "noData": "No Data",
   "@noData": {
     "description": "add employee"
+  },
+  "score": "Score",
+  "@score": {
+    "description": "add employee"
+  },
+  "enterScore": "Enter Score",
+  "@enterScore": {
+    "description": "add employee"
   }
 }

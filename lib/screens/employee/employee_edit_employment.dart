@@ -1,66 +1,44 @@
 import 'dart:convert';
-import 'dart:io';
-import 'dart:ui';
 
-import 'package:ems/screens/employee/employee_info_screen.dart';
-import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/utils/utils.dart';
-import 'package:ems/widgets/check_status.dart';
-import 'package:ems/widgets/image_input/edit_emp_id.dart';
-import 'package:ems/widgets/image_input/edit_emp_profile.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
-import 'package:ems/constants.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class EmployeeEditScreen extends StatefulWidget {
-  final int id;
+import '../../constants.dart';
+
+class EmployeeEditEmployment extends StatefulWidget {
   final String name;
   final String phone;
-  final String email;
-  final String address;
+  final int id;
   final String position;
   final String skill;
   final String salary;
   final String role;
   final String status;
   final String ratee;
-  final String background;
-  final String? image;
-  final String? imageId;
-
-  EmployeeEditScreen(
-    this.id,
+  const EmployeeEditEmployment(
     this.name,
     this.phone,
-    this.email,
-    this.address,
+    this.id,
     this.position,
     this.skill,
     this.salary,
     this.role,
     this.status,
     this.ratee,
-    this.background,
-    this.image,
-    this.imageId,
   );
-  static const routeName = '/employee-edit';
 
   @override
-  State<EmployeeEditScreen> createState() => _EmployeeEditScreenState();
+  _EmployeeEditEmploymentState createState() => _EmployeeEditEmploymentState();
 }
 
-class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
+class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
   TextEditingController positionController = TextEditingController();
   TextEditingController skillController = TextEditingController();
   TextEditingController salaryController = TextEditingController();
@@ -71,35 +49,14 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
 
   final _form = GlobalKey<FormState>();
 
-  String? imageUrl = '';
-  String? idUrl = '';
-
-  File? pickedImg;
-  File? pickedId;
-
-  void _selectImage(File pickedImage) {
-    pickedImg = pickedImage;
-  }
-
-  void _selectImageId(File pickedImage) {
-    pickedId = pickedImage;
-  }
-
   @override
   void initState() {
     nameController.text = widget.name;
     phoneController.text = widget.phone;
-    emailController.text = widget.email;
-    addressController.text = widget.address;
     positionController.text = widget.position;
     skillController.text = widget.skill;
     salaryController.text = widget.salary;
-    backgroundController.text = widget.background;
-    // role = '';
-    // status = '';
     rate = '';
-    imageUrl = widget.image;
-    idUrl = widget.imageId;
 
     super.initState();
   }
@@ -205,15 +162,14 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
               padding: EdgeInsets.all(20),
               child: Column(
                 children: [
-                  ImageInputProfileEdit(_selectImage, imageUrl!),
                   SizedBox(
-                    height: 30,
+                    height: 15,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${local?.name} ',
+                        '${local?.position} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -228,20 +184,14 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             Flexible(
                               child: TextFormField(
                                 decoration: InputDecoration(
-                                  hintText: '${local?.enterName}',
+                                  hintText: '${local?.enterPosition}',
                                   errorStyle: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                controller: nameController,
+                                controller: positionController,
                                 textInputAction: TextInputAction.next,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '${local?.errorName}';
-                                  }
-                                  return null;
-                                },
                               ),
                             ),
                           ],
@@ -256,7 +206,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${local?.phoneNumber} ',
+                        '${local?.skill} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -271,71 +221,14 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                             Flexible(
                               child: TextFormField(
                                 decoration: InputDecoration(
-                                  hintText: '${local?.enterPhone}',
-                                  errorStyle: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                controller: phoneController,
-                                textInputAction: TextInputAction.next,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '${local?.errorPhone}';
-                                  }
-                                  if (double.tryParse(value) == null) {
-                                    return 'Please Enter valid number';
-                                  }
-                                  if (value.length < 9 || value.length > 10) {
-                                    return 'Enter Between 8-9 Digits';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${local?.email} ',
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: Flex(
-                          direction: Axis.horizontal,
-                          children: [
-                            Flexible(
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  hintText: '${local?.enterEmail}',
+                                  hintText: '${local?.enterSkill}',
                                   errorStyle: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                controller: emailController,
+                                controller: skillController,
                                 textInputAction: TextInputAction.next,
-                                validator: (value) {
-                                  if (value!.isEmpty ||
-                                      !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}')
-                                          .hasMatch(value)) {
-                                    return '${local?.errorEmail}';
-                                  }
-                                  return null;
-                                },
                               ),
                             ),
                           ],
@@ -346,93 +239,156 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                   SizedBox(
                     height: 15,
                   ),
-                  Column(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        height: 15,
+                      Text(
+                        '${local?.salary} ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${local?.address} ',
-                            style: kParagraph.copyWith(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            width: 20,
-                            height: 15,
-                          ),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 1),
-                            child: Flex(
-                              direction: Axis.horizontal,
-                              children: [
-                                Flexible(
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                      hintText: '${local?.enterAddress}',
-                                      errorStyle: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    controller: addressController,
-                                    textInputAction: TextInputAction.next,
-                                    maxLines: 3,
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.6),
+                        child: Flex(
+                          direction: Axis.horizontal,
+                          children: [
+                            Flexible(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(
+                                    MdiIcons.currencyUsd,
+                                    color: kWhite,
+                                  ),
+                                  hintText: '${local?.enterSalary}',
+                                  errorStyle: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ],
+                                controller: salaryController,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${local?.role} ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
-                        height: 15,
+                        width: 20,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${local?.background} ',
-                            style: kParagraph.copyWith(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 1),
-                            child: Flex(
-                              direction: Axis.horizontal,
-                              children: [
-                                Flexible(
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                      hintText: '${local?.enterBackground}',
-                                      errorStyle: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    controller: backgroundController,
-                                    textInputAction: TextInputAction.done,
-                                    maxLines: 3,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                      Container(
+                        width: 233,
+                        child: DropdownButtonFormField(
+                          icon: Icon(Icons.expand_more),
+                          value: role,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              role = newValue!;
+                            });
+                          },
+                          items: <String>[
+                            '${local?.admin}',
+                            '${local?.employee}'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                ));
+                          }).toList(),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${local?.status} ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
-                        height: 20,
+                        width: 20,
                       ),
-                      ImageInputPickerId(_selectImageId, idUrl!)
+                      Container(
+                        width: 233,
+                        child: DropdownButtonFormField(
+                          icon: Icon(Icons.expand_more),
+                          value: status,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              status = newValue!;
+                            });
+                          },
+                          items: <String>[
+                            '${local?.active}',
+                            '${local?.inactive}',
+                            '${local?.resigned}',
+                            '${local?.fired}'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                ));
+                          }).toList(),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '${local?.rate} ',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        width: 233,
+                        child: DropdownButtonFormField(
+                          icon: Icon(Icons.expand_more),
+                          value: rate,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              rate = newValue!;
+                            });
+                          },
+                          items: <String>[
+                            '${local?.veryGood}',
+                            '${local?.good}',
+                            '${local?.medium}',
+                            '${local?.low}',
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                ));
+                          }).toList(),
+                        ),
+                      )
                     ],
                   ),
                   Container(
@@ -550,37 +506,24 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   uploadImage() async {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
+
     var aName = nameController.text;
     var aPhone = phoneController.text;
-    var aEmail = emailController.text;
-    var aAddress = addressController.text;
     var aPosition = positionController.text;
     var aSkill = skillController.text;
     var aSalary = salaryController.text;
     var aRole = role;
     var aStatus = status;
     var aWorkrate = rate;
-    var aBackground = backgroundController.text;
+
     var request = await http.MultipartRequest(
         'POST', Uri.parse("$url/${widget.id}?_method=PUT"));
     Map<String, String> headers = {
       "Accept": "application/json",
       "Content": "charset-UTF-8",
     };
-    if (pickedImg != null) {
-      request.files.add(http.MultipartFile(
-          'image', pickedImg!.readAsBytes().asStream(), pickedImg!.lengthSync(),
-          filename: pickedImg!.path.split('/').last));
-    }
-    if (pickedId != null) {
-      request.files.add(http.MultipartFile('image_id',
-          pickedId!.readAsBytes().asStream(), pickedId!.lengthSync(),
-          filename: pickedId!.path.split('/').last));
-    }
     request.files.add(http.MultipartFile.fromString('name', aName));
     request.files.add(http.MultipartFile.fromString('phone', aPhone));
-    request.files.add(http.MultipartFile.fromString('email', aEmail));
-    request.files.add(http.MultipartFile.fromString('address', aAddress));
     request.files.add(http.MultipartFile.fromString('position', aPosition));
     request.files.add(http.MultipartFile.fromString('skill', aSkill));
     request.files.add(http.MultipartFile.fromString('salary', aSalary));
@@ -632,7 +575,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     }
 
     request.files.add(http.MultipartFile.fromString('rate', checkRate()));
-    request.files.add(http.MultipartFile.fromString('background', aBackground));
+
     request.headers.addAll(headers);
 
     var res = await request.send();
