@@ -10,7 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-import '../../constants.dart';
+import '../../../constants.dart';
 
 class QRCode extends ConsumerStatefulWidget {
   final String type;
@@ -139,24 +139,18 @@ class _QRCodeState extends ConsumerState<QRCode> {
   }
 
   void fetchQrCode() async {
-    User _currentUser = ref.read(currentUserProvider).user;
-    setState(() {
-      _passcode = _currentUser.id.toString();
-      // verifyQrCode();
-    });
-    // try {
-    //   // String code = await _attService.generateQRCode();
-    //   // print(code);
-    //   User _currentUser = ref.read(currentUserProvider).user;
-    //   setState(() {
-    //     _passcode = _currentUser.id.toString();
-    //     // verifyQrCode();
-    //   });
-    // } catch (e) {
-    //   setState(() {
-    //     _error = 'Error fetching new QR code';
-    //   });
-    // }
+    try {
+      String code = await _attService.generateQRCode();
+      print(code);
+      setState(() {
+        _passcode = code;
+        verifyQrCode();
+      });
+    } catch (e) {
+      setState(() {
+        _error = 'Error fetching new QR code';
+      });
+    }
   }
 
   void verifyQrCode() async {
@@ -172,8 +166,6 @@ class _QRCodeState extends ConsumerState<QRCode> {
   @override
   void initState() {
     super.initState();
-
-    /// creating qr code
     fetchQrCode();
   }
 
@@ -216,22 +208,22 @@ class _QRCodeState extends ConsumerState<QRCode> {
                     const SizedBox(height: 20),
                     Text("${local?.scanToType(type)}"),
                     const SizedBox(height: 20),
-                    // TextButton(
-                    //   style: TextButton.styleFrom(
-                    //     padding: kPadding.copyWith(top: 10, bottom: 10),
-                    //     primary: Colors.white,
-                    //     textStyle: kParagraph,
-                    //     backgroundColor: kBlue,
-                    //     shape: const RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.all(kBorderRadius),
-                    //     ),
-                    //   ),
-                    //   onPressed: addAttendance,
-                    //   child: Text(
-                    //     '${local?.checkMyself(type)}',
-                    //     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                    //   ),
-                    // ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        padding: kPadding.copyWith(top: 10, bottom: 10),
+                        primary: Colors.white,
+                        textStyle: kParagraph,
+                        backgroundColor: kBlue,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(kBorderRadius),
+                        ),
+                      ),
+                      onPressed: addAttendance,
+                      child: Text(
+                        '${local?.checkMyself(type)}',
+                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ],
                 ),
                 Visibility(

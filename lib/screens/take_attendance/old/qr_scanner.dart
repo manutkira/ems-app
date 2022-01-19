@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:ems/constants.dart';
 import 'package:ems/models/attendance.dart';
-import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/screens/take_attendance/widgets/confirmation.dart';
@@ -37,12 +36,10 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   @override
   void reassemble() {
     super.reassemble();
-    if (controller != null) {
-      if (Platform.isAndroid) {
-        controller!.pauseCamera();
-      }
-      controller!.resumeCamera();
+    if (Platform.isAndroid) {
+      controller!.pauseCamera();
     }
+    controller!.resumeCamera();
   }
 
   void _closePanel() {
@@ -84,32 +81,29 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   addAttendance(Barcode _result) async {
     AppLocalizations? local = AppLocalizations.of(context);
 
-    // bool isVerified = await verifyQRCode("${_result.code}");
-    // // if not verified(most likely, wrong code), return verification error
-    // if (!isVerified) {
-    //   _buildQRCodeError();
-    //   return;
-    // }
-    //
-    // int _currentUserId = ref.read(currentUserProvider).user.id as int;
+    bool isVerified = await verifyQRCode("${_result.code}");
+    // if not verified(most likely, wrong code), return verification error
+    if (!isVerified) {
+      _buildQRCodeError();
+      return;
+    }
+
+    int _currentUserId = ref.read(currentUserProvider).user.id as int;
 
     setState(() {
       attendance = Attendance(
-        userId: int.tryParse(_result.code.toString()),
+        userId: _currentUserId,
         type: widget.type,
         date: DateTime.now(),
       );
     });
 
-    /// find out how to get isLate
-    // if(late){
-    //   // confirmation screen
-    //   bool confirmed = await confirmScan();
-    //   // if cancel, stop the process
-    //   if (!confirmed) {
-    //     return;
-    //   }
-    // }
+    // confirmation screen
+    bool confirmed = await confirmScan();
+    // if cancel, stop the process
+    if (!confirmed) {
+      return;
+    }
 
     // else set new loading message
     setState(() {
@@ -190,52 +184,14 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   @override
   void initState() {
     super.initState();
-    // _buildScanSuccessful();
   }
 
   @override
   Widget build(BuildContext context) {
-    User currentUser = ref.read(currentUserProvider).user;
-    return Container(
-      child: Center(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Image.network(
-                  currentUser.image.toString(),
-                  cacheHeight: 100,
-                  width: 100,
-                  errorBuilder: (context, _, __) {
-                    return Container(
-                      height: 100,
-                      width: 100,
-                      color: kDarkestBlue,
-                      child: const Center(
-                        child: Text('error'),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                currentUser.name.toString(),
-                // '$localType ${local?.successfully}!',
-                style: kParagraph.copyWith(color: kWhite),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    // return Scaffold(
-    //   body: _isLoading
-    //       ? _loading(context, _loadingMessage)
-    //       : _buildScanner(context),
-    // );
+    return Scaffold(
+        body: _isLoading
+            ? _loading(context, _loadingMessage)
+            : _buildScanner(context));
   }
 
   Widget _buildScanner(BuildContext context) {
@@ -396,39 +352,19 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   /// build scan successful
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
       _buildScanSuccessful() {
-    // AppLocalizations? local = AppLocalizations.of(context);
-    // String localType = widget.type == AttendanceType.typeCheckIn
-    //     ? "${local?.checkin}"
-    //     : "${local?.checkout}";
-    User currentUser = ref.read(currentUserProvider).user;
+    AppLocalizations? local = AppLocalizations.of(context);
+    String localType = widget.type == AttendanceType.typeCheckIn
+        ? "${local?.checkin}"
+        : "${local?.checkout}";
 
     return ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: const Duration(days: 1),
+      _buildSnackBar(
+        icon: Icons.check,
+        textColor: kGreenText,
         backgroundColor: kGreenBackground,
-        content: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.network(
-                currentUser.image.toString(),
-              ),
-              Text(
-                'heheye',
-                // '$localType ${local?.successfully}!',
-                style: kParagraph.copyWith(color: kGreenText),
-              ),
-            ],
-          ),
-        ),
+        type: widget.type,
+        message: '$localType ${local?.successfully}!',
       ),
-      // _buildSnackBar(
-      //   icon: Icons.check,
-      //   textColor: kGreenText,
-      //   backgroundColor: kGreenBackground,
-      //   type: widget.type,
-      //   message: '$localType ${local?.successfully}!',
-      // ),
     );
   }
 
