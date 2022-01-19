@@ -517,24 +517,24 @@ class _EmployeeListState extends State<EmployeeList> {
                       }
                     },
                     itemBuilder: (_) => [
-                      // PopupMenuItem(
-                      //   child: Text(
-                      //     '${local?.info}',
-                      //     style: TextStyle(
-                      //       fontSize: isEnglish ? 15 : 16,
-                      //     ),
-                      //   ),
-                      //   value: 0,
-                      // ),
                       PopupMenuItem(
                         child: Text(
-                          '${local?.rate}',
+                          '${local?.info}',
                           style: TextStyle(
                             fontSize: isEnglish ? 15 : 16,
                           ),
                         ),
-                        value: 3,
+                        value: 0,
                       ),
+                      // PopupMenuItem(
+                      //   child: Text(
+                      //     '${local?.rate}',
+                      //     style: TextStyle(
+                      //       fontSize: isEnglish ? 15 : 16,
+                      //     ),
+                      //   ),
+                      //   value: 3,
+                      // ),
                       PopupMenuItem(
                         child: Text(
                           '${local?.edit}',
