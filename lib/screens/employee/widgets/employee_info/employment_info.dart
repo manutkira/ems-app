@@ -1,6 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -11,6 +13,7 @@ import '../../employee_edit_employment.dart';
 class EmploymentInfo extends StatelessWidget {
   List<User> userDisplay;
   List<User> user;
+  List rateDisplay;
   List rateList;
   final Function fetchUserById;
   final Function checkRole;
@@ -18,6 +21,7 @@ class EmploymentInfo extends StatelessWidget {
   final Function checkRate;
   final Function addRateList;
   final Function deleteRateItem;
+  final Function fetchRateDate;
   TextEditingController rateNameController;
   TextEditingController rateScoreController;
   TextEditingController idController;
@@ -26,6 +30,7 @@ class EmploymentInfo extends StatelessWidget {
     Key? key,
     required this.userDisplay,
     required this.user,
+    required this.rateDisplay,
     required this.rateList,
     required this.fetchUserById,
     required this.checkRole,
@@ -33,6 +38,7 @@ class EmploymentInfo extends StatelessWidget {
     required this.checkRate,
     required this.addRateList,
     required this.deleteRateItem,
+    required this.fetchRateDate,
     required this.rateNameController,
     required this.rateScoreController,
     required this.idController,
@@ -42,6 +48,68 @@ class EmploymentInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
+    final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+    TextEditingController skillNameController = TextEditingController();
+    TextEditingController scoreController = TextEditingController();
+    int? rateId;
+
+    editRate() async {
+      AppLocalizations? local = AppLocalizations.of(context);
+      bool isEnglish = isInEnglish(context);
+      var aName = skillNameController.text;
+      var aScore = scoreController.text;
+
+      var request = await http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              "http://rest-api-laravel-flutter.herokuapp.com/api/ratework/${rateId}?_method=PUT"));
+      Map<String, String> headers = {
+        "Accept": "application/json",
+        "Content": "charset-UTF-8",
+      };
+
+      request.files.add(http.MultipartFile.fromString('skill_name', aName));
+      request.files.add(http.MultipartFile.fromString('score', aScore));
+
+      request.headers.addAll(headers);
+
+      var res = await request.send();
+
+      if (res.statusCode == 200) {
+        Navigator.pop(context);
+      }
+      res.stream.transform(utf8.decoder).listen((event) {});
+    }
+
+    void showInSnackBar(String value) {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(milliseconds: 2000),
+          backgroundColor: kBlueBackground,
+          content: Text(
+            value,
+            style: kHeadingFour.copyWith(color: Colors.black),
+          ),
+        ),
+      );
+    }
+
+    Future deleteData(int id) async {
+      AppLocalizations? local = AppLocalizations.of(context);
+      bool isEnglish = isInEnglish(context);
+      final response = await http.delete(Uri.parse(
+          "http://rest-api-laravel-flutter.herokuapp.com/api/ratework/$id"));
+      showInSnackBar("${local?.deletingAttendance}");
+      if (response.statusCode == 200) {
+        fetchRateDate();
+        showInSnackBar("${local?.deletedAttendance}");
+      } else {
+        return false;
+      }
+    }
+
     return SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.only(
@@ -251,8 +319,8 @@ class EmploymentInfo extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                      onPressed: () {
-                        showModalBottomSheet(
+                      onPressed: () async {
+                        await showModalBottomSheet(
                             context: context,
                             builder: (_) {
                               return Container(
@@ -385,66 +453,6 @@ class EmploymentInfo extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20, bottom: 15),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '${local?.score} ',
-                                                style: kParagraph.copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              SizedBox(
-                                                width: isEnglish ? 40 : 40,
-                                              ),
-                                              Container(
-                                                constraints: BoxConstraints(
-                                                    maxWidth:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.6),
-                                                child: Flex(
-                                                  direction: Axis.horizontal,
-                                                  children: [
-                                                    Flexible(
-                                                      child: Container(
-                                                        height: 35,
-                                                        child: TextFormField(
-                                                          decoration:
-                                                              InputDecoration(
-                                                            contentPadding:
-                                                                EdgeInsets.only(
-                                                                    left: 10),
-                                                            hintText:
-                                                                '${local?.enterScore}',
-                                                            errorStyle:
-                                                                TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                          controller:
-                                                              idController,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
                                     SizedBox(
                                       height: 20,
                                     ),
@@ -456,13 +464,8 @@ class EmploymentInfo extends StatelessWidget {
                                         children: [
                                           RaisedButton(
                                             onPressed: () {
-                                              addRateList(
-                                                rateNameController.text,
-                                                int.parse(
-                                                    rateScoreController.text),
-                                                int.parse(idController.text),
-                                              );
-                                              Navigator.pop(context);
+                                              addRateList();
+                                              // Navigator.pop(context);
                                               rateNameController.text = '';
                                               rateScoreController.text = '';
                                               idController.text = '';
@@ -500,6 +503,7 @@ class EmploymentInfo extends StatelessWidget {
                                 ),
                               );
                             });
+                        fetchRateDate();
                       },
                       icon: Icon(Icons.add))
                 ],
@@ -507,111 +511,56 @@ class EmploymentInfo extends StatelessWidget {
             ),
             Container(
               child: Center(
-                child: ListView(
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   padding: EdgeInsets.all(8),
-                  children: [
-                    Container(
-                      child: Column(
-                        children: rateList.map((e) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(e.rateName),
-                                Row(
-                                  children: [
-                                    Text('${e.score.toString()} / 10'),
-                                    SizedBox(
-                                      width: 25,
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                        showModalBottomSheet(
-                                            context: context,
-                                            builder: (_) {
-                                              return Container(
-                                                height: 340,
-                                                decoration: const BoxDecoration(
-                                                  color: kBlue,
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(30),
-                                                    topLeft:
-                                                        Radius.circular(30),
-                                                  ),
+                  itemCount: rateDisplay[0].length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(rateDisplay[0][index]['skill_name']),
+                              Row(
+                                children: [
+                                  Text(
+                                      '${rateDisplay[0][index]['score'].toString()} / 10'),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  IconButton(
+                                    onPressed: () async {
+                                      rateId = rateDisplay[0][index]['id'];
+                                      skillNameController.text =
+                                          rateDisplay[0][index]['skill_name'];
+                                      scoreController.text =
+                                          rateDisplay[0][index]['score'];
+                                      await showModalBottomSheet(
+                                          context: context,
+                                          builder: (_) {
+                                            return Container(
+                                              height: 340,
+                                              decoration: const BoxDecoration(
+                                                color: kBlue,
+                                                borderRadius: BorderRadius.only(
+                                                  topRight: Radius.circular(30),
+                                                  topLeft: Radius.circular(30),
                                                 ),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(20),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                '${local?.id} ',
-                                                                style: kParagraph.copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                              SizedBox(
-                                                                width: isEnglish
-                                                                    ? 40
-                                                                    : 40,
-                                                              ),
-                                                              Container(
-                                                                constraints: BoxConstraints(
-                                                                    maxWidth: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width *
-                                                                        0.6),
-                                                                child: Flex(
-                                                                  direction: Axis
-                                                                      .horizontal,
-                                                                  children: [
-                                                                    Flexible(
-                                                                      child:
-                                                                          Container(
-                                                                        height:
-                                                                            35,
-                                                                        child:
-                                                                            TextFormField(
-                                                                          decoration:
-                                                                              InputDecoration(
-                                                                            contentPadding:
-                                                                                EdgeInsets.only(left: 10),
-                                                                            hintText:
-                                                                                '${local?.id}',
-                                                                            errorStyle:
-                                                                                TextStyle(
-                                                                              fontSize: 15,
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
-                                                                          ),
-                                                                          initialValue: e
-                                                                              .id
-                                                                              .toString(),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Row(
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
                                                       children: [
                                                         Padding(
                                                           padding:
@@ -666,10 +615,12 @@ class EmploymentInfo extends StatelessWidget {
                                                                               fontWeight: FontWeight.bold,
                                                                             ),
                                                                           ),
-                                                                          initialValue: e
-                                                                              .rateName
-                                                                              .toString(),
-                                                                          // controller: rateNameController,
+                                                                          controller:
+                                                                              skillNameController,
+                                                                          // initialValue:
+                                                                          //     rateDisplay[0][index]['skill_name'].toString(),
+                                                                          // controller:
+                                                                          //     rateNameController,
                                                                         ),
                                                                       ),
                                                                     ),
@@ -681,7 +632,12 @@ class EmploymentInfo extends StatelessWidget {
                                                         ),
                                                       ],
                                                     ),
-                                                    Row(
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
                                                       children: [
                                                         Padding(
                                                           padding:
@@ -736,9 +692,10 @@ class EmploymentInfo extends StatelessWidget {
                                                                               fontWeight: FontWeight.bold,
                                                                             ),
                                                                           ),
-                                                                          initialValue: e
-                                                                              .score
-                                                                              .toString(),
+                                                                          controller:
+                                                                              scoreController,
+                                                                          // initialValue:
+                                                                          //     rateDisplay[0][index]['score'].toString(),
                                                                         ),
                                                                       ),
                                                                     ),
@@ -750,107 +707,94 @@ class EmploymentInfo extends StatelessWidget {
                                                         ),
                                                       ],
                                                     ),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 30),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          RaisedButton(
-                                                            onPressed: () {
-                                                              addRateList(
-                                                                rateNameController
-                                                                    .text,
-                                                                int.parse(
-                                                                    rateScoreController
-                                                                        .text),
-                                                                int.parse(
-                                                                    idController
-                                                                        .text),
-                                                              );
-                                                              Navigator.pop(
-                                                                  context);
-                                                              rateNameController
-                                                                  .text = '';
-                                                              rateScoreController
-                                                                  .text = '';
-                                                              idController
-                                                                  .text = '';
-                                                            },
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor,
-                                                            child: Text(
-                                                              '${local?.save}',
-                                                              style: TextStyle(
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 30),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        RaisedButton(
+                                                          onPressed: () {
+                                                            editRate();
+                                                          },
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                          child: Text(
+                                                            '${local?.save}',
+                                                            style: TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
                                                             ),
                                                           ),
-                                                          SizedBox(
-                                                            width: 15,
-                                                          ),
-                                                          RaisedButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            color: Colors.red,
-                                                            child: Text(
-                                                              '${local?.cancel}',
-                                                              style: TextStyle(
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 15,
+                                                        ),
+                                                        RaisedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          color: Colors.red,
+                                                          child: Text(
+                                                            '${local?.cancel}',
+                                                            style: TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
                                                             ),
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                              );
-                                            });
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                      fetchRateDate();
+                                    },
+                                    icon: Icon(
+                                      Icons.edit,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      padding: EdgeInsets.only(left: 0),
+                                      constraints: BoxConstraints(),
+                                      onPressed: () async {
+                                        await deleteData(
+                                            rateDisplay[0][index]['id']);
+                                        fetchRateDate();
                                       },
                                       icon: Icon(
-                                        Icons.edit,
+                                        Icons.delete,
                                         size: 20,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    IconButton(
-                                        onPressed: () {
-                                          deleteRateItem(e.id);
-                                        },
-                                        icon: Icon(
-                                          Icons.delete,
-                                          size: 20,
-                                          color: Colors.red,
-                                        )),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
+                                        color: Colors.red,
+                                      )),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    );
+                  },
                 ),
               ),
+            ),
+            SizedBox(
+              height: 65,
             )
           ],
         ),

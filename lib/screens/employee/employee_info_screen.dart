@@ -4,6 +4,7 @@ import 'package:ems/models/rate.dart';
 import 'package:ems/screens/employee/employee_edit_employment.dart';
 import 'package:ems/screens/employee/widgets/employee_info/employment_info.dart';
 import 'package:ems/screens/employee/widgets/employee_info/personal_info.dart';
+import 'package:ems/utils/services/rate_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
@@ -32,13 +33,19 @@ class EmployeeInfoScreen extends StatefulWidget {
 class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
     with SingleTickerProviderStateMixin {
   // rate list
+  String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
   final List<Rate> rateList = [];
   final rateNameController = TextEditingController();
   final rateScoreController = TextEditingController();
   final idController = TextEditingController();
 
-  void addRateList(String name, int score, int id) {
-    final rate = Rate(rateName: name, score: score, id: id);
+  void addRateList(
+    String name,
+    int score,
+    int id,
+    int userId,
+  ) {
+    final rate = Rate(rateName: name, score: score, id: id, userId: userId);
     setState(() {
       rateList.add(rate);
     });
@@ -55,6 +62,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
   final UserService _userService = UserService.instance;
   List<User> userDisplay = [];
   List<User> user = [];
+  final RateService _rateService = RateService.instance;
+  List rateDisplay = [];
   bool _isloading = true;
   String dropDownValue = '';
   bool personal = true;
@@ -74,8 +83,20 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
             _isloading = true;
             user.add(usersFromServer);
             userDisplay = user;
-            print(userDisplay[0].name);
             _isloading = false;
+          });
+        }
+      });
+    } catch (err) {}
+  }
+
+  fetchRateDate() {
+    try {
+      _rateService.findOne(widget.id).then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            rateDisplay = [];
+            rateDisplay.add(usersFromServer);
           });
         }
       });
@@ -85,7 +106,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
   @override
   void initState() {
     fetchUserById();
-
+    fetchRateDate();
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_handleSelected);
@@ -171,34 +192,6 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text('Employee'),
-        actions: [
-          // IconButton(
-          //   onPressed: () async {
-          //     await Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //             builder: (_) => EmployeeEditScreen(
-          //                 userDisplay[0].id as int,
-          //                 userDisplay[0].name.toString(),
-          //                 userDisplay[0].phone.toString(),
-          //                 userDisplay[0].email.toString(),
-          //                 userDisplay[0].address.toString(),
-          //                 userDisplay[0].position.toString(),
-          //                 userDisplay[0].skill.toString(),
-          //                 userDisplay[0].salary.toString(),
-          //                 userDisplay[0].role.toString(),
-          //                 userDisplay[0].status.toString(),
-          //                 userDisplay[0].rate.toString(),
-          //                 userDisplay[0].background.toString(),
-          //                 userDisplay[0].image.toString(),
-          //                 userDisplay[0].imageId.toString())));
-          //     user = [];
-          //     userDisplay = [];
-          //     fetchUserById();
-          //   },
-          //   icon: Icon(Icons.edit),
-          // ),
-        ],
       ),
       body: _isloading
           ? Center(
@@ -373,6 +366,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                     fetchUserById();
                                   }),
                               EmploymentInfo(
+                                  fetchRateDate: fetchRateDate,
+                                  rateDisplay: rateDisplay,
                                   userDisplay: userDisplay,
                                   user: user,
                                   rateList: rateList,
@@ -380,7 +375,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                   checkRole: checkRole,
                                   checkSatus: checkSatus,
                                   checkRate: checkRate,
-                                  addRateList: addRateList,
+                                  addRateList: addRate,
                                   deleteRateItem: deleteRateItem,
                                   rateNameController: rateNameController,
                                   rateScoreController: rateScoreController,
@@ -393,5 +388,29 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
               ),
             ),
     );
+  }
+
+  addRate() async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    var aName = rateNameController.text;
+    var aScore = rateScoreController.text;
+    var request = await http.MultipartRequest(
+        'POST', Uri.parse("$urlUser/${widget.id}/ratework"));
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Content": "charset-UTF-8",
+    };
+    request.files.add(http.MultipartFile.fromString('skill_name', aName));
+    request.files.add(http.MultipartFile.fromString('score', aScore));
+
+    request.headers.addAll(headers);
+
+    var res = await request.send();
+    print(res.statusCode);
+    if (res.statusCode == 201) {
+      Navigator.of(context).pop();
+    }
+    res.stream.transform(utf8.decoder).listen((event) {});
   }
 }

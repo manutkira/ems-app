@@ -126,14 +126,14 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Edit Employee'),
+          title: const Text('Edit Employee'),
           leading: IconButton(
               onPressed: () {
                 showDialog(
                     context: context,
                     builder: (ctx) => AlertDialog(
                           title: Text('${local?.areYouSure}'),
-                          content: Text('Your changes will be lost.'),
+                          content: const Text('Your changes will be lost.'),
                           actions: [
                             OutlineButton(
                               onPressed: () {
@@ -141,28 +141,28 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                 Navigator.of(context).pop();
                               },
                               child: Text('${local?.yes}'),
-                              borderSide: BorderSide(color: Colors.green),
+                              borderSide: const BorderSide(color: Colors.green),
                             ),
                             OutlineButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
                               child: Text('${local?.no}'),
-                              borderSide: BorderSide(color: Colors.red),
+                              borderSide: const BorderSide(color: Colors.red),
                             )
                           ],
                         ));
               },
-              icon: Icon(Icons.arrow_back)),
+              icon: const Icon(Icons.arrow_back)),
         ),
         body: Form(
           key: _form,
           child: SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Row(
@@ -172,7 +172,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                         '${local?.position} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Container(
@@ -185,7 +185,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                               child: TextFormField(
                                 decoration: InputDecoration(
                                   hintText: '${local?.enterPosition}',
-                                  errorStyle: TextStyle(
+                                  errorStyle: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -199,7 +199,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Row(
@@ -209,7 +209,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                         '${local?.skill} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Container(
@@ -222,7 +222,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                               child: TextFormField(
                                 decoration: InputDecoration(
                                   hintText: '${local?.enterSkill}',
-                                  errorStyle: TextStyle(
+                                  errorStyle: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -236,7 +236,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Row(
@@ -246,7 +246,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                         '${local?.salary} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Container(
@@ -263,7 +263,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                     color: kWhite,
                                   ),
                                   hintText: '${local?.enterSalary}',
-                                  errorStyle: TextStyle(
+                                  errorStyle: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -276,7 +276,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Row(
@@ -286,13 +286,13 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                         '${local?.role} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Container(
                         width: 233,
                         child: DropdownButtonFormField(
-                          icon: Icon(Icons.expand_more),
+                          icon: const Icon(Icons.expand_more),
                           value: role,
                           onChanged: (String? newValue) {
                             setState(() {
@@ -313,7 +313,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                       )
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Row(
@@ -323,13 +323,13 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                         '${local?.status} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Container(
                         width: 233,
                         child: DropdownButtonFormField(
-                          icon: Icon(Icons.expand_more),
+                          icon: const Icon(Icons.expand_more),
                           value: status,
                           onChanged: (String? newValue) {
                             setState(() {
@@ -352,7 +352,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                       )
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Row(
@@ -362,13 +362,13 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                         '${local?.rate} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Container(
                         width: 233,
                         child: DropdownButtonFormField(
-                          icon: Icon(Icons.expand_more),
+                          icon: const Icon(Icons.expand_more),
                           value: rate,
                           onChanged: (String? newValue) {
                             setState(() {
@@ -392,12 +392,12 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                     ],
                   ),
                   Container(
-                    padding: EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          padding: EdgeInsets.only(right: 10),
+                          padding: const EdgeInsets.only(right: 10),
                           child: RaisedButton(
                             onPressed: () {
                               showDialog(
@@ -407,8 +407,8 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                         content: Text('${local?.saveChanges}'),
                                         actions: [
                                           OutlineButton(
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
+                                            borderSide: const BorderSide(
+                                                color: Colors.green),
                                             child: Text('${local?.yes}'),
                                             onPressed: () {
                                               if (!_form.currentState!
@@ -425,12 +425,11 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                                       Text('${local?.editing}'),
                                                   content: Flex(
                                                     direction: Axis.horizontal,
-                                                    children: [
+                                                    children: const [
                                                       Flexible(
                                                         child: Padding(
                                                           padding:
-                                                              const EdgeInsets
-                                                                      .only(
+                                                              EdgeInsets.only(
                                                                   left: 100),
                                                           child:
                                                               CircularProgressIndicator(
@@ -449,8 +448,8 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                               Navigator.of(context).pop();
                                             },
                                             child: Text('${local?.no}'),
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
+                                            borderSide: const BorderSide(
+                                                color: Colors.red),
                                           )
                                         ],
                                       ));
@@ -465,8 +464,8 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                 context: context,
                                 builder: (ctx) => AlertDialog(
                                       title: Text('${local?.areYouSure}'),
-                                      content:
-                                          Text('Your changes will be lost.'),
+                                      content: const Text(
+                                          'Your changes will be lost.'),
                                       actions: [
                                         OutlineButton(
                                           onPressed: () {
@@ -474,16 +473,16 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                             Navigator.pop(context);
                                           },
                                           child: Text('${local?.yes}'),
-                                          borderSide:
-                                              BorderSide(color: Colors.green),
+                                          borderSide: const BorderSide(
+                                              color: Colors.green),
                                         ),
                                         OutlineButton(
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
                                           child: Text('${local?.no}'),
-                                          borderSide:
-                                              BorderSide(color: Colors.red),
+                                          borderSide: const BorderSide(
+                                              color: Colors.red),
                                         )
                                       ],
                                     ));
@@ -585,17 +584,17 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
           context: context,
           builder: (ctx) => AlertDialog(
                 title: Text('${local?.failed}',
-                    style: TextStyle(color: Colors.red)),
+                    style: const TextStyle(color: Colors.red)),
                 content: Text('${local?.editFailed}'),
                 actions: [
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.red),
+                    borderSide: const BorderSide(color: Colors.red),
                     onPressed: () {
                       Navigator.pop(context);
                       // Navigator.pop(context);
                     },
                     child: Text('${local?.back}',
-                        style: TextStyle(color: Colors.red)),
+                        style: const TextStyle(color: Colors.red)),
                   ),
                 ],
               ));
@@ -609,14 +608,14 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                 content: Text('${local?.edited}'),
                 actions: [
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.grey),
+                    borderSide: const BorderSide(color: Colors.grey),
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     child: Text('${local?.done}'),
                   ),
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.green),
+                    borderSide: const BorderSide(color: Colors.green),
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pop(context);

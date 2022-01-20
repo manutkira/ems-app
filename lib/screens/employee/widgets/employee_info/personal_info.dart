@@ -36,7 +36,7 @@ class PersonalInfo extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Employment',
+                  'Personal',
                   style: TextStyle(
                     fontSize: 27,
                   ),

@@ -1,21 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
-
-import 'package:ems/screens/employee/employee_info_screen.dart';
-import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/employee/widgets/employee_edit.dart/edit_personal.dart';
 import 'package:ems/utils/utils.dart';
-import 'package:ems/widgets/check_status.dart';
-import 'package:ems/widgets/image_input/edit_emp_id.dart';
-import 'package:ems/widgets/image_input/edit_emp_profile.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
-import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class EmployeeEditScreen extends StatefulWidget {
   final int id;
@@ -219,17 +208,10 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
 
   uploadImage() async {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     var aName = nameController.text;
     var aPhone = phoneController.text;
     var aEmail = emailController.text;
     var aAddress = addressController.text;
-    var aPosition = positionController.text;
-    var aSkill = skillController.text;
-    var aSalary = salaryController.text;
-    var aRole = role;
-    var aStatus = status;
-    var aWorkrate = rate;
     var aBackground = backgroundController.text;
     var request = await http.MultipartRequest(
         'POST', Uri.parse("$url/${widget.id}?_method=PUT"));
@@ -251,57 +233,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     request.files.add(http.MultipartFile.fromString('phone', aPhone));
     request.files.add(http.MultipartFile.fromString('email', aEmail));
     request.files.add(http.MultipartFile.fromString('address', aAddress));
-    request.files.add(http.MultipartFile.fromString('position', aPosition));
-    request.files.add(http.MultipartFile.fromString('skill', aSkill));
-    request.files.add(http.MultipartFile.fromString('salary', aSalary));
-    String checkRole() {
-      if (aRole == local?.employee) {
-        return 'employee';
-      }
-      if (aRole == local?.admin) {
-        return 'admin';
-      } else {
-        return '';
-      }
-    }
-
-    request.files.add(http.MultipartFile.fromString('role', checkRole()));
-    String checkStatus() {
-      if (aStatus == local?.active) {
-        return 'active';
-      }
-      if (aStatus == local?.inactive) {
-        return 'inactive';
-      }
-      if (aStatus == local?.resigned) {
-        return 'resigned';
-      }
-      if (aStatus == local?.fired) {
-        return 'fired';
-      } else {
-        return '';
-      }
-    }
-
-    request.files.add(http.MultipartFile.fromString('status', checkStatus()));
-    String checkRate() {
-      if (aWorkrate == local?.veryGood) {
-        return 'verygood';
-      }
-      if (aWorkrate == local?.good) {
-        return 'good';
-      }
-      if (aWorkrate == local?.medium) {
-        return 'medium';
-      }
-      if (aWorkrate == local?.low) {
-        return 'low';
-      } else {
-        return '';
-      }
-    }
-
-    request.files.add(http.MultipartFile.fromString('rate', checkRate()));
     request.files.add(http.MultipartFile.fromString('background', aBackground));
     request.headers.addAll(headers);
 

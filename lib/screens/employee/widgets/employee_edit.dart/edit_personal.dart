@@ -267,7 +267,7 @@ class EditPersonal extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                ImageInputPickerId(selectImageId, idUrl!)
+                ImageInputPickerId(selectImageId, idUrl)
               ],
             ),
             Container(
