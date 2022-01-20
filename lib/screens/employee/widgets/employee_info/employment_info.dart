@@ -127,7 +127,7 @@ class EmploymentInfo extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Employment',
+                        '${local?.employment}',
                         style: TextStyle(
                           fontSize: 27,
                         ),
@@ -313,7 +313,7 @@ class EmploymentInfo extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Rating',
+                    '${local?.rate}',
                     style: TextStyle(
                       fontSize: 27,
                     ),
@@ -773,8 +773,34 @@ class EmploymentInfo extends StatelessWidget {
                                       padding: EdgeInsets.only(left: 0),
                                       constraints: BoxConstraints(),
                                       onPressed: () async {
-                                        await deleteData(
-                                            rateDisplay[0][index]['id']);
+                                        await showDialog(
+                                          context: context,
+                                          builder: (ctx) => AlertDialog(
+                                            title: Text('${local?.areYouSure}'),
+                                            content:
+                                                Text('${local?.cannotUndone}'),
+                                            actions: [
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  deleteData(rateDisplay[0]
+                                                      [index]['id']);
+                                                },
+                                                child: Text('${local?.yes}'),
+                                                borderSide: BorderSide(
+                                                    color: Colors.green),
+                                              ),
+                                              OutlineButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                borderSide: BorderSide(
+                                                    color: Colors.red),
+                                                child: Text('${local?.no}'),
+                                              )
+                                            ],
+                                          ),
+                                        );
                                         fetchRateDate();
                                       },
                                       icon: Icon(

@@ -172,7 +172,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: Text('Attendance'),
+          title: Text('${local?.byDay}'),
           actions: [
             PopupMenuButton(
                 shape: RoundedRectangleBorder(

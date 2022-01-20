@@ -58,10 +58,24 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
+    checkType() {
+      if (widget.type == 'checkin') {
+        return local!.checkIn;
+      }
+      if (widget.type == 'checkout') {
+        return local!.checkOut;
+      }
+      if (widget.type == 'absent') {
+        return local!.absent;
+      } else {
+        return local!.permission;
+      }
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text('View Attendance'),
+        title: Text('${local?.viewAttendance}'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -176,7 +190,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                   Container(
                     padding: EdgeInsets.only(right: 15),
                     child: Text(
-                      type,
+                      checkType(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),

@@ -191,7 +191,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Employee'),
+        title: Text('${local?.employeeInfo}'),
       ),
       body: _isloading
           ? Center(

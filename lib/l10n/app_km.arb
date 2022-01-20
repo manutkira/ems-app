@@ -197,5 +197,10 @@
   "employment": "ព័ត៌មានការងារ",
   "noData": "មិនមានទិន្នន័យ",
   "score": "ពិន្ទុ",
-  "enterScore": "បញ្ចូលពិន្ទុ"
+  "enterScore": "បញ្ចូលពិន្ទុ",
+  "editEmployee": "កែប្រែព័ត៌មាន",
+  "changesWillLost": "ការផ្លាស់ប្តូររបស់អ្នកនឹងត្រូវបាត់បង់",
+  "addEmployee": "បន្ថែមបុគ្គលិក",
+  "viewAttendance": "មើលវត្តមាន",
+  "editAttendance": "កែប្រែ វត្តមាន"
 }

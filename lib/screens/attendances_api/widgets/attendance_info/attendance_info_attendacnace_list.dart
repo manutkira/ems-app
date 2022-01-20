@@ -7,9 +7,8 @@ import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/screens/attendances_api/view_attendance.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/utils/utils.dart';
-import 'package:ems/widgets/attendance_info/attendance_info_no_data.dart';
 
-import '../../constants.dart';
+import '../../../../constants.dart';
 
 class AttendanceInfoAttendanceList extends StatelessWidget {
   final bool now;

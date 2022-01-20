@@ -159,14 +159,14 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Edit Employee'),
+          title: Text('${local?.editEmployee}'),
           leading: IconButton(
               onPressed: () {
                 showDialog(
                     context: context,
                     builder: (ctx) => AlertDialog(
                           title: Text('${local?.areYouSure}'),
-                          content: Text('Your changes will be lost.'),
+                          content: Text('${local?.changesWillLost}.'),
                           actions: [
                             OutlineButton(
                               onPressed: () {

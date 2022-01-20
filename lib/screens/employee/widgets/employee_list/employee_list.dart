@@ -108,7 +108,7 @@ class _EmployeeListState extends State<EmployeeList> {
     bool isEnglish = isInEnglish(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Employee'),
+        title: Text('${local?.employee}'),
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();

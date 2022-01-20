@@ -70,7 +70,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
       onWillPop: () async => false,
       child: Scaffold(
           appBar: AppBar(
-            title: Text('Add Employee'),
+            title: Text('${local?.addEmployee}'),
             leading: IconButton(
                 onPressed: () {
                   showDialog(

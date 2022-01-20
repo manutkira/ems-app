@@ -208,7 +208,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: Text('Attendance'),
+          title: Text('${local?.byAllTime}'),
           actions: [
             PopupMenuButton(
                 shape: RoundedRectangleBorder(

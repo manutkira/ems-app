@@ -126,14 +126,14 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Edit Employee'),
+          title: Text('${local?.editEmployee}'),
           leading: IconButton(
               onPressed: () {
                 showDialog(
                     context: context,
                     builder: (ctx) => AlertDialog(
                           title: Text('${local?.areYouSure}'),
-                          content: const Text('Your changes will be lost.'),
+                          content: Text('${local?.changesWillLost}.'),
                           actions: [
                             OutlineButton(
                               onPressed: () {

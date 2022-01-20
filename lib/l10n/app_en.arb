@@ -817,5 +817,25 @@
   "enterScore": "Enter Score",
   "@enterScore": {
     "description": "add employee"
+  },
+  "editEmployee": "Edit Employee",
+  "@editEmployee": {
+    "description": "add employee"
+  },
+  "changesWillLost": "Your changes will be lost",
+  "@changesWillLost": {
+    "description": "add employee"
+  },
+  "addEmployee": "Add Employee",
+  "@addEmployee": {
+    "description": "add employee"
+  },
+  "viewAttendance": "View Attendance",
+  "@viewAttendance": {
+    "description": "add employee"
+  },
+  "editAttendance": "Edit Attendance",
+  "@editAttendance": {
+    "description": "add employee"
   }
 }
