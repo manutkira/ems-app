@@ -32,9 +32,6 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
   String error = "";
   final AttendanceService _attendanceService = AttendanceService.instance;
   late OvertimeAttendance record;
-  void _closePanel() {
-    Navigator.of(context).pop();
-  }
 
   void deleteOvertime() async {
     setState(() {
@@ -57,7 +54,7 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
 
     setState(() {
       isLoading = false;
-      _closePanel();
+      goBack(context);
     });
   }
 
@@ -102,7 +99,7 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
                       borderRadius: BorderRadius.all(kBorderRadius),
                     ),
                   ),
-                  onPressed: _closePanel,
+                  onPressed: () => goBack(context),
                   child: const Icon(
                     MdiIcons.close,
                     size: 16,

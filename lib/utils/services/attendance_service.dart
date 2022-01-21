@@ -554,10 +554,15 @@ class AttendanceService extends BaseService {
         headers: headers(),
         body: json.encode(jsons),
       );
+
+      if (response.statusCode == 201) {
+        var jsondata = json.decode(response.body);
+        var createdAttendance = Attendance.fromJson(jsondata);
+        return createdAttendance;
+      }
+
       _code = response.statusCode;
-      var jsondata = json.decode(response.body);
-      var createdAttendance = Attendance.fromJson(jsondata);
-      return createdAttendance;
+      throw AttendanceException(code: _code);
     } catch (e) {
       throw AttendanceException(code: _code);
     }

@@ -202,5 +202,9 @@
   "changesWillLost": "ការផ្លាស់ប្តូររបស់អ្នកនឹងត្រូវបាត់បង់",
   "addEmployee": "បន្ថែមបុគ្គលិក",
   "viewAttendance": "មើលវត្តមាន",
-  "editAttendance": "កែប្រែ វត្តមាន"
+  "editAttendance": "កែប្រែ វត្តមាន",
+  "lateChooseReason": "យឺត សូមជ្រើសរើសហេតុផល៖",
+  "lateBlownTire": "បែកកង់",
+  "lateTrafficJam": "ស្ទះផ្លូវ",
+  "lateOther": "ផ្សេងៗ"
 }

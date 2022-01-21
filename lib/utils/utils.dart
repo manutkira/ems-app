@@ -103,3 +103,7 @@ Future<TimeOfDay?> buildTimePicker({
 
 bool isInEnglish(BuildContext context) =>
     Localizations.localeOf(context) == L10n.all[1];
+
+void goBack(BuildContext context) {
+  Navigator.of(context).pop();
+}

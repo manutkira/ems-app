@@ -32,15 +32,6 @@ class QRAppScreen extends ConsumerWidget {
               // Code to scan
               type: type,
             ),
-      // body: _isAdmin
-      //     ? QRCode(
-      //         // Code to scan
-      //         type: type,
-      //       )
-      //     : QRCodeScanner(
-      //         // Code scanner
-      //         type: type,
-      //       ),
     );
 
     /// with tabs

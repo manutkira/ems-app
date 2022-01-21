@@ -36,7 +36,7 @@ class _EditOvertimeState extends State<EditOvertime> {
 
   void _closePanel() {
     if (!isLoading) {
-      Navigator.of(context).pop();
+      goBack(context);
     }
   }
 

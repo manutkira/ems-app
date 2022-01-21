@@ -36,12 +36,6 @@ class _ScanConfirmationState extends ConsumerState<ScanConfirmation> {
     }
   }
 
-  void _closePanel() {
-    // if (!isLoading) {
-    Navigator.of(context).pop();
-    // }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -150,7 +144,7 @@ class _ScanConfirmationState extends ConsumerState<ScanConfirmation> {
                   ),
                   onPressed: () {
                     widget.ok(_noteController.text);
-                    _closePanel();
+                    goBack(context);
                   },
                   child: Text(
                     '${local?.update}',
@@ -170,7 +164,7 @@ class _ScanConfirmationState extends ConsumerState<ScanConfirmation> {
                       borderRadius: BorderRadius.all(kBorderRadius),
                     ),
                   ),
-                  onPressed: _closePanel,
+                  onPressed: () => goBack(context),
                   child: Text(
                     '${local?.cancel}',
                     style: const TextStyle(fontSize: 14),
