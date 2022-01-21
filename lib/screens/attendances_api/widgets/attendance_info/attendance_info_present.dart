@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:ems/utils/utils.dart';
 
-import '../../constants.dart';
+import '../../../../constants.dart';
 
 class AttendanceInfoPresent extends StatelessWidget {
   final String text;

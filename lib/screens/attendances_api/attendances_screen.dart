@@ -59,7 +59,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text('Attendance'),
+          title: Text('${local?.attendance}'),
           actions: [
             PopupMenuButton(
                 shape: const RoundedRectangleBorder(

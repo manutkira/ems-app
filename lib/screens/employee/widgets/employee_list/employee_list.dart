@@ -6,6 +6,7 @@ import 'package:ems/models/user.dart';
 import 'package:ems/screens/employee/employee_edit_screen.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
+import 'package:ems/screens/employee/employee_work_rate.dart';
 import 'package:ems/screens/employee/new_employee_screen.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -107,7 +108,7 @@ class _EmployeeListState extends State<EmployeeList> {
     bool isEnglish = isInEnglish(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Employee'),
+        title: Text('${local?.employee}'),
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -457,6 +458,27 @@ class _EmployeeListState extends State<EmployeeList> {
                                 imageId)));
                         fetchData();
                       }
+                      if (selectedValue == 3) {
+                        int id = userDisplay[index].id as int;
+                        String name = userDisplay[index].name.toString();
+                        String phone = userDisplay[index].phone.toString();
+                        String email = userDisplay[index].email.toString();
+                        String address = userDisplay[index].address.toString();
+                        String position =
+                            userDisplay[index].position.toString();
+                        String skill = userDisplay[index].skill.toString();
+                        String salary = userDisplay[index].salary.toString();
+                        String role = userDisplay[index].role.toString();
+                        String status = userDisplay[index].status.toString();
+                        String rate = userDisplay[index].rate.toString();
+                        String background =
+                            userDisplay[index].background.toString();
+                        String image = userDisplay[index].image.toString();
+                        String imageId = userDisplay[index].imageId.toString();
+                        await Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => EmployeeWorkRate()));
+                        fetchData();
+                      }
                       if (selectedValue == 0) {
                         int id = userDisplay[index].id as int;
                         await Navigator.of(context).push(MaterialPageRoute(
@@ -504,6 +526,15 @@ class _EmployeeListState extends State<EmployeeList> {
                         ),
                         value: 0,
                       ),
+                      // PopupMenuItem(
+                      //   child: Text(
+                      //     '${local?.rate}',
+                      //     style: TextStyle(
+                      //       fontSize: isEnglish ? 15 : 16,
+                      //     ),
+                      //   ),
+                      //   value: 3,
+                      // ),
                       PopupMenuItem(
                         child: Text(
                           '${local?.edit}',

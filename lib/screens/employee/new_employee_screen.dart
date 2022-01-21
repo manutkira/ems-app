@@ -57,20 +57,20 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     bool isEnglish = isInEnglish(context);
     setState(() {
       if (dropDownValue1.isEmpty) {
-        dropDownValue1 = '${local?.admin}';
+        dropDownValue1 = '${local?.employee}';
       }
       if (dropDownValue.isEmpty) {
         dropDownValue = '${local?.active}';
       }
       if (dropDownValue2.isEmpty) {
-        dropDownValue2 = '${local?.veryGood}';
+        dropDownValue2 = '${local?.low}';
       }
     });
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
           appBar: AppBar(
-            title: Text('Add Employee'),
+            title: Text('${local?.addEmployee}'),
             leading: IconButton(
                 onPressed: () {
                   showDialog(
@@ -290,239 +290,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${local?.position} ',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Container(
-                          constraints: BoxConstraints(
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.6),
-                          child: Flex(
-                            direction: Axis.horizontal,
-                            children: [
-                              Flexible(
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                      hintText: '${local?.enterPosition} ',
-                                      errorStyle: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                  controller: position,
-                                  textInputAction: TextInputAction.next,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${local?.skill} ',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Container(
-                          constraints: BoxConstraints(
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.6),
-                          child: Flex(
-                            direction: Axis.horizontal,
-                            children: [
-                              Flexible(
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                      hintText: '${local?.enterSkill} ',
-                                      errorStyle: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                  controller: skill,
-                                  textInputAction: TextInputAction.next,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${local?.salary} ',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Container(
-                          constraints: BoxConstraints(
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.6),
-                          child: Flex(
-                            direction: Axis.horizontal,
-                            children: [
-                              Flexible(
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                      prefixIcon: const Icon(
-                                        MdiIcons.currencyUsd,
-                                        color: kWhite,
-                                      ),
-                                      hintText: '${local?.enterSalary} ',
-                                      errorStyle: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                  controller: salary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${local?.role} ',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Container(
-                          width: 233,
-                          child: DropdownButtonFormField(
-                            icon: const Icon(Icons.expand_more),
-                            value: dropDownValue1,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                dropDownValue1 = newValue!;
-                              });
-                            },
-                            items: <String>[
-                              '${local?.admin}',
-                              '${local?.employee}'
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value,
-                                  ));
-                            }).toList(),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${local?.status} ',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Container(
-                          width: 233,
-                          child: DropdownButtonFormField(
-                            icon: const Icon(Icons.expand_more),
-                            value: dropDownValue,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                dropDownValue = newValue!;
-                              });
-                            },
-                            items: <String>[
-                              '${local?.active}',
-                              '${local?.inactive}',
-                              '${local?.resigned}',
-                              '${local?.fired}'
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${local?.rate} ',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Container(
-                          width: 233,
-                          child: DropdownButtonFormField(
-                            icon: Icon(Icons.expand_more),
-                            value: dropDownValue2,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                dropDownValue2 = newValue!;
-                              });
-                            },
-                            items: <String>[
-                              '${local?.veryGood}',
-                              '${local?.good}',
-                              '${local?.medium}',
-                              '${local?.low}',
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        )
                       ],
                     ),
                     const SizedBox(
@@ -760,7 +527,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
 
     String checkRole() {
       if (aRole == local?.employee) {
-        return 'amployee';
+        return 'employee';
       }
       if (aRole == local?.admin) {
         return 'admin';

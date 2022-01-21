@@ -133,7 +133,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('Edit Attendance'),
+        title: Text('${local?.editAttendance}'),
       ),
       body: SingleChildScrollView(
         child: Container(

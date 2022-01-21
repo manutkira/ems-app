@@ -1,10 +1,10 @@
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_attendacnace_list.dart';
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_no_attendance.dart';
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_no_data.dart';
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_present.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/attendance/attendacne_all_time_list.dart';
-import 'package:ems/widgets/attendance_info/attendance_info_attendacnace_list.dart';
-import 'package:ems/widgets/attendance_info/attendance_info_name_id.dart';
-import 'package:ems/widgets/attendance_info/attendance_info_no_attendance.dart';
-import 'package:ems/widgets/attendance_info/attendance_info_no_data.dart';
-import 'package:ems/widgets/attendance_info/attendance_info_present.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -697,7 +697,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Attendance'),
+        title: Text('${local?.attendance}'),
       ),
       body: _isLoading && _isLoadingNoDate
           ? Container(

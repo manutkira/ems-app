@@ -798,6 +798,46 @@
   "@deletedAttendance": {
     "description": "add employee"
   },
+  "personal": "Personal Info",
+  "@personal": {
+    "description": "add employee"
+  },
+  "employment": "Employment",
+  "@employment": {
+    "description": "add employee"
+  },
+  "noData": "No Data",
+  "@noData": {
+    "description": "add employee"
+  },
+  "score": "Score",
+  "@score": {
+    "description": "add employee"
+  },
+  "enterScore": "Enter Score",
+  "@enterScore": {
+    "description": "add employee"
+  },
+  "editEmployee": "Edit Employee",
+  "@editEmployee": {
+    "description": "add employee"
+  },
+  "changesWillLost": "Your changes will be lost",
+  "@changesWillLost": {
+    "description": "add employee"
+  },
+  "addEmployee": "Add Employee",
+  "@addEmployee": {
+    "description": "add employee"
+  },
+  "viewAttendance": "View Attendance",
+  "@viewAttendance": {
+    "description": "add employee"
+  },
+  "editAttendance": "Edit Attendance",
+  "@editAttendance": {
+    "description": "add employee"
+  },
   "lateChooseReason": "Late. Choose reason:",
   "@lateChooseReason": {
     "description": "add employee"

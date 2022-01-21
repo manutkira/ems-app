@@ -276,7 +276,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Attendance'),
+        title: Text('${local?.byMonth}'),
         actions: [
           PopupMenuButton(
               shape: const RoundedRectangleBorder(
