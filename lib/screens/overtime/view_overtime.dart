@@ -187,9 +187,9 @@ class _ViewOvertimeState extends State<ViewOvertime> {
 
   Widget _buildUserInfo(Size _size) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     OvertimeAttendance record = widget.record;
     User? user = record.user;
+
     return Container(
       height: 60,
       width: _size.width,

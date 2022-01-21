@@ -181,8 +181,7 @@ class _ScanConfirmationState extends ConsumerState<ScanConfirmation> {
 
   Widget _buildUserInfo(Size _size) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
-    // User? currentUser = record.currentUser;
+
     return Container(
       height: 70,
       width: _size.width,

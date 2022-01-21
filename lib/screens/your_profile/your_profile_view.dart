@@ -49,7 +49,7 @@ class YourProfileViewScreen extends ConsumerWidget {
         builder: (BuildContext context, Box<User> box, Widget? child) {
           final listFromBox = box.values.toList();
           final _currentUser = listFromBox.isNotEmpty ? listFromBox[0] : null;
-          print("${_currentUser?.email}");
+
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(20),
@@ -108,11 +108,9 @@ class YourProfileViewScreen extends ConsumerWidget {
                   BaselineRow(
                     children: [
                       Expanded(
-                        child: Container(
-                          child: Text(
-                            "${local?.name}",
-                            style: _labelStyle,
-                          ),
+                        child: Text(
+                          "${local?.name}",
+                          style: _labelStyle,
                         ),
                       ),
                       Expanded(
@@ -127,11 +125,9 @@ class YourProfileViewScreen extends ConsumerWidget {
                   BaselineRow(
                     children: [
                       Expanded(
-                        child: Container(
-                          child: Text(
-                            "${local?.phoneNumber}",
-                            style: _labelStyle,
-                          ),
+                        child: Text(
+                          "${local?.phoneNumber}",
+                          style: _labelStyle,
                         ),
                       ),
                       Expanded(

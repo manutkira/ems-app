@@ -37,7 +37,6 @@ class _MenuDrawerState extends ConsumerState<MenuDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    Size _size = MediaQuery.of(context).size;
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
 

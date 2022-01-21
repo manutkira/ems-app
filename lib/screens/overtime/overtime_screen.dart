@@ -69,7 +69,6 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
   /// fetches data from overtime service, set the received data to overtime record
   void fetchOvertimeRecord() async {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
 
     setState(() {
       // shows loading
@@ -204,7 +203,6 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
 
     init();
     return Scaffold(

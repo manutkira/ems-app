@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
@@ -141,7 +143,7 @@ class _QRCodeState extends ConsumerState<QRCode> {
   void fetchQrCode() async {
     try {
       String code = await _attService.generateQRCode();
-      print(code);
+      log(code);
       setState(() {
         _passcode = code;
         verifyQrCode();
@@ -155,7 +157,7 @@ class _QRCodeState extends ConsumerState<QRCode> {
 
   void verifyQrCode() async {
     try {
-      bool isVerified = await _attService.verifyQRCode(_passcode);
+      await _attService.verifyQRCode(_passcode);
     } catch (e) {
       setState(() {
         _error = 'Error verifying qr code.';

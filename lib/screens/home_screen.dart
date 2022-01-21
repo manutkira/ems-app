@@ -127,7 +127,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
       appBar: EMSAppBar(
         openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
       ),
-      drawer: MenuDrawer(),
+      drawer: const MenuDrawer(),
       body: SafeArea(
         bottom: false,
         child: ListView(
@@ -369,49 +369,39 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                 vertical: 12,
                 horizontal: 15,
               ),
-              child: ValueListenableBuilder(
-                valueListenable:
-                    ref.watch(currentUserProvider).currentUserListenable,
-                builder: (_, Box<User> box, __) {
-                  final listFromBox = box.values.toList();
-                  final currentUser =
-                      listFromBox.isNotEmpty ? listFromBox[0] : null;
-
-                  return GestureDetector(
-                    onTap: _goToEmployeeManager,
-                    child: SizedBox(
-                      width: _size.width,
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                            color: kLightBlue,
-                            borderRadius: BorderRadius.all(kBorderRadius),
+              child: GestureDetector(
+                onTap: _goToEmployeeManager,
+                child: SizedBox(
+                  width: _size.width,
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Container(
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: kLightBlue,
+                        borderRadius: BorderRadius.all(kBorderRadius),
+                      ),
+                      padding: kPaddingAll,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/images/employees-group.svg',
+                            height: 82,
                           ),
-                          padding: kPaddingAll,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/images/employees-group.svg',
-                                height: 82,
-                              ),
-                              SizedBox(height: isEnglish ? 10 : 2),
-                              Text(
-                                "${local?.employeeManager}",
-                                style: kSubtitle.copyWith(
-                                    color: kBlack, fontWeight: FontWeight.w700),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
-                          ),
-                        ),
+                          SizedBox(height: isEnglish ? 10 : 2),
+                          Text(
+                            "${local?.employeeManager}",
+                            style: kSubtitle.copyWith(
+                                color: kBlack, fontWeight: FontWeight.w700),
+                            textAlign: TextAlign.center,
+                          )
+                        ],
                       ),
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
             ),
             _buildSpacerVertical,

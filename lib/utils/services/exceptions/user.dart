@@ -9,7 +9,6 @@ class UserException extends IBaseException {
 
   @override
   String toString() {
-    print('code code code $code');
     switch (code) {
       case 1:
         {

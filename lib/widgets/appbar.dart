@@ -22,7 +22,7 @@ class EMSAppBar extends ConsumerWidget with PreferredSizeWidget {
         ),
       ),
       title: const Text('Internal EMS'),
-      actions: [],
+      actions: const [],
     );
   }
 
