@@ -82,9 +82,8 @@ class AuthService extends BaseService {
   }
 
   Future<bool> logout() async {
-    final userBox = Hive.box<User>(currentUserBoxName);
     var tokenBox = Hive.box<String>(tokenBoxName);
-    var currentUserId = userBox.get(currentUserBoxName)?.id;
+
     try {
       Response response = await post(
         Uri.parse(

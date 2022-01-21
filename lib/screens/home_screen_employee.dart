@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
-import 'package:ems/persistence/setting.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/check_in_screen.dart';
 import 'package:ems/screens/take_attendance/check_out_screen.dart';
@@ -18,7 +17,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'attendances_api/attendance_info.dart';
 import 'overtime/individual_overtime_screen.dart';
@@ -327,29 +325,6 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
           fontWeight: FontWeight.w700,
         ),
       ),
-    );
-  }
-
-  PreferredSizeWidget get _buildAppBar {
-    return AppBar(
-      leading: GestureDetector(
-        onTap: () => _scaffoldKey.currentState?.openDrawer(),
-        child: Container(
-          padding: kPaddingAll,
-          child: SvgPicture.asset(
-            'assets/images/menuburger.svg',
-            semanticsLabel: "menu",
-          ),
-        ),
-      ),
-      title: const Text('Internal EMS'),
-      actions: [
-        GestureDetector(
-          onTap: () => ref.read(settingsProvider).toggleLanguage(),
-          child: const Icon(MdiIcons.earth),
-        ),
-        const SizedBox(width: 10),
-      ],
     );
   }
 

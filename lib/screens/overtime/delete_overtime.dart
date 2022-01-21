@@ -73,8 +73,7 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
-    // deleteOvertime();
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
