@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
+import 'package:ems/widgets/circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../constants.dart';
@@ -44,8 +46,8 @@ class _QRCodeState extends ConsumerState<QRCode> {
   Widget build(BuildContext context) {
     var size = (MediaQuery.of(context).size.width < 400 ||
             MediaQuery.of(context).size.height < 400)
-        ? 200.0
-        : 250.0;
+        ? 150.0
+        : 200.0;
 
     AppLocalizations? local = AppLocalizations.of(context);
     String type =
@@ -53,30 +55,63 @@ class _QRCodeState extends ConsumerState<QRCode> {
 
     return Container(
       color: kDarkestBlue,
-      child: Stack(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(30),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: QrImage(
-                    data: _passcode,
-                    version: QrVersions.auto,
-                    size: size,
-                  ),
+          ValueListenableBuilder(
+            valueListenable:
+                ref.watch(currentUserProvider).currentUserListenable,
+            builder: (BuildContext context, Box<User> box, Widget? child) {
+              User? user = box.get(currentUserBoxName);
+              return SizedBox(
+                width: size + 60,
+                child: Column(
+                  children: [
+                    CustomCircleAvatar(
+                      imageUrl: "${user?.image}",
+                      size: size + 25,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      '${user?.name?.toUpperCase()}',
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      '${user?.position}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'ID: ${user?.id}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 20),
-              Text("${local?.scanToType(type)}"),
-              const SizedBox(height: 20),
-            ],
+              );
+            },
           ),
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: QrImage(
+                data: _passcode,
+                version: QrVersions.auto,
+                size: size,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Text("${local?.scanToType(type)}"),
+          // const SizedBox(height: 20),
         ],
       ),
     );

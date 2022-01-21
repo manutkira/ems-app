@@ -42,55 +42,5 @@ class QRAppScreen extends ConsumerWidget {
       //         type: type,
       //       ),
     );
-
-    /// with tabs
-    // return DefaultTabController(
-    //   length: 2,
-    //   child: Scaffold(
-    //     appBar: AppBar(
-    //       title: Text(type.toTitleCase()),
-    //       centerTitle: true,
-    //     ),
-    //     body: Column(
-    //       children: [
-    //         Container(
-    //           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-    //           child: TabBar(
-    //             labelStyle: const TextStyle(fontWeight: FontWeight.w700),
-    //             unselectedLabelStyle:
-    //                 const TextStyle(fontWeight: FontWeight.w400),
-    //             overlayColor: MaterialStateProperty.all(kBlue),
-    //             indicator: BoxDecoration(
-    //               borderRadius: BorderRadius.circular(
-    //                 5,
-    //               ),
-    //               color: kDarkestBlue,
-    //             ),
-    //             tabs: const [
-    //               Tab(
-    //                 // icon: Icon(Icons.code),
-    //                 text: "QR Code",
-    //               ),
-    //               Tab(
-    //                 // icon: Icon(Icons.camera),
-    //                 text: "Scan",
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //         Expanded(
-    //           child: TabBarView(
-    //             children: [
-    //               _scan(context),
-    //               QRCodeScanner(
-    //                 type: type,
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 }
