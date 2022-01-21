@@ -1,13 +1,8 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:ems/constants.dart';
 import 'package:ems/models/attendance.dart';
-import 'package:ems/models/user.dart';
-import 'package:ems/persistence/current_user.dart';
-import 'package:ems/screens/overtime/widgets/blank_panel.dart';
-import 'package:ems/screens/take_attendance/widgets/confirmation.dart';
 import 'package:ems/screens/take_attendance/widgets/employee_confirmation.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/widgets/statuses/info.dart';
@@ -36,7 +31,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   Attendance? attendance;
   String _loadingMessage = '';
 
-  /// helps with hotreload
+  /// helps with hot reload
   @override
   void reassemble() {
     super.reassemble();
@@ -48,40 +43,12 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     }
   }
 
-  void _closePanel() {
-    Navigator.of(context).pop();
-  }
-
   /// reset loading states to normal
   void resetLoading() {
     setState(() {
       _loadingMessage = '';
       _isLoading = false;
     });
-  }
-
-  Future<bool> verifyQRCode(String code) async {
-    // localization
-    AppLocalizations? local = AppLocalizations.of(context);
-
-    // loading screen and message
-    setState(() {
-      _loadingMessage = "${local?.verifyingQRCode}";
-      _isLoading = true;
-    });
-
-    // verifying qr code
-    bool isVerified = false;
-    try {
-      isVerified = await _attService.verifyQRCode(code);
-    } catch (e) {
-      // if service fails, return verification error
-      _buildQRCodeError();
-    }
-
-    resetLoading();
-
-    return isVerified;
   }
 
   addAttendance(Barcode _result) async {
@@ -91,7 +58,6 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     bool confirmed = await confirmEmployee("${result?.code}");
     // if cancel, stop the process
     if (!confirmed) {
-      resetLoading();
       return;
     }
 
@@ -106,14 +72,11 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
       await _attService.createOne(
         attendance: attendance as Attendance,
       );
-
-      // if not error
-      resetLoading();
-      // _buildScanSuccessful();
-      // _closePanel();
     } catch (err) {
-      resetLoading();
       _buildScanFailed();
+    } finally {
+      // finally, reset things
+      resetLoading();
     }
   }
 
@@ -146,32 +109,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     );
   }
 
-  Future<bool> confirmScan() async {
-    bool confirmation = false;
-
-    /// use to set note from confirmation panel before registering the record
-    /// confirmation to true
-    void ok(String str) {
-      if (str.isNotEmpty) {
-        setState(() {
-          attendance = attendance?.copyWith(note: str);
-        });
-      }
-      confirmation = true;
-    }
-
-    await modalBottomSheetBuilder(
-      isDismissible: false,
-      isScrollControlled: false,
-      context: context,
-      maxHeight: MediaQuery.of(context).size.height * 0.6,
-      minHeight: MediaQuery.of(context).size.height * 0.4,
-      child: ScanConfirmation(attendance: attendance as Attendance, ok: ok),
-    );
-
-    return confirmation;
-  }
-
+  /// confirm screen, create attendance object
   Future<bool> confirmEmployee(String code) async {
     AppLocalizations? local = AppLocalizations.of(context);
     var json = jsonDecode(code);
@@ -252,75 +190,16 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
       },
     );
 
-    // await modalBottomSheetBuilder(
-    //   isDismissible: false,
-    //   isScrollControlled: false,
-    //   context: context,
-    //   maxHeight: MediaQuery.of(context).size.height * 0.6,
-    //   minHeight: MediaQuery.of(context).size.height * 0.4,
-    //   child: EmployeeConfirmScreen(
-    //     name: name,
-    //     profile: profile,
-    //   ),
-    // );
-
     return confirmation;
   }
 
   @override
   void initState() {
     super.initState();
-    // _buildScanSuccessful();
   }
 
   @override
   Widget build(BuildContext context) {
-    User currentUser = ref.read(currentUserProvider).user;
-    // return Container(
-    //   child: Center(
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         CustomCircleAvatar(
-    //           imageUrl: currentUser.image.toString(),
-    //           size: 100,
-    //         ),
-    //         const SizedBox(height: 16),
-    //         Text(
-    //           currentUser.name.toString(),
-    //           // '$localType ${local?.successfully}!',
-    //           style: kParagraph.copyWith(color: kWhite),
-    //         ),
-    //         const SizedBox(height: 48),
-    //         ClipRRect(
-    //           borderRadius: BorderRadius.circular(50),
-    //           child: Material(
-    //             color: kRedText,
-    //             child: IconButton(
-    //               onPressed: () {},
-    //               color: kWhite,
-    //               splashColor: kWhite.withOpacity(0.5),
-    //               icon: const Icon(Icons.close),
-    //             ),
-    //           ),
-    //         ),
-    //         const SizedBox(height: 16),
-    //         ClipRRect(
-    //           borderRadius: BorderRadius.circular(50),
-    //           child: Material(
-    //             color: kDarkestBlue,
-    //             child: IconButton(
-    //               onPressed: () {},
-    //               color: kWhite,
-    //               splashColor: kWhite.withOpacity(0.5),
-    //               icon: const Icon(Icons.arrow_upward),
-    //             ),
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
     return Scaffold(
       body: _isLoading
           ? _loading(context, _loadingMessage)
@@ -328,6 +207,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     );
   }
 
+  /// build scanner ui
   Widget _buildScanner(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
 
@@ -408,8 +288,11 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
         if (Platform.isIOS) {
           await this.controller!.pauseCamera();
         }
+
         // add attendance
         await addAttendance(scanData);
+
+        // then resume camera again
         await this.controller!.resumeCamera();
       }
     });
@@ -419,7 +302,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
     AppLocalizations? local = AppLocalizations.of(context);
 
-    log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
+    // log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     if (!p) {
       setState(() {
         noPermission = true;
@@ -468,60 +351,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     );
   }
 
-  /// build qr code error
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
-      _buildQRCodeError() {
-    AppLocalizations? local = AppLocalizations.of(context);
-    return ScaffoldMessenger.of(context).showSnackBar(
-      _buildSnackBar(
-        icon: Icons.close,
-        textColor: kRedText,
-        backgroundColor: kRedBackground,
-        type: widget.type,
-        message: '${local?.verifyingQRCodeFailed}',
-      ),
-    );
-  }
-
-  /// build scan successful
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
-      _buildScanSuccessful() {
-    AppLocalizations? local = AppLocalizations.of(context);
-    String localType = widget.type == AttendanceType.typeCheckIn
-        ? "${local?.checkin}"
-        : "${local?.checkout}";
-    // User currentUser = ref.read(currentUserProvider).user;
-    //
-    return ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     duration: const Duration(days: 1),
-      //     backgroundColor: kGreenBackground,
-      //     content: Center(
-      //       child: Column(
-      //         mainAxisAlignment: MainAxisAlignment.center,
-      //         children: [
-      //           Image.network(
-      //             currentUser.image.toString(),
-      //           ),
-      //           Text(
-      //             'heheye',
-      //             // '$localType ${local?.successfully}!',
-      //             style: kParagraph.copyWith(color: kGreenText),
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //   ),
-      _buildSnackBar(
-        icon: Icons.check,
-        textColor: kGreenText,
-        backgroundColor: kGreenBackground,
-        type: widget.type,
-        message: '$localType ${local?.successfully}!',
-      ),
-    );
-  }
-
+  /// build scan failed screen
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _buildScanFailed() {
     AppLocalizations? local = AppLocalizations.of(context);
     String localType = widget.type == AttendanceType.typeCheckIn

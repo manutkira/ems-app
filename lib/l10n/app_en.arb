@@ -801,5 +801,17 @@
   "lateChooseReason": "Late. Choose reason:",
   "@lateChooseReason": {
     "description": "add employee"
+  },
+  "lateBlownTire": "blown tire",
+  "@lateBlownTire": {
+    "description": "reason for being late"
+  },
+  "lateTrafficJam": "traffic jam",
+  "@lateTrafficJam": {
+    "description": "reason for being late"
+  },
+  "lateOther": "other",
+  "@lateOther": {
+    "description": "reason for being late"
   }
 }

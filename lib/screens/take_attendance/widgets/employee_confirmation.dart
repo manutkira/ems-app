@@ -1,4 +1,5 @@
 import 'package:ems/models/attendance.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/textbox.dart';
 import 'package:flutter/material.dart';
@@ -24,23 +25,15 @@ class EmployeeConfirmScreen extends StatefulWidget {
 }
 
 class _EmployeeConfirmScreenState extends State<EmployeeConfirmScreen> {
-  List<String> reasons = [
-    "blown tire",
-    "traffic jam",
-    "other",
-  ];
+  List<String> reasons = [];
   bool isLate = false;
 
   String? selectedReason;
   String note = '';
 
-  void _closePopup() {
-    Navigator.pop(context);
-  }
-
   void _ok() {
     widget.ok(note);
-    _closePopup();
+    goBack(context);
   }
 
   void checkIfLate() {
@@ -72,6 +65,17 @@ class _EmployeeConfirmScreenState extends State<EmployeeConfirmScreen> {
     }
   }
 
+  void addReasons() {
+    AppLocalizations? local = AppLocalizations.of(context);
+    setState(() {
+      reasons.addAll([
+        "${local?.lateBlownTire}",
+        "${local?.lateTrafficJam}",
+        "${local?.lateOther}",
+      ]);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -83,6 +87,9 @@ class _EmployeeConfirmScreenState extends State<EmployeeConfirmScreen> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
+    if (reasons.isEmpty) {
+      addReasons();
+    }
     return Center(
       child: ListView(
         shrinkWrap: true,
@@ -139,7 +146,7 @@ class _EmployeeConfirmScreenState extends State<EmployeeConfirmScreen> {
                     ),
                     const SizedBox(height: 8),
                     Visibility(
-                      visible: selectedReason == 'other',
+                      visible: selectedReason == reasons.last,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -175,7 +182,7 @@ class _EmployeeConfirmScreenState extends State<EmployeeConfirmScreen> {
                         color: kRedText,
                         child: IconButton(
                           splashRadius: 100,
-                          onPressed: _closePopup,
+                          onPressed: () => goBack(context),
                           color: kWhite,
                           splashColor: kWhite.withOpacity(0.5),
                           icon: const Icon(

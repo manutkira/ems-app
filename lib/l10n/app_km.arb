@@ -193,5 +193,8 @@
   "deleted": "បុគ្គលិកត្រូវបានលុប!",
   "deletingAttendance": "កំពុងលុបវត្តមាន!",
   "deletedAttendance": "វត្តមានត្រូវបានលុប!",
-  "lateChooseReason": "យឺត សូមជ្រើសរើសហេតុផល៖"
+  "lateChooseReason": "យឺត សូមជ្រើសរើសហេតុផល៖",
+  "lateBlownTire": "បែកកង់",
+  "lateTrafficJam": "ស្ទះផ្លូវ",
+  "lateOther": "ផ្សេងៗ"
 }
