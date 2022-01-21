@@ -192,5 +192,6 @@
   "deleting": "កំពុងលុបបុគ្គលិក!",
   "deleted": "បុគ្គលិកត្រូវបានលុប!",
   "deletingAttendance": "កំពុងលុបវត្តមាន!",
-  "deletedAttendance": "វត្តមានត្រូវបានលុប!"
+  "deletedAttendance": "វត្តមានត្រូវបានលុប!",
+  "lateChooseReason": "យឺត សូមជ្រើសរើសហេតុផល៖"
 }

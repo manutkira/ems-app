@@ -11,9 +11,9 @@ class CustomCircleAvatar extends StatelessWidget {
       height: size,
       width: size,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(50),
+        borderRadius: BorderRadius.circular(size),
         child: Image.network(
-          "${imageUrl}",
+          imageUrl.toString(),
           fit: BoxFit.cover,
           errorBuilder: (context, err, stk) {
             return Image.asset('assets/images/bigprofile.png');

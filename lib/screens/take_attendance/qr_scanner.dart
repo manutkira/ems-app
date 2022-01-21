@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -7,12 +8,14 @@ import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/screens/take_attendance/widgets/confirmation.dart';
+import 'package:ems/screens/take_attendance/widgets/employee_confirmation.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/widgets/statuses/info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRCodeScanner extends ConsumerStatefulWidget {
@@ -84,32 +87,13 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   addAttendance(Barcode _result) async {
     AppLocalizations? local = AppLocalizations.of(context);
 
-    // bool isVerified = await verifyQRCode("${_result.code}");
-    // // if not verified(most likely, wrong code), return verification error
-    // if (!isVerified) {
-    //   _buildQRCodeError();
-    //   return;
-    // }
-    //
-    // int _currentUserId = ref.read(currentUserProvider).user.id as int;
-
-    setState(() {
-      attendance = Attendance(
-        userId: int.tryParse(_result.code.toString()),
-        type: widget.type,
-        date: DateTime.now(),
-      );
-    });
-
-    /// find out how to get isLate
-    // if(late){
-    //   // confirmation screen
-    //   bool confirmed = await confirmScan();
-    //   // if cancel, stop the process
-    //   if (!confirmed) {
-    //     return;
-    //   }
-    // }
+    // confirmation screen
+    bool confirmed = await confirmEmployee("${result?.code}");
+    // if cancel, stop the process
+    if (!confirmed) {
+      resetLoading();
+      return;
+    }
 
     // else set new loading message
     setState(() {
@@ -122,10 +106,11 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
       await _attService.createOne(
         attendance: attendance as Attendance,
       );
+
       // if not error
       resetLoading();
-      _buildScanSuccessful();
-      _closePanel();
+      // _buildScanSuccessful();
+      // _closePanel();
     } catch (err) {
       resetLoading();
       _buildScanFailed();
@@ -187,6 +172,101 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     return confirmation;
   }
 
+  Future<bool> confirmEmployee(String code) async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    var json = jsonDecode(code);
+    int? id = int.tryParse(json['id']);
+    String? profile = json['profile'];
+    String? name = json['name'];
+    if (id == null || profile == null || name == null) {
+      return false;
+    }
+
+    bool confirmation = false;
+
+    /// use to set note from confirmation panel before registering the record
+    /// confirmation to true
+    void ok(String note) {
+      setState(() {
+        attendance = Attendance(
+          userId: id,
+          type: widget.type,
+          date: DateTime.now(),
+        );
+      });
+
+      if (note.isNotEmpty || note != 'null') {
+        setState(() {
+          attendance = attendance?.copyWith(note: note);
+        });
+      }
+      confirmation = true;
+    }
+
+    await showMaterialModalBottomSheet(
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext context) {
+        return ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(30),
+            topLeft: Radius.circular(30),
+          ),
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.7,
+            decoration: const BoxDecoration(
+              color: kBlue,
+            ),
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+                Text(
+                  '${local?.confirm}',
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  decoration: const BoxDecoration(
+                    color: kBlue,
+                  ),
+                  child: Scaffold(
+                    resizeToAvoidBottomInset: true,
+                    body: EmployeeConfirmScreen(
+                      name: name,
+                      profile: profile,
+                      ok: (note) => ok(note),
+                      type: widget.type,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    // await modalBottomSheetBuilder(
+    //   isDismissible: false,
+    //   isScrollControlled: false,
+    //   context: context,
+    //   maxHeight: MediaQuery.of(context).size.height * 0.6,
+    //   minHeight: MediaQuery.of(context).size.height * 0.4,
+    //   child: EmployeeConfirmScreen(
+    //     name: name,
+    //     profile: profile,
+    //   ),
+    // );
+
+    return confirmation;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -196,46 +276,56 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   @override
   Widget build(BuildContext context) {
     User currentUser = ref.read(currentUserProvider).user;
-    return Container(
-      child: Center(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Image.network(
-                  currentUser.image.toString(),
-                  cacheHeight: 100,
-                  width: 100,
-                  errorBuilder: (context, _, __) {
-                    return Container(
-                      height: 100,
-                      width: 100,
-                      color: kDarkestBlue,
-                      child: const Center(
-                        child: Text('error'),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                currentUser.name.toString(),
-                // '$localType ${local?.successfully}!',
-                style: kParagraph.copyWith(color: kWhite),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    // return Scaffold(
-    //   body: _isLoading
-    //       ? _loading(context, _loadingMessage)
-    //       : _buildScanner(context),
+    // return Container(
+    //   child: Center(
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: [
+    //         CustomCircleAvatar(
+    //           imageUrl: currentUser.image.toString(),
+    //           size: 100,
+    //         ),
+    //         const SizedBox(height: 16),
+    //         Text(
+    //           currentUser.name.toString(),
+    //           // '$localType ${local?.successfully}!',
+    //           style: kParagraph.copyWith(color: kWhite),
+    //         ),
+    //         const SizedBox(height: 48),
+    //         ClipRRect(
+    //           borderRadius: BorderRadius.circular(50),
+    //           child: Material(
+    //             color: kRedText,
+    //             child: IconButton(
+    //               onPressed: () {},
+    //               color: kWhite,
+    //               splashColor: kWhite.withOpacity(0.5),
+    //               icon: const Icon(Icons.close),
+    //             ),
+    //           ),
+    //         ),
+    //         const SizedBox(height: 16),
+    //         ClipRRect(
+    //           borderRadius: BorderRadius.circular(50),
+    //           child: Material(
+    //             color: kDarkestBlue,
+    //             child: IconButton(
+    //               onPressed: () {},
+    //               color: kWhite,
+    //               splashColor: kWhite.withOpacity(0.5),
+    //               icon: const Icon(Icons.arrow_upward),
+    //             ),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
     // );
+    return Scaffold(
+      body: _isLoading
+          ? _loading(context, _loadingMessage)
+          : _buildScanner(context),
+    );
   }
 
   Widget _buildScanner(BuildContext context) {
@@ -396,39 +486,39 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   /// build scan successful
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
       _buildScanSuccessful() {
-    // AppLocalizations? local = AppLocalizations.of(context);
-    // String localType = widget.type == AttendanceType.typeCheckIn
-    //     ? "${local?.checkin}"
-    //     : "${local?.checkout}";
-    User currentUser = ref.read(currentUserProvider).user;
-
+    AppLocalizations? local = AppLocalizations.of(context);
+    String localType = widget.type == AttendanceType.typeCheckIn
+        ? "${local?.checkin}"
+        : "${local?.checkout}";
+    // User currentUser = ref.read(currentUserProvider).user;
+    //
     return ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: const Duration(days: 1),
+      //   SnackBar(
+      //     duration: const Duration(days: 1),
+      //     backgroundColor: kGreenBackground,
+      //     content: Center(
+      //       child: Column(
+      //         mainAxisAlignment: MainAxisAlignment.center,
+      //         children: [
+      //           Image.network(
+      //             currentUser.image.toString(),
+      //           ),
+      //           Text(
+      //             'heheye',
+      //             // '$localType ${local?.successfully}!',
+      //             style: kParagraph.copyWith(color: kGreenText),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   ),
+      _buildSnackBar(
+        icon: Icons.check,
+        textColor: kGreenText,
         backgroundColor: kGreenBackground,
-        content: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.network(
-                currentUser.image.toString(),
-              ),
-              Text(
-                'heheye',
-                // '$localType ${local?.successfully}!',
-                style: kParagraph.copyWith(color: kGreenText),
-              ),
-            ],
-          ),
-        ),
+        type: widget.type,
+        message: '$localType ${local?.successfully}!',
       ),
-      // _buildSnackBar(
-      //   icon: Icons.check,
-      //   textColor: kGreenText,
-      //   backgroundColor: kGreenBackground,
-      //   type: widget.type,
-      //   message: '$localType ${local?.successfully}!',
-      // ),
     );
   }
 

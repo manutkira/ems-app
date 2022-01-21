@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
@@ -141,7 +143,11 @@ class _QRCodeState extends ConsumerState<QRCode> {
   void fetchQrCode() async {
     User _currentUser = ref.read(currentUserProvider).user;
     setState(() {
-      _passcode = _currentUser.id.toString();
+      _passcode = jsonEncode({
+        'id': _currentUser.id.toString(),
+        'profile': _currentUser.image,
+        'name': _currentUser.name,
+      });
       // verifyQrCode();
     });
     // try {

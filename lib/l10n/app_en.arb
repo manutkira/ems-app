@@ -797,5 +797,9 @@
   "deletedAttendance": "Attendance has been deleted.",
   "@deletedAttendance": {
     "description": "add employee"
+  },
+  "lateChooseReason": "Late. Choose reason:",
+  "@lateChooseReason": {
+    "description": "add employee"
   }
 }
