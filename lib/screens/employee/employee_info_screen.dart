@@ -4,6 +4,7 @@ import 'package:ems/models/rate.dart';
 import 'package:ems/screens/employee/employee_edit_employment.dart';
 import 'package:ems/screens/employee/widgets/employee_info/employment_info.dart';
 import 'package:ems/screens/employee/widgets/employee_info/personal_info.dart';
+import 'package:ems/utils/services/position_service.dart';
 import 'package:ems/utils/services/rate_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -103,10 +104,30 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
     } catch (err) {}
   }
 
+  final PositionService _positionService = PositionService.instance;
+  List positionDisplay = [];
+
+  fetchUserPosition() {
+    try {
+      _isloading = true;
+      _positionService.findPosition(widget.id).then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            positionDisplay = [];
+            positionDisplay.add(usersFromServer);
+            print(positionDisplay[0]['position_name']);
+            _isloading = false;
+          });
+        }
+      });
+    } catch (err) {}
+  }
+
   @override
   void initState() {
     fetchUserById();
     fetchRateDate();
+    fetchUserPosition();
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_handleSelected);
@@ -366,6 +387,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                     fetchUserById();
                                   }),
                               EmploymentInfo(
+                                  fetchUserPosition: fetchUserPosition,
+                                  positionDisplay: positionDisplay,
                                   fetchRateDate: fetchRateDate,
                                   rateDisplay: rateDisplay,
                                   userDisplay: userDisplay,

@@ -23,4 +23,21 @@ class PositionService extends BaseService {
       throw e;
     }
   }
+
+  Future findPosition(int id) async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/users/$id'));
+      int _code = 0;
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw 'error';
+      }
+      Map<String, dynamic> jsondata = json.decode(response.body);
+      var data = jsondata['positions'][0];
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
 }

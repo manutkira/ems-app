@@ -10,6 +10,7 @@ import '../../employee_edit_screen.dart';
 
 class PersonalInfo extends StatelessWidget {
   List<User> userDisplay;
+
   List<User> user;
   final Function fetchUserById;
   PersonalInfo({

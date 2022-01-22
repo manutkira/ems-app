@@ -169,43 +169,6 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${local?.position} ',
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: Flex(
-                          direction: Axis.horizontal,
-                          children: [
-                            Flexible(
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  hintText: '${local?.enterPosition}',
-                                  errorStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                controller: positionController,
-                                textInputAction: TextInputAction.next,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
                         '${local?.skill} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
@@ -508,7 +471,6 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
 
     var aName = nameController.text;
     var aPhone = phoneController.text;
-    var aPosition = positionController.text;
     var aSkill = skillController.text;
     var aSalary = salaryController.text;
     var aRole = role;
@@ -523,7 +485,6 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
     };
     request.files.add(http.MultipartFile.fromString('name', aName));
     request.files.add(http.MultipartFile.fromString('phone', aPhone));
-    request.files.add(http.MultipartFile.fromString('position', aPosition));
     request.files.add(http.MultipartFile.fromString('skill', aSkill));
     request.files.add(http.MultipartFile.fromString('salary', aSalary));
     String checkRole() {

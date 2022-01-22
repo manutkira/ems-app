@@ -1,19 +1,21 @@
 import 'dart:convert';
 
-import 'package:ems/screens/employee/widgets/employee_info/test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
 import 'package:ems/models/user.dart';
+import 'package:ems/screens/employee/widgets/employee_info/position_record.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../../constants.dart';
 import '../../employee_edit_employment.dart';
 
 class EmploymentInfo extends StatelessWidget {
   List<User> userDisplay;
+  List positionDisplay;
   List<User> user;
   List rateDisplay;
   List rateList;
@@ -24,6 +26,7 @@ class EmploymentInfo extends StatelessWidget {
   final Function addRateList;
   final Function deleteRateItem;
   final Function fetchRateDate;
+  final Function fetchUserPosition;
   TextEditingController rateNameController;
   TextEditingController rateScoreController;
   TextEditingController idController;
@@ -31,6 +34,7 @@ class EmploymentInfo extends StatelessWidget {
   EmploymentInfo({
     Key? key,
     required this.userDisplay,
+    required this.positionDisplay,
     required this.user,
     required this.rateDisplay,
     required this.rateList,
@@ -41,6 +45,7 @@ class EmploymentInfo extends StatelessWidget {
     required this.addRateList,
     required this.deleteRateItem,
     required this.fetchRateDate,
+    required this.fetchUserPosition,
     required this.rateNameController,
     required this.rateScoreController,
     required this.idController,
@@ -182,9 +187,10 @@ class EmploymentInfo extends StatelessWidget {
                                   width: isEnglish ? 65 : 85,
                                 ),
                                 Text(
-                                  userDisplay[0].position == null
+                                  positionDisplay[0]['position_name'] == null
                                       ? '${local?.noData}'
-                                      : userDisplay[0].position.toString(),
+                                      : positionDisplay[0]['position_name']
+                                          .toString(),
                                   style: kParagraph.copyWith(
                                     color: Colors.white,
                                   ),
@@ -194,8 +200,8 @@ class EmploymentInfo extends StatelessWidget {
                           ],
                         ),
                         IconButton(
-                          onPressed: () {
-                            Navigator.push(
+                          onPressed: () async {
+                            await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => TestPosition(
@@ -204,6 +210,7 @@ class EmploymentInfo extends StatelessWidget {
                                           name: userDisplay[0].name.toString(),
                                           id: userDisplay[0].id as int,
                                         )));
+                            fetchUserPosition();
                           },
                           icon: Icon(MdiIcons.eye, size: 18),
                         )
