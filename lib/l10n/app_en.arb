@@ -853,5 +853,25 @@
   "lateOther": "other",
   "@lateOther": {
     "description": "reason for being late"
+  },
+  "startDate": "Start Date",
+  "@startDate": {
+    "description": "add employee"
+  },
+  "endDate": "End Date",
+  "@endDate": {
+    "description": "add employee"
+  },
+  "selectStartDate": "Select Start Date",
+  "@selectStartDate": {
+    "description": "add employee"
+  },
+  "selectEndDate": "Select End Date",
+  "@selectEndDate": {
+    "description": "add employee"
+  },
+  "now": "Present",
+  "@now": {
+    "description": "add employee"
   }
 }

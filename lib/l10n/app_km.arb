@@ -206,5 +206,10 @@
   "lateChooseReason": "យឺត សូមជ្រើសរើសហេតុផល៖",
   "lateBlownTire": "បែកកង់",
   "lateTrafficJam": "ស្ទះផ្លូវ",
-  "lateOther": "ផ្សេងៗ"
+  "lateOther": "ផ្សេងៗ",
+  "startDate": "ថ្ងៃចាប់ផ្ដើម",
+  "endDate": "ថ្ងៃបញ្ចប់",
+  "selectStartDate": "ជ្រើសរើសថ្ងៃចាប់ផ្ដើម",
+  "selectEndDate": "ជ្រើសរើសថ្ងៃបញ្ចប់",
+  "now": "បច្ចុប្បន្ន"
 }
