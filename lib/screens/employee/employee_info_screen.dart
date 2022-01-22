@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:ems/models/bank.dart';
 import 'package:ems/models/rate.dart';
 import 'package:ems/screens/employee/employee_edit_employment.dart';
 import 'package:ems/screens/employee/widgets/employee_info/employment_info.dart';
 import 'package:ems/screens/employee/widgets/employee_info/personal_info.dart';
+import 'package:ems/utils/services/bank_service.dart';
 import 'package:ems/utils/services/position_service.dart';
 import 'package:ems/utils/services/rate_service.dart';
 import 'package:flutter/material.dart';
@@ -40,18 +42,6 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
   final rateScoreController = TextEditingController();
   final idController = TextEditingController();
 
-  void addRateList(
-    String name,
-    int score,
-    int id,
-    int userId,
-  ) {
-    final rate = Rate(rateName: name, score: score, id: id, userId: userId);
-    setState(() {
-      rateList.add(rate);
-    });
-  }
-
   void deleteRateItem(int id) {
     setState(() {
       rateList.removeWhere((element) => element.id == id);
@@ -63,8 +53,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
   final UserService _userService = UserService.instance;
   List<User> userDisplay = [];
   List<User> user = [];
-  final RateService _rateService = RateService.instance;
+  final RateServices _rateServices = RateServices.instance;
   List rateDisplay = [];
+  List<Rate> ratesDisplay = [];
   bool _isloading = true;
   String dropDownValue = '';
   bool personal = true;
@@ -91,13 +82,29 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
     } catch (err) {}
   }
 
-  fetchRateDate() {
+  fetchRateData() {
     try {
-      _rateService.findOne(widget.id).then((usersFromServer) {
+      _rateServices.findOne(widget.id).then((usersFromServer) {
         if (mounted) {
           setState(() {
-            rateDisplay = [];
-            rateDisplay.add(usersFromServer);
+            ratesDisplay = [];
+            ratesDisplay.addAll(usersFromServer);
+          });
+        }
+      });
+    } catch (err) {}
+  }
+
+  final BankService _bankService = BankService.instance;
+  List<Bank> bankDisplay = [];
+
+  fetchBankData() {
+    try {
+      _bankService.findOne(widget.id).then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            bankDisplay = [];
+            bankDisplay.addAll(usersFromServer);
           });
         }
       });
@@ -109,14 +116,11 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
 
   fetchUserPosition() {
     try {
-      _isloading = true;
       _positionService.findPosition(widget.id).then((usersFromServer) {
         if (mounted) {
           setState(() {
             positionDisplay = [];
             positionDisplay.add(usersFromServer);
-            print(positionDisplay[0]['position_name']);
-            _isloading = false;
           });
         }
       });
@@ -125,8 +129,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
 
   @override
   void initState() {
+    fetchBankData();
+    fetchRateData();
     fetchUserById();
-    fetchRateDate();
     fetchUserPosition();
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
@@ -381,6 +386,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                             controller: _tabController,
                             children: [
                               PersonalInfo(
+                                  bankDisplay: bankDisplay,
+                                  fetchBankData: fetchBankData,
                                   userDisplay: userDisplay,
                                   user: user,
                                   fetchUserById: () {
@@ -389,8 +396,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                               EmploymentInfo(
                                   fetchUserPosition: fetchUserPosition,
                                   positionDisplay: positionDisplay,
-                                  fetchRateDate: fetchRateDate,
-                                  rateDisplay: rateDisplay,
+                                  fetchRateDate: fetchRateData,
+                                  rateDisplay: ratesDisplay,
                                   userDisplay: userDisplay,
                                   user: user,
                                   rateList: rateList,

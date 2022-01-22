@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:ems/models/position.dart';
 import 'package:http/http.dart' as http;
 import 'package:ems/screens/card/card.screen.dart';
 import 'package:ems/utils/services/position_service.dart';
@@ -98,6 +99,24 @@ class _TestPositionState extends State<TestPosition> {
     } catch (err) {}
   }
 
+  final PositionServices _positionServices = PositionServices.instance;
+  List<Position> positionsDisplay = [];
+
+  fetchPositions() {
+    try {
+      _isLoading = true;
+      _positionServices.findOne(widget.id).then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            positionsDisplay = [];
+            positionsDisplay.addAll(usersFromServer);
+            _isLoading = false;
+          });
+        }
+      });
+    } catch (err) {}
+  }
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void showInSnackBar(String value) {
@@ -121,7 +140,7 @@ class _TestPositionState extends State<TestPosition> {
         "http://rest-api-laravel-flutter.herokuapp.com/api/position/$id"));
     showInSnackBar("${local?.deletingAttendance}");
     if (response.statusCode == 200) {
-      fetchPosition();
+      fetchPositions();
       showInSnackBar("${local?.deletedAttendance}");
     } else {
       return false;
@@ -133,6 +152,7 @@ class _TestPositionState extends State<TestPosition> {
     // TODO: implement initState
     super.initState();
     fetchPosition();
+    fetchPositions();
   }
 
   @override
@@ -360,7 +380,7 @@ class _TestPositionState extends State<TestPosition> {
                       ),
                     );
                   });
-              fetchPosition();
+              fetchPositions();
             },
             icon: Icon(
               Icons.add,
@@ -508,10 +528,10 @@ class _TestPositionState extends State<TestPosition> {
                         shrinkWrap: true,
                         physics: ClampingScrollPhysics(),
                         itemBuilder: (BuildContext context, int index) {
-                          startDate = DateTime.parse(
-                              positionDisplay[0][index]['start_date']);
+                          startDate =
+                              DateTime.parse(positionsDisplay[index].startDate);
                           endDate = DateTime.tryParse(
-                              positionDisplay[0][index]['end_date'].toString());
+                              positionsDisplay[index].endDate.toString());
                           return Stack(
                             children: [
                               Positioned(
@@ -524,33 +544,31 @@ class _TestPositionState extends State<TestPosition> {
                                           Radius.circular(10))),
                                   onSelected: (int selectedValue) async {
                                     if (selectedValue == 0) {
-                                      positionId =
-                                          positionDisplay[0][index]['id'];
-                                      positionName.text = positionDisplay[0]
-                                          [index]['position_name'];
+                                      positionId = positionsDisplay[index].id;
+                                      positionName.text =
+                                          positionsDisplay[index].positionName;
                                       startDateController.text =
                                           DateFormat('dd-MM-yyyy').format(
                                               DateTime.tryParse(
-                                                  positionDisplay[0][index]
-                                                      ['start_date'])!);
+                                                  positionsDisplay[index]
+                                                      .startDate)!);
                                       endDateController.text =
-                                          positionDisplay[0][index]
-                                                      ['end_date'] ==
+                                          positionsDisplay[index].endDate ==
                                                   null
                                               ? 'Null'
                                               : DateFormat('dd-MM-yyyy').format(
                                                   DateTime.tryParse(
-                                                      positionDisplay[0][index]
-                                                          ['end_date'])!);
+                                                      positionsDisplay[index]
+                                                          .endDate
+                                                          .toString())!);
                                       pickStart = DateTime.tryParse(
-                                          positionDisplay[0][index]
-                                              ['start_date']);
-                                      if (positionDisplay[0][index]
-                                              ['end_date'] !=
+                                          positionsDisplay[index].startDate);
+                                      if (positionsDisplay[index].endDate !=
                                           null) {
                                         pickEnd = DateTime.tryParse(
-                                            positionDisplay[0][index]
-                                                ['end_date']);
+                                            positionsDisplay[index]
+                                                .endDate
+                                                .toString());
                                       }
                                       await showModalBottomSheet(
                                           context: context,
@@ -865,11 +883,10 @@ class _TestPositionState extends State<TestPosition> {
                                       positionName.text = '';
                                       startDateController.text = '';
                                       endDateController.text = '';
-                                      fetchPosition();
+                                      fetchPositions();
                                     }
                                     if (selectedValue == 1) {
-                                      positionId =
-                                          positionDisplay[0][index]['id'];
+                                      positionId = positionsDisplay[index].id;
                                       await showDialog(
                                         context: context,
                                         builder: (ctx) => AlertDialog(
@@ -947,8 +964,8 @@ class _TestPositionState extends State<TestPosition> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            positionDisplay[0][index]
-                                                ['position_name'],
+                                            positionsDisplay[index]
+                                                .positionName,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -1048,7 +1065,7 @@ class _TestPositionState extends State<TestPosition> {
                             ],
                           );
                         },
-                        itemCount: positionDisplay[0].length,
+                        itemCount: positionsDisplay.length,
                       )
                     : Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -1059,10 +1076,9 @@ class _TestPositionState extends State<TestPosition> {
                           },
                           border:
                               TableBorder.all(width: 1, color: Colors.white),
-                          children: positionDisplay[0].map<TableRow>((e) {
-                            startDate = DateTime.parse(e['start_date']);
-                            endDate =
-                                DateTime.tryParse(e['end_date'].toString());
+                          children: positionsDisplay.map<TableRow>((e) {
+                            startDate = DateTime.parse(e.startDate);
+                            endDate = DateTime.tryParse(e.endDate.toString());
                             return TableRow(children: [
                               TableCell(
                                   verticalAlignment:
@@ -1070,7 +1086,7 @@ class _TestPositionState extends State<TestPosition> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(13.0),
                                     child: Text(
-                                      e['position_name'],
+                                      e.positionName,
                                       textAlign: TextAlign.center,
                                     ),
                                   )),

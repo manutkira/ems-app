@@ -1,22 +1,22 @@
-class Rate {
-  String rateName;
-  String score;
+class Bank {
   int id;
   int userId;
+  String bankName;
+  String accoutNumber;
   DateTime? createdAt;
   DateTime? updatedAt;
-  Rate({
-    required this.rateName,
-    required this.score,
+  Bank({
+    required this.bankName,
+    required this.accoutNumber,
     required this.id,
     required this.userId,
     this.createdAt,
     this.updatedAt,
   });
 
-  factory Rate.fromJson(Map<String, dynamic> json) => Rate(
-        rateName: json["skill_name"],
-        score: json["score"],
+  factory Bank.fromJson(Map<String, dynamic> json) => Bank(
+        bankName: json["bank_name"],
+        accoutNumber: json["account_number"],
         id: json["id"],
         userId: json["user_id"],
         createdAt: json["created_at"] == null
@@ -31,8 +31,8 @@ class Rate {
     // user object is not necessary.
 
     return {
-      "skill_name": rateName,
-      "score": score,
+      "skill_name": bankName,
+      "score": accoutNumber,
       "id": id,
       "user_id": userId,
       "created_at": createdAt?.toIso8601String(),

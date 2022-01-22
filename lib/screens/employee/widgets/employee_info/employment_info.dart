@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ems/models/rate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +18,7 @@ class EmploymentInfo extends StatelessWidget {
   List<User> userDisplay;
   List positionDisplay;
   List<User> user;
-  List rateDisplay;
+  List<Rate> rateDisplay;
   List rateList;
   final Function fetchUserById;
   final Function checkRole;
@@ -543,7 +544,7 @@ class EmploymentInfo extends StatelessWidget {
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   padding: EdgeInsets.all(8),
-                  itemCount: rateDisplay[0].length,
+                  itemCount: rateDisplay.length,
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
@@ -561,21 +562,21 @@ class EmploymentInfo extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(rateDisplay[0][index]['skill_name']),
+                                Text(rateDisplay[index].rateName),
                                 Row(
                                   children: [
                                     Text(
-                                        '${rateDisplay[0][index]['score'].toString()} / 10'),
+                                        '${rateDisplay[index].score.toString()} / 10'),
                                     SizedBox(
                                       width: 5,
                                     ),
                                     IconButton(
                                       onPressed: () async {
-                                        rateId = rateDisplay[0][index]['id'];
+                                        rateId = rateDisplay[index].id;
                                         skillNameController.text =
-                                            rateDisplay[0][index]['skill_name'];
+                                            rateDisplay[index].rateName;
                                         scoreController.text =
-                                            rateDisplay[0][index]['score'];
+                                            rateDisplay[index].score;
                                         await showModalBottomSheet(
                                             context: context,
                                             builder: (_) {
@@ -821,8 +822,8 @@ class EmploymentInfo extends StatelessWidget {
                                                 OutlineButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
-                                                    deleteData(rateDisplay[0]
-                                                        [index]['id']);
+                                                    deleteData(
+                                                        rateDisplay[index].id);
                                                   },
                                                   child: Text('${local?.yes}'),
                                                   borderSide: BorderSide(
