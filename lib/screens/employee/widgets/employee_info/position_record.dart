@@ -1159,6 +1159,7 @@ class _TestPositionState extends State<TestPosition> {
     bool isEnglish = isInEnglish(context);
     var aPositionName = positionName.text;
     DateTime aStartDate = pickStart!;
+    print(pickEnd);
 
     var request = await http.MultipartRequest(
         'POST', Uri.parse("$urlUser/${widget.id}/position"));
@@ -1171,7 +1172,7 @@ class _TestPositionState extends State<TestPosition> {
     request.files.add(
         http.MultipartFile.fromString('start_date', aStartDate.toString()));
     if (pickEnd != null) {
-      var aEndDate = pickEnd as DateTime;
+      DateTime aEndDate = pickEnd!;
       request.files
           .add(http.MultipartFile.fromString('end_date', aEndDate.toString()));
     }

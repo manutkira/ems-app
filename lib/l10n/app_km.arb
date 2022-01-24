@@ -211,5 +211,7 @@
   "endDate": "ថ្ងៃបញ្ចប់",
   "selectStartDate": "ជ្រើសរើសថ្ងៃចាប់ផ្ដើម",
   "selectEndDate": "ជ្រើសរើសថ្ងៃបញ្ចប់",
-  "now": "បច្ចុប្បន្ន"
+  "now": "បច្ចុប្បន្ន",
+  "accountName": "ឈ្មោះគណនី",
+  "accountNumber": "លេខគណនី"
 }

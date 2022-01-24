@@ -1,15 +1,17 @@
 class Bank {
   int id;
   int userId;
-  String bankName;
-  String accoutNumber;
+  String? bankName;
+  String? accoutNumber;
+  String? accountName;
   DateTime? createdAt;
   DateTime? updatedAt;
   Bank({
-    required this.bankName,
-    required this.accoutNumber,
     required this.id,
     required this.userId,
+    required this.bankName,
+    required this.accoutNumber,
+    required this.accountName,
     this.createdAt,
     this.updatedAt,
   });
@@ -17,6 +19,7 @@ class Bank {
   factory Bank.fromJson(Map<String, dynamic> json) => Bank(
         bankName: json["bank_name"],
         accoutNumber: json["account_number"],
+        accountName: json["account_name"],
         id: json["id"],
         userId: json["user_id"],
         createdAt: json["created_at"] == null

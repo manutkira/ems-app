@@ -873,5 +873,13 @@
   "now": "Present",
   "@now": {
     "description": "add employee"
+  },
+  "accountName": "Name",
+  "@accountName": {
+    "description": "add employee"
+  },
+  "accountNumber": "Number",
+  "@accountNumber": {
+    "description": "add employee"
   }
 }
