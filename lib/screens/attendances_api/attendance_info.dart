@@ -1064,66 +1064,71 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                             ],
                           ),
                         ),
-                        AttendanceInfoNameId(
-                            name: _attendanceNoDateDisplay[0]
-                                .list[0]
-                                .users!
-                                .name
-                                .toString(),
-                            id: _attendanceNoDateDisplay[0]
-                                .list[0]
-                                .users!
-                                .id
-                                .toString(),
-                            image: _attendanceNoDateDisplay[0]
-                                .list[0]
-                                .users!
-                                .image
-                                .toString()),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // const SizedBox(
-                            //   width: 50,
-                            // ),
-                            Container(
-                              padding: const EdgeInsets.only(top: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                        Container(
+                          margin: EdgeInsets.only(top: 25),
+                          padding: EdgeInsets.all(15),
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          decoration: BoxDecoration(
+                            color: kDarkestBlue,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            children: [
+                              AttendanceInfoNameId(
+                                  name: _attendanceNoDateDisplay[0]
+                                      .list[0]
+                                      .users!
+                                      .name
+                                      .toString(),
+                                  id: _attendanceNoDateDisplay[0]
+                                      .list[0]
+                                      .users!
+                                      .id
+                                      .toString(),
+                                  image: _attendanceNoDateDisplay[0]
+                                      .list[0]
+                                      .users!
+                                      .image
+                                      .toString()),
+                              SizedBox(
+                                height: 25,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    child: AttendanceInfoPresent(
-                                        now: now,
-                                        todayMorning: todayPresent.toString(),
-                                        todayAfternoon:
-                                            todayPresentNoon.toString(),
-                                        isLoading: _isLoading,
-                                        isOneday: isOneDay,
-                                        onedayMorning: onedayPresent.toString(),
-                                        onedayAfternoon:
-                                            onedayPresentNoon.toString(),
-                                        presentAll: presentAll.toString(),
-                                        alltime: alltime,
-                                        text: '${local?.present}: ',
-                                        afternoon: afternoon,
-                                        multipleDay: multipleDay,
-                                        presentAfternoon:
-                                            presentAfternoon == null
-                                                ? '♽'
-                                                : presentAfternoon.toString(),
-                                        countPresentNoon:
-                                            countPresentNoon == null
-                                                ? '♽'
-                                                : countPresentNoon.toString(),
-                                        presentMorning: presentMorning == null
-                                            ? '♽'
-                                            : presentMorning.toString(),
-                                        countPresent: countPresent == null
-                                            ? '♽'
-                                            : countPresent.toString()),
-                                  ),
                                   AttendanceInfoPresent(
+                                      numColor: kGreenText,
+                                      backgroundColor: kGreenBackground,
+                                      now: now,
+                                      todayMorning: todayPresent.toString(),
+                                      todayAfternoon:
+                                          todayPresentNoon.toString(),
+                                      isLoading: _isLoading,
+                                      isOneday: isOneDay,
+                                      onedayMorning: onedayPresent.toString(),
+                                      onedayAfternoon:
+                                          onedayPresentNoon.toString(),
+                                      presentAll: presentAll.toString(),
+                                      alltime: alltime,
+                                      text: '${local?.present} ',
+                                      afternoon: afternoon,
+                                      multipleDay: multipleDay,
+                                      presentAfternoon: presentAfternoon == null
+                                          ? '♽'
+                                          : presentAfternoon.toString(),
+                                      countPresentNoon: countPresentNoon == null
+                                          ? '♽'
+                                          : countPresentNoon.toString(),
+                                      presentMorning: presentMorning == null
+                                          ? '♽'
+                                          : presentMorning.toString(),
+                                      countPresent: countPresent == null
+                                          ? '♽'
+                                          : countPresent.toString()),
+                                  AttendanceInfoPresent(
+                                      numColor: kBlueText,
+                                      backgroundColor: kBlueBackground,
                                       now: now,
                                       todayMorning: todayPermission.toString(),
                                       todayAfternoon:
@@ -1136,7 +1141,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                           onedayPermissionNoon.toString(),
                                       presentAll: permissionAll.toString(),
                                       alltime: alltime,
-                                      text: '${local?.permission}: ',
+                                      text: '${local?.permission} ',
                                       afternoon: afternoon,
                                       multipleDay: multipleDay,
                                       presentAfternoon:
@@ -1153,50 +1158,37 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                       countPresent: countPermission == null
                                           ? '♽'
                                           : countPermission.toString()),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 60,
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(top: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 10),
-                                      child: AttendanceInfoPresent(
-                                          now: now,
-                                          todayMorning: todayLate.toString(),
-                                          todayAfternoon:
-                                              todayLateNoon.toString(),
-                                          isLoading: _isLoading,
-                                          isOneday: isOneDay,
-                                          onedayMorning: onedayLate.toString(),
-                                          onedayAfternoon:
-                                              onedayLateNoon.toString(),
-                                          presentAll: lateAll.toString(),
-                                          alltime: alltime,
-                                          text: '${local?.late}: ',
-                                          afternoon: afternoon,
-                                          multipleDay: multipleDay,
-                                          presentAfternoon:
-                                              lateAfternoon == null
-                                                  ? '♽'
-                                                  : lateAfternoon.toString(),
-                                          countPresentNoon:
-                                              countLateNoon == null
-                                                  ? '♽'
-                                                  : countLateNoon.toString(),
-                                          presentMorning: lateMorning == null
-                                              ? '♽'
-                                              : lateMorning.toString(),
-                                          countPresent: countLate == null
-                                              ? '♽'
-                                              : countLate.toString())),
                                   AttendanceInfoPresent(
+                                      numColor: kYellowText,
+                                      backgroundColor: kYellowBackground,
+                                      now: now,
+                                      todayMorning: todayLate.toString(),
+                                      todayAfternoon: todayLateNoon.toString(),
+                                      isLoading: _isLoading,
+                                      isOneday: isOneDay,
+                                      onedayMorning: onedayLate.toString(),
+                                      onedayAfternoon:
+                                          onedayLateNoon.toString(),
+                                      presentAll: lateAll.toString(),
+                                      alltime: alltime,
+                                      text: '${local?.late} ',
+                                      afternoon: afternoon,
+                                      multipleDay: multipleDay,
+                                      presentAfternoon: lateAfternoon == null
+                                          ? '♽'
+                                          : lateAfternoon.toString(),
+                                      countPresentNoon: countLateNoon == null
+                                          ? '♽'
+                                          : countLateNoon.toString(),
+                                      presentMorning: lateMorning == null
+                                          ? '♽'
+                                          : lateMorning.toString(),
+                                      countPresent: countLate == null
+                                          ? '♽'
+                                          : countLate.toString()),
+                                  AttendanceInfoPresent(
+                                      numColor: kRedText,
+                                      backgroundColor: kRedBackground,
                                       now: now,
                                       todayMorning: todayAbsent.toString(),
                                       todayAfternoon:
@@ -1208,7 +1200,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                           onedayAbsentNoon.toString(),
                                       presentAll: absentAll.toString(),
                                       alltime: alltime,
-                                      text: '${local?.absent}: ',
+                                      text: '${local?.absent} ',
                                       afternoon: afternoon,
                                       multipleDay: multipleDay,
                                       presentAfternoon: absentAfternoon == null
@@ -1225,9 +1217,13 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                           : countAbsent.toString())
                                 ],
                               ),
-                            )
-                          ],
+                            ],
+                          ),
                         ),
+                        // SizedBox(
+                        //   height: 20,
+                        // ),
+
                         const SizedBox(
                           height: 15,
                         ),

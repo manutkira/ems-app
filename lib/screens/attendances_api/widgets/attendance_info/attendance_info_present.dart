@@ -21,6 +21,8 @@ class AttendanceInfoPresent extends StatelessWidget {
   dynamic countPresent;
   dynamic presentAll;
   bool alltime;
+  Color numColor;
+  Color backgroundColor;
   AttendanceInfoPresent({
     Key? key,
     required this.text,
@@ -39,6 +41,8 @@ class AttendanceInfoPresent extends StatelessWidget {
     required this.countPresent,
     required this.presentAll,
     required this.alltime,
+    required this.numColor,
+    required this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -51,45 +55,53 @@ class AttendanceInfoPresent extends StatelessWidget {
         : multipleDay
             ? presentMorning
             : countPresent;
-    return Row(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
-          child: Text(
-            text,
-            style: kHeadingFour.copyWith(color: kWhite),
+        Container(
+          width: 40,
+          height: 47,
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(
+            child: isLoading
+                ? SizedBox(
+                    child: Image.asset(
+                      'assets/images/Gear-0.5s-200px.gif',
+                      width: 20,
+                    ),
+                    // height: 10,
+                    // width: 10,
+                  )
+                : Visibility(
+                    visible: counted != null,
+                    child: Text(
+                      now
+                          ? afternoon
+                              ? todayAfternoon
+                              : todayMorning
+                          : isOneday && !alltime
+                              ? afternoon
+                                  ? onedayAfternoon
+                                  : onedayMorning
+                              : alltime
+                                  ? presentAll
+                                  : counted,
+                      style: kHeadingFour.copyWith(color: numColor),
+                    ),
+                  ),
           ),
         ),
-        Visibility(
-          visible: counted == null,
-          child: CircularProgressIndicator(),
+        SizedBox(
+          height: 10,
         ),
-        isLoading
-            ? SizedBox(
-                child: Image.asset(
-                  'assets/images/Gear-0.5s-200px.gif',
-                  width: 20,
-                ),
-                // height: 10,
-                // width: 10,
-              )
-            : Visibility(
-                visible: counted != null,
-                child: Text(
-                  now
-                      ? afternoon
-                          ? todayAfternoon
-                          : todayMorning
-                      : isOneday && !alltime
-                          ? afternoon
-                              ? onedayAfternoon
-                              : onedayMorning
-                          : alltime
-                              ? presentAll
-                              : counted,
-                  style: kHeadingFour.copyWith(color: kWhite),
-                ),
-              )
+        Text(
+          text,
+          style: kHeadingFour.copyWith(color: kWhite),
+        ),
       ],
     );
   }
