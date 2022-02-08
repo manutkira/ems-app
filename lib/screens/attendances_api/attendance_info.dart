@@ -1,3 +1,4 @@
+import 'package:ems/models/attendances.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_attendacnace_list.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_no_attendance.dart';
@@ -25,13 +26,30 @@ class AttendancesInfoScreen extends StatefulWidget {
 }
 
 class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
-  AttendanceService _attendanceService = AttendanceService.instance;
   AttendanceService _attendanceNoDateService = AttendanceService.instance;
   List<Attendance> attendanceDisplay = [];
   List<Attendance> attendanceAllDisplay = [];
   List<AttendanceWithDate> _attendanceDisplay = [];
   List<AttendanceWithDate> _attendanceNoDateDisplay = [];
-  List<AttendanceWithDate> _attendanceAll = [];
+
+  AttendanceService _attendanceService = AttendanceService.instance;
+  List<Attendances> attendancesDisplay = [];
+  List<AttendancesWithDate> attendancesByIdDisplay = [];
+  List<AttendancesWithDate> attendanceList = [];
+  List<AttendancesWithDate> _attendanceAll = [];
+  List attendanceListAll = [];
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+  bool now = true;
+  bool alltime = false;
+  bool isOneDay = false;
+  bool multiday = false;
+  bool isFilterExpanded = false;
+  bool _isLoading = true;
+  List isToday = [];
+  List<AttendancesWithDate> onedayList = [];
+  String sortByValue = '';
+  List<String> dropdownItems = [];
 
   String dropDownValue = '';
   bool afternoon = false;
@@ -56,26 +74,15 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       permissionAll,
       absentAll;
   bool multipleDay = false;
-  bool alltime = false;
-  bool isOneDay = false;
-  bool _isLoading = true;
   bool _isLoadingNoDate = true;
   bool order = false;
-  bool isFilterExpanded = false;
   List<Appointment>? _appointment;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
-  List isToday = [];
   List isTodayNoon = [];
   List oneDayMorning = [];
   List oneDayNoon = [];
-  List onedayList = [];
-  bool now = true;
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
-  List<AttendanceWithDate> attendanceList = [];
   List attendanceListNoon = [];
-  List attendanceListAll = [];
   int? onedayPresent,
       onedayPresentNoon,
       onedayLate,
@@ -92,9 +99,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       todayPermissionNoon,
       todayAbsent,
       todayAbsentNoon;
-
-  String sortByValue = '';
-  List<String> dropdownItems = [];
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   fetchNoDate() async {
@@ -109,19 +113,19 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     } catch (e) {}
   }
 
-  fetchAllAttendance() async {
-    _isLoading = true;
-    try {
-      List<AttendanceWithDate> attendanceDisplay = await _attendanceService
-          .findManyByUserIdNoOvertime(userId: widget.id);
-      setState(() {
-        _attendanceAll = attendanceDisplay;
-        _isLoading = false;
-      });
-      List flat = _attendanceAll.expand((element) => element.list).toList();
-      attendanceListAll = flat.toList();
-    } catch (e) {}
-  }
+  // fetchAllAttendance() async {
+  //   _isLoading = true;
+  //   try {
+  //     List<AttendancesWithDate> attendanceDisplay = await _attendanceService
+  //         .findManyByUserIdNoOvertime(userId: widget.id);
+  //     setState(() {
+  //       _attendanceAll = attendanceDisplay;
+  //       _isLoading = false;
+  //     });
+  //     List flat = _attendanceAll.expand((element) => element.list).toList();
+  //     attendanceListAll = flat.toList();
+  //   } catch (e) {}
+  // }
 
   checkLate(Attendance element) {
     if (element.code == 'cin1') {
@@ -255,93 +259,62 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
-  fetchAttendanceById() async {
+  fetchAttedancesById() async {
     try {
-      _isLoading = true;
-      List<AttendanceWithDate> attendanceDisplay =
-          await _attendanceService.findManyByUserIdNoOvertime(
-        userId: widget.id,
+      List<AttendancesWithDate> attendanceDisplay =
+          await _attendanceService.findManyAttendancesById(
+        userId: 1,
         start: startDate,
         end: endDate,
       );
       setState(() {
-        _attendanceDisplay = attendanceDisplay;
+        attendancesByIdDisplay = attendanceDisplay;
 
-        _isLoading = false;
         var now = DateTime.now();
-        var today = attendanceDisplay.where((element) =>
+        var today = attendancesByIdDisplay.where((element) =>
             element.date.day == now.day &&
             element.date.month == now.month &&
             element.date.year == now.year);
+
         List todayFlat = today.expand((element) => element.list).toList();
-        isToday = todayFlat
-            .where((element) =>
-                element.code != 'cin2' &&
-                element.code != 'cout2' &&
-                element.code != 'cout3' &&
-                element.code != 'cin3')
-            .toList();
+        isToday = todayFlat;
 
         var oneDay = attendanceDisplay.where((element) =>
             element.date.day == startDate.day &&
             element.date.month == startDate.month &&
             element.date.year == startDate.year);
         onedayList = oneDay.toList();
-        List oneDayFlat = oneDay.expand((element) => element.list).toList();
-        oneDayMorning = oneDayFlat
-            .where((element) =>
-                element.code != 'cin2' &&
-                element.code != 'cout2' &&
-                element.code != 'cin3' &&
-                element.code != 'cout3')
-            .toList();
-        oneDayNoon = oneDayFlat
-            .where((element) =>
-                element.code != 'cin1' &&
-                element.code != 'cout1' &&
-                element.code != 'cin3' &&
-                element.code != 'cout3')
-            .toList();
-        todayPresent = isToday.where((element) => checkPresent(element)).length;
-        todayLate = isToday.where((element) => checkLate(element)).length;
-        todayAbsent = isToday.where((element) => checkAbsent(element)).length;
-        todayPermission =
-            isToday.where((element) => checkPermission(element)).length;
-        onedayPresent =
-            oneDayMorning.where((element) => checkPresent(element)).length;
-        onedayLate =
-            oneDayMorning.where((element) => checkLate(element)).length;
-        onedayAbsent =
-            oneDayMorning.where((element) => checkAbsent(element)).length;
-        onedayPermission =
-            oneDayMorning.where((element) => checkPermission(element)).length;
-
-        isTodayNoon = todayFlat
-            .where((element) =>
-                element.code != 'cin1' &&
-                element.code != 'cout1' &&
-                element.code != 'cout3' &&
-                element.code != 'cin3')
-            .toList();
-        todayPresentNoon =
-            isTodayNoon.where((element) => checkPresentNoon(element)).length;
-        todayLateNoon =
-            isTodayNoon.where((element) => checkLateNoon(element)).length;
-        todayAbsentNoon =
-            isTodayNoon.where((element) => checkAbsentNoon(element)).length;
-        todayPermissionNoon =
-            isTodayNoon.where((element) => checkPermissionNoon(element)).length;
-        onedayPresentNoon =
-            oneDayNoon.where((element) => checkPresentNoon(element)).length;
-        onedayLateNoon =
-            oneDayNoon.where((element) => checkLateNoon(element)).length;
-        onedayAbsentNoon =
-            oneDayNoon.where((element) => checkAbsentNoon(element)).length;
-        onedayPermissionNoon =
-            oneDayNoon.where((element) => checkPermissionNoon(element)).length;
+        attendanceList = attendancesByIdDisplay;
+        print(attendanceList);
       });
-      attendanceList = _attendanceDisplay;
+    } catch (err) {}
+  }
+
+  fetchAllAttendance() async {
+    _isLoading = true;
+    try {
+      List<AttendancesWithDate> attendanceDisplay =
+          await _attendanceService.findManyAttendancesById(userId: 1);
+      setState(() {
+        _attendanceAll = attendanceDisplay;
+        _isLoading = false;
+      });
+      List flat = _attendanceAll.expand((element) => element.list).toList();
+      attendanceListAll = flat.toList();
     } catch (e) {}
+  }
+
+  fetchManyAttendances() {
+    try {
+      _attendanceService.findManyAttendances().then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            attendancesDisplay = [];
+            attendancesDisplay.addAll(usersFromServer);
+          });
+        }
+      });
+    } catch (err) {}
   }
 
   fetchAttendanceByIdNoon() async {
@@ -384,8 +357,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       attendanceList = [];
       _attendanceAll = [];
       onedayList = [];
-      fetchAttendanceById();
-      fetchAllAttendance();
+      // fetchAttendanceById();
+      // fetchAllAttendance();
       showInSnackBar("${local?.deletedAttendance}");
     } else {
       return false;
@@ -402,8 +375,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       attendanceList = [];
       _attendanceAll = [];
       onedayList = [];
-      fetchAttendanceById();
-      fetchAllAttendance();
+      // fetchAttendanceById();
+      // fetchAllAttendance();
       showInSnackBar("${local?.deletedAttendance}");
     } else {
       return false;
@@ -660,7 +633,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       getAbsentNoon();
       getPermission();
       getPermissionNoon();
-      fetchAttendanceById();
+      // fetchAttendanceById();
       fetchAttendanceByIdNoon();
       fetchNoDate();
       fetchLate();
@@ -671,7 +644,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       fetchPermissionNoon();
       fetchPresent();
       fetchPresentNoon();
-      fetchAllAttendance();
+      // fetchAllAttendance();
     } catch (err) {}
   }
 
@@ -996,7 +969,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                   fetchPermissionNoon();
                                                   fetchPresent();
                                                   fetchPresentNoon();
-                                                  fetchAttendanceById();
+                                                  // fetchAttendanceById();
                                                   fetchAttendanceByIdNoon();
                                                 }
                                                 if (sortByValue ==
@@ -1011,7 +984,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                   attendanceList = [];
                                                   attendanceListNoon = [];
                                                   attendanceListAll = [];
-                                                  fetchAllAttendance();
+                                                  // fetchAllAttendance();
                                                   getAbsentAll();
                                                   getPermissionAll();
                                                   getPresentAll();
@@ -1034,7 +1007,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                   fetchPermissionNoon();
                                                   fetchPresent();
                                                   fetchPresentNoon();
-                                                  fetchAttendanceById();
+                                                  // fetchAttendanceById();
                                                   fetchAttendanceByIdNoon();
                                                 }
                                               },
@@ -1074,149 +1047,149 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                           ),
                           child: Column(
                             children: [
-                              AttendanceInfoNameId(
-                                  name: _attendanceNoDateDisplay[0]
-                                      .list[0]
-                                      .users!
-                                      .name
-                                      .toString(),
-                                  id: _attendanceNoDateDisplay[0]
-                                      .list[0]
-                                      .users!
-                                      .id
-                                      .toString(),
-                                  image: _attendanceNoDateDisplay[0]
-                                      .list[0]
-                                      .users!
-                                      .image
-                                      .toString()),
+                              // AttendanceInfoNameId(
+                              //     name: _attendanceNoDateDisplay[0]
+                              //         .list[0]
+                              //         .users!
+                              //         .name
+                              //         .toString(),
+                              //     id: _attendanceNoDateDisplay[0]
+                              //         .list[0]
+                              //         .users!
+                              //         .id
+                              //         .toString(),
+                              //     image: _attendanceNoDateDisplay[0]
+                              //         .list[0]
+                              //         .users!
+                              //         .image
+                              //         .toString()),
                               SizedBox(
                                 height: 25,
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  AttendanceInfoPresent(
-                                      numColor: kGreenText,
-                                      backgroundColor: kGreenBackground,
-                                      now: now,
-                                      todayMorning: todayPresent.toString(),
-                                      todayAfternoon:
-                                          todayPresentNoon.toString(),
-                                      isLoading: _isLoading,
-                                      isOneday: isOneDay,
-                                      onedayMorning: onedayPresent.toString(),
-                                      onedayAfternoon:
-                                          onedayPresentNoon.toString(),
-                                      presentAll: presentAll.toString(),
-                                      alltime: alltime,
-                                      text: '${local?.present} ',
-                                      afternoon: afternoon,
-                                      multipleDay: multipleDay,
-                                      presentAfternoon: presentAfternoon == null
-                                          ? '♽'
-                                          : presentAfternoon.toString(),
-                                      countPresentNoon: countPresentNoon == null
-                                          ? '♽'
-                                          : countPresentNoon.toString(),
-                                      presentMorning: presentMorning == null
-                                          ? '♽'
-                                          : presentMorning.toString(),
-                                      countPresent: countPresent == null
-                                          ? '♽'
-                                          : countPresent.toString()),
-                                  AttendanceInfoPresent(
-                                      numColor: kBlueText,
-                                      backgroundColor: kBlueBackground,
-                                      now: now,
-                                      todayMorning: todayPermission.toString(),
-                                      todayAfternoon:
-                                          todayPermissionNoon.toString(),
-                                      isLoading: _isLoading,
-                                      isOneday: isOneDay,
-                                      onedayMorning:
-                                          onedayPermission.toString(),
-                                      onedayAfternoon:
-                                          onedayPermissionNoon.toString(),
-                                      presentAll: permissionAll.toString(),
-                                      alltime: alltime,
-                                      text: '${local?.permission} ',
-                                      afternoon: afternoon,
-                                      multipleDay: multipleDay,
-                                      presentAfternoon:
-                                          permissionAfternoon == null
-                                              ? '♽'
-                                              : permissionAfternoon.toString(),
-                                      countPresentNoon:
-                                          countPermissionNoon == null
-                                              ? '♽'
-                                              : countPermissionNoon.toString(),
-                                      presentMorning: permissionMorning == null
-                                          ? '♽'
-                                          : permissionMorning.toString(),
-                                      countPresent: countPermission == null
-                                          ? '♽'
-                                          : countPermission.toString()),
-                                  AttendanceInfoPresent(
-                                      numColor: kYellowText,
-                                      backgroundColor: kYellowBackground,
-                                      now: now,
-                                      todayMorning: todayLate.toString(),
-                                      todayAfternoon: todayLateNoon.toString(),
-                                      isLoading: _isLoading,
-                                      isOneday: isOneDay,
-                                      onedayMorning: onedayLate.toString(),
-                                      onedayAfternoon:
-                                          onedayLateNoon.toString(),
-                                      presentAll: lateAll.toString(),
-                                      alltime: alltime,
-                                      text: '${local?.late} ',
-                                      afternoon: afternoon,
-                                      multipleDay: multipleDay,
-                                      presentAfternoon: lateAfternoon == null
-                                          ? '♽'
-                                          : lateAfternoon.toString(),
-                                      countPresentNoon: countLateNoon == null
-                                          ? '♽'
-                                          : countLateNoon.toString(),
-                                      presentMorning: lateMorning == null
-                                          ? '♽'
-                                          : lateMorning.toString(),
-                                      countPresent: countLate == null
-                                          ? '♽'
-                                          : countLate.toString()),
-                                  AttendanceInfoPresent(
-                                      numColor: kRedText,
-                                      backgroundColor: kRedBackground,
-                                      now: now,
-                                      todayMorning: todayAbsent.toString(),
-                                      todayAfternoon:
-                                          todayAbsentNoon.toString(),
-                                      isLoading: _isLoading,
-                                      isOneday: isOneDay,
-                                      onedayMorning: onedayAbsent.toString(),
-                                      onedayAfternoon:
-                                          onedayAbsentNoon.toString(),
-                                      presentAll: absentAll.toString(),
-                                      alltime: alltime,
-                                      text: '${local?.absent} ',
-                                      afternoon: afternoon,
-                                      multipleDay: multipleDay,
-                                      presentAfternoon: absentAfternoon == null
-                                          ? '♽'
-                                          : absentAfternoon.toString(),
-                                      countPresentNoon: countAbsentNoon == null
-                                          ? '♽'
-                                          : countAbsentNoon.toString(),
-                                      presentMorning: absentMorning == null
-                                          ? '♽'
-                                          : absentMorning.toString(),
-                                      countPresent: countAbsent == null
-                                          ? '♽'
-                                          : countAbsent.toString())
-                                ],
-                              ),
+                              //   Row(
+                              //     mainAxisAlignment:
+                              //         MainAxisAlignment.spaceAround,
+                              //     children: [
+                              //       AttendanceInfoPresent(
+                              //           numColor: kGreenText,
+                              //           backgroundColor: kGreenBackground,
+                              //           now: now,
+                              //           todayMorning: todayPresent.toString(),
+                              //           todayAfternoon:
+                              //               todayPresentNoon.toString(),
+                              //           isLoading: _isLoading,
+                              //           isOneday: isOneDay,
+                              //           onedayMorning: onedayPresent.toString(),
+                              //           onedayAfternoon:
+                              //               onedayPresentNoon.toString(),
+                              //           presentAll: presentAll.toString(),
+                              //           alltime: alltime,
+                              //           text: '${local?.present} ',
+                              //           afternoon: afternoon,
+                              //           multipleDay: multipleDay,
+                              //           presentAfternoon: presentAfternoon == null
+                              //               ? '♽'
+                              //               : presentAfternoon.toString(),
+                              //           countPresentNoon: countPresentNoon == null
+                              //               ? '♽'
+                              //               : countPresentNoon.toString(),
+                              //           presentMorning: presentMorning == null
+                              //               ? '♽'
+                              //               : presentMorning.toString(),
+                              //           countPresent: countPresent == null
+                              //               ? '♽'
+                              //               : countPresent.toString()),
+                              //       AttendanceInfoPresent(
+                              //           numColor: kBlueText,
+                              //           backgroundColor: kBlueBackground,
+                              //           now: now,
+                              //           todayMorning: todayPermission.toString(),
+                              //           todayAfternoon:
+                              //               todayPermissionNoon.toString(),
+                              //           isLoading: _isLoading,
+                              //           isOneday: isOneDay,
+                              //           onedayMorning:
+                              //               onedayPermission.toString(),
+                              //           onedayAfternoon:
+                              //               onedayPermissionNoon.toString(),
+                              //           presentAll: permissionAll.toString(),
+                              //           alltime: alltime,
+                              //           text: '${local?.permission} ',
+                              //           afternoon: afternoon,
+                              //           multipleDay: multipleDay,
+                              //           presentAfternoon:
+                              //               permissionAfternoon == null
+                              //                   ? '♽'
+                              //                   : permissionAfternoon.toString(),
+                              //           countPresentNoon:
+                              //               countPermissionNoon == null
+                              //                   ? '♽'
+                              //                   : countPermissionNoon.toString(),
+                              //           presentMorning: permissionMorning == null
+                              //               ? '♽'
+                              //               : permissionMorning.toString(),
+                              //           countPresent: countPermission == null
+                              //               ? '♽'
+                              //               : countPermission.toString()),
+                              //       AttendanceInfoPresent(
+                              //           numColor: kYellowText,
+                              //           backgroundColor: kYellowBackground,
+                              //           now: now,
+                              //           todayMorning: todayLate.toString(),
+                              //           todayAfternoon: todayLateNoon.toString(),
+                              //           isLoading: _isLoading,
+                              //           isOneday: isOneDay,
+                              //           onedayMorning: onedayLate.toString(),
+                              //           onedayAfternoon:
+                              //               onedayLateNoon.toString(),
+                              //           presentAll: lateAll.toString(),
+                              //           alltime: alltime,
+                              //           text: '${local?.late} ',
+                              //           afternoon: afternoon,
+                              //           multipleDay: multipleDay,
+                              //           presentAfternoon: lateAfternoon == null
+                              //               ? '♽'
+                              //               : lateAfternoon.toString(),
+                              //           countPresentNoon: countLateNoon == null
+                              //               ? '♽'
+                              //               : countLateNoon.toString(),
+                              //           presentMorning: lateMorning == null
+                              //               ? '♽'
+                              //               : lateMorning.toString(),
+                              //           countPresent: countLate == null
+                              //               ? '♽'
+                              //               : countLate.toString()),
+                              //       AttendanceInfoPresent(
+                              //           numColor: kRedText,
+                              //           backgroundColor: kRedBackground,
+                              //           now: now,
+                              //           todayMorning: todayAbsent.toString(),
+                              //           todayAfternoon:
+                              //               todayAbsentNoon.toString(),
+                              //           isLoading: _isLoading,
+                              //           isOneday: isOneDay,
+                              //           onedayMorning: onedayAbsent.toString(),
+                              //           onedayAfternoon:
+                              //               onedayAbsentNoon.toString(),
+                              //           presentAll: absentAll.toString(),
+                              //           alltime: alltime,
+                              //           text: '${local?.absent} ',
+                              //           afternoon: afternoon,
+                              //           multipleDay: multipleDay,
+                              //           presentAfternoon: absentAfternoon == null
+                              //               ? '♽'
+                              //               : absentAfternoon.toString(),
+                              //           countPresentNoon: countAbsentNoon == null
+                              //               ? '♽'
+                              //               : countAbsentNoon.toString(),
+                              //           presentMorning: absentMorning == null
+                              //               ? '♽'
+                              //               : absentMorning.toString(),
+                              //           countPresent: countAbsent == null
+                              //               ? '♽'
+                              //               : countAbsent.toString())
+                              //     ],
+                              //   ),
                             ],
                           ),
                         ),
@@ -1341,27 +1314,21 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             padding:
                                                 const EdgeInsets.only(top: 15),
                                             child: AttendanceInfoAttendanceList(
-                                                attendanceAllDis:
-                                                    _attendanceAll,
-                                                oneDayMorning: onedayList,
+                                                multiday: multiday,
                                                 isOneDay: isOneDay,
-                                                multiple: multipleDay,
-                                                fetchAllAttendance:
-                                                    fetchAllAttendance,
                                                 alltime: alltime,
-                                                attendanceAll:
-                                                    attendanceListAll,
                                                 now: now,
-                                                afternoon: afternoon,
                                                 attendanceList: attendanceList,
-                                                attendanceAllDisplay:
-                                                    attendanceAllDisplay,
-                                                fetchAttendanceById:
-                                                    fetchAttendanceById,
-                                                deleteData: deleteData,
-                                                deleteData1: deleteData1,
-                                                fetchAttendanceByIdNoon:
-                                                    fetchAttendanceByIdNoon),
+                                                onedayList: onedayList,
+                                                attendanceListAll:
+                                                    attendanceListAll,
+                                                attendancesByIdDisplay:
+                                                    attendancesByIdDisplay,
+                                                attendanceAll: _attendanceAll,
+                                                fetchAttedancesById:
+                                                    fetchAttedancesById,
+                                                fetchAllAttendance:
+                                                    fetchAllAttendance),
                                           ),
                                         ),
                             ],

@@ -45,7 +45,6 @@ class _TestAttendancesState extends State<TestAttendances> {
       });
       List flat = _attendanceAll.expand((element) => element.list).toList();
       attendanceListAll = flat.toList();
-      print(attendanceListAll);
     } catch (e) {}
   }
 
@@ -75,6 +74,7 @@ class _TestAttendancesState extends State<TestAttendances> {
             element.date.year == startDate.year);
         onedayList = oneDay.toList();
         attendanceList = attendancesByIdDisplay;
+        print(attendanceList);
       });
     } catch (err) {}
   }
@@ -345,7 +345,7 @@ class _TestAttendancesState extends State<TestAttendances> {
                                       attendanceList = [];
                                       attendancesByIdDisplay = [];
                                       onedayList = [];
-                                      fetchAllAttendance();
+                                      fetchAttedancesById();
                                     }
                                     if (sortByValue ==
                                         '${local?.optionAllTime}') {
@@ -403,7 +403,7 @@ class _TestAttendancesState extends State<TestAttendances> {
                 physics: ClampingScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: multiday
-                    ? attendanceListAll.length
+                    ? attendanceList.length
                     : isOneDay
                         ? onedayList.length
                         : alltime
@@ -427,7 +427,7 @@ class _TestAttendancesState extends State<TestAttendances> {
                     onedayAttendance = oneday;
                   }
                   if (multiday) {
-                    AttendancesWithDate multiday = _attendanceAll[index];
+                    AttendancesWithDate multiday = attendanceList[index];
                     multidayAttendance = multiday;
                   }
 
@@ -447,85 +447,85 @@ class _TestAttendancesState extends State<TestAttendances> {
     );
   }
 
+  checkPresent(AttendancesWithDate element) {
+    if (element.list[0].getT1!.time.hour <= 7) {
+      if (element.list[0].getT1!.time.minute <= 15) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPresengetT2(AttendancesWithDate element) {
+    if (element.list[0].getT3!.time.hour <= 7) {
+      if (element.list[0].getT3!.time.minute <= 15) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkLate1(AttendancesWithDate element) {
+    if (element.list[0].getT1!.note != 'absent') {
+      if (element.list[0].getT1!.time.hour == 7) {
+        if (element.list[0].getT1!.time.minute >= 16) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.list[0].getT1!.time.hour > 7) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkLate2(AttendancesWithDate element) {
+    if (element.list[0].getT3!.note != 'absent') {
+      if (element.list[0].getT3!.time.hour == 13) {
+        if (element.list[0].getT3!.time.minute >= 16) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.list[0].getT3!.time.hour > 13) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsengetT1(AttendancesWithDate element) {
+    if (element.list[0].getT1!.note == 'absent') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsengetT2(AttendancesWithDate element) {
+    if (element.list[0].getT2!.note == 'absent') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Widget _buildAllResult(AttendancesWithDate record) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-
-    checkPresent(AttendancesWithDate element) {
-      if (element.list[0].getT1!.time.hour <= 7) {
-        if (element.list[0].getT1!.time.minute <= 15) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkPresengetT2(AttendancesWithDate element) {
-      if (element.list[0].getT3!.time.hour <= 7) {
-        if (element.list[0].getT3!.time.minute <= 15) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkLate1(AttendancesWithDate element) {
-      if (element.list[0].getT1!.note != 'absent') {
-        if (element.list[0].getT1!.time.hour == 7) {
-          if (element.list[0].getT1!.time.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.list[0].getT1!.time.hour > 7) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkLate2(AttendancesWithDate element) {
-      if (element.list[0].getT3!.note != 'absent') {
-        if (element.list[0].getT3!.time.hour == 13) {
-          if (element.list[0].getT3!.time.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.list[0].getT3!.time.hour > 13) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkAbsengetT1(AttendancesWithDate element) {
-      if (element.list[0].getT1!.note == 'absent') {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    checkAbsengetT2(AttendancesWithDate element) {
-      if (element.list[0].getT2!.note == 'absent') {
-        return true;
-      } else {
-        return false;
-      }
-    }
 
     return ExpansionTile(
       collapsedBackgroundColor: Color(0xff254973),
@@ -785,82 +785,6 @@ class _TestAttendancesState extends State<TestAttendances> {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
 
-    checkPresent(AttendancesWithDate element) {
-      if (element.list[0].getT1!.time.hour <= 7) {
-        if (element.list[0].getT1!.time.minute <= 15) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkPresengetT2(AttendancesWithDate element) {
-      if (element.list[0].getT3!.time.hour <= 7) {
-        if (element.list[0].getT3!.time.minute <= 15) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkLate1(AttendancesWithDate element) {
-      if (element.list[0].getT1!.note != 'absent') {
-        if (element.list[0].getT1!.time.hour == 7) {
-          if (element.list[0].getT1!.time.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.list[0].getT1!.time.hour > 7) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkLate2(AttendancesWithDate element) {
-      if (element.list[0].getT3!.note != 'absent') {
-        if (element.list[0].getT3!.time.hour == 13) {
-          if (element.list[0].getT3!.time.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.list[0].getT3!.time.hour > 13) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkAbsengetT1(AttendancesWithDate element) {
-      if (element.list[0].getT1!.note == 'absent') {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    checkAbsengetT2(AttendancesWithDate element) {
-      if (element.list[0].getT2!.note == 'absent') {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
     return ExpansionTile(
       collapsedBackgroundColor: Color(0xff254973),
       backgroundColor: Color(0xff254973),
@@ -1119,82 +1043,6 @@ class _TestAttendancesState extends State<TestAttendances> {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
 
-    checkPresent(AttendancesWithDate element) {
-      if (element.list[0].getT1!.time.hour <= 7) {
-        if (element.list[0].getT1!.time.minute <= 15) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkPresengetT2(AttendancesWithDate element) {
-      if (element.list[0].getT3!.time.hour <= 7) {
-        if (element.list[0].getT3!.time.minute <= 15) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkLate1(AttendancesWithDate element) {
-      if (element.list[0].getT1!.note != 'absent') {
-        if (element.list[0].getT1!.time.hour == 7) {
-          if (element.list[0].getT1!.time.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.list[0].getT1!.time.hour > 7) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkLate2(AttendancesWithDate element) {
-      if (element.list[0].getT3!.note != 'absent') {
-        if (element.list[0].getT3!.time.hour == 13) {
-          if (element.list[0].getT3!.time.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.list[0].getT3!.time.hour > 13) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkAbsengetT1(AttendancesWithDate element) {
-      if (element.list[0].getT1!.note == 'absent') {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    checkAbsengetT2(AttendancesWithDate element) {
-      if (element.list[0].getT2!.note == 'absent') {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
     return ExpansionTile(
       collapsedBackgroundColor: Color(0xff254973),
       backgroundColor: Color(0xff254973),
@@ -1452,82 +1300,6 @@ class _TestAttendancesState extends State<TestAttendances> {
   Widget _buildMultipleResult(AttendancesWithDate record) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-
-    checkPresent(AttendancesWithDate element) {
-      if (element.list[0].getT1!.time.hour <= 7) {
-        if (element.list[0].getT1!.time.minute <= 15) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkPresengetT2(AttendancesWithDate element) {
-      if (element.list[0].getT3!.time.hour <= 7) {
-        if (element.list[0].getT3!.time.minute <= 15) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkLate1(AttendancesWithDate element) {
-      if (element.list[0].getT1!.note != 'absent') {
-        if (element.list[0].getT1!.time.hour == 7) {
-          if (element.list[0].getT1!.time.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.list[0].getT1!.time.hour > 7) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkLate2(AttendancesWithDate element) {
-      if (element.list[0].getT3!.note != 'absent') {
-        if (element.list[0].getT3!.time.hour == 13) {
-          if (element.list[0].getT3!.time.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.list[0].getT3!.time.hour > 13) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-
-    checkAbsengetT1(AttendancesWithDate element) {
-      if (element.list[0].getT1!.note == 'absent') {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    checkAbsengetT2(AttendancesWithDate element) {
-      if (element.list[0].getT2!.note == 'absent') {
-        return true;
-      } else {
-        return false;
-      }
-    }
 
     return ExpansionTile(
       collapsedBackgroundColor: Color(0xff254973),
