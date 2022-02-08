@@ -6,6 +6,7 @@ import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/check_in_screen.dart';
 import 'package:ems/screens/take_attendance/check_out_screen.dart';
+import 'package:ems/screens/test_attendances.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/appbar.dart';
 import 'package:ems/widgets/check_status.dart';
@@ -206,7 +207,13 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             _buildSpacerVertical,
 
             /// current user attendance
-            _buildTitle('${local?.attendance}'),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => TestAttendances()));
+              },
+              child: _buildTitle('${local?.attendance}'),
+            ),
             ValueListenableBuilder(
                 valueListenable:
                     ref.watch(currentUserProvider).currentUserListenable,

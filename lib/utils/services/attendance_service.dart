@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ems/models/attendance.dart';
+import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -445,6 +446,7 @@ class AttendanceService extends BaseService {
     DateTime? start,
     DateTime? end,
   }) async {
+    return [];
     String startDate = _formatDate(start);
     String endDate = _formatDate(end);
 
@@ -656,6 +658,68 @@ class AttendanceService extends BaseService {
     } catch (e) {
       throw AttendanceException(code: _code);
       //
+    }
+  }
+
+  Future<List<Attendances>> findManyAttendances() async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/attendances'));
+
+      if (response.statusCode != 200) {
+        _code = response.statusCode;
+        throw 'error';
+      }
+      var jsondata = json.decode(response.body);
+      var attendances = attendancessFromJson(jsondata);
+      return attendances;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<List<AttendancesWithDate>> findManyAttendancesById({
+    required int userId,
+    DateTime? start,
+    DateTime? end,
+  }) async {
+    String startDate = _formatDate(start);
+    String endDate = _formatDate(end);
+
+    bool hasNoStartOrEndDate =
+        start == null || end == null || startDate.isEmpty || endDate.isEmpty;
+
+    String url = hasNoStartOrEndDate
+        ? '$baseUrl/users/$userId/attendances'
+        : '$baseUrl/users/$userId/attendances?start=$startDate&end=$endDate&overtime=null';
+    try {
+      Response response = await get(Uri.parse(url));
+
+      _code = response.statusCode;
+      if (response.statusCode == 200) {
+        var jsondata = json.decode(response.body);
+        // get the user object
+
+        if (jsondata['data']["attendances"] != null &&
+            jsondata['data']["attendances"].length > 0) {
+          Map<String, dynamic>? map = jsondata['data']["attendances"];
+          List<AttendancesWithDate> _attendances =
+              attendancesbyDayFromJson(map!);
+
+          //adding user object to the attendances
+          List<AttendancesWithDate> awds = _attendances.map((awd) {
+            List<Attendances> atts = awd.list.toList();
+
+            return awd.copyWith(list: atts);
+          }).toList();
+          return awds;
+        } else {
+          return [];
+        }
+      } else {
+        throw AttendanceException(code: _code);
+      }
+    } catch (e) {
+      throw e;
     }
   }
 }
