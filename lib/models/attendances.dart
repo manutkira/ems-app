@@ -1,4 +1,5 @@
 import 'package:ems/models/attendance.dart';
+import 'package:ems/models/user.dart';
 import 'package:flutter/material.dart';
 
 List<Attendances> attendancessFromJson(List<dynamic> list) {
@@ -58,6 +59,7 @@ class Attendances {
   String overtime;
   DateTime? createdAt;
   DateTime? updatedAt;
+  User? user;
   Attendances({
     required this.id,
     required this.userId,
@@ -72,27 +74,60 @@ class Attendances {
     required this.overtime,
     this.createdAt,
     this.updatedAt,
+    this.user,
   });
 
+  Attendances copyWith({
+    int? id,
+    int? userId,
+    String? date,
+    T? getT1,
+    T? getT2,
+    T? getT3,
+    T? getT4,
+    T? getT5,
+    T? getT6,
+    String? t,
+    String? overtime,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    User? user,
+  }) =>
+      Attendances(
+          id: id ?? this.id,
+          userId: userId ?? this.userId,
+          date: date ?? this.date,
+          getT1: getT1 ?? this.getT1,
+          getT2: getT2 ?? this.getT2,
+          getT3: getT3 ?? this.getT3,
+          getT4: getT4 ?? this.getT4,
+          getT5: getT5 ?? this.getT5,
+          getT6: getT6 ?? this.getT6,
+          t: t ?? this.t,
+          overtime: overtime ?? this.overtime,
+          createdAt: createdAt ?? this.createdAt,
+          updatedAt: updatedAt ?? this.updatedAt,
+          user: user == null ? this.user : user.copyWith());
+
   factory Attendances.fromJson(Map<String, dynamic> json) => Attendances(
-        date: json["date"],
-        getT1: json["t1"] == null ? null : T.tfromJson(json["get_t1"]),
-        getT2: json["t2"] == null ? null : T.tfromJson(json["get_t2"]),
-        getT3: json["t3"] == null ? null : T.tfromJson(json["get_t3"]),
-        getT4: json["t4"] == null ? null : T.tfromJson(json["get_t4"]),
-        getT5: json["t5"] == null ? null : T.tfromJson(json["get_t5"]),
-        getT6: json["t6"] == null ? null : T.tfromJson(json["get_t6"]),
-        t: json["t"],
-        id: json["id"],
-        overtime: json["overtime"],
-        userId: json["user_id"],
-        createdAt: json["created_at"] == null
-            ? null
-            : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null
-            ? null
-            : DateTime.parse(json["updated_at"]),
-      );
+      date: json["date"],
+      getT1: json["get_t1"] == null ? null : T.tfromJson(json["get_t1"]),
+      getT2: json["get_t2"] == null ? null : T.tfromJson(json["get_t2"]),
+      getT3: json["get_t3"] == null ? null : T.tfromJson(json["get_t3"]),
+      getT4: json["get_t4"] == null ? null : T.tfromJson(json["get_t4"]),
+      getT5: json["get_t5"] == null ? null : T.tfromJson(json["get_t5"]),
+      getT6: json["get_t6"] == null ? null : T.tfromJson(json["get_t6"]),
+      t: json["t"],
+      id: json["id"],
+      overtime: json["overtime"],
+      userId: json["user_id"],
+      createdAt: json["created_at"] == null
+          ? null
+          : DateTime.parse(json["created_at"]),
+      updatedAt: json["updated_at"] == null
+          ? null
+          : DateTime.parse(json["updated_at"]),
+      user: json["user"] == null ? null : User.fromJson(json["user"]));
 
   Map<String, dynamic> toJson() {
     // user object is not necessary.

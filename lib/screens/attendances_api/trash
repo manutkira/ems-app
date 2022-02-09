@@ -1366,3 +1366,453 @@
   }
 
   ???????????
+
+  fetchLate() async {
+    var pc = await _attendanceService.countLateByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        lateMorning = pc;
+      });
+    }
+  }
+
+  fetchLateNoon() async {
+    var pc = await _attendanceService.countLateNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        lateAfternoon = pc;
+      });
+    }
+  }
+
+  fetchAbsent() async {
+    _isLoading = true;
+    var pc = await _attendanceService.countAbsentByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        absentMorning = pc;
+        _isLoading = false;
+      });
+    }
+  }
+
+  fetchAbsentNoon() async {
+    var pc = await _attendanceService.countAbsentNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        absentAfternoon = pc;
+      });
+    }
+  }
+
+  fetchPermission() async {
+    var pc = await _attendanceService.countPermissionByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        permissionMorning = pc;
+      });
+    }
+  }
+
+  fetchPermissionNoon() async {
+    var pc = await _attendanceService.countPermissionNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        permissionAfternoon = pc;
+      });
+    }
+  }
+
+  fetchPresent() async {
+    var pc = await _attendanceService.countPresentByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        presentMorning = pc;
+      });
+    }
+  }
+
+  fetchPresentNoon() async {
+    var pc = await _attendanceService.countPresentNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        presentAfternoon = pc;
+      });
+    }
+  }
+
+  getPresent() async {
+    var pc = await _attendanceService.countPresent(widget.id);
+    if (mounted) {
+      setState(() {
+        countPresent = pc;
+      });
+    }
+  }
+
+  getPresentNoon() async {
+    var pc = await _attendanceService.countPresentNoon(widget.id);
+    if (mounted) {
+      setState(() {
+        countPresentNoon = pc;
+      });
+    }
+  }
+
+  getLate() async {
+    var pc = await _attendanceService.countLate(widget.id);
+    if (mounted) {
+      setState(() {
+        countLate = pc;
+      });
+    }
+  }
+
+  getLateNoon() async {
+    var pc = await _attendanceService.countLateNoon(widget.id);
+    if (mounted) {
+      setState(() {
+        countLateNoon = pc;
+      });
+    }
+  }
+
+  getAbsent() async {
+    var pc = await _attendanceService.countAbsent(widget.id);
+    if (mounted) {
+      setState(() {
+        countAbsent = pc;
+      });
+    }
+  }
+
+  getAbsentNoon() async {
+    var pc = await _attendanceService.countAbsentNoon(widget.id);
+    if (mounted) {
+      setState(() {
+        countAbsentNoon = pc;
+      });
+    }
+  }
+
+  getPermission() async {
+    var pc = await _attendanceService.countPermission(widget.id);
+    if (mounted) {
+      setState(() {
+        countPermission = pc;
+      });
+    }
+  }
+
+  getPermissionNoon() async {
+    var pc = await _attendanceService.countPermissionNoon(widget.id);
+    if (mounted) {
+      setState(() {
+        countPermissionNoon = pc;
+      });
+    }
+  }
+
+  getPresentAll() async {
+    var pc = await _attendanceService.countPresentAll(widget.id);
+    if (mounted) {
+      setState(() {
+        presentAll = pc;
+      });
+    }
+  }
+
+  getAbsentAll() async {
+    var pc = await _attendanceService.countAbsentAll(widget.id);
+    if (mounted) {
+      setState(() {
+        absentAll = pc;
+      });
+    }
+  }
+
+  getLateAll() async {
+    var pc = await _attendanceService.countLateAll(widget.id);
+    if (mounted) {
+      setState(() {
+        lateAll = pc;
+      });
+    }
+  }
+
+  getPermissionAll() async {
+    var pc = await _attendanceService.countPermissionAll(widget.id);
+    if (mounted) {
+      setState(() {
+        permissionAll = pc;
+      });
+    }
+  }
+
+ ???????????
+
+   // fetchAllAttendance() async {
+  //   _isLoading = true;
+  //   try {
+  //     List<AttendancesWithDate> attendanceDisplay = await _attendanceService
+  //         .findManyByUserIdNoOvertime(userId: widget.id);
+  //     setState(() {
+  //       _attendanceAll = attendanceDisplay;
+  //       _isLoading = false;
+  //     });
+  //     List flat = _attendanceAll.expand((element) => element.list).toList();
+  //     attendanceListAll = flat.toList();
+  //   } catch (e) {}
+  // }
+
+  checkLate(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour == 7) {
+          if (element.date!.minute >= 16) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (element.date!.hour > 7) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkLateNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour == 13) {
+          if (element.date!.minute >= 16) {
+            return true;
+          } else {
+            return false;
+          }
+        } else if (element.date!.hour > 13) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPresent(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour <= 7) {
+          if (element.date!.minute <= 15) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPresentNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'checkin') {
+        if (element.date!.hour <= 13) {
+          if (element.date!.minute <= 15) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsent(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'absent') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsentNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'absent') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPermission(Attendance element) {
+    if (element.code == 'cin1') {
+      if (element.type == 'permission') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissionNoon(Attendance element) {
+    if (element.code == 'cin2') {
+      if (element.type == 'permission') {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  fetchAttedancesById() async {
+    try {
+      List<AttendancesWithDate> attendanceDisplay =
+          await _attendanceService.findManyAttendancesById(
+        userId: 1,
+        start: startDate,
+        end: endDate,
+      );
+      setState(() {
+        attendancesByIdDisplay = attendanceDisplay;
+
+        var now = DateTime.now();
+        var today = attendancesByIdDisplay.where((element) =>
+            element.date.day == now.day &&
+            element.date.month == now.month &&
+            element.date.year == now.year);
+
+        List todayFlat = today.expand((element) => element.list).toList();
+        isToday = todayFlat;
+
+        var oneDay = attendanceDisplay.where((element) =>
+            element.date.day == startDate.day &&
+            element.date.month == startDate.month &&
+            element.date.year == startDate.year);
+        onedayList = oneDay.toList();
+        attendanceList = attendancesByIdDisplay;
+        print(attendanceList);
+      });
+    } catch (err) {}
+  }
+
+  fetchAllAttendance() async {
+    _isLoading = true;
+    try {
+      List<AttendancesWithDate> attendanceDisplay =
+          await _attendanceService.findManyAttendancesById(userId: 1);
+      setState(() {
+        _attendanceAll = attendanceDisplay;
+        _isLoading = false;
+      });
+      List flat = _attendanceAll.expand((element) => element.list).toList();
+      attendanceListAll = flat.toList();
+    } catch (e) {}
+  }
+
+  fetchManyAttendances() {
+    try {
+      _attendanceService.findManyAttendances().then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            attendancesDisplay = [];
+            attendancesDisplay.addAll(usersFromServer);
+          });
+        }
+      });
+    } catch (err) {}
+  }
+
+  fetchAttendanceByIdNoon() async {
+    try {
+      _isLoading = true;
+      List<AttendanceWithDate> attendanceDisplay =
+          await _attendanceService.findManyByUserIdNoOvertime(
+        userId: widget.id,
+        start: startDate,
+        end: endDate,
+      );
+      setState(() {
+        _attendanceDisplay = attendanceDisplay;
+        _isLoading = false;
+        var now = DateTime.now();
+        var today = attendanceDisplay.where((element) =>
+            element.date.day == now.day &&
+            element.date.month == now.month &&
+            element.date.year == now.year);
+        List todayFlat = today.expand((element) => element.list).toList();
+        var oneDay = attendanceDisplay.where((element) =>
+            element.date.day == startDate.day &&
+            element.date.month == startDate.month &&
+            element.date.year == startDate.year);
+        List oneDayFlat = oneDay.expand((element) => element.list).toList();
+      });
+      attendanceListNoon = _attendanceDisplay;
+    } catch (e) {}
+  }
+
+????????

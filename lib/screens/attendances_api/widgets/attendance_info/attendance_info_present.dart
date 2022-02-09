@@ -33,12 +33,12 @@ class AttendanceInfoPresent extends StatelessWidget {
     required this.now,
     required this.todayMorning,
     required this.todayAfternoon,
-    required this.presentAfternoon,
-    required this.countPresentNoon,
-    required this.presentMorning,
+    this.presentAfternoon,
+    this.countPresentNoon,
+    this.presentMorning,
     required this.onedayMorning,
     required this.onedayAfternoon,
-    required this.countPresent,
+    this.countPresent,
     required this.presentAll,
     required this.alltime,
     required this.numColor,
@@ -48,13 +48,7 @@ class AttendanceInfoPresent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isEnglish = isInEnglish(context);
-    var counted = afternoon
-        ? multipleDay
-            ? presentAfternoon
-            : countPresentNoon
-        : multipleDay
-            ? presentMorning
-            : countPresent;
+    var counted = afternoon ? presentAfternoon : presentMorning;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,7 +71,7 @@ class AttendanceInfoPresent extends StatelessWidget {
                     // width: 10,
                   )
                 : Visibility(
-                    visible: counted != null,
+                    // visible: counted != null,
                     child: Text(
                       now
                           ? afternoon

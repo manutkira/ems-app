@@ -33,7 +33,7 @@ class AttendanceInfoNameId extends StatelessWidget {
               )),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(150),
-            child: image == null
+            child: image.length == 4
                 ? Image.asset(
                     'assets/images/profile-icon-png-910.png',
                     width: 50,

@@ -1,5 +1,7 @@
 import 'package:ems/models/attendances.dart';
+import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/attendance_service.dart';
+import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../constants.dart';
+import 'attendances_api/widgets/attendance_info/attendance_info_present.dart';
 
 class TestAttendances extends StatefulWidget {
   @override
@@ -29,22 +32,111 @@ class _TestAttendancesState extends State<TestAttendances> {
   bool multiday = false;
   bool isFilterExpanded = false;
   bool _isLoading = true;
-  List isToday = [];
-  List onedayList = [];
+  bool afternoon = false;
+  List<AttendancesWithDate> isToday = [];
+  List<AttendancesWithDate> onedayList = [];
   String sortByValue = '';
+  String dropDownValue = '';
   List<String> dropdownItems = [];
+  int? onedayPresent,
+      onedayPresentNoon,
+      onedayLate,
+      onedayLateNoon,
+      onedayPermission,
+      onedayPermissionNoon,
+      onedayAbsent,
+      onedayAbsentNoon,
+      todayPresent,
+      todayPresentNoon,
+      todayLate,
+      todayLateNoon,
+      todayPermission,
+      todayPermissionNoon,
+      todayAbsent,
+      todayAbsentNoon,
+      presentAll,
+      lateAll,
+      permissionAll,
+      absentAll,
+      presentMorning,
+      presentAfternoon,
+      permissionMorning,
+      permissionAfternoon,
+      lateMorning,
+      lateAfternoon,
+      absentMorning,
+      absentAfternoon;
+
+  final UserService _userService = UserService.instance;
+  List<User> userDisplay = [];
+  List<User> user = [];
+  fetchUserById() async {
+    try {
+      _isLoading = true;
+      _userService.findOne(3).then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            user = [];
+            userDisplay = [];
+            _isLoading = true;
+            user.add(usersFromServer);
+            userDisplay = user;
+            _isLoading = false;
+            print(userDisplay[0].name);
+          });
+        }
+      });
+    } catch (err) {}
+  }
 
   fetchAllAttendance() async {
     _isLoading = true;
     try {
       List<AttendancesWithDate> attendanceDisplay =
-          await _attendanceService.findManyAttendancesById(userId: 1);
+          await _attendanceService.findManyAttendancesById(userId: 3);
       setState(() {
         _attendanceAll = attendanceDisplay;
         _isLoading = false;
       });
+      print(attendanceDisplay);
       List flat = _attendanceAll.expand((element) => element.list).toList();
       attendanceListAll = flat.toList();
+      int presentAllMorning = attendanceDisplay
+          .where((element) =>
+              element.list[0].getT1 != null && checkPresent(element))
+          .length;
+      int presentAllAfternoon = attendanceDisplay
+          .where((element) =>
+              element.list[0].getT3 != null && checkPresengetT2(element))
+          .length;
+      int lateAllMorning = attendanceDisplay
+          .where(
+              (element) => element.list[0].getT1 != null && checkLate1(element))
+          .length;
+      int lateAllAfternoon = attendanceDisplay
+          .where(
+              (element) => element.list[0].getT3 != null && checkLate2(element))
+          .length;
+      int absentAllMorning = attendanceDisplay
+          .where((element) =>
+              element.list[0].getT1 != null && checkAbsengetT1(element))
+          .length;
+      int absentAllAfternoon = attendanceDisplay
+          .where((element) =>
+              element.list[0].getT3 != null && checkAbsengetT2(element))
+          .length;
+      int permissionAllMorning = attendanceDisplay
+          .where((element) =>
+              element.list[0].getT1 != null && checkPermissiongetT1(element))
+          .length;
+      int permissionAllAfternoon = attendanceDisplay
+          .where((element) =>
+              element.list[0].getT3 != null && checkPermissiongetT2(element))
+          .length;
+      presentAll = presentAllMorning + presentAllAfternoon;
+      lateAll = lateAllMorning + lateAllAfternoon;
+      absentAll = absentAllMorning + absentAllAfternoon;
+      permissionAll = permissionAllMorning + permissionAllAfternoon;
     } catch (e) {}
   }
 
@@ -52,13 +144,45 @@ class _TestAttendancesState extends State<TestAttendances> {
     try {
       List<AttendancesWithDate> attendanceDisplay =
           await _attendanceService.findManyAttendancesById(
-        userId: 1,
+        userId: 3,
         start: startDate,
         end: endDate,
       );
       setState(() {
         attendancesByIdDisplay = attendanceDisplay;
 
+        presentMorning = attendanceDisplay
+            .where((element) =>
+                element.list[0].getT1 != null && checkPresent(element))
+            .length;
+        presentAfternoon = attendanceDisplay
+            .where((element) =>
+                element.list[0].getT3 != null && checkPresent(element))
+            .length;
+        absentMorning = attendanceDisplay
+            .where((element) =>
+                element.list[0].getT1 != null && checkAbsengetT1(element))
+            .length;
+        absentAfternoon = attendanceDisplay
+            .where((element) =>
+                element.list[0].getT3 != null && checkAbsengetT2(element))
+            .length;
+        lateMorning = attendanceDisplay
+            .where((element) =>
+                element.list[0].getT1 != null && checkLate1(element))
+            .length;
+        lateAfternoon = attendanceDisplay
+            .where((element) =>
+                element.list[0].getT3 != null && checkLate2(element))
+            .length;
+        permissionMorning = attendanceDisplay
+            .where((element) =>
+                element.list[0].getT1 != null && checkPermissiongetT1(element))
+            .length;
+        permissionAfternoon = attendanceDisplay
+            .where((element) =>
+                element.list[0].getT3 != null && checkPermissiongetT2(element))
+            .length;
         var now = DateTime.now();
         var today = attendancesByIdDisplay.where((element) =>
             element.date.day == now.day &&
@@ -66,15 +190,79 @@ class _TestAttendancesState extends State<TestAttendances> {
             element.date.year == now.year);
 
         List todayFlat = today.expand((element) => element.list).toList();
-        isToday = todayFlat;
+        isToday = today.toList();
+        todayPresent = isToday
+            .where((element) =>
+                element.list[0].getT1 != null && checkPresent(element))
+            .length;
+        todayPresentNoon = isToday
+            .where((element) =>
+                element.list[0].getT3 != null && checkPresengetT2(element))
+            .length;
+        todayLate = isToday
+            .where((element) =>
+                element.list[0].getT1 != null && checkLate1(element))
+            .length;
+        todayLateNoon = isToday
+            .where((element) =>
+                element.list[0].getT3 != null && checkLate2(element))
+            .length;
+        todayAbsent = isToday
+            .where((element) =>
+                element.list[0].getT1 != null && checkAbsengetT1(element))
+            .length;
+        todayAbsentNoon = isToday
+            .where((element) =>
+                element.list[0].getT3 != null && checkAbsengetT2(element))
+            .length;
+        todayPermission = isToday
+            .where((element) =>
+                element.list[0].getT1 != null && checkPermissiongetT1(element))
+            .length;
+        todayPermissionNoon = isToday
+            .where((element) =>
+                element.list[0].getT3 != null && checkPermissiongetT2(element))
+            .length;
 
         var oneDay = attendanceDisplay.where((element) =>
             element.date.day == startDate.day &&
             element.date.month == startDate.month &&
             element.date.year == startDate.year);
         onedayList = oneDay.toList();
+
+        onedayPresent = oneDay
+            .where((element) =>
+                element.list[0].getT1 != null && checkPresent(element))
+            .length;
+        onedayPresentNoon = oneDay
+            .where((element) =>
+                element.list[0].getT3 != null && checkPresengetT2(element))
+            .length;
+        onedayLate = oneDay
+            .where((element) =>
+                element.list[0].getT1 != null && checkLate1(element))
+            .length;
+        onedayLateNoon = oneDay
+            .where((element) =>
+                element.list[0].getT3 != null && checkLate2(element))
+            .length;
+        onedayAbsent = oneDay
+            .where((element) =>
+                element.list[0].getT1 != null && checkAbsengetT1(element))
+            .length;
+        onedayAbsentNoon = oneDay
+            .where((element) =>
+                element.list[0].getT3 != null && checkAbsengetT2(element))
+            .length;
+        onedayPermission = oneDay
+            .where((element) =>
+                element.list[0].getT1 != null && checkPermissiongetT1(element))
+            .length;
+        onedayPermissionNoon = oneDay
+            .where((element) =>
+                element.list[0].getT3 != null && checkPermissiongetT2(element))
+            .length;
         attendanceList = attendancesByIdDisplay;
-        print(attendanceList);
       });
     } catch (err) {}
   }
@@ -104,6 +292,7 @@ class _TestAttendancesState extends State<TestAttendances> {
     fetchManyAttendances();
     fetchAttedancesById();
     fetchAllAttendance();
+    fetchUserById();
   }
 
   @override
@@ -111,9 +300,9 @@ class _TestAttendancesState extends State<TestAttendances> {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     setState(() {
-      // if (dropDownValue.isEmpty) {
-      //   dropDownValue = local!.morning;
-      // }
+      if (dropDownValue.isEmpty) {
+        dropDownValue = local!.morning;
+      }
       if (dropdownItems.isEmpty) {
         dropdownItems = [
           '${local?.optionDay}',
@@ -399,6 +588,137 @@ class _TestAttendancesState extends State<TestAttendances> {
               ),
             ),
             Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 6,
+              ),
+              decoration: BoxDecoration(
+                color: kDarkestBlue,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: DropdownButton(
+                underline: Container(),
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+                isDense: true,
+                borderRadius: const BorderRadius.all(kBorderRadius),
+                dropdownColor: kDarkestBlue,
+                icon: const Icon(Icons.expand_more),
+                value: dropDownValue,
+                onChanged: (String? newValue) {
+                  if (newValue == '${local?.afternoon}') {
+                    setState(() {
+                      afternoon = true;
+                      dropDownValue = newValue!;
+                    });
+                  }
+                  if (newValue == '${local?.morning}') {
+                    setState(() {
+                      afternoon = false;
+                      dropDownValue = newValue!;
+                    });
+                  }
+                },
+                items: <String>[
+                  '${local?.morning}',
+                  '${local?.afternoon}',
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                AttendanceInfoPresent(
+                  numColor: kGreenText,
+                  backgroundColor: kGreenBackground,
+                  now: now,
+                  todayMorning: todayPresent.toString(),
+                  todayAfternoon: todayPresentNoon.toString(),
+                  isLoading: _isLoading,
+                  isOneday: isOneDay,
+                  onedayMorning: onedayPresent.toString(),
+                  onedayAfternoon: onedayPresentNoon.toString(),
+                  presentAll: presentAll.toString(),
+                  alltime: alltime,
+                  text: '${local?.present} ',
+                  afternoon: afternoon,
+                  multipleDay: multiday,
+                  presentAfternoon: presentAfternoon == null
+                      ? '♽'
+                      : presentAfternoon.toString(),
+                  presentMorning:
+                      presentMorning == null ? '♽' : presentMorning.toString(),
+                ),
+                AttendanceInfoPresent(
+                  numColor: kBlueText,
+                  backgroundColor: kBlueBackground,
+                  now: now,
+                  todayMorning: todayPermission.toString(),
+                  todayAfternoon: todayPermissionNoon.toString(),
+                  isLoading: _isLoading,
+                  isOneday: isOneDay,
+                  onedayMorning: onedayPermission.toString(),
+                  onedayAfternoon: onedayPermissionNoon.toString(),
+                  presentAll: permissionAll.toString(),
+                  alltime: alltime,
+                  text: '${local?.permission} ',
+                  afternoon: afternoon,
+                  multipleDay: multiday,
+                  presentAfternoon: permissionAfternoon == null
+                      ? '♽'
+                      : permissionAfternoon.toString(),
+                  presentMorning: permissionMorning == null
+                      ? '♽'
+                      : permissionMorning.toString(),
+                ),
+                AttendanceInfoPresent(
+                  numColor: kYellowText,
+                  backgroundColor: kYellowBackground,
+                  now: now,
+                  todayMorning: todayLate.toString(),
+                  todayAfternoon: todayLateNoon.toString(),
+                  isLoading: _isLoading,
+                  isOneday: isOneDay,
+                  onedayMorning: onedayLate.toString(),
+                  onedayAfternoon: onedayLateNoon.toString(),
+                  presentAll: lateAll.toString(),
+                  alltime: alltime,
+                  text: '${local?.late} ',
+                  afternoon: afternoon,
+                  multipleDay: multiday,
+                  presentAfternoon:
+                      lateAfternoon == null ? '♽' : lateAfternoon.toString(),
+                  presentMorning:
+                      lateMorning == null ? '♽' : lateMorning.toString(),
+                ),
+                AttendanceInfoPresent(
+                  numColor: kRedText,
+                  backgroundColor: kRedBackground,
+                  now: now,
+                  todayMorning: todayAbsent.toString(),
+                  todayAfternoon: todayAbsentNoon.toString(),
+                  isLoading: _isLoading,
+                  isOneday: isOneDay,
+                  onedayMorning: onedayAbsent.toString(),
+                  onedayAfternoon: onedayAbsentNoon.toString(),
+                  presentAll: absentAll.toString(),
+                  alltime: alltime,
+                  text: '${local?.absent} ',
+                  afternoon: afternoon,
+                  multipleDay: multiday,
+                  presentAfternoon: absentAfternoon == null
+                      ? '♽'
+                      : absentAfternoon.toString(),
+                  presentMorning:
+                      absentMorning == null ? '♽' : absentMorning.toString(),
+                )
+              ],
+            ),
+            Container(
               child: ListView.builder(
                 physics: ClampingScrollPhysics(),
                 shrinkWrap: true,
@@ -419,7 +739,7 @@ class _TestAttendancesState extends State<TestAttendances> {
                     all = allRecord;
                   }
                   if (now) {
-                    AttendancesWithDate nowRecord = attendanceList[index];
+                    AttendancesWithDate nowRecord = isToday[index];
                     todayAttendance = nowRecord;
                   }
                   if (isOneDay) {
@@ -448,9 +768,11 @@ class _TestAttendancesState extends State<TestAttendances> {
   }
 
   checkPresent(AttendancesWithDate element) {
-    if (element.list[0].getT1!.time.hour <= 7) {
-      if (element.list[0].getT1!.time.minute <= 15) {
-        return true;
+    if (element.list[0].getT1?.note != 'absent') {
+      if (element.list[0].getT1!.time.hour <= 7) {
+        if (element.list[0].getT1!.time.minute <= 15) {
+          return true;
+        }
       } else {
         return false;
       }
@@ -460,9 +782,11 @@ class _TestAttendancesState extends State<TestAttendances> {
   }
 
   checkPresengetT2(AttendancesWithDate element) {
-    if (element.list[0].getT3!.time.hour <= 7) {
-      if (element.list[0].getT3!.time.minute <= 15) {
-        return true;
+    if (element.list[0].getT3?.note != 'absent') {
+      if (element.list[0].getT3!.time.hour <= 13) {
+        if (element.list[0].getT3!.time.minute <= 15) {
+          return true;
+        }
       } else {
         return false;
       }
@@ -472,7 +796,7 @@ class _TestAttendancesState extends State<TestAttendances> {
   }
 
   checkLate1(AttendancesWithDate element) {
-    if (element.list[0].getT1!.note != 'absent') {
+    if (element.list[0].getT1?.note != 'absent') {
       if (element.list[0].getT1!.time.hour == 7) {
         if (element.list[0].getT1!.time.minute >= 16) {
           return true;
@@ -490,7 +814,7 @@ class _TestAttendancesState extends State<TestAttendances> {
   }
 
   checkLate2(AttendancesWithDate element) {
-    if (element.list[0].getT3!.note != 'absent') {
+    if (element.list[0].getT3?.note != 'absent') {
       if (element.list[0].getT3!.time.hour == 13) {
         if (element.list[0].getT3!.time.minute >= 16) {
           return true;
@@ -516,7 +840,23 @@ class _TestAttendancesState extends State<TestAttendances> {
   }
 
   checkAbsengetT2(AttendancesWithDate element) {
-    if (element.list[0].getT2!.note == 'absent') {
+    if (element.list[0].getT3!.note == 'absent') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissiongetT1(AttendancesWithDate element) {
+    if (element.list[0].getT1!.note == 'permission') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissiongetT2(AttendancesWithDate element) {
+    if (element.list[0].getT3!.note == 'permission') {
       return true;
     } else {
       return false;

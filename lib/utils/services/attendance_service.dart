@@ -699,6 +699,7 @@ class AttendanceService extends BaseService {
         var jsondata = json.decode(response.body);
         // get the user object
 
+        User _user = User.fromJson(jsondata['data']['user']);
         if (jsondata['data']["attendances"] != null &&
             jsondata['data']["attendances"].length > 0) {
           Map<String, dynamic>? map = jsondata['data']["attendances"];
@@ -707,7 +708,9 @@ class AttendanceService extends BaseService {
 
           //adding user object to the attendances
           List<AttendancesWithDate> awds = _attendances.map((awd) {
-            List<Attendances> atts = awd.list.toList();
+            List<Attendances> atts = awd.list.map((attendance) {
+              return attendance.copyWith(user: _user);
+            }).toList();
 
             return awd.copyWith(list: atts);
           }).toList();
