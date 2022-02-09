@@ -48,7 +48,7 @@ class AttendancesWithDate {
 class Attendances {
   int id;
   int userId;
-  String date;
+  DateTime date;
   T? getT1;
   T? getT2;
   T? getT3;
@@ -80,7 +80,7 @@ class Attendances {
   Attendances copyWith({
     int? id,
     int? userId,
-    String? date,
+    DateTime? date,
     T? getT1,
     T? getT2,
     T? getT3,
@@ -110,7 +110,7 @@ class Attendances {
           user: user == null ? this.user : user.copyWith());
 
   factory Attendances.fromJson(Map<String, dynamic> json) => Attendances(
-      date: json["date"],
+      date: DateTime.parse(json["date"]),
       getT1: json["get_t1"] == null ? null : T.tfromJson(json["get_t1"]),
       getT2: json["get_t2"] == null ? null : T.tfromJson(json["get_t2"]),
       getT3: json["get_t3"] == null ? null : T.tfromJson(json["get_t3"]),

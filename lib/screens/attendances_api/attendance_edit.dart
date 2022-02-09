@@ -1,30 +1,30 @@
 import 'dart:convert';
-import 'package:ems/utils/utils.dart';
+
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
+import 'package:ems/utils/utils.dart';
 
 import '../../constants.dart';
 
 class AttedancesEdit extends StatefulWidget {
   final int id;
   final int userId;
-  final String type;
   final DateTime date;
   String? note;
-  String code;
+  final TimeOfDay time;
 
-  AttedancesEdit(
-      {Key? key,
-      required this.id,
-      required this.userId,
-      required this.type,
-      required this.date,
-      required this.code,
-      this.note})
-      : super(key: key);
+  AttedancesEdit({
+    Key? key,
+    required this.id,
+    required this.userId,
+    required this.date,
+    this.note,
+    required this.time,
+  }) : super(key: key);
   @override
   _AttedancesEditState createState() => _AttedancesEditState();
 }
@@ -43,7 +43,6 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   DateTime? dateTime;
   String type = '';
   String defualtCode = '';
-
   bool pick = false;
   late DateTime? _selectDate;
 
@@ -53,13 +52,14 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     id.text = widget.id.toString();
     _selectDate = widget.date;
     selectedTime = TimeOfDay(
-        hour: _selectDate?.hour as int, minute: _selectDate?.minute as int);
+        hour: widget.time.hour as int, minute: widget.time.minute as int);
     idController.text = widget.userId.toString();
-    typeController.text = widget.type;
+    // typeController.text = widget.type;
     _noteController?.text = widget.note.toString();
-    _codeController?.text = widget.code;
     dateController.text = DateFormat('dd-MM-yyyy').format(widget.date);
-    _timeController.text = DateFormat('HH:mm:ss').format(widget.date);
+    _timeController.text = widget.time.hour.toString().padLeft(2, '0') +
+        ':' +
+        widget.time.minute.toString().padLeft(2, '0');
     super.initState();
   }
 
@@ -108,24 +108,24 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    checkType() {
-      if (widget.type == 'checkin') {
-        return local!.checkIn;
-      }
-      if (widget.type == 'checkout') {
-        return local!.checkOut;
-      }
-      if (widget.type == 'absent') {
-        return local!.absent;
-      } else {
-        return local!.permission;
-      }
-    }
+    // checkType() {
+    //   if (widget.type == 'checkin') {
+    //     return local!.checkIn;
+    //   }
+    //   if (widget.type == 'checkout') {
+    //     return local!.checkOut;
+    //   }
+    //   if (widget.type == 'absent') {
+    //     return local!.absent;
+    //   } else {
+    //     return local!.permission;
+    //   }
+    // }
 
     setState(() {
-      if (type.isEmpty) {
-        type = checkType();
-      }
+      // if (type.isEmpty) {
+      //   type = checkType();
+      // }
       // if (widget.note == null) {
       //   _noteController!.text = 'null';
       // }
@@ -206,47 +206,6 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                       ],
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${local?.type} ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    width: 233,
-                    child: DropdownButtonFormField(
-                      dropdownColor: kDarkestBlue,
-                      icon: const Icon(Icons.expand_more),
-                      value: type,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          type = newValue!;
-                        });
-                        widget.type;
-                      },
-                      items: <String>[
-                        '${local?.checkIn}',
-                        '${local?.checkOut}',
-                        '${local?.absent}',
-                        '${local?.permission}',
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                            ));
-                      }).toList(),
-                    ),
-                  )
                 ],
               ),
               const SizedBox(

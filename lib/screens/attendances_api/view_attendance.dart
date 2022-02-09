@@ -1,31 +1,31 @@
-import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'package:ems/utils/utils.dart';
+import 'package:ems/widgets/baseline_row.dart';
 
 import '../../constants.dart';
 
 class ViewAttendanceScreen extends StatefulWidget {
   final int id;
   final int userId;
-  final String type;
   final DateTime date;
   String? note;
   final String userName;
   final String image;
+  final TimeOfDay time;
 
   ViewAttendanceScreen({
     Key? key,
     required this.id,
     required this.userId,
-    required this.type,
     required this.date,
     this.note,
     required this.userName,
     required this.image,
+    required this.time,
   }) : super(key: key);
 
   @override
@@ -49,7 +49,6 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
     userIdController = widget.userId.toString();
     date = DateFormat('dd-MM-yyyy').format(widget.date);
     time = DateFormat('hh:mm').format(widget.date);
-    type = widget.type;
     note!.text = widget.note.toString();
     image = widget.image;
   }
@@ -58,19 +57,6 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    checkType() {
-      if (widget.type == 'checkin') {
-        return local!.checkIn;
-      }
-      if (widget.type == 'checkout') {
-        return local!.checkOut;
-      }
-      if (widget.type == 'absent') {
-        return local!.absent;
-      } else {
-        return local!.permission;
-      }
-    }
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -181,7 +167,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${local?.type} ',
+                    'Time ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
@@ -189,11 +175,22 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                   ),
                   Container(
                     padding: EdgeInsets.only(right: 15),
-                    child: Text(
-                      checkType(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Row(
+                      children: [
+                        Text(widget.time.format(context))
+                        // Text(
+                        //   widget.time.hour.toString().padLeft(2, '0'),
+                        //   style: TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // ),
+                        // Text(
+                        //   ':${widget.time.minute.toString().padLeft(2, '0')}',
+                        //   style: TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // ),
+                      ],
                     ),
                   )
                 ],

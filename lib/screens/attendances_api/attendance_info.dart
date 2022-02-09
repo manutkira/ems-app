@@ -329,7 +329,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   }
 
   checkPresent(AttendancesWithDate element) {
-    if (element.list[0].getT1?.note != 'absent') {
+    if (element.list[0].getT1?.note != 'absent' &&
+        element.list[0].getT1?.note != 'permission') {
       if (element.list[0].getT1!.time.hour <= 7) {
         if (element.list[0].getT1!.time.minute <= 15) {
           return true;
@@ -343,11 +344,16 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   }
 
   checkPresengetT2(AttendancesWithDate element) {
-    if (element.list[0].getT3?.note != 'absent') {
-      if (element.list[0].getT3!.time.hour <= 13) {
+    if (element.list[0].getT3?.note != 'absent' &&
+        element.list[0].getT3?.note != 'permission') {
+      if (element.list[0].getT3!.time.hour == 13) {
         if (element.list[0].getT3!.time.minute <= 15) {
           return true;
+        } else {
+          return false;
         }
+      } else if (element.list[0].getT1!.time.hour > 13) {
+        return true;
       } else {
         return false;
       }
@@ -357,7 +363,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   }
 
   checkLate1(AttendancesWithDate element) {
-    if (element.list[0].getT1?.note != 'absent') {
+    if (element.list[0].getT1?.note != 'absent' &&
+        element.list[0].getT1?.note != 'permission') {
       if (element.list[0].getT1!.time.hour == 7) {
         if (element.list[0].getT1!.time.minute >= 16) {
           return true;
@@ -375,7 +382,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   }
 
   checkLate2(AttendancesWithDate element) {
-    if (element.list[0].getT3?.note != 'absent') {
+    if (element.list[0].getT3?.note != 'absent' &&
+        element.list[0].getT3?.note != 'permission') {
       if (element.list[0].getT3!.time.hour == 13) {
         if (element.list[0].getT3!.time.minute >= 16) {
           return true;
