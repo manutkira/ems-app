@@ -10,6 +10,7 @@ import '../../constants.dart';
 
 class ViewAttendanceScreen extends StatefulWidget {
   final int id;
+  final int userId;
   final DateTime date;
   String? note;
   final String userName;
@@ -19,6 +20,7 @@ class ViewAttendanceScreen extends StatefulWidget {
   ViewAttendanceScreen({
     Key? key,
     required this.id,
+    required this.userId,
     required this.date,
     this.note,
     required this.userName,
@@ -47,6 +49,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
     date = DateFormat('dd-MM-yyyy').format(widget.date);
     time = DateFormat('hh:mm').format(widget.date);
     note!.text = widget.note.toString();
+    userIdController = widget.userId.toString();
     image = widget.image;
   }
 
@@ -88,10 +91,15 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                           )),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
-                        child: Image.network(
-                          image!,
-                          width: 60,
-                        ),
+                        child: image == 'null'
+                            ? Image.asset(
+                                'assets/images/profile-icon-png-910.png',
+                                width: 50,
+                              )
+                            : Image.network(
+                                image!,
+                                width: 60,
+                              ),
                       ),
                     ),
                     SizedBox(

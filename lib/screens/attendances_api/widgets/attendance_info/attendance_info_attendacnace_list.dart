@@ -215,6 +215,399 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     }
   }
 
+  popUp1(AttendancesWithDate record, BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    return PopupMenuButton(
+      color: Colors.black,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      onSelected: (int selectedValue) async {
+        if (selectedValue == 0) {
+          final int id = record.list[0].getT1!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final String? note = record.list[0].getT1!.note;
+          final TimeOfDay time = record.list[0].getT1!.time;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => AttedancesEdit(
+                id: id,
+                date: date,
+                note: note,
+                time: time,
+              ),
+            ),
+          );
+          fetchAttedancesById();
+          fetchAllAttendance();
+        }
+        if (selectedValue == 1) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text('${local?.areYouSure}'),
+              content: Text('${local?.cannotUndone}'),
+              actions: [
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    deleteData(record.list[0].getT1!.id as int);
+                  },
+                  child: Text('Yes'),
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderSide: BorderSide(color: Colors.red),
+                  child: Text('No'),
+                )
+              ],
+            ),
+          );
+        }
+        if (selectedValue == 2) {
+          final int id = record.list[0].getT1!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final TimeOfDay time = record.list[0].getT1!.time;
+          final String? note = record.list[0].getT1!.note;
+          final String userName = record.list[0].user!.name.toString();
+          final String image = record.list[0].user!.image.toString();
+          final int userId = record.list[0].user!.id!;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => ViewAttendanceScreen(
+                userId: userId,
+                id: id,
+                date: date,
+                note: note,
+                userName: userName,
+                image: image,
+                time: time,
+              ),
+            ),
+          );
+        }
+      },
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          child: Text('${local?.optionView}',
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+          value: 2,
+        ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.edit}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 0,
+          ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.delete}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 1,
+          ),
+      ],
+      icon: const Icon(Icons.more_vert),
+    );
+  }
+
+  popUp2(AttendancesWithDate record, BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+
+    return PopupMenuButton(
+      color: Colors.black,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      onSelected: (int selectedValue) async {
+        if (selectedValue == 0) {
+          final int id = record.list[0].getT2!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final String? note = record.list[0].getT2!.note;
+          final TimeOfDay time = record.list[0].getT2!.time;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => AttedancesEdit(
+                id: id,
+                date: date,
+                note: note,
+                time: time,
+              ),
+            ),
+          );
+          fetchAttedancesById();
+          fetchAllAttendance();
+        }
+        if (selectedValue == 1) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text('${local?.areYouSure}'),
+              content: Text('${local?.cannotUndone}'),
+              actions: [
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    deleteData(record.list[0].getT1!.id as int);
+                  },
+                  child: Text('Yes'),
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderSide: BorderSide(color: Colors.red),
+                  child: Text('No'),
+                )
+              ],
+            ),
+          );
+        }
+        if (selectedValue == 2) {
+          final int id = record.list[0].id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final TimeOfDay time = record.list[0].getT2!.time;
+          final String? note = record.list[0].getT2!.note;
+          final String userName = record.list[0].user!.name.toString();
+          final String image = record.list[0].user!.image.toString();
+          final int userId = record.list[0].user!.id!;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => ViewAttendanceScreen(
+                userId: userId,
+                id: id,
+                date: date,
+                note: note,
+                userName: userName,
+                image: image,
+                time: time,
+              ),
+            ),
+          );
+        }
+      },
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          child: Text('${local?.optionView}',
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+          value: 2,
+        ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.edit}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 0,
+          ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.delete}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 1,
+          ),
+      ],
+      icon: const Icon(Icons.more_vert),
+    );
+  }
+
+  popUp3(AttendancesWithDate record, BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    return PopupMenuButton(
+      color: Colors.black,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      onSelected: (int selectedValue) async {
+        if (selectedValue == 0) {
+          final int id = record.list[0].getT3!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final String? note = record.list[0].getT3!.note;
+          final TimeOfDay time = record.list[0].getT3!.time;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => AttedancesEdit(
+                id: id,
+                date: date,
+                note: note,
+                time: time,
+              ),
+            ),
+          );
+          fetchAttedancesById();
+          fetchAllAttendance();
+        }
+        if (selectedValue == 1) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text('${local?.areYouSure}'),
+              content: Text('${local?.cannotUndone}'),
+              actions: [
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    deleteData(record.list[0].getT3!.id as int);
+                  },
+                  child: Text('Yes'),
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderSide: BorderSide(color: Colors.red),
+                  child: Text('No'),
+                )
+              ],
+            ),
+          );
+        }
+        if (selectedValue == 2) {
+          final int id = record.list[0].getT3!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final TimeOfDay time = record.list[0].getT3!.time;
+          final String? note = record.list[0].getT3!.note;
+          final String userName = record.list[0].user!.name.toString();
+          final String image = record.list[0].user!.image.toString();
+          final int userId = record.list[0].user!.id!;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => ViewAttendanceScreen(
+                userId: userId,
+                id: id,
+                date: date,
+                note: note,
+                userName: userName,
+                image: image,
+                time: time,
+              ),
+            ),
+          );
+        }
+      },
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          child: Text('${local?.optionView}',
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+          value: 2,
+        ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.edit}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 0,
+          ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.delete}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 1,
+          ),
+      ],
+      icon: const Icon(Icons.more_vert),
+    );
+  }
+
+  popUp4(AttendancesWithDate record, BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    return PopupMenuButton(
+      color: Colors.black,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      onSelected: (int selectedValue) async {
+        if (selectedValue == 0) {
+          final int id = record.list[0].getT4!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final String? note = record.list[0].getT4!.note;
+          final TimeOfDay time = record.list[0].getT4!.time;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => AttedancesEdit(
+                id: id,
+                date: date,
+                note: note,
+                time: time,
+              ),
+            ),
+          );
+          fetchAttedancesById();
+          fetchAllAttendance();
+        }
+        if (selectedValue == 1) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text('${local?.areYouSure}'),
+              content: Text('${local?.cannotUndone}'),
+              actions: [
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    deleteData(record.list[0].getT4!.id as int);
+                  },
+                  child: Text('Yes'),
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderSide: BorderSide(color: Colors.red),
+                  child: Text('No'),
+                )
+              ],
+            ),
+          );
+        }
+        if (selectedValue == 2) {
+          final int id = record.list[0].getT3!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final TimeOfDay time = record.list[0].getT4!.time;
+          final String? note = record.list[0].getT4!.note;
+          final String userName = record.list[0].user!.name.toString();
+          final String image = record.list[0].user!.image.toString();
+          final int userId = record.list[0].user!.id!;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => ViewAttendanceScreen(
+                userId: userId,
+                id: id,
+                date: date,
+                note: note,
+                userName: userName,
+                image: image,
+                time: time,
+              ),
+            ),
+          );
+        }
+      },
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          child: Text('${local?.optionView}',
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+          value: 2,
+        ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.edit}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 0,
+          ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.delete}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 1,
+          ),
+      ],
+      icon: const Icon(Icons.more_vert),
+    );
+  }
+
   Widget _buildAllResult(AttendancesWithDate record, BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
@@ -275,114 +668,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( absent )'
                                               : '( permission )'),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT1!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT1!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT1!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp1(record, context)
                             ],
                           ),
                   ],
@@ -417,113 +703,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT2!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT2!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT2!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT1!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id = record.list[0].id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT2!.time;
-                                    final String? note =
-                                        record.list[0].getT2!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp2(record, context)
                             ],
                           ),
                   ],
@@ -570,114 +750,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( absent )'
                                               : '( permission )'),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT3!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT3!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT3!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT3!.time;
-                                    final String? note =
-                                        record.list[0].getT3!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp3(record, context)
                             ],
                           ),
                   ],
@@ -712,114 +785,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT4!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT4!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT4!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT4!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT4!.time;
-                                    final String? note =
-                                        record.list[0].getT4!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp4(record, context)
                             ],
                           ),
                   ],
@@ -892,115 +858,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( absent )'
                                               : '( permission )'),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT1!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              // Navigator.of(context).pop();
-                                              // deleteData(
-                                              //     record.list[0].id
-                                              //         as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT1!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp1(record, context)
                             ],
                           ),
                   ],
@@ -1035,113 +893,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT2!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT2!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT2!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT1!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id = record.list[0].id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT2!.time;
-                                    final String? note =
-                                        record.list[0].getT2!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp2(record, context)
                             ],
                           ),
                   ],
@@ -1188,114 +940,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( absent )'
                                               : '( permission )'),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT3!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT3!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT3!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT3!.time;
-                                    final String? note =
-                                        record.list[0].getT3!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp3(record, context)
                             ],
                           ),
                   ],
@@ -1330,114 +975,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT4!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT4!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT4!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT4!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT4!.time;
-                                    final String? note =
-                                        record.list[0].getT4!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp4(record, context)
                             ],
                           ),
                   ],
@@ -1510,114 +1048,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( absent )'
                                               : '( permission )'),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT1!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT1!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT1!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp1(record, context)
                             ],
                           ),
                   ],
@@ -1652,113 +1083,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT2!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT2!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT2!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT1!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id = record.list[0].id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT2!.time;
-                                    final String? note =
-                                        record.list[0].getT2!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp2(record, context)
                             ],
                           ),
                   ],
@@ -1805,114 +1130,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( absent )'
                                               : '( permission )'),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT3!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT3!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT3!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT3!.time;
-                                    final String? note =
-                                        record.list[0].getT3!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp3(record, context)
                             ],
                           ),
                   ],
@@ -1947,114 +1165,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT4!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT4!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT4!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT4!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT4!.time;
-                                    final String? note =
-                                        record.list[0].getT4!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp4(record, context)
                             ],
                           ),
                   ],
@@ -2128,114 +1239,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( absent )'
                                               : '( permission )'),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT1!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT1!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT1!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp1(record, context)
                             ],
                           ),
                   ],
@@ -2270,113 +1274,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT2!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT2!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT2!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT1!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id = record.list[0].id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT2!.time;
-                                    final String? note =
-                                        record.list[0].getT2!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp2(record, context)
                             ],
                           ),
                   ],
@@ -2423,114 +1321,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( absent )'
                                               : '( permission )'),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT3!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT3!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT3!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT3!.time;
-                                    final String? note =
-                                        record.list[0].getT3!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp3(record, context)
                             ],
                           ),
                   ],
@@ -2565,114 +1356,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int id =
-                                        record.list[0].getT4!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT4!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT4!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                    fetchAllAttendance();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                              deleteData(record
-                                                  .list[0].getT4!.id as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int id =
-                                        record.list[0].getT3!.id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT4!.time;
-                                    final String? note =
-                                        record.list[0].getT4!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp4(record, context)
                             ],
                           ),
                   ],
