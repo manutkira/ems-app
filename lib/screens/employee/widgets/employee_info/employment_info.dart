@@ -223,32 +223,6 @@ class EmploymentInfo extends StatelessWidget {
                     BaselineRow(
                       children: [
                         Text(
-                          '${local?.skill} ',
-                          style: kParagraph.copyWith(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          width: isEnglish ? 95 : 92,
-                        ),
-                        SizedBox(
-                          width: 170,
-                          child: Text(
-                            userDisplay[0].skill == null
-                                ? '${local?.noData}'
-                                : userDisplay[0].skill.toString(),
-                            style: kParagraph.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: isEnglish ? 20 : 10,
-                    ),
-                    BaselineRow(
-                      children: [
-                        Text(
                           '${local?.salary} ',
                           style: kParagraph.copyWith(
                               color: Colors.white, fontWeight: FontWeight.bold),
@@ -310,24 +284,6 @@ class EmploymentInfo extends StatelessWidget {
                     ),
                     SizedBox(
                       height: isEnglish ? 20 : 10,
-                    ),
-                    BaselineRow(
-                      children: [
-                        Text(
-                          '${local?.rate} ',
-                          style: kParagraph.copyWith(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          width: isEnglish ? 93 : 77,
-                        ),
-                        Text(
-                          checkRate(),
-                          style: kParagraph.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),

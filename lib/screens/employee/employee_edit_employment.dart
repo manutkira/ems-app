@@ -169,43 +169,6 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${local?.skill} ',
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: Flex(
-                          direction: Axis.horizontal,
-                          children: [
-                            Flexible(
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  hintText: '${local?.enterSkill}',
-                                  errorStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                controller: skillController,
-                                textInputAction: TextInputAction.next,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
                         '${local?.salary} ',
                         style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                       ),
@@ -317,42 +280,6 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                   ),
                   const SizedBox(
                     height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${local?.rate} ',
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        width: 233,
-                        child: DropdownButtonFormField(
-                          icon: const Icon(Icons.expand_more),
-                          value: rate,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              rate = newValue!;
-                            });
-                          },
-                          items: <String>[
-                            '${local?.veryGood}',
-                            '${local?.good}',
-                            '${local?.medium}',
-                            '${local?.low}',
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                ));
-                          }).toList(),
-                        ),
-                      )
-                    ],
                   ),
                   Container(
                     padding: const EdgeInsets.all(15),
@@ -485,7 +412,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
     };
     request.files.add(http.MultipartFile.fromString('name', aName));
     request.files.add(http.MultipartFile.fromString('phone', aPhone));
-    request.files.add(http.MultipartFile.fromString('skill', aSkill));
+    // request.files.add(http.MultipartFile.fromString('skill', aSkill));
     request.files.add(http.MultipartFile.fromString('salary', aSalary));
     String checkRole() {
       if (aRole == local?.employee) {
@@ -517,24 +444,24 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
     }
 
     request.files.add(http.MultipartFile.fromString('status', checkStatus()));
-    String checkRate() {
-      if (aWorkrate == local?.veryGood) {
-        return 'verygood';
-      }
-      if (aWorkrate == local?.good) {
-        return 'good';
-      }
-      if (aWorkrate == local?.medium) {
-        return 'medium';
-      }
-      if (aWorkrate == local?.low) {
-        return 'low';
-      } else {
-        return '';
-      }
-    }
+    // String checkRate() {
+    //   if (aWorkrate == local?.veryGood) {
+    //     return 'verygood';
+    //   }
+    //   if (aWorkrate == local?.good) {
+    //     return 'good';
+    //   }
+    //   if (aWorkrate == local?.medium) {
+    //     return 'medium';
+    //   }
+    //   if (aWorkrate == local?.low) {
+    //     return 'low';
+    //   } else {
+    //     return '';
+    //   }
+    // }
 
-    request.files.add(http.MultipartFile.fromString('rate', checkRate()));
+    // request.files.add(http.MultipartFile.fromString('rate', checkRate()));
 
     request.headers.addAll(headers);
 

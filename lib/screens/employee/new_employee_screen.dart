@@ -251,6 +251,44 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
+                          '${local?.role} ',
+                          style:
+                              kParagraph.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                          width: 233,
+                          child: DropdownButtonFormField(
+                            icon: const Icon(Icons.expand_more),
+                            value: dropDownValue1,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                dropDownValue1 = newValue!;
+                              });
+                            },
+                            items: <String>[
+                              '${local?.admin}',
+                              '${local?.employee}'
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                  ));
+                            }).toList(),
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
                           '${local?.password} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
@@ -521,9 +559,9 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     request.files.add(http.MultipartFile.fromString('phone', aPhone));
     request.files.add(http.MultipartFile.fromString('email', aEmail));
     request.files.add(http.MultipartFile.fromString('address', aAddress));
-    request.files.add(http.MultipartFile.fromString('position', aPosition));
-    request.files.add(http.MultipartFile.fromString('skill', aSkill));
-    request.files.add(http.MultipartFile.fromString('salary', aSalary));
+    // request.files.add(http.MultipartFile.fromString('position', aPosition));
+    // request.files.add(http.MultipartFile.fromString('skill', aSkill));
+    // request.files.add(http.MultipartFile.fromString('salary', aSalary));
 
     String checkRole() {
       if (aRole == local?.employee) {
@@ -558,24 +596,24 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     request.files.add(http.MultipartFile.fromString('status', checkStatus()));
     request.files.add(http.MultipartFile.fromString('password', apassword));
 
-    String checkRate() {
-      if (aWorkrate == local?.veryGood) {
-        return 'verygood';
-      }
-      if (aWorkrate == local?.good) {
-        return 'good';
-      }
-      if (aWorkrate == local?.medium) {
-        return 'medium';
-      }
-      if (aWorkrate == local?.low) {
-        return 'low';
-      } else {
-        return '';
-      }
-    }
+    // String checkRate() {
+    //   if (aWorkrate == local?.veryGood) {
+    //     return 'verygood';
+    //   }
+    //   if (aWorkrate == local?.good) {
+    //     return 'good';
+    //   }
+    //   if (aWorkrate == local?.medium) {
+    //     return 'medium';
+    //   }
+    //   if (aWorkrate == local?.low) {
+    //     return 'low';
+    //   } else {
+    //     return '';
+    //   }
+    // }
 
-    request.files.add(http.MultipartFile.fromString('rate', checkRate()));
+    // request.files.add(http.MultipartFile.fromString('rate', checkRate()));
 
     request.files.add(http.MultipartFile.fromString('background', aBackground));
     request.headers.addAll(headers);

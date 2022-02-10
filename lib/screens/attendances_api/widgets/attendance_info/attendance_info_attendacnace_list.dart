@@ -24,6 +24,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
 
   final Function fetchAttedancesById;
   final Function fetchAllAttendance;
+  final Function deleteData;
 
   AttendanceInfoAttendanceList({
     Key? key,
@@ -38,6 +39,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     required this.attendanceAll,
     required this.fetchAttedancesById,
     required this.fetchAllAttendance,
+    required this.deleteData,
   }) : super(key: key);
 
   _onrefresh() {
@@ -125,10 +127,14 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
   checkPresent(AttendancesWithDate element) {
     if (element.list[0].getT1?.note != 'absent' &&
         element.list[0].getT1?.note != 'permission') {
-      if (element.list[0].getT1!.time.hour <= 7) {
+      if (element.list[0].getT1!.time.hour == 7) {
         if (element.list[0].getT1!.time.minute <= 15) {
           return true;
+        } else {
+          return false;
         }
+      } else if (element.list[0].getT1!.time.hour < 7) {
+        return true;
       } else {
         return false;
       }
@@ -146,7 +152,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
         } else {
           return false;
         }
-      } else if (element.list[0].getT1!.time.hour > 13) {
+      } else if (element.list[0].getT3!.time.hour < 13) {
         return true;
       } else {
         return false;
@@ -209,6 +215,399 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     }
   }
 
+  popUp1(AttendancesWithDate record, BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    return PopupMenuButton(
+      color: Colors.black,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      onSelected: (int selectedValue) async {
+        if (selectedValue == 0) {
+          final int id = record.list[0].getT1!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final String? note = record.list[0].getT1!.note;
+          final TimeOfDay time = record.list[0].getT1!.time;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => AttedancesEdit(
+                id: id,
+                date: date,
+                note: note,
+                time: time,
+              ),
+            ),
+          );
+          fetchAttedancesById();
+          fetchAllAttendance();
+        }
+        if (selectedValue == 1) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text('${local?.areYouSure}'),
+              content: Text('${local?.cannotUndone}'),
+              actions: [
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    deleteData(record.list[0].getT1!.id as int);
+                  },
+                  child: Text('Yes'),
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderSide: BorderSide(color: Colors.red),
+                  child: Text('No'),
+                )
+              ],
+            ),
+          );
+        }
+        if (selectedValue == 2) {
+          final int id = record.list[0].getT1!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final TimeOfDay time = record.list[0].getT1!.time;
+          final String? note = record.list[0].getT1!.note;
+          final String userName = record.list[0].user!.name.toString();
+          final String image = record.list[0].user!.image.toString();
+          final int userId = record.list[0].user!.id!;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => ViewAttendanceScreen(
+                userId: userId,
+                id: id,
+                date: date,
+                note: note,
+                userName: userName,
+                image: image,
+                time: time,
+              ),
+            ),
+          );
+        }
+      },
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          child: Text('${local?.optionView}',
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+          value: 2,
+        ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.edit}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 0,
+          ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.delete}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 1,
+          ),
+      ],
+      icon: const Icon(Icons.more_vert),
+    );
+  }
+
+  popUp2(AttendancesWithDate record, BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+
+    return PopupMenuButton(
+      color: Colors.black,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      onSelected: (int selectedValue) async {
+        if (selectedValue == 0) {
+          final int id = record.list[0].getT2!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final String? note = record.list[0].getT2!.note;
+          final TimeOfDay time = record.list[0].getT2!.time;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => AttedancesEdit(
+                id: id,
+                date: date,
+                note: note,
+                time: time,
+              ),
+            ),
+          );
+          fetchAttedancesById();
+          fetchAllAttendance();
+        }
+        if (selectedValue == 1) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text('${local?.areYouSure}'),
+              content: Text('${local?.cannotUndone}'),
+              actions: [
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    deleteData(record.list[0].getT1!.id as int);
+                  },
+                  child: Text('Yes'),
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderSide: BorderSide(color: Colors.red),
+                  child: Text('No'),
+                )
+              ],
+            ),
+          );
+        }
+        if (selectedValue == 2) {
+          final int id = record.list[0].id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final TimeOfDay time = record.list[0].getT2!.time;
+          final String? note = record.list[0].getT2!.note;
+          final String userName = record.list[0].user!.name.toString();
+          final String image = record.list[0].user!.image.toString();
+          final int userId = record.list[0].user!.id!;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => ViewAttendanceScreen(
+                userId: userId,
+                id: id,
+                date: date,
+                note: note,
+                userName: userName,
+                image: image,
+                time: time,
+              ),
+            ),
+          );
+        }
+      },
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          child: Text('${local?.optionView}',
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+          value: 2,
+        ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.edit}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 0,
+          ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.delete}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 1,
+          ),
+      ],
+      icon: const Icon(Icons.more_vert),
+    );
+  }
+
+  popUp3(AttendancesWithDate record, BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    return PopupMenuButton(
+      color: Colors.black,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      onSelected: (int selectedValue) async {
+        if (selectedValue == 0) {
+          final int id = record.list[0].getT3!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final String? note = record.list[0].getT3!.note;
+          final TimeOfDay time = record.list[0].getT3!.time;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => AttedancesEdit(
+                id: id,
+                date: date,
+                note: note,
+                time: time,
+              ),
+            ),
+          );
+          fetchAttedancesById();
+          fetchAllAttendance();
+        }
+        if (selectedValue == 1) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text('${local?.areYouSure}'),
+              content: Text('${local?.cannotUndone}'),
+              actions: [
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    deleteData(record.list[0].getT3!.id as int);
+                  },
+                  child: Text('Yes'),
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderSide: BorderSide(color: Colors.red),
+                  child: Text('No'),
+                )
+              ],
+            ),
+          );
+        }
+        if (selectedValue == 2) {
+          final int id = record.list[0].getT3!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final TimeOfDay time = record.list[0].getT3!.time;
+          final String? note = record.list[0].getT3!.note;
+          final String userName = record.list[0].user!.name.toString();
+          final String image = record.list[0].user!.image.toString();
+          final int userId = record.list[0].user!.id!;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => ViewAttendanceScreen(
+                userId: userId,
+                id: id,
+                date: date,
+                note: note,
+                userName: userName,
+                image: image,
+                time: time,
+              ),
+            ),
+          );
+        }
+      },
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          child: Text('${local?.optionView}',
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+          value: 2,
+        ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.edit}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 0,
+          ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.delete}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 1,
+          ),
+      ],
+      icon: const Icon(Icons.more_vert),
+    );
+  }
+
+  popUp4(AttendancesWithDate record, BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    return PopupMenuButton(
+      color: Colors.black,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      onSelected: (int selectedValue) async {
+        if (selectedValue == 0) {
+          final int id = record.list[0].getT4!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final String? note = record.list[0].getT4!.note;
+          final TimeOfDay time = record.list[0].getT4!.time;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => AttedancesEdit(
+                id: id,
+                date: date,
+                note: note,
+                time: time,
+              ),
+            ),
+          );
+          fetchAttedancesById();
+          fetchAllAttendance();
+        }
+        if (selectedValue == 1) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text('${local?.areYouSure}'),
+              content: Text('${local?.cannotUndone}'),
+              actions: [
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    deleteData(record.list[0].getT4!.id as int);
+                  },
+                  child: Text('Yes'),
+                  borderSide: BorderSide(color: Colors.green),
+                ),
+                OutlineButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  borderSide: BorderSide(color: Colors.red),
+                  child: Text('No'),
+                )
+              ],
+            ),
+          );
+        }
+        if (selectedValue == 2) {
+          final int id = record.list[0].getT3!.id as int;
+          final DateTime date = record.list[0].date as DateTime;
+          final TimeOfDay time = record.list[0].getT4!.time;
+          final String? note = record.list[0].getT4!.note;
+          final String userName = record.list[0].user!.name.toString();
+          final String image = record.list[0].user!.image.toString();
+          final int userId = record.list[0].user!.id!;
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (ctx) => ViewAttendanceScreen(
+                userId: userId,
+                id: id,
+                date: date,
+                note: note,
+                userName: userName,
+                image: image,
+                time: time,
+              ),
+            ),
+          );
+        }
+      },
+      itemBuilder: (_) => [
+        PopupMenuItem(
+          child: Text('${local?.optionView}',
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+          value: 2,
+        ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.edit}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 0,
+          ),
+        if (record.list[0].user!.role == 'admin')
+          PopupMenuItem(
+            child: Text('${local?.delete}',
+                style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
+            value: 1,
+          ),
+      ],
+      icon: const Icon(Icons.more_vert),
+    );
+  }
+
   Widget _buildAllResult(AttendancesWithDate record, BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
@@ -239,7 +638,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('1: Checkin'),
-                    record.list[0].getT1?.time.hour == null
+                    record.list[0].getT1 == null
                         ? Text('No data')
                         : Row(
                             children: [
@@ -260,7 +659,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                               SizedBox(
                                 width: 10,
                               ),
-                              Text(record.list[0].getT1?.time == null
+                              Text(record.list[0].getT1 == null
                                   ? 'null'
                                   : checkPresent(record)
                                       ? '( Present )'
@@ -269,118 +668,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( absent )'
                                               : '( permission )'),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int userId =
-                                        record.list[0].userId as int;
-                                    final int id = record.list[0].id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          userId: userId,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              // Navigator.of(context).pop();
-                                              // deleteData(
-                                              //     record.list[0].id
-                                              //         as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int userId =
-                                        record.list[0].userId as int;
-                                    final int id = record.list[0].id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          userId: userId,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp1(record, context)
                             ],
                           ),
                   ],
@@ -397,7 +685,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('1: Checkout'),
-                    record.list[0].getT2?.time.hour == null
+                    record.list[0].getT2 == null
                         ? Text('No data')
                         : Row(
                             children: [
@@ -410,11 +698,12 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT2?.time.hour == null
+                                record.list[0].getT2?.time.minute == null
                                     ? 'null'
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
+                              popUp2(record, context)
                             ],
                           ),
                   ],
@@ -431,7 +720,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('2: Checkin'),
-                    record.list[0].getT3?.time.hour == null
+                    record.list[0].getT3 == null
                         ? Text('No data')
                         : Row(
                             children: [
@@ -461,6 +750,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( absent )'
                                               : '( permission )'),
+                              popUp3(record, context)
                             ],
                           ),
                   ],
@@ -477,7 +767,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('2: Checkout'),
-                    record.list[0].getT4?.time.hour == null
+                    record.list[0].getT4 == null
                         ? Text('No data')
                         : Row(
                             children: [
@@ -495,78 +785,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                            ],
-                          ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 50,
-              width: double.infinity,
-              color: kDarkestBlue,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('3: Checkin'),
-                    record.list[0].getT5?.time.hour == null
-                        ? Text('No data')
-                        : Row(
-                            children: [
-                              Text(
-                                record.list[0].getT5?.time.hour == null
-                                    ? 'null'
-                                    : record.list[0].getT5!.time.hour
-                                        .toString()
-                                        .padLeft(2, '0'),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                record.list[0].getT5?.time.hour == null
-                                    ? 'null'
-                                    : ':${record.list[0].getT5!.time.minute.toString().padLeft(2, '0')}',
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text('( OT )'),
-                            ],
-                          ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 50,
-              width: double.infinity,
-              color: kBlue,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('3: Checkout'),
-                    record.list[0].getT6?.time.hour == null
-                        ? Text('No data')
-                        : Row(
-                            children: [
-                              Text(
-                                record.list[0].getT6?.time.hour == null
-                                    ? 'null'
-                                    : record.list[0].getT6!.time.hour
-                                        .toString()
-                                        .padLeft(2, '0'),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                record.list[0].getT6?.time.hour == null
-                                    ? 'null'
-                                    : ':${record.list[0].getT6!.time.minute.toString().padLeft(2, '0')}',
-                                textAlign: TextAlign.center,
-                              ),
+                              popUp4(record, context)
                             ],
                           ),
                   ],
@@ -639,118 +858,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( absent )'
                                               : '( permission )'),
-                              PopupMenuButton(
-                                color: Colors.black,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                onSelected: (int selectedValue) async {
-                                  if (selectedValue == 0) {
-                                    final int userId =
-                                        record.list[0].userId as int;
-                                    final int id = record.list[0].id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => AttedancesEdit(
-                                          id: id,
-                                          userId: userId,
-                                          date: date,
-                                          note: note,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                    fetchAttedancesById();
-                                  }
-                                  if (selectedValue == 1) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.cannotUndone}'),
-                                        actions: [
-                                          OutlineButton(
-                                            onPressed: () {
-                                              // Navigator.of(context).pop();
-                                              // deleteData(
-                                              //     record.list[0].id
-                                              //         as int);
-                                            },
-                                            child: Text('Yes'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
-                                            child: Text('No'),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                  if (selectedValue == 2) {
-                                    final int userId =
-                                        record.list[0].userId as int;
-                                    final int id = record.list[0].id as int;
-                                    final DateTime date =
-                                        record.list[0].date as DateTime;
-                                    final TimeOfDay time =
-                                        record.list[0].getT1!.time;
-                                    final String? note =
-                                        record.list[0].getT1!.note;
-                                    final String userName =
-                                        record.list[0].user!.name.toString();
-                                    final String image =
-                                        record.list[0].user!.image.toString();
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => ViewAttendanceScreen(
-                                          id: id,
-                                          userId: userId,
-                                          date: date,
-                                          note: note,
-                                          userName: userName,
-                                          image: image,
-                                          time: time,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                itemBuilder: (_) => [
-                                  PopupMenuItem(
-                                    child: Text('${local?.optionView}',
-                                        style: kParagraph.copyWith(
-                                            fontWeight: FontWeight.bold)),
-                                    value: 2,
-                                  ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.edit}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 0,
-                                    ),
-                                  if (record.list[0].user!.role == 'admin')
-                                    PopupMenuItem(
-                                      child: Text('${local?.delete}',
-                                          style: kParagraph.copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                      value: 1,
-                                    ),
-                                ],
-                                icon: const Icon(Icons.more_vert),
-                              )
+                              popUp1(record, context)
                             ],
                           ),
                   ],
@@ -785,6 +893,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
+                              popUp2(record, context)
                             ],
                           ),
                   ],
@@ -831,6 +940,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( absent )'
                                               : '( permission )'),
+                              popUp3(record, context)
                             ],
                           ),
                   ],
@@ -865,78 +975,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                            ],
-                          ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 50,
-              width: double.infinity,
-              color: kDarkestBlue,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('3: Checkin'),
-                    record.list[0].getT5?.time.hour == null
-                        ? Text('No data')
-                        : Row(
-                            children: [
-                              Text(
-                                record.list[0].getT5?.time.hour == null
-                                    ? 'null'
-                                    : record.list[0].getT5!.time.hour
-                                        .toString()
-                                        .padLeft(2, '0'),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                record.list[0].getT5?.time.hour == null
-                                    ? 'null'
-                                    : ':${record.list[0].getT5!.time.minute.toString().padLeft(2, '0')}',
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text('( OT )'),
-                            ],
-                          ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 50,
-              width: double.infinity,
-              color: kBlue,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('3: Checkout'),
-                    record.list[0].getT6?.time.hour == null
-                        ? Text('No data')
-                        : Row(
-                            children: [
-                              Text(
-                                record.list[0].getT6?.time.hour == null
-                                    ? 'null'
-                                    : record.list[0].getT6!.time.hour
-                                        .toString()
-                                        .padLeft(2, '0'),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                record.list[0].getT6?.time.hour == null
-                                    ? 'null'
-                                    : ':${record.list[0].getT6!.time.minute.toString().padLeft(2, '0')}',
-                                textAlign: TextAlign.center,
-                              ),
+                              popUp4(record, context)
                             ],
                           ),
                   ],
@@ -1009,6 +1048,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( absent )'
                                               : '( permission )'),
+                              popUp1(record, context)
                             ],
                           ),
                   ],
@@ -1043,6 +1083,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
+                              popUp2(record, context)
                             ],
                           ),
                   ],
@@ -1089,6 +1130,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( absent )'
                                               : '( permission )'),
+                              popUp3(record, context)
                             ],
                           ),
                   ],
@@ -1123,78 +1165,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                            ],
-                          ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 50,
-              width: double.infinity,
-              color: kDarkestBlue,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('3: Checkin'),
-                    record.list[0].getT5?.time.hour == null
-                        ? Text('No data')
-                        : Row(
-                            children: [
-                              Text(
-                                record.list[0].getT5?.time.hour == null
-                                    ? 'null'
-                                    : record.list[0].getT5!.time.hour
-                                        .toString()
-                                        .padLeft(2, '0'),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                record.list[0].getT5?.time.hour == null
-                                    ? 'null'
-                                    : ':${record.list[0].getT5!.time.minute.toString().padLeft(2, '0')}',
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text('( OT )'),
-                            ],
-                          ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 50,
-              width: double.infinity,
-              color: kBlue,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('3: Checkout'),
-                    record.list[0].getT6?.time.hour == null
-                        ? Text('No data')
-                        : Row(
-                            children: [
-                              Text(
-                                record.list[0].getT6?.time.hour == null
-                                    ? 'null'
-                                    : record.list[0].getT6!.time.hour
-                                        .toString()
-                                        .padLeft(2, '0'),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                record.list[0].getT6?.time.hour == null
-                                    ? 'null'
-                                    : ':${record.list[0].getT6!.time.minute.toString().padLeft(2, '0')}',
-                                textAlign: TextAlign.center,
-                              ),
+                              popUp4(record, context)
                             ],
                           ),
                   ],
@@ -1268,6 +1239,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( absent )'
                                               : '( permission )'),
+                              popUp1(record, context)
                             ],
                           ),
                   ],
@@ -1302,6 +1274,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
+                              popUp2(record, context)
                             ],
                           ),
                   ],
@@ -1348,6 +1321,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( absent )'
                                               : '( permission )'),
+                              popUp3(record, context)
                             ],
                           ),
                   ],
@@ -1382,78 +1356,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                            ],
-                          ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 50,
-              width: double.infinity,
-              color: kDarkestBlue,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('3: Checkin'),
-                    record.list[0].getT5?.time.hour == null
-                        ? Text('No data')
-                        : Row(
-                            children: [
-                              Text(
-                                record.list[0].getT5?.time.hour == null
-                                    ? 'null'
-                                    : record.list[0].getT5!.time.hour
-                                        .toString()
-                                        .padLeft(2, '0'),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                record.list[0].getT5?.time.hour == null
-                                    ? 'null'
-                                    : ':${record.list[0].getT5!.time.minute.toString().padLeft(2, '0')}',
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text('( OT )'),
-                            ],
-                          ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              height: 50,
-              width: double.infinity,
-              color: kBlue,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('3: Checkout'),
-                    record.list[0].getT6?.time.hour == null
-                        ? Text('No data')
-                        : Row(
-                            children: [
-                              Text(
-                                record.list[0].getT6?.time.hour == null
-                                    ? 'null'
-                                    : record.list[0].getT6!.time.hour
-                                        .toString()
-                                        .padLeft(2, '0'),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                record.list[0].getT6?.time.hour == null
-                                    ? 'null'
-                                    : ':${record.list[0].getT6!.time.minute.toString().padLeft(2, '0')}',
-                                textAlign: TextAlign.center,
-                              ),
+                              popUp4(record, context)
                             ],
                           ),
                   ],

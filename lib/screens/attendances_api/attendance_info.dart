@@ -137,14 +137,15 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     } catch (err) {}
   }
 
+  bool _isLoadingAll = true;
   fetchAllAttendance() async {
-    _isLoading = true;
+    _isLoadingAll = true;
     try {
       List<AttendancesWithDate> attendanceDisplay =
           await _attendanceService.findManyAttendancesById(userId: widget.id);
       setState(() {
         _attendanceAll = attendanceDisplay;
-        _isLoading = false;
+        _isLoadingAll = false;
       });
       List flat = _attendanceAll.expand((element) => element.list).toList();
       attendanceListAll = flat.toList();
@@ -187,8 +188,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     } catch (e) {}
   }
 
+  bool _isLoadingById = true;
   fetchAttedancesById() async {
-    _isLoading = true;
+    _isLoadingById = true;
     try {
       List<AttendancesWithDate> attendanceDisplay =
           await _attendanceService.findManyAttendancesById(
@@ -198,7 +200,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       );
       setState(() {
         attendancesByIdDisplay = attendanceDisplay;
-        _isLoading = false;
+        _isLoadingById = false;
         presentMorning = attendanceDisplay
             .where((element) =>
                 element.list[0].getT1 != null && checkPresent(element))
@@ -277,7 +279,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             element.date.month == startDate.month &&
             element.date.year == startDate.year);
         onedayList = oneDay.toList();
-
         onedayPresent = oneDay
             .where((element) =>
                 element.list[0].getT1 != null && checkPresent(element))
@@ -331,10 +332,14 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   checkPresent(AttendancesWithDate element) {
     if (element.list[0].getT1?.note != 'absent' &&
         element.list[0].getT1?.note != 'permission') {
-      if (element.list[0].getT1!.time.hour <= 7) {
+      if (element.list[0].getT1!.time.hour == 7) {
         if (element.list[0].getT1!.time.minute <= 15) {
           return true;
+        } else {
+          return false;
         }
+      } else if (element.list[0].getT1!.time.hour < 7) {
+        return true;
       } else {
         return false;
       }
@@ -352,7 +357,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
         } else {
           return false;
         }
-      } else if (element.list[0].getT1!.time.hour > 13) {
+      } else if (element.list[0].getT3!.time.hour < 13) {
         return true;
       } else {
         return false;
@@ -432,20 +437,22 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
-  String url = "http://rest-api-laravel-flutter.herokuapp.com/api/attendances";
+  String url =
+      "http://rest-api-laravel-flutter.herokuapp.com/api/attendance_record";
 
   Future deleteData(int id) async {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     final response = await http.delete(Uri.parse("$url/$id"));
+    print(response.statusCode);
     showInSnackBar("${local?.deletingAttendance}");
     if (response.statusCode == 200) {
       attendanceAllDisplay = [];
       attendanceList = [];
       _attendanceAll = [];
       onedayList = [];
-      // fetchAttendanceById();
-      // fetchAllAttendance();
+      fetchAttedancesById();
+      fetchAllAttendance();
       showInSnackBar("${local?.deletedAttendance}");
     } else {
       return false;
@@ -816,6 +823,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                   attendancesByIdDisplay = [];
                                                   onedayList = [];
                                                   fetchAttedancesById();
+                                                  fetchAllAttendance();
                                                 }
                                                 if (sortByValue ==
                                                     '${local?.optionAllTime}') {
@@ -843,6 +851,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                   attendancesByIdDisplay = [];
                                                   onedayList = [];
                                                   fetchAttedancesById();
+                                                  fetchAllAttendance();
                                                 }
                                               },
                                               child: Row(
@@ -893,6 +902,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     MainAxisAlignment.spaceAround,
                                 children: [
                                   AttendanceInfoPresent(
+                                    isLoadingAll: _isLoadingAll,
+                                    isLoadingById: _isLoadingById,
                                     numColor: kGreenText,
                                     backgroundColor: kGreenBackground,
                                     now: now,
@@ -916,6 +927,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                         : presentMorning.toString(),
                                   ),
                                   AttendanceInfoPresent(
+                                    isLoadingAll: _isLoadingAll,
+                                    isLoadingById: _isLoadingById,
                                     numColor: kBlueText,
                                     backgroundColor: kBlueBackground,
                                     now: now,
@@ -941,6 +954,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                         : permissionMorning.toString(),
                                   ),
                                   AttendanceInfoPresent(
+                                    isLoadingAll: _isLoadingAll,
+                                    isLoadingById: _isLoadingById,
                                     numColor: kYellowText,
                                     backgroundColor: kYellowBackground,
                                     now: now,
@@ -963,6 +978,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                         : lateMorning.toString(),
                                   ),
                                   AttendanceInfoPresent(
+                                    isLoadingAll: _isLoadingAll,
+                                    isLoadingById: _isLoadingById,
                                     numColor: kRedText,
                                     backgroundColor: kRedBackground,
                                     now: now,
@@ -1088,7 +1105,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                               ),
                               isToday.isEmpty && now && isTodayNoon.isEmpty
                                   ? AttendanceInfoNoData()
-                                  : _isLoading
+                                  : _isLoading && _isLoadingAll ||
+                                          _isLoadingById
                                       ? Container(
                                           padding: EdgeInsets.only(top: 150),
                                           child: Column(
@@ -1111,6 +1129,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             padding:
                                                 const EdgeInsets.only(top: 15),
                                             child: AttendanceInfoAttendanceList(
+                                                deleteData: deleteData,
                                                 multiday: multiday,
                                                 isOneDay: isOneDay,
                                                 alltime: alltime,

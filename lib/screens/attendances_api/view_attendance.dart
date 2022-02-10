@@ -46,10 +46,10 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
   void initState() {
     super.initState();
     id = widget.id.toString();
-    userIdController = widget.userId.toString();
     date = DateFormat('dd-MM-yyyy').format(widget.date);
     time = DateFormat('hh:mm').format(widget.date);
     note!.text = widget.note.toString();
+    userIdController = widget.userId.toString();
     image = widget.image;
   }
 
@@ -91,10 +91,15 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                           )),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
-                        child: Image.network(
-                          image!,
-                          width: 60,
-                        ),
+                        child: image == 'null'
+                            ? Image.asset(
+                                'assets/images/profile-icon-png-910.png',
+                                width: 50,
+                              )
+                            : Image.network(
+                                image!,
+                                width: 60,
+                              ),
                       ),
                     ),
                     SizedBox(

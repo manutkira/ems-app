@@ -431,7 +431,7 @@ class _TestPositionState extends State<TestPosition> {
                               )),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(150),
-                            child: widget.imageUrl == null
+                            child: widget.imageUrl == 'null'
                                 ? Image.asset(
                                     'assets/images/profile-icon-png-910.png',
                                     width: 70,
@@ -1159,7 +1159,6 @@ class _TestPositionState extends State<TestPosition> {
     bool isEnglish = isInEnglish(context);
     var aPositionName = positionName.text;
     DateTime aStartDate = pickStart!;
-    print(pickEnd);
 
     var request = await http.MultipartRequest(
         'POST', Uri.parse("$urlUser/${widget.id}/position"));
