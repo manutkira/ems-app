@@ -26,7 +26,7 @@ class OvertimeScreen extends StatefulWidget {
 
 class _OvertimeScreenState extends State<OvertimeScreen> {
   final OvertimeService _overtimeService = OvertimeService.instance;
-  List<OvertimeByDay> overtimeRecords = [];
+  List<OvertimeRecordsByDays> overtimeRecords = [];
   String sortByValue = '';
   List<String> dropdownItems = [];
   List<String> options = [];
@@ -80,7 +80,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
       // reset error
       error = '';
     });
-    List<OvertimeByDay> records = [];
+    List<OvertimeRecordsByDays> records = [];
     try {
       // reads the sort filter condition
       if (sortByValue == "${local?.optionDay}") {
@@ -129,7 +129,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
       // reset error
       error = '';
     });
-    List<OvertimeByDay> records = [];
+    List<OvertimeRecordsByDays> records = [];
     try {
       records = await _overtimeService.findMany();
 
@@ -161,7 +161,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
   }
 
   /// more menu
-  void moreMenu(String value, OvertimeAttendance record) async {
+  void moreMenu(String value, OvertimeRecord record) async {
     AppLocalizations? local = AppLocalizations.of(context);
     if (value == local?.optionView) {
       await modalBottomSheetBuilder(
@@ -500,7 +500,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                     child: ListView.builder(
                       itemCount: overtimeRecords.length,
                       itemBuilder: (context, i) {
-                        OvertimeByDay record = overtimeRecords[i];
+                        OvertimeRecordsByDays record = overtimeRecords[i];
                         // title date
                         return _buildResult(record);
                       },
@@ -516,7 +516,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
   }
 
   /// result
-  Widget _buildResult(OvertimeByDay record) {
+  Widget _buildResult(OvertimeRecordsByDays record) {
     return ExpansionTile(
       textColor: Colors.white,
       iconColor: Colors.white,
@@ -532,13 +532,13 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
         ListView.builder(
           shrinkWrap: true,
           physics: const ClampingScrollPhysics(),
-          itemCount: record.overtimes.length,
+          itemCount: record.records.length,
           itemBuilder: (context, i) {
-            OvertimeAttendance overtime = record.overtimes[i];
-            User user = overtime.user as User;
+            OvertimeRecord overtime = record.records[i];
+            User? user = overtime.user;
 
             TimeOfDay overtimeTotal = getTimeOfDayFromString(
-              overtime.checkout!.overtime,
+              overtime.duration,
             );
 
             // list of overtime
@@ -554,7 +554,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                   Row(
                     children: [
                       CustomCircleAvatar(
-                        imageUrl: "${user.image}",
+                        imageUrl: "${user?.image}",
                       ),
                       const SizedBox(
                         width: 10,
@@ -563,14 +563,14 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => IndividualOvertimeScreen(
-                              user: user,
+                              user: user as User,
                             ),
                           ),
                         ),
                         child: SizedBox(
                           width: 120,
                           child: Text(
-                            '${user.name}',
+                            '${user?.name}',
                             style: kSubtitle,
                             overflow: TextOverflow.fade,
                             softWrap: false,

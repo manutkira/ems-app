@@ -14,7 +14,7 @@ import '../../constants.dart';
 
 class EditOvertime extends StatefulWidget {
   const EditOvertime({Key? key, required this.record}) : super(key: key);
-  final OvertimeAttendance record;
+  final OvertimeRecord record;
 
   @override
   _EditOvertimeState createState() => _EditOvertimeState();
@@ -23,16 +23,16 @@ class EditOvertime extends StatefulWidget {
 class _EditOvertimeState extends State<EditOvertime> {
   final AttendanceService _attendanceService = AttendanceService.instance;
   DateTime selectedDate = DateTime.now();
-  TimeOfDay startedTime = TimeOfDay.now();
-  TimeOfDay endedTime = TimeOfDay.now();
+  TimeOfDay? startedTime = TimeOfDay.now();
+  TimeOfDay? endedTime = TimeOfDay.now();
   final TextEditingController _noteController = TextEditingController();
   bool isLoading = false;
   String error = '';
 
-  late OvertimeAttendance record;
+  late OvertimeRecord record;
   late User? user;
-  late OvertimeCheckin? checkIn;
-  late OvertimeCheckout? checkOut;
+  late AttendanceRecord? checkIn;
+  late AttendanceRecord? checkOut;
 
   void _closePanel() {
     if (!isLoading) {
@@ -48,12 +48,34 @@ class _EditOvertimeState extends State<EditOvertime> {
 
       try {
         /// creating Attendance objects
+        ///
+
+        AttendanceRecord checkInRecord = checkIn == null
+            ? AttendanceRecord(
+                time: startedTime,
+                note: _noteController.text,
+              )
+            : checkIn!.copyWith(
+                time: startedTime,
+                note: _noteController.text,
+              );
+
+        AttendanceRecord checkOutRecord = checkOut == null
+            ? AttendanceRecord(
+                time: endedTime,
+                note: _noteController.text,
+              )
+            : checkOut!.copyWith(
+                time: endedTime,
+                note: _noteController.text,
+              );
+
         Attendance checkInAttendance = Attendance(
           id: checkIn?.id,
           userId: user?.id,
           date: selectedDate.copyWith(
-            hour: startedTime.hour,
-            minute: startedTime.minute,
+            hour: startedTime?.hour,
+            minute: startedTime?.minute,
           ),
           type: AttendanceType.typeCheckIn,
           note: _noteController.text,
@@ -63,8 +85,8 @@ class _EditOvertimeState extends State<EditOvertime> {
           id: checkOut?.id,
           userId: user?.id,
           date: selectedDate.copyWith(
-            hour: endedTime.hour,
-            minute: endedTime.minute,
+            hour: endedTime?.hour,
+            minute: endedTime?.minute,
           ),
           type: AttendanceType.typeCheckOut,
           note: _noteController.text,
@@ -73,29 +95,28 @@ class _EditOvertimeState extends State<EditOvertime> {
 
         /// the service will use the same data for check in and check out object
         /// if there's no check out data from the api.
-        bool hasNoCheckout = checkIn?.id == checkOut?.id;
+        // bool hasNoCheckout = checkIn?.id == checkOut?.id;
 
-        await _attendanceService.updateOne(checkInAttendance);
+        // await _attendanceService.updateOne(checkInAttendance);
 
-        /// if there's no checkout, create one.
-        if (hasNoCheckout) {
-          Attendance checkOutAttendance = Attendance(
-            userId: user?.id,
-            date: selectedDate.copyWith(
-              hour: endedTime.hour,
-              minute: endedTime.minute,
-            ),
-            type: AttendanceType.typeCheckOut,
-            note: _noteController.text,
-            code: 'cout3',
-          );
-          await _attendanceService.createOne(attendance: checkOutAttendance);
-        }
+        // /// if there's no checkout, create one.
+        // if (hasNoCheckout) {
+        //   Attendance checkOutAttendance = Attendance(
+        //     userId: user?.id,
+        //     date: selectedDate.copyWith(
+        //       hour: endedTime?.hour,
+        //       minute: endedTime?.minute,
+        //     ),
+        //     type: AttendanceType.typeCheckOut,
+        //     note: _noteController.text,
+        //   );
+        //   await _attendanceService.createOne(attendance: checkOutAttendance);
+        // }
 
-        /// otherwise, just update the record
-        else {
-          await _attendanceService.updateOne(checkOutAttendance);
-        }
+        // /// otherwise, just update the record
+        // else {
+        //   await _attendanceService.updateOne(checkOutAttendance);
+        // }
 
         setState(() {
           isLoading = false;
@@ -112,18 +133,18 @@ class _EditOvertimeState extends State<EditOvertime> {
 
   void setUpScreen() {
     setState(() {
-      record = widget.record.copyWith();
+      record = widget.record;
       user = record.user;
-      checkIn = record.checkin;
-      checkOut = record.checkout;
+      checkIn = record.checkIn;
+      checkOut = record.checkOut;
 
       // hour and minute
-      int checkInHour = checkIn?.date?.hour as int;
-      int checkInMinute = checkIn?.date?.minute as int;
-      int checkOutHour = checkOut?.date?.hour as int;
-      int checkOutMinute = checkOut?.date?.minute as int;
+      int checkInHour = checkOut == null ? 0 : checkIn?.time?.hour as int;
+      int checkInMinute = checkOut == null ? 0 : checkIn?.time?.minute as int;
+      int checkOutHour = checkOut == null ? 0 : checkOut?.time?.hour as int;
+      int checkOutMinute = checkOut == null ? 0 : checkOut?.time?.minute as int;
 
-      selectedDate = checkIn?.date as DateTime;
+      selectedDate = record.date;
 
       // timeOfDay
       startedTime = TimeOfDay(hour: checkInHour, minute: checkInMinute);
@@ -256,7 +277,7 @@ class _EditOvertimeState extends State<EditOvertime> {
                   onPressed: () async {
                     final TimeOfDay? picked = await buildTimePicker(
                       context: context,
-                      time: startedTime,
+                      time: startedTime as TimeOfDay,
                     );
 
                     if (picked != null && picked != startedTime) {
@@ -269,7 +290,7 @@ class _EditOvertimeState extends State<EditOvertime> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                          "${startedTime.hour.toString().padLeft(2, '0')}:${startedTime.minute.toString().padLeft(2, '0')}"),
+                          "${startedTime?.hour.toString().padLeft(2, '0')}:${startedTime?.minute.toString().padLeft(2, '0')}"),
                       const SizedBox(width: 10),
                       const Icon(MdiIcons.clockOutline),
                     ],
@@ -297,7 +318,9 @@ class _EditOvertimeState extends State<EditOvertime> {
                   onPressed: () async {
                     final TimeOfDay? picked = await buildTimePicker(
                       context: context,
-                      time: endedTime,
+                      time: endedTime == null
+                          ? const TimeOfDay(hour: 0, minute: 0)
+                          : endedTime as TimeOfDay,
                     );
 
                     if (picked != null && picked != endedTime) {
@@ -310,7 +333,11 @@ class _EditOvertimeState extends State<EditOvertime> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        formatToHourAndMinute(endedTime),
+                        formatToHourAndMinute(
+                          endedTime == null
+                              ? const TimeOfDay(hour: 0, minute: 0)
+                              : endedTime as TimeOfDay,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       const Icon(MdiIcons.clockOutline),
