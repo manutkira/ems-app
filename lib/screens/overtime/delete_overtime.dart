@@ -39,10 +39,12 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
     });
 
     try {
-      await _attendanceService.deleteOne(int.parse("${record.checkIn?.id}"));
+      if (record.checkIn != null) {
+        await _attendanceService.deleteOneRecord(record.checkIn?.id as int);
+      }
       // if there is a check out record
-      if (record.checkIn?.id != record.checkOut?.id) {
-        await _attendanceService.deleteOne(int.parse("${record.checkOut?.id}"));
+      if (record.checkOut != null) {
+        await _attendanceService.deleteOneRecord(record.checkOut?.id as int);
       }
     } catch (e) {
       setState(() {
