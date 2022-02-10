@@ -20,7 +20,7 @@ import '../../constants.dart';
 
 class ViewOvertime extends StatefulWidget {
   const ViewOvertime({Key? key, required this.record}) : super(key: key);
-  final OvertimeAttendance record;
+  final OvertimeRecord record;
 
   @override
   _ViewOvertimeState createState() => _ViewOvertimeState();
@@ -33,12 +33,13 @@ class _ViewOvertimeState extends State<ViewOvertime> {
     Navigator.of(context).pop();
   }
 
-  String formatTime(DateTime? time) {
+  String formatTime(TimeOfDay? time) {
     AppLocalizations? local = AppLocalizations.of(context);
     if (time != null) {
       return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
     } else {
-      return '${local?.errorParsingTime}';
+      // return "${local?.errorParsingTime}";
+      return '00:00';
     }
   }
 
@@ -56,10 +57,10 @@ class _ViewOvertimeState extends State<ViewOvertime> {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     Size _size = MediaQuery.of(context).size;
-    OvertimeAttendance record = widget.record;
-    OvertimeCheckin? checkIn = record.checkin;
-    OvertimeCheckout? checkOut = record.checkout;
-    TimeOfDay _time = getTimeOfDayFromString(checkOut?.overtime);
+    OvertimeRecord record = widget.record;
+    AttendanceRecord? checkIn = record.checkIn;
+    AttendanceRecord? checkOut = record.checkOut;
+    TimeOfDay _time = getTimeOfDayFromString(record.duration);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -108,7 +109,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                 width: 20,
               ),
               Text(
-                getDateStringFromDateTime(checkIn?.date as DateTime),
+                getDateStringFromDateTime(record.date),
                 style: kParagraph,
               ),
             ],
@@ -125,7 +126,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                 width: 20,
               ),
               Text(
-                formatTime(checkIn?.date),
+                formatTime(checkIn?.time),
                 style: kParagraph,
               ),
               const SizedBox(
@@ -139,7 +140,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                 width: 20,
               ),
               Text(
-                formatTime(checkOut?.date),
+                formatTime(checkOut?.time),
                 style: kParagraph,
               ),
             ],
@@ -187,7 +188,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
 
   Widget _buildUserInfo(Size _size) {
     AppLocalizations? local = AppLocalizations.of(context);
-    OvertimeAttendance record = widget.record;
+    OvertimeRecord record = widget.record;
     User? user = record.user;
 
     return Container(

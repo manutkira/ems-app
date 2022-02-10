@@ -35,10 +35,12 @@ class OvertimeService extends BaseService {
       Response response = await get(Uri.parse(url));
       _code = response.statusCode;
 
-      var jsondata = json.decode(response.body);
+      var jsondata = json.decode(response.body)['data'];
+
+      String totalHours = jsondata['total_hour'];
 
       // if no result found
-      if (jsondata['data']['attendances'].length == 0) {
+      if (jsondata['attendances'].length == 0) {
         return OvertimeListWithTotal(
           total: '00:00:00',
           listOfOvertime: [],
@@ -46,20 +48,20 @@ class OvertimeService extends BaseService {
       }
 
       // attendance object without user object
-      List<OvertimeAttendance> _overtimeWithoutUser =
-          overtimesFromJson(jsondata['data']['attendances']);
+      List<OvertimeRecord> _overtimeWithoutUser =
+          overtimeRecordsFromJson(jsondata['attendances']);
 
       // get the user object
-      User _user = User.fromJson(jsondata["data"]["user"]);
+      User _user = User.fromJson(jsondata["user"]);
 
       //adding user object to the overtime object
-      List<OvertimeAttendance> overtimeWithUser =
+      List<OvertimeRecord> overtimeWithUser =
           _overtimeWithoutUser.map((overtime) {
         return overtime.copyWith(user: _user);
       }).toList();
 
       return OvertimeListWithTotal(
-        total: jsondata['data']['total_hour'],
+        total: totalHours,
         listOfOvertime: overtimeWithUser,
       );
     } catch (e) {
@@ -67,7 +69,7 @@ class OvertimeService extends BaseService {
     }
   }
 
-  Future<List<OvertimeByDay>> findMany({
+  Future<List<OvertimeRecordsByDays>> findMany({
     DateTime? start,
     DateTime? end,
   }) async {
@@ -92,9 +94,11 @@ class OvertimeService extends BaseService {
       }
 
       Map<String, dynamic> jsondata = json.decode(response.body);
-      List<OvertimeByDay> listOfOvertimeByDay =
-          overtimesByDayFromJson(jsondata);
-      return listOfOvertimeByDay;
+      List<OvertimeRecordsByDays> list = overtimesByDayFromJson(jsondata);
+      print(list);
+      // List<OvertimeByDay> listOfOvertimeByDay =
+      //     (jsondata);
+      return list;
     } catch (e) {
       throw AttendanceException(code: _code);
     }
