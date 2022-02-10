@@ -51,104 +51,9 @@
 
 //   String toRawJson() => json.encode(toJson());
 
-//   factory Overtime.fromJson(Map<String, dynamic> json) => Overtime(
-//         overtime: json["overtime"],
-//         userId: json["user_id"],
-//         date: json["date"],
-//         code: json["code"],
-//         id: json["id"],
-//         type: json["type"],
-//         note: json["note"],
-//         createdAt: json["created_at"] == null
-//             ? null
-//             : DateTime.parse(json["created_at"]),
-//         updatedAt: json["updated_at"] == null
-//             ? null
-//             : DateTime.parse(json["updated_at"]),
-//         users: json["users"] == null ? null : User.fromJson(json["users"]),
-//       );
-
-//   Map<String, dynamic> toJson() {
-//     return {
-//       "overtime": overtime,
-//       "user_id": userId,
-//       "date": date?.toIso8601String(),
-//       "code": code,
-//       "id": id,
-//       "type": type,
-//       "note": note,
-//       "createdAt": createdAt?.toIso8601String(),
-//       "updatedAt": updatedAt?.toIso8601String(),
-//       "users": users,
-//     };
-//   }
-// }
-//
-// class OvertimeUser {
-//   int? id;
-//   String? name;
-//   String? phone;
-//   String? email;
-//   DateTime? emailVerifiedAt;
-//   String? address;
-//   String? password;
-//   String? position;
-//   String? skill;
-//   String? salary;
-//   String? role;
-//   String? background;
-//   String? status;
-//   String? rate;
-//   DateTime? createdAt;
-//   DateTime? updatedAt;
-//   String? image;
-//   String? imageId;
-//
-//   OvertimeUser({
-//     this.id,
-//     this.name,
-//     this.phone,
-//     this.email,
-//     this.emailVerifiedAt,
-//     this.address,
-//     this.password,
-//     this.position,
-//     this.skill,
-//     this.salary,
-//     this.role,
-//     this.background,
-//     this.status,
-//     this.rate,
-//     this.image,
-//     this.imageId,
-//     this.createdAt,
-//     this.updatedAt,
-//   });
-//
-//   factory OvertimeUser.fromMap(Map<String, dynamic> jsonData) {
-//     return OvertimeUser(
-//       name: jsonData['name'],
-//       phone: jsonData['phone'],
-//       email: jsonData['email'],
-//       emailVerifiedAt: jsonData['emailVerifiedAt'],
-//       address: jsonData['address'],
-//       password: jsonData['password'],
-//       position: jsonData['position'],
-//       skill: jsonData['skill'],
-//       salary: jsonData['salary'],
-//       role: jsonData['role'],
-//       background: jsonData['background'],
-//       status: jsonData['status'],
-//       rate: jsonData['rate'],
-//       createdAt: jsonData['createdAt'],
-//       updatedAt: jsonData['updatedAt'],
-//       image: jsonData['updatedAt'],
-//       imageId: jsonData['imageId'],
-//     );
-//   }
-// }
-
 import 'package:ems/models/user.dart';
+import 'package:ems/utils/utils.dart';
+import 'package:flutter/material.dart';
 
 List<OvertimeAttendance> overtimesFromJson(dynamic list) {
   List<OvertimeAttendance> _overtimeWithoutUser = [];
@@ -165,6 +70,15 @@ List<OvertimeAttendance> overtimesFromJson(dynamic list) {
   return _overtimeWithoutUser;
 }
 
+List<OvertimeRecord> overtimeRecordsFromJson(Map<String, dynamic> list) {
+  return [
+    ...list.keys.map((key) {
+      var record = list[key][0];
+      return OvertimeRecord.fromMap(record);
+    })
+  ];
+}
+
 // List<OvertimeByDay> overtimesByDayFromJson(dynamic list) {
 //   List<OvertimeByDay> _overtimeWithoutUser = [];
 //
@@ -176,26 +90,58 @@ List<OvertimeAttendance> overtimesFromJson(dynamic list) {
 //   return _overtimeWithoutUser;
 // }
 
-List<OvertimeByDay> overtimesByDayFromJson(Map<String, dynamic> list) {
+List<OvertimeRecordsByDays> overtimesByDayFromJson(Map<String, dynamic> list) {
   List<OvertimeByDay> lists = [];
-
+  // print(list);
   // list.forEach((key, value) {
   //   // print('hihih $key');
   //   // OvertimeByDay.fromMap(value);
   // });
-  list.forEach((key, value) {
-    // print(value);
-    // print(lists);
-    var over = OvertimeByDay.fromMap(key, value);
-    // print(over);
-    lists.add(
-      over,
-    );
-  });
+  var listOfDays = [];
+  // OvertimeRecordsByDays.fromMap({list.keys.first: list.values.first});
+
+  // print(list.map((key, value) => print("$key")));
+  // return List<OvertimeRecordsByDays>.from(list.map((key, value) => null));
+
+  return [
+    ...list.keys.map((key) => OvertimeRecordsByDays.fromMap({key: list[key]})),
+  ];
+  // print(endlist);
+  // return [];
+  list.keys.toList().map((date) {
+    // print(date);
+    // return OvertimeRecordsByDays.fromMap({list.keys.first: list.values.first});
+    // print(date);
+    // listOfDays.add(OvertimeByDay.fromMap(date, list[date]));
+    // lists[date.key] = list[date.value];
+    // return lists.add(OvertimeByDay.fromMap(date, list[date]));
+    // return print(date);
+  }).toList();
+  // print(listOfDays.length);
+  // list.keys.toList().forEach((key) {
+  //   print(list[key]);
+  //   listOfDays.ins
+  //   // listOfDays.add(key);
+  //
+  //   // print('$key ${list[key]}');
+  //   // lists.add(OvertimeByDay.fromMap(key, list[key]));
+  // });
+
+  // list.keys.toList().map((key) {
+  //   lists.add(OvertimeByDay.fromMap(key, list[key]));
+  //   print('lists');
+  // }).toList();
+  // list.forEach((key, value) {
+  //   // print(value);
+  //   var over = OvertimeByDay.fromMap(key, value);
+  //   lists.add(
+  //     over,
+  //   );
+  // });
 
   /// lists here to send back to service.
   // print(lists);
-  return lists;
+  // return lists;
   // return List<OvertimeByDay>.from(
   //   list.map(
   //     (x) => OvertimeByDay.fromMap(x),
@@ -210,19 +156,25 @@ class OvertimeByDay {
   OvertimeByDay({required this.date, required this.overtimes});
 
   factory OvertimeByDay.fromMap(key, value) {
-    // print('hi from map $value');
+    // print('hi from map ${value[0]}');
     List<OvertimeAttendance> otAttendances = [];
-    value.forEach((key, value) {
+
+    Map gg = value;
+    print(gg.entries.toList());
+
+    value.forEach((key, val) {
+      // OvertimeRecord.fromMap(val['get_t5']);
       // if () {
-      otAttendances.add(
-        OvertimeAttendance(
-          user: User.fromJson(value[0]['users']),
-          checkin: OvertimeCheckin.fromMap(value[0]),
-          checkout: OvertimeCheckout.fromMap(
-            value.length == 2 ? value[1] : value[0],
-          ),
-        ),
-      );
+      // otAttendances.add(
+      //   OvertimeAttendance(
+      //     user: User.fromJson(val['users']),
+      //     checkin: OvertimeCheckin.fromMap(val['get_t5']),
+      //     checkout: OvertimeCheckout.fromMap(
+      //       val.length == 2 ? val[1] : val[0],
+      //     ),
+      //   ),
+      // );
+
       // }
       // print(otAttendances);
       // print(ot.user?.name);
@@ -245,9 +197,114 @@ class OvertimeByDay {
   }
 }
 
+class OvertimeRecordsByDays {
+  DateTime date;
+  List<OvertimeRecord> records;
+
+  OvertimeRecordsByDays({required this.date, required this.records});
+
+  factory OvertimeRecordsByDays.fromMap(Map<String, dynamic> jsonData) {
+    // print(jsonData);
+    List<OvertimeRecord> recs = [
+      ...jsonData.values.first.map((record) => OvertimeRecord.fromMap(record))
+    ];
+
+    OvertimeRecordsByDays rec = OvertimeRecordsByDays(
+      date: DateTime.parse(jsonData.keys.first),
+      records: recs,
+    );
+    return rec;
+  }
+}
+
+class OvertimeRecord {
+  int id;
+  DateTime date;
+  User? user;
+  String duration;
+  AttendanceRecord? checkIn;
+  AttendanceRecord? checkOut;
+
+  OvertimeRecord({
+    required this.id,
+    required this.date,
+    this.user,
+    required this.duration,
+    this.checkIn,
+    this.checkOut,
+  });
+
+  factory OvertimeRecord.fromMap(Map<String, dynamic> jsonData) {
+    // print("HEY $jsonData");
+    return OvertimeRecord(
+      id: jsonData["id"],
+      date: DateTime.parse(jsonData["date"]),
+      user: jsonData['users'] == null ? null : User.fromJson(jsonData["users"]),
+      duration: jsonData["overtime"],
+      checkIn: jsonData["get_t5"] == null
+          ? null
+          : AttendanceRecord.fromMap(jsonData["get_t5"]),
+      checkOut: jsonData["get_t6"] == null
+          ? null
+          : AttendanceRecord.fromMap(jsonData["get_t6"]),
+    );
+  }
+
+  OvertimeRecord copyWith({
+    int? id,
+    DateTime? date,
+    User? user,
+    String? duration,
+    AttendanceRecord? checkIn,
+    AttendanceRecord? checkOut,
+  }) =>
+      OvertimeRecord(
+        id: id ?? this.id,
+        date: date ?? this.date,
+        user: user ?? this.user,
+        duration: duration ?? this.duration,
+        checkIn: checkIn ?? this.checkIn,
+        checkOut: checkOut ?? this.checkOut,
+      );
+}
+
+class AttendanceRecord {
+  int? id;
+  TimeOfDay? time;
+  String? note;
+
+  AttendanceRecord({
+    this.id,
+    this.time,
+    this.note,
+  });
+
+  factory AttendanceRecord.fromMap(Map<String, dynamic> jsonData) {
+    return AttendanceRecord(
+      id: jsonData['id'],
+      time: getTimeOfDayFromString(
+        jsonData['time'],
+      ),
+      note: jsonData['note'],
+    );
+  }
+
+  AttendanceRecord copyWith({
+    int? id,
+    TimeOfDay? time,
+    String? note,
+  }) =>
+      AttendanceRecord(
+        id: id ?? this.id,
+        time: time ?? this.time,
+        note: note ?? this.note,
+      );
+}
+
 class OvertimeListWithTotal {
   String total;
-  List<OvertimeAttendance> listOfOvertime;
+  // List<OvertimeAttendance> listOfOvertime;
+  List<OvertimeRecord> listOfOvertime;
 
   OvertimeListWithTotal({required this.total, required this.listOfOvertime});
 }

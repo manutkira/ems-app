@@ -20,7 +20,7 @@ class Overtime {
 
 class DeleteOvertime extends StatefulWidget {
   const DeleteOvertime({Key? key, required this.record}) : super(key: key);
-  final OvertimeAttendance record;
+  final OvertimeRecord record;
 
   @override
   _DeleteOvertimeState createState() => _DeleteOvertimeState();
@@ -31,7 +31,7 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
   bool hasError = false;
   String error = "";
   final AttendanceService _attendanceService = AttendanceService.instance;
-  late OvertimeAttendance record;
+  late OvertimeRecord record;
 
   void deleteOvertime() async {
     setState(() {
@@ -39,10 +39,10 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
     });
 
     try {
-      await _attendanceService.deleteOne(int.parse("${record.checkin?.id}"));
+      await _attendanceService.deleteOne(int.parse("${record.checkIn?.id}"));
       // if there is a check out record
-      if (record.checkin?.id != record.checkout?.id) {
-        await _attendanceService.deleteOne(int.parse("${record.checkout?.id}"));
+      if (record.checkIn?.id != record.checkOut?.id) {
+        await _attendanceService.deleteOne(int.parse("${record.checkOut?.id}"));
       }
     } catch (e) {
       setState(() {

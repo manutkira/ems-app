@@ -36,7 +36,7 @@ class _IndividualOvertimeScreenState
   List<String> options = [];
   List<String> dropdownItems = [];
 
-  List<OvertimeAttendance> overtimeRecords = [];
+  List<OvertimeRecord> overtimeRecords = [];
   bool isFetching = false;
   bool isFilterExpanded = false;
 
@@ -44,7 +44,7 @@ class _IndividualOvertimeScreenState
   DateTime endDate = DateTime.now();
 
   /// more menu
-  void handleMoreMenu(String value, OvertimeAttendance record) async {
+  void handleMoreMenu(String value, OvertimeRecord record) async {
     AppLocalizations? local = AppLocalizations.of(context);
     if (value == local?.optionView) {
       await modalBottomSheetBuilder(
@@ -109,6 +109,7 @@ class _IndividualOvertimeScreenState
       setState(() {
         total = records.total;
         overtimeRecords = records.listOfOvertime;
+        print(overtimeRecords);
         if (overtimeRecords.isNotEmpty) {
           user = overtimeRecords[0].user as User;
         }
@@ -549,10 +550,10 @@ class _IndividualOvertimeScreenState
 
   /// result widget
   Widget _buildListItem(int i) {
-    OvertimeAttendance record = overtimeRecords[i];
-    OvertimeCheckin? checkIn = record.checkin;
-    OvertimeCheckout? checkout = record.checkout;
-    TimeOfDay _time = getTimeOfDayFromString(checkout!.overtime);
+    OvertimeRecord record = overtimeRecords[i];
+    AttendanceRecord? checkIn = record.checkIn;
+    AttendanceRecord? checkout = record.checkOut;
+    TimeOfDay _time = getTimeOfDayFromString(record.duration);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -567,7 +568,7 @@ class _IndividualOvertimeScreenState
             children: [
               const SizedBox(width: 20),
               Text(
-                getDateStringFromDateTime(checkIn?.date as DateTime),
+                getDateStringFromDateTime(record.date),
                 style: kSubtitle,
               ),
             ],
