@@ -12,7 +12,6 @@ import '../../constants.dart';
 
 class AttedancesEdit extends StatefulWidget {
   final int id;
-  final int userId;
   final DateTime date;
   String? note;
   final TimeOfDay time;
@@ -20,7 +19,6 @@ class AttedancesEdit extends StatefulWidget {
   AttedancesEdit({
     Key? key,
     required this.id,
-    required this.userId,
     required this.date,
     this.note,
     required this.time,
@@ -30,7 +28,8 @@ class AttedancesEdit extends StatefulWidget {
 }
 
 class _AttedancesEditState extends State<AttedancesEdit> {
-  String url = "http://rest-api-laravel-flutter.herokuapp.com/api/attendances";
+  String url =
+      "http://rest-api-laravel-flutter.herokuapp.com/api/attendance_record";
   TextEditingController idController = TextEditingController();
   TextEditingController id = TextEditingController();
   TextEditingController typeController = TextEditingController();
@@ -53,7 +52,6 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     _selectDate = widget.date;
     selectedTime = TimeOfDay(
         hour: widget.time.hour as int, minute: widget.time.minute as int);
-    idController.text = widget.userId.toString();
     // typeController.text = widget.type;
     _noteController?.text = widget.note.toString();
     dateController.text = DateFormat('dd-MM-yyyy').format(widget.date);
@@ -94,6 +92,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
           _hour = selectedTime.hour.toString();
           _minute = selectedTime.minute.toString();
           _time = _hour! + ':' + _minute! + ':00';
+
           _timeController.text = _time!;
         });
       }
@@ -418,6 +417,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     var aUserId = idController.text;
     var aType = type;
     var aNote = _noteController?.text;
+    var aTime = _time;
     DateTime aDate = _selectDate?.copyWith(
         hour: selectedTime.hour,
         minute: selectedTime.minute,
@@ -429,28 +429,35 @@ class _AttedancesEditState extends State<AttedancesEdit> {
       "Accept": "application/json",
       "Content": "charset-UTF-8",
     };
-    String checkType() {
-      if (aType == local?.checkIn) {
-        return 'checkin';
-      }
-      if (aType == local?.checkOut) {
-        return 'checkout';
-      }
-      if (aType == local?.absent) {
-        return 'absent';
-      }
-      if (aType == local?.permission) {
-        return 'permission';
-      } else {
-        return '';
-      }
+    // String checkType() {
+    //   if (aType == local?.checkIn) {
+    //     return 'checkin';
+    //   }
+    //   if (aType == local?.checkOut) {
+    //     return 'checkout';
+    //   }
+    //   if (aType == local?.absent) {
+    //     return 'absent';
+    //   }
+    //   if (aType == local?.permission) {
+    //     return 'permission';
+    //   } else {
+    //     return '';
+    //   }
+    // }
+
+    // request.files
+    //     .add(http.MultipartFile.fromString('user_id', aUserId.toString()));
+    if (aNote!.isNotEmpty) {
+      request.files
+          .add(http.MultipartFile.fromString('note', aNote.toString()));
     }
 
-    request.files
-        .add(http.MultipartFile.fromString('user_id', aUserId.toString()));
-    request.files.add(http.MultipartFile.fromString('note', aNote.toString()));
-    request.files.add(http.MultipartFile.fromString('type', checkType()));
-    request.files.add(http.MultipartFile.fromString('date', aDate.toString()));
+    // request.files.add(http.MultipartFile.fromString('type', checkType()));
+    if (aTime != null) {
+      request.files
+          .add(http.MultipartFile.fromString('time', aTime.toString()));
+    }
 
     request.headers.addAll(headers);
 

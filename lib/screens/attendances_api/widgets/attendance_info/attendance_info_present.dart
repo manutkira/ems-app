@@ -10,6 +10,8 @@ class AttendanceInfoPresent extends StatelessWidget {
   final bool multipleDay;
   final bool isOneday;
   final bool isLoading;
+  final bool isLoadingAll;
+  final bool isLoadingById;
   final bool now;
   dynamic todayMorning;
   dynamic todayAfternoon;
@@ -30,6 +32,8 @@ class AttendanceInfoPresent extends StatelessWidget {
     required this.multipleDay,
     required this.isOneday,
     required this.isLoading,
+    required this.isLoadingAll,
+    required this.isLoadingById,
     required this.now,
     required this.todayMorning,
     required this.todayAfternoon,
@@ -61,7 +65,7 @@ class AttendanceInfoPresent extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(
-            child: isLoading
+            child: isLoading && isLoadingAll || isLoadingById
                 ? SizedBox(
                     child: Image.asset(
                       'assets/images/Gear-0.5s-200px.gif',

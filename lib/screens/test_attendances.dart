@@ -82,7 +82,6 @@ class _TestAttendancesState extends State<TestAttendances> {
             user.add(usersFromServer);
             userDisplay = user;
             _isLoading = false;
-            print(userDisplay[0].name);
           });
         }
       });
@@ -98,7 +97,6 @@ class _TestAttendancesState extends State<TestAttendances> {
         _attendanceAll = attendanceDisplay;
         _isLoading = false;
       });
-      print(attendanceDisplay);
       List flat = _attendanceAll.expand((element) => element.list).toList();
       attendanceListAll = flat.toList();
       int presentAllMorning = attendanceDisplay
@@ -633,6 +631,8 @@ class _TestAttendancesState extends State<TestAttendances> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 AttendanceInfoPresent(
+                  isLoadingAll: true,
+                  isLoadingById: true,
                   numColor: kGreenText,
                   backgroundColor: kGreenBackground,
                   now: now,
@@ -654,6 +654,8 @@ class _TestAttendancesState extends State<TestAttendances> {
                       presentMorning == null ? '♽' : presentMorning.toString(),
                 ),
                 AttendanceInfoPresent(
+                  isLoadingAll: true,
+                  isLoadingById: true,
                   numColor: kBlueText,
                   backgroundColor: kBlueBackground,
                   now: now,
@@ -676,6 +678,8 @@ class _TestAttendancesState extends State<TestAttendances> {
                       : permissionMorning.toString(),
                 ),
                 AttendanceInfoPresent(
+                  isLoadingAll: true,
+                  isLoadingById: true,
                   numColor: kYellowText,
                   backgroundColor: kYellowBackground,
                   now: now,
@@ -696,6 +700,8 @@ class _TestAttendancesState extends State<TestAttendances> {
                       lateMorning == null ? '♽' : lateMorning.toString(),
                 ),
                 AttendanceInfoPresent(
+                  isLoadingAll: true,
+                  isLoadingById: true,
                   numColor: kRedText,
                   backgroundColor: kRedBackground,
                   now: now,

@@ -10,7 +10,6 @@ import '../../constants.dart';
 
 class ViewAttendanceScreen extends StatefulWidget {
   final int id;
-  final int userId;
   final DateTime date;
   String? note;
   final String userName;
@@ -20,7 +19,6 @@ class ViewAttendanceScreen extends StatefulWidget {
   ViewAttendanceScreen({
     Key? key,
     required this.id,
-    required this.userId,
     required this.date,
     this.note,
     required this.userName,
@@ -46,7 +44,6 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
   void initState() {
     super.initState();
     id = widget.id.toString();
-    userIdController = widget.userId.toString();
     date = DateFormat('dd-MM-yyyy').format(widget.date);
     time = DateFormat('hh:mm').format(widget.date);
     note!.text = widget.note.toString();
