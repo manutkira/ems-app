@@ -1,4 +1,5 @@
 import 'package:ems/models/attendance.dart';
+import 'package:ems/models/attendances.dart';
 import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/models/user.dart';
@@ -22,16 +23,17 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
   UserService _userService = UserService.instance;
 
   List userDisplay = [];
-  List attendanceDisplay = [];
+  List<AttendancesWithUser> attendanceDisplay = [];
   List<User> users = [];
   bool _isLoading = true;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
 
   fetchAttendances() async {
-    List<AttendanceWithDate> atts = [];
+    List<AttendancesWithDateWithUser> atts = [];
     atts = await _attendanceService.findMany();
-    List<Attendance> att2 = attendancesFromAttendancesByDay(atts);
+    List<AttendancesWithUser> att2 =
+        attendancesWithUsesrFromAttendancesbyDay(atts);
     setState(() {
       attendanceDisplay = att2;
       attendanceDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
@@ -721,121 +723,121 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                 children: [
                                                   Column(
                                                     children: [
-                                                      BaselineRow(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: isEnglish
-                                                                        ? 0
-                                                                        : 3),
-                                                            child: Text(
-                                                                '${local?.shortPresent}: '),
-                                                          ),
-                                                          total
-                                                              ? Text((attendanceDisplay
-                                                                          .where(
-                                                                              (element) {
-                                                                        return element.userId == userDisplay[index].id &&
-                                                                            element.date.month ==
-                                                                                _selectMonth &&
-                                                                            checkPresent(
-                                                                                element) &&
-                                                                            element.date.year ==
-                                                                                int.parse(pickedYear);
-                                                                      }).length +
-                                                                      attendanceDisplay
-                                                                          .where(
-                                                                              (element) {
-                                                                        return element.userId == userDisplay[index].id &&
-                                                                            element.date.month ==
-                                                                                _selectMonth &&
-                                                                            checkPresentNoon(
-                                                                                element) &&
-                                                                            element.date.year ==
-                                                                                int.parse(pickedYear);
-                                                                      }).length)
-                                                                  .toString())
-                                                              : afternoon
-                                                                  ? Text(attendanceDisplay
-                                                                      .where((element) {
-                                                                        return element.userId == userDisplay[index].id &&
-                                                                            element.date.month ==
-                                                                                _selectMonth &&
-                                                                            checkPresentNoon(
-                                                                                element) &&
-                                                                            element.date.year ==
-                                                                                int.parse(pickedYear);
-                                                                      })
-                                                                      .length
-                                                                      .toString())
-                                                                  : Text(
-                                                                      attendanceDisplay
-                                                                          .where(
-                                                                              (element) {
-                                                                            return element.userId == userDisplay[index].id &&
-                                                                                element.date.month == _selectMonth &&
-                                                                                checkPresent(element) &&
-                                                                                element.date.year == int.parse(pickedYear);
-                                                                          })
-                                                                          .length
-                                                                          .toString(),
-                                                                    ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      BaselineRow(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: isEnglish
-                                                                        ? 0
-                                                                        : 3),
-                                                            child: Text(
-                                                                '${local?.shortAbsent}: '),
-                                                          ),
-                                                          total
-                                                              ? Text((attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month ==
-                                                                                  _selectMonth &&
-                                                                              checkAbsent(
-                                                                                  element) &&
-                                                                              element.date.year ==
-                                                                                  int.parse(
-                                                                                      pickedYear)))
-                                                                          .length +
-                                                                      attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              checkAbsentNoon(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
-                                                                          .length)
-                                                                  .toString())
-                                                              : afternoon
-                                                                  ? Text(
-                                                                      attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              checkAbsentNoon(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    )
-                                                                  : Text(
-                                                                      attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              checkAbsent(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    ),
-                                                        ],
-                                                      ),
+                                                      //   BaselineRow(
+                                                      //     children: [
+                                                      //       Padding(
+                                                      //         padding:
+                                                      //             EdgeInsets.only(
+                                                      //                 top: isEnglish
+                                                      //                     ? 0
+                                                      //                     : 3),
+                                                      //         child: Text(
+                                                      //             '${local?.shortPresent}: '),
+                                                      //       ),
+                                                      //       total
+                                                      //           ? Text((attendanceDisplay
+                                                      //                       .where(
+                                                      //                           (element) {
+                                                      //                     return element.userId == userDisplay[index].id &&
+                                                      //                         element.date.month ==
+                                                      //                             _selectMonth &&
+                                                      //                         checkPresent(
+                                                      //                             element) &&
+                                                      //                         element.date.year ==
+                                                      //                             int.parse(pickedYear);
+                                                      //                   }).length +
+                                                      //                   attendanceDisplay
+                                                      //                       .where(
+                                                      //                           (element) {
+                                                      //                     return element.userId == userDisplay[index].id &&
+                                                      //                         element.date.month ==
+                                                      //                             _selectMonth &&
+                                                      //                         checkPresentNoon(
+                                                      //                             element) &&
+                                                      //                         element.date.year ==
+                                                      //                             int.parse(pickedYear);
+                                                      //                   }).length)
+                                                      //               .toString())
+                                                      //           : afternoon
+                                                      //               ? Text(attendanceDisplay
+                                                      //                   .where((element) {
+                                                      //                     return element.userId == userDisplay[index].id &&
+                                                      //                         element.date.month ==
+                                                      //                             _selectMonth &&
+                                                      //                         checkPresentNoon(
+                                                      //                             element) &&
+                                                      //                         element.date.year ==
+                                                      //                             int.parse(pickedYear);
+                                                      //                   })
+                                                      //                   .length
+                                                      //                   .toString())
+                                                      //               : Text(
+                                                      //                   attendanceDisplay
+                                                      //                       .where(
+                                                      //                           (element) {
+                                                      //                         return element.userId == userDisplay[index].id &&
+                                                      //                             element.date.month == _selectMonth &&
+                                                      //                             checkPresent(element) &&
+                                                      //                             element.date.year == int.parse(pickedYear);
+                                                      //                       })
+                                                      //                       .length
+                                                      //                       .toString(),
+                                                      //                 ),
+                                                      //     ],
+                                                      //   ),
+                                                      //   const SizedBox(
+                                                      //     height: 10,
+                                                      //   ),
+                                                      //   BaselineRow(
+                                                      //     children: [
+                                                      //       Padding(
+                                                      //         padding:
+                                                      //             EdgeInsets.only(
+                                                      //                 top: isEnglish
+                                                      //                     ? 0
+                                                      //                     : 3),
+                                                      //         child: Text(
+                                                      //             '${local?.shortAbsent}: '),
+                                                      //       ),
+                                                      //       total
+                                                      //           ? Text((attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month ==
+                                                      //                               _selectMonth &&
+                                                      //                           checkAbsent(
+                                                      //                               element) &&
+                                                      //                           element.date.year ==
+                                                      //                               int.parse(
+                                                      //                                   pickedYear)))
+                                                      //                       .length +
+                                                      //                   attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month == _selectMonth &&
+                                                      //                           checkAbsentNoon(element) &&
+                                                      //                           element.date.year == int.parse(pickedYear)))
+                                                      //                       .length)
+                                                      //               .toString())
+                                                      //           : afternoon
+                                                      //               ? Text(
+                                                      //                   attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month == _selectMonth &&
+                                                      //                           checkAbsentNoon(element) &&
+                                                      //                           element.date.year == int.parse(pickedYear)))
+                                                      //                       .length
+                                                      //                       .toString(),
+                                                      //                 )
+                                                      //               : Text(
+                                                      //                   attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month == _selectMonth &&
+                                                      //                           checkAbsent(element) &&
+                                                      //                           element.date.year == int.parse(pickedYear)))
+                                                      //                       .length
+                                                      //                       .toString(),
+                                                      //                 ),
+                                                      //     ],
+                                                      //   ),
                                                     ],
                                                   ),
                                                   const SizedBox(
@@ -846,109 +848,109 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      BaselineRow(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: isEnglish
-                                                                        ? 0
-                                                                        : 3),
-                                                            child: Text(
-                                                                '${local?.shortLate}: '),
-                                                          ),
-                                                          total
-                                                              ? Text((attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month ==
-                                                                                  _selectMonth &&
-                                                                              checkLate(
-                                                                                  element) &&
-                                                                              element.date.year ==
-                                                                                  int.parse(
-                                                                                      pickedYear)))
-                                                                          .length +
-                                                                      attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              checkLateNoon(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
-                                                                          .length)
-                                                                  .toString())
-                                                              : afternoon
-                                                                  ? Text(
-                                                                      attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              checkLateNoon(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    )
-                                                                  : Text(
-                                                                      attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              checkLate(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      BaselineRow(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: isEnglish
-                                                                        ? 0
-                                                                        : 3),
-                                                            child: Text(
-                                                                '${local?.shortPermission}: '),
-                                                          ),
-                                                          total
-                                                              ? Text((attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month ==
-                                                                                  _selectMonth &&
-                                                                              checkPermission(
-                                                                                  element) &&
-                                                                              element.date.year ==
-                                                                                  int.parse(
-                                                                                      pickedYear)))
-                                                                          .length +
-                                                                      attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              checkPermissionNoon(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
-                                                                          .length)
-                                                                  .toString())
-                                                              : afternoon
-                                                                  ? Text(
-                                                                      attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              checkPermissionNoon(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    )
-                                                                  : Text(
-                                                                      attendanceDisplay
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              checkPermission(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    ),
-                                                        ],
-                                                      ),
+                                                      //   BaselineRow(
+                                                      //     children: [
+                                                      //       Padding(
+                                                      //         padding:
+                                                      //             EdgeInsets.only(
+                                                      //                 top: isEnglish
+                                                      //                     ? 0
+                                                      //                     : 3),
+                                                      //         child: Text(
+                                                      //             '${local?.shortLate}: '),
+                                                      //       ),
+                                                      //       total
+                                                      //           ? Text((attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month ==
+                                                      //                               _selectMonth &&
+                                                      //                           checkLate(
+                                                      //                               element) &&
+                                                      //                           element.date.year ==
+                                                      //                               int.parse(
+                                                      //                                   pickedYear)))
+                                                      //                       .length +
+                                                      //                   attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month == _selectMonth &&
+                                                      //                           checkLateNoon(element) &&
+                                                      //                           element.date.year == int.parse(pickedYear)))
+                                                      //                       .length)
+                                                      //               .toString())
+                                                      //           : afternoon
+                                                      //               ? Text(
+                                                      //                   attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month == _selectMonth &&
+                                                      //                           checkLateNoon(element) &&
+                                                      //                           element.date.year == int.parse(pickedYear)))
+                                                      //                       .length
+                                                      //                       .toString(),
+                                                      //                 )
+                                                      //               : Text(
+                                                      //                   attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month == _selectMonth &&
+                                                      //                           checkLate(element) &&
+                                                      //                           element.date.year == int.parse(pickedYear)))
+                                                      //                       .length
+                                                      //                       .toString(),
+                                                      //                 ),
+                                                      //     ],
+                                                      //   ),
+                                                      //   const SizedBox(
+                                                      //     height: 10,
+                                                      //   ),
+                                                      //   BaselineRow(
+                                                      //     children: [
+                                                      //       Padding(
+                                                      //         padding:
+                                                      //             EdgeInsets.only(
+                                                      //                 top: isEnglish
+                                                      //                     ? 0
+                                                      //                     : 3),
+                                                      //         child: Text(
+                                                      //             '${local?.shortPermission}: '),
+                                                      //       ),
+                                                      //       total
+                                                      //           ? Text((attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month ==
+                                                      //                               _selectMonth &&
+                                                      //                           checkPermission(
+                                                      //                               element) &&
+                                                      //                           element.date.year ==
+                                                      //                               int.parse(
+                                                      //                                   pickedYear)))
+                                                      //                       .length +
+                                                      //                   attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month == _selectMonth &&
+                                                      //                           checkPermissionNoon(element) &&
+                                                      //                           element.date.year == int.parse(pickedYear)))
+                                                      //                       .length)
+                                                      //               .toString())
+                                                      //           : afternoon
+                                                      //               ? Text(
+                                                      //                   attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month == _selectMonth &&
+                                                      //                           checkPermissionNoon(element) &&
+                                                      //                           element.date.year == int.parse(pickedYear)))
+                                                      //                       .length
+                                                      //                       .toString(),
+                                                      //                 )
+                                                      //               : Text(
+                                                      //                   attendanceDisplay
+                                                      //                       .where((element) => (element.userId == userDisplay[index].id &&
+                                                      //                           element.date.month == _selectMonth &&
+                                                      //                           checkPermission(element) &&
+                                                      //                           element.date.year == int.parse(pickedYear)))
+                                                      //                       .length
+                                                      //                       .toString(),
+                                                      //                 ),
+                                                      //     ],
+                                                      //   ),
                                                     ],
                                                   ),
                                                 ],

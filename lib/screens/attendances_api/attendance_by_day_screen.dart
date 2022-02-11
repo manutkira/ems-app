@@ -1,3 +1,4 @@
+import 'package:ems/models/attendances.dart';
 import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
 import 'package:ems/utils/services/user_service.dart';
@@ -21,15 +22,15 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   UserService _userService = UserService.instance;
 
   List userDisplay = [];
-  List<Attendance> attendanceDisplay = [];
+  List<AttendancesWithUser> attendanceDisplay = [];
   bool _isLoading = true;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
   DateTime testdate = DateTime(10, 11, 2021);
   bool noData = true;
-  List<Attendance> checkedDate = [];
-  List<Attendance> checkedDateNoon = [];
-  List<Attendance> users = [];
+  List<AttendancesWithUser> checkedDate = [];
+  List<AttendancesWithUser> checkedDateNoon = [];
+  List<AttendancesWithUser> users = [];
   String dropDownValue = '';
   bool afternoon = false;
 
@@ -40,12 +41,13 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   }
 
   fetchAttendances() async {
-    List<AttendanceWithDate> atts = [];
+    List<AttendancesWithDateWithUser> atts = [];
     atts = await _attendanceService.findMany();
-    List<Attendance> att2 = attendancesFromAttendancesByDay(atts);
+    List<AttendancesWithUser> att2 =
+        attendancesWithUsesrFromAttendancesbyDay(atts);
     setState(() {
       attendanceDisplay = att2;
-      attendanceDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+      attendanceDisplay.sort((a, b) => a.id.compareTo(b.id as int));
     });
   }
 
@@ -58,78 +60,172 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     });
   }
 
+  checkPresent(AttendancesWithUser element) {
+    if (element.getT1?.note != 'absent' &&
+        element.getT1?.note != 'permission') {
+      if (element.getT1!.time.hour == 7) {
+        if (element.getT1!.time.minute <= 15) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.getT1!.time.hour < 7) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkPresengetT2(AttendancesWithUser element) {
+    if (element.getT3?.note != 'absent' &&
+        element.getT3?.note != 'permission') {
+      if (element.getT3!.time.hour == 13) {
+        if (element.getT3!.time.minute <= 15) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.getT3!.time.hour < 13) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkLate1(AttendancesWithUser element) {
+    if (element.getT1?.note != 'absent' &&
+        element.getT1?.note != 'permission') {
+      if (element.getT1!.time.hour == 7) {
+        if (element.getT1!.time.minute >= 16) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.getT1!.time.hour > 7) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkLate2(AttendancesWithUser element) {
+    if (element.getT3?.note != 'absent' &&
+        element.getT3?.note != 'permission') {
+      if (element.getT3!.time.hour == 13) {
+        if (element.getT3!.time.minute >= 16) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.getT3!.time.hour > 13) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsengetT1(AttendancesWithUser element) {
+    if (element.getT1!.note == 'absent') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsengetT2(AttendancesWithUser element) {
+    if (element.getT3!.note == 'absent') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissiongetT1(AttendancesWithUser element) {
+    if (element.getT1!.note == 'permission') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissiongetT2(AttendancesWithUser element) {
+    if (element.getT3!.note == 'permission') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   void checkDate(DateTime pick) {
     var checkingDate = attendanceDisplay.where((element) =>
-        element.date!.day == pick.day &&
-        element.date!.month == pick.month &&
-        element.date!.year == pick.year &&
-        element.code == 'cin1' &&
-        element.type != 'checkout');
+        element.date.day == pick.day &&
+        element.date.month == pick.month &&
+        element.date.year == pick.year &&
+        element.getT1 != null);
     setState(() {
       users = checkingDate.toList();
       checkedDate = users;
-      checkedDate.sort((a, b) => a.userId!.compareTo(b.userId as int));
+      checkedDate.sort((a, b) => a.userId.compareTo(b.userId as int));
     });
   }
 
   void checkDateNoon(DateTime pick) {
     var checkingDate = attendanceDisplay.where((element) =>
-        element.date!.day == pick.day &&
-        element.date!.month == pick.month &&
-        element.date!.year == pick.year &&
-        element.code == 'cin2' &&
-        element.type != 'checkout');
+        element.date.day == pick.day &&
+        element.date.month == pick.month &&
+        element.date.year == pick.year &&
+        element.getT3 != null);
     setState(() {
       users = checkingDate.toList();
       checkedDateNoon = users;
-      checkedDateNoon.sort((a, b) => a.userId!.compareTo(b.userId as int));
+      checkedDateNoon.sort((a, b) => a.userId.compareTo(b.userId as int));
     });
   }
 
-  String checkAttendance(Attendance attendance) {
+  String checkAttendance(AttendancesWithUser attendance) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    if (attendance.type == 'checkin' &&
-        attendance.date!.hour == 7 &&
-        attendance.date!.minute <= 15 &&
-        attendance.code == 'cin1') {
+    if (checkPresent(attendance)) {
       return '${local?.present}';
     }
-    if (attendance.type == 'checkin' &&
-        attendance.date!.hour >= 7 &&
-        attendance.date!.minute >= 16 &&
-        attendance.code == 'cin1') {
+    if (checkLate1(attendance)) {
       return '${local?.late}';
     }
-    if (attendance.type == 'permission' && attendance.code == 'cin1') {
+    if (checkPermissiongetT1(attendance)) {
       return '${local?.permission}';
     }
-    if (attendance.type == 'absent' && attendance.code == 'cin1') {
+    if (checkAbsengetT1(attendance)) {
       return '${local?.absent}';
     } else {
       return '';
     }
   }
 
-  String checkAttendanceNoon(Attendance attendance) {
+  String checkAttendanceNoon(AttendancesWithUser attendance) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    if (attendance.type == 'checkin' &&
-        attendance.date!.hour == 13 &&
-        attendance.date!.minute <= 15 &&
-        attendance.code == 'cin2') {
+    if (checkPresengetT2(attendance)) {
       return '${local?.present}';
     }
-    if (attendance.type == 'checkin' &&
-        attendance.date!.hour >= 13 &&
-        attendance.date!.minute >= 16 &&
-        attendance.code == 'cin2') {
+    if (checkLate2(attendance)) {
       return '${local?.late}';
     }
-    if (attendance.type == 'permission' && attendance.code == 'cin2') {
+    if (checkPermissiongetT2(attendance)) {
       return '${local?.permission}';
     }
-    if (attendance.type == 'absent' && attendance.code == 'cin2') {
+    if (checkAbsengetT2(attendance)) {
       return '${local?.absent}';
     } else {
       return '';
@@ -437,7 +533,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                           setState(() {
                             clearText();
                             checkedDate = users.where((user) {
-                              var userName = user.users!.name!.toLowerCase();
+                              var userName = user.user!.name!.toLowerCase();
                               return userName.contains(_controller.text);
                             }).toList();
                           });
@@ -457,7 +553,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                 text = text.toLowerCase();
                 setState(() {
                   checkedDate = users.where((user) {
-                    var userName = user.users!.name!.toLowerCase();
+                    var userName = user.user!.name!.toLowerCase();
                     return userName.contains(text);
                   }).toList();
                 });
@@ -471,22 +567,22 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
             onSelected: (int selectedValue) {
               if (selectedValue == 0) {
                 setState(() {
-                  checkedDate.sort((a, b) => a.users!.name!
+                  checkedDate.sort((a, b) => a.user!.name!
                       .toLowerCase()
-                      .compareTo(b.users!.name!.toLowerCase()));
+                      .compareTo(b.user!.name!.toLowerCase()));
                 });
               }
               if (selectedValue == 1) {
                 setState(() {
-                  checkedDate.sort((b, a) => a.users!.name!
+                  checkedDate.sort((b, a) => a.user!.name!
                       .toLowerCase()
-                      .compareTo(b.users!.name!.toLowerCase()));
+                      .compareTo(b.user!.name!.toLowerCase()));
                 });
               }
               if (selectedValue == 2) {
                 setState(() {
                   checkedDate
-                      .sort((a, b) => a.userId!.compareTo(b.userId as int));
+                      .sort((a, b) => a.userId.compareTo(b.userId as int));
                 });
               }
             },
@@ -555,19 +651,19 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(150),
                   child: afternoon
-                      ? checkedDateNoon[index].users!.image == null
+                      ? checkedDateNoon[index].user!.image == null
                           ? Image.asset(
                               'assets/images/profile-icon-png-910.png')
                           : Image.network(
-                              checkedDateNoon[index].users!.image.toString(),
+                              checkedDateNoon[index].user!.image.toString(),
                               fit: BoxFit.cover,
                               height: 75,
                             )
-                      : checkedDate[index].users!.image == null
+                      : checkedDate[index].user?.image == null
                           ? Image.asset(
                               'assets/images/profile-icon-png-910.png')
                           : Image.network(
-                              checkedDate[index].users!.image.toString(),
+                              checkedDate[index].user!.image.toString(),
                               fit: BoxFit.cover,
                               height: 75,
                             ),
@@ -589,8 +685,8 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                       ),
                       Text(
                         afternoon
-                            ? checkedDateNoon[index].users!.name.toString()
-                            : checkedDate[index].users!.name.toString(),
+                            ? checkedDateNoon[index].user!.name.toString()
+                            : checkedDate[index].user!.name.toString(),
                       ),
                     ],
                   ),
@@ -607,7 +703,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                       ),
                       Text(
                         afternoon
-                            ? checkedDateNoon[index].users!.id.toString()
+                            ? checkedDateNoon[index].user!.id.toString()
                             : checkedDate[index].userId.toString(),
                       ),
                     ],
@@ -624,34 +720,20 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
               alignment: Alignment.center,
               decoration: afternoon
                   ? BoxDecoration(
-                      color: checkedDateNoon[index].type == 'checkin' &&
-                              checkedDateNoon[index].date!.hour == 13 &&
-                              checkedDateNoon[index].date!.minute <= 15 &&
-                              checkedDateNoon[index].code == 'cin2'
+                      color: checkPresengetT2(checkedDateNoon[index])
                           ? Color(0xff9CE29B)
-                          : checkedDateNoon[index].type == 'checkin' &&
-                                  checkedDateNoon[index].date!.hour >= 13 &&
-                                  checkedDateNoon[index].date!.minute >= 16 &&
-                                  checkedDateNoon[index].code == 'cin2'
+                          : checkLate2(checkedDateNoon[index])
                               ? Color(0xffF3FDB6)
-                              : checkedDateNoon[index].type == 'absent' &&
-                                      checkedDateNoon[index].code == 'cin2'
+                              : checkAbsengetT2(checkedDateNoon[index])
                                   ? Color(0xffFFCBCE)
                                   : Color(0xff77B1C9),
                       borderRadius: BorderRadius.circular(10))
                   : BoxDecoration(
-                      color: checkedDate[index].type == 'checkin' &&
-                              checkedDate[index].date!.hour == 7 &&
-                              checkedDate[index].date!.minute <= 15 &&
-                              checkedDate[index].code == 'cin1'
-                          ? Color(0xff9CE29B)
-                          : checkedDate[index].type == 'checkin' &&
-                                  checkedDate[index].date!.hour >= 7 &&
-                                  checkedDate[index].date!.minute >= 16 &&
-                                  checkedDate[index].code == 'cin1'
+                      color: checkPresent(checkedDate[index])
+                          ? Color(0xff9CE39B)
+                          : checkLate1(checkedDate[index])
                               ? Color(0xffF3FDB6)
-                              : checkedDate[index].type == 'absent' &&
-                                      checkedDate[index].code == 'cin1'
+                              : checkAbsengetT1(checkedDate[index])
                                   ? Color(0xffFFCBCE)
                                   : Color(0xff77B1C9),
                       borderRadius: BorderRadius.circular(10)),
@@ -659,23 +741,14 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                   ? Text(
                       checkAttendanceNoon(checkedDateNoon[index]),
                       style: TextStyle(
-                        color: checkedDateNoon[index].type == 'checkin' &&
-                                checkedDateNoon[index].date!.hour == 13 &&
-                                checkedDateNoon[index].date!.minute <= 15 &&
-                                checkedDateNoon[index].code == 'cin2'
+                        color: checkPresengetT2(checkedDateNoon[index])
                             ? Color(0xff334732)
-                            : checkedDateNoon[index].type == 'checkin' &&
-                                    checkedDateNoon[index].code == 'cin2' &&
-                                    checkedDateNoon[index].date!.hour >= 13 &&
-                                    checkedDateNoon[index].date!.minute >= 16
+                            : checkLate2(checkedDateNoon[index])
                                 ? Color(0xff5A5E45)
-                                : checkedDateNoon[index].type == 'absent' &&
-                                        checkedDateNoon[index].code == 'cin2'
+                                : checkAbsengetT2(checkedDateNoon[index])
                                     ? Color(0xffA03E3E)
-                                    : checkedDateNoon[index].type ==
-                                                'permission' &&
-                                            checkedDateNoon[index].code ==
-                                                'cin2'
+                                    : checkPermissiongetT2(
+                                            checkedDateNoon[index])
                                         ? Color(0xff313B3F)
                                         : Color(0xff313B3F),
                       ),
@@ -683,18 +756,11 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                   : Text(
                       checkAttendance(checkedDate[index]),
                       style: TextStyle(
-                        color: checkedDate[index].type == 'checkin' &&
-                                checkedDate[index].date!.hour == 7 &&
-                                checkedDate[index].date!.minute <= 15 &&
-                                checkedDate[index].code == 'cin1'
+                        color: checkPresent(checkedDate[index])
                             ? Color(0xff334732)
-                            : checkedDate[index].type == 'checkin' &&
-                                    checkedDate[index].date!.hour >= 7 &&
-                                    checkedDate[index].date!.minute >= 16 &&
-                                    checkedDate[index].code == 'cin1'
+                            : checkLate1(checkedDate[index])
                                 ? Color(0xff5A5E45)
-                                : checkedDate[index].type == 'absent' &&
-                                        checkedDate[index].code == 'cin1'
+                                : checkAbsengetT1(checkedDate[index])
                                     ? Color(0xffA03E3E)
                                     : Color(0xff313B3F),
                       ),
