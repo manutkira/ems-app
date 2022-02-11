@@ -46,7 +46,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
     setState(() {
       attendancedisplay = att2;
       print(attendancedisplay);
-      attendancedisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+      attendancedisplay.sort((a, b) => a.id.compareTo(b.id as int));
     });
   }
 
