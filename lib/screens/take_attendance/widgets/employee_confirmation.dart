@@ -31,6 +31,8 @@ class _EmployeeConfirmScreenState extends State<EmployeeConfirmScreen> {
   }
 
   void checkIfLate() {
+    /// should be solved if we have shift hour. we could have just compared that from current user object.
+
     DateTime now = DateTime.now();
     bool isCheckInLateMorning = now.isAfter(
           DateTime(

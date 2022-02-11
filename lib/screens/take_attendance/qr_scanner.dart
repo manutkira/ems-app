@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:ems/constants.dart';
@@ -68,8 +69,11 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
 
     // registering record
     try {
-      await _attService.createOne(
-        attendance: attendance as Attendance,
+      await _attService.createOneRecord(
+        userId: attendance?.userId as int,
+        datetime: DateTime.now(),
+        note: attendance?.note,
+        // attendance: attendance as Attendance,
       );
     } catch (err) {
       _buildScanFailed();
@@ -114,7 +118,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     int? id = int.tryParse(json['id']);
     String? profile = json['profile'];
     String? name = json['name'];
-    if (id == null || profile == null || name == null) {
+    if (id == null || name == null) {
       return false;
     }
 
@@ -140,12 +144,14 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
       confirmation = true;
     }
 
+    log('before\n\n\n\n\n\n');
     await showMaterialModalBottomSheet(
       isDismissible: false,
       enableDrag: false,
       backgroundColor: Colors.transparent,
       context: context,
       builder: (BuildContext context) {
+        log('hey\n\n\n\n\n\n');
         return ClipRRect(
           borderRadius: const BorderRadius.only(
             topRight: Radius.circular(30),
@@ -176,7 +182,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
                     resizeToAvoidBottomInset: true,
                     body: EmployeeConfirmScreen(
                       name: name,
-                      profile: profile,
+                      profile: '$profile',
                       ok: (note) => ok(note),
 
                       /// TODO: DO THIS NEXT
