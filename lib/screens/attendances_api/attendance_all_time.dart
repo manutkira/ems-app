@@ -45,56 +45,20 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
         attendancesWithUsesrFromAttendancesbyDay(atts);
     setState(() {
       attendancedisplay = att2;
-      print(attendancedisplay);
       attendancedisplay.sort((a, b) => a.id.compareTo(b.id as int));
     });
   }
 
-  checkLateNoon(Attendance element) {
-    if (element.code == 'cin2') {
-      if (element.type == 'checkin') {
-        if (element.date!.hour == 13) {
-          if (element.date!.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.date!.hour > 13) {
+  checkPresent(AttendancesWithUser element) {
+    if (element.getT1?.note != 'absent' &&
+        element.getT1?.note != 'permission') {
+      if (element.getT1!.time.hour == 7) {
+        if (element.getT1!.time.minute <= 15) {
           return true;
         } else {
           return false;
         }
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkPresent(Attendance element) {
-    if (element.code == 'cin1') {
-      if (element.type == 'checkin') {
-        if (element.date!.hour <= 7) {
-          if (element.date!.minute <= 15) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkAbsent(Attendance element) {
-    if (element.code == 'cin1') {
-      if (element.type == 'absent') {
+      } else if (element.getT1!.time.hour < 7) {
         return true;
       } else {
         return false;
@@ -104,79 +68,90 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
     }
   }
 
-  checkAbsentNoon(Attendance element) {
-    if (element.code == 'cin2') {
-      if (element.type == 'absent') {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkPermission(Attendance element) {
-    if (element.code == 'cin1') {
-      if (element.type == 'permission') {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkPermissionNoon(Attendance element) {
-    if (element.code == 'cin2') {
-      if (element.type == 'permission') {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkPresentNoon(Attendance element) {
-    if (element.code == 'cin2') {
-      if (element.type == 'checkin') {
-        if (element.date!.hour <= 13) {
-          if (element.date!.minute <= 15) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkLate(Attendance element) {
-    if (element.code == 'cin1') {
-      if (element.type == 'checkin') {
-        if (element.date!.hour == 7) {
-          if (element.date!.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.date!.hour > 7) {
+  checkPresengetT2(AttendancesWithUser element) {
+    if (element.getT3?.note != 'absent' &&
+        element.getT3?.note != 'permission') {
+      if (element.getT3!.time.hour == 13) {
+        if (element.getT3!.time.minute <= 15) {
           return true;
         } else {
           return false;
         }
+      } else if (element.getT3!.time.hour < 13) {
+        return true;
       } else {
         return false;
       }
+    } else {
+      return false;
+    }
+  }
+
+  checkLate1(AttendancesWithUser element) {
+    if (element.getT1?.note != 'absent' &&
+        element.getT1?.note != 'permission') {
+      if (element.getT1!.time.hour == 7) {
+        if (element.getT1!.time.minute >= 16) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.getT1!.time.hour > 7) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkLate2(AttendancesWithUser element) {
+    if (element.getT3?.note != 'absent' &&
+        element.getT3?.note != 'permission') {
+      if (element.getT3!.time.hour == 13) {
+        if (element.getT3!.time.minute >= 16) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.getT3!.time.hour > 13) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsengetT1(AttendancesWithUser element) {
+    if (element.getT1!.note == 'absent') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsengetT2(AttendancesWithUser element) {
+    if (element.getT3!.note == 'absent') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissiongetT1(AttendancesWithUser element) {
+    if (element.getT1!.note == 'permission') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissiongetT2(AttendancesWithUser element) {
+    if (element.getT3!.note == 'permission') {
+      return true;
     } else {
       return false;
     }
@@ -404,97 +379,105 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                     children: [
                       Column(
                         children: [
-                          //   BaselineRow(
-                          //     children: [
-                          //       Padding(
-                          //         padding:
-                          //             EdgeInsets.only(top: isEnglish ? 0 : 3),
-                          //         child: Text('${local?.shortPresent}: '),
-                          //       ),
-                          //       total
-                          //           ? Text((attendancedisplay
-                          //                       .where(
-                          //                         (element) =>
-                          //                             element.userId ==
-                          //                                 userDisplay[index].id &&
-                          //                             checkPresentNoon(element),
-                          //                       )
-                          //                       .length +
-                          //                   attendancedisplay
-                          //                       .where(
-                          //                         (element) =>
-                          //                             element.userId ==
-                          //                                 userDisplay[index].id &&
-                          //                             checkPresent(element),
-                          //                       )
-                          //                       .length)
-                          //               .toString())
-                          //           : afternoon
-                          //               ? Text(attendancedisplay
-                          //                   .where(
-                          //                     (element) =>
-                          //                         element.userId ==
-                          //                             userDisplay[index].id &&
-                          //                         checkPresentNoon(element),
-                          //                   )
-                          //                   .length
-                          //                   .toString())
-                          //               : Text(attendancedisplay
-                          //                   .where(
-                          //                     (element) =>
-                          //                         element.userId ==
-                          //                             userDisplay[index].id &&
-                          //                         checkPresent(element),
-                          //                   )
-                          //                   .length
-                          //                   .toString()),
-                          //     ],
-                          //   ),
-                          //   SizedBox(
-                          //     height: 10,
-                          //   ),
-                          //   BaselineRow(
-                          //     children: [
-                          //       Padding(
-                          //         padding:
-                          //             EdgeInsets.only(top: isEnglish ? 0 : 3),
-                          //         child: Text('${local?.shortAbsent}: '),
-                          //       ),
-                          //       total
-                          //           ? Text((attendancedisplay
-                          //                       .where((element) =>
-                          //                           element.userId ==
-                          //                               userDisplay[index].id &&
-                          //                           checkAbsentNoon(element))
-                          //                       .length +
-                          //                   attendancedisplay
-                          //                       .where((element) =>
-                          //                           element.userId ==
-                          //                               userDisplay[index].id &&
-                          //                           checkAbsent(element))
-                          //                       .length)
-                          //               .toString())
-                          //           : afternoon
-                          //               ? Text(
-                          //                   attendancedisplay
-                          //                       .where((element) =>
-                          //                           element.userId ==
-                          //                               userDisplay[index].id &&
-                          //                           checkAbsentNoon(element))
-                          //                       .length
-                          //                       .toString(),
-                          //                 )
-                          //               : Text(
-                          //                   attendancedisplay
-                          //                       .where((element) =>
-                          //                           element.userId ==
-                          //                               userDisplay[index].id &&
-                          //                           checkAbsent(element))
-                          //                       .length
-                          //                       .toString(),
-                          //                 ),
-                          //     ],
-                          //   ),
+                          BaselineRow(
+                            children: [
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
+                                child: Text('${local?.shortPresent}: '),
+                              ),
+                              total
+                                  ? Text((attendancedisplay
+                                              .where(
+                                                (element) =>
+                                                    element.userId ==
+                                                        userDisplay[index].id &&
+                                                    element.getT3 != null &&
+                                                    checkPresengetT2(element),
+                                              )
+                                              .length +
+                                          attendancedisplay
+                                              .where(
+                                                (element) =>
+                                                    element.userId ==
+                                                        userDisplay[index].id &&
+                                                    element.getT1 != null &&
+                                                    checkPresent(element),
+                                              )
+                                              .length)
+                                      .toString())
+                                  : afternoon
+                                      ? Text(attendancedisplay
+                                          .where(
+                                            (element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                element.getT3 != null &&
+                                                checkPresengetT2(element),
+                                          )
+                                          .length
+                                          .toString())
+                                      : Text(attendancedisplay
+                                          .where(
+                                            (element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                element.getT1 != null &&
+                                                checkPresent(element),
+                                          )
+                                          .length
+                                          .toString()),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          BaselineRow(
+                            children: [
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
+                                child: Text('${local?.shortAbsent}: '),
+                              ),
+                              total
+                                  ? Text((attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  element.getT3 != null &&
+                                                  checkAbsengetT2(element))
+                                              .length +
+                                          attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  element.getT1 != null &&
+                                                  checkAbsengetT1(element))
+                                              .length)
+                                      .toString())
+                                  : afternoon
+                                      ? Text(
+                                          attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  element.getT3 != null &&
+                                                  checkAbsengetT2(element))
+                                              .length
+                                              .toString(),
+                                        )
+                                      : Text(
+                                          attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  element.getT1 != null &&
+                                                  checkAbsengetT1(element))
+                                              .length
+                                              .toString(),
+                                        ),
+                            ],
+                          ),
                         ],
                       ),
                       SizedBox(
@@ -503,85 +486,93 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          //   BaselineRow(
-                          //     children: [
-                          //       Padding(
-                          //         padding:
-                          //             EdgeInsets.only(top: isEnglish ? 0 : 3),
-                          //         child: Text('${local?.shortLate}: '),
-                          //       ),
-                          //       total
-                          //           ? Text((attendancedisplay
-                          //                       .where((element) =>
-                          //                           element.userId ==
-                          //                               userDisplay[index].id &&
-                          //                           checkLateNoon(element))
-                          //                       .length +
-                          //                   attendancedisplay
-                          //                       .where((element) =>
-                          //                           element.userId ==
-                          //                               userDisplay[index].id &&
-                          //                           checkLate(element))
-                          //                       .length)
-                          //               .toString())
-                          //           : afternoon
-                          //               ? Text(attendancedisplay
-                          //                   .where((element) =>
-                          //                       element.userId ==
-                          //                           userDisplay[index].id &&
-                          //                       checkLateNoon(element))
-                          //                   .length
-                          //                   .toString())
-                          //               : Text(attendancedisplay
-                          //                   .where((element) =>
-                          //                       element.userId ==
-                          //                           userDisplay[index].id &&
-                          //                       checkLate(element))
-                          //                   .length
-                          //                   .toString()),
-                          //     ],
-                          //   ),
-                          //   SizedBox(
-                          //     height: 10,
-                          //   ),
-                          //   BaselineRow(
-                          //     children: [
-                          //       Padding(
-                          //         padding:
-                          //             EdgeInsets.only(top: isEnglish ? 0 : 3),
-                          //         child: Text('${local?.shortPermission}: '),
-                          //       ),
-                          //       total
-                          //           ? Text((attendancedisplay
-                          //                       .where((element) =>
-                          //                           element.userId ==
-                          //                               userDisplay[index].id &&
-                          //                           checkPermissionNoon(element))
-                          //                       .length +
-                          //                   attendancedisplay
-                          //                       .where((element) =>
-                          //                           element.userId ==
-                          //                               userDisplay[index].id &&
-                          //                           checkPermission(element))
-                          //                       .length)
-                          //               .toString())
-                          //           : afternoon
-                          //               ? Text(attendancedisplay
-                          //                   .where((element) =>
-                          //                       element.userId ==
-                          //                           userDisplay[index].id &&
-                          //                       checkPermissionNoon(element))
-                          //                   .length
-                          //                   .toString())
-                          //               : Text(attendancedisplay
-                          //                   .where((element) =>
-                          //                       element.userId ==
-                          //                           userDisplay[index].id &&
-                          //                       checkPermission(element))
-                          //                   .length
-                          //                   .toString()),
-                          //     ],
-                          //   ),
+                          BaselineRow(
+                            children: [
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
+                                child: Text('${local?.shortLate}: '),
+                              ),
+                              total
+                                  ? Text((attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  element.getT3 != null &&
+                                                  checkLate2(element))
+                                              .length +
+                                          attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  element.getT1 != null &&
+                                                  checkLate1(element))
+                                              .length)
+                                      .toString())
+                                  : afternoon
+                                      ? Text(attendancedisplay
+                                          .where((element) =>
+                                              element.userId ==
+                                                  userDisplay[index].id &&
+                                              element.getT3 != null &&
+                                              checkLate2(element))
+                                          .length
+                                          .toString())
+                                      : Text(attendancedisplay
+                                          .where((element) =>
+                                              element.userId ==
+                                                  userDisplay[index].id &&
+                                              element.getT1 != null &&
+                                              checkLate1(element))
+                                          .length
+                                          .toString()),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          BaselineRow(
+                            children: [
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
+                                child: Text('${local?.shortPermission}: '),
+                              ),
+                              total
+                                  ? Text((attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  element.getT3 != null &&
+                                                  checkPermissiongetT2(element))
+                                              .length +
+                                          attendancedisplay
+                                              .where((element) =>
+                                                  element.userId ==
+                                                      userDisplay[index].id &&
+                                                  element.getT1 != null &&
+                                                  checkPermissiongetT1(element))
+                                              .length)
+                                      .toString())
+                                  : afternoon
+                                      ? Text(attendancedisplay
+                                          .where((element) =>
+                                              element.userId ==
+                                                  userDisplay[index].id &&
+                                              element.getT3 != null &&
+                                              checkPermissiongetT2(element))
+                                          .length
+                                          .toString())
+                                      : Text(attendancedisplay
+                                          .where((element) =>
+                                              element.userId ==
+                                                  userDisplay[index].id &&
+                                              element.getT1 != null &&
+                                              checkPermissiongetT1(element))
+                                          .length
+                                          .toString()),
+                            ],
+                          ),
                         ],
                       ),
                     ],
