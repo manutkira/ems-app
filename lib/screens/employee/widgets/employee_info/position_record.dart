@@ -138,10 +138,10 @@ class _TestPositionState extends State<TestPosition> {
     bool isEnglish = isInEnglish(context);
     final response = await http.delete(Uri.parse(
         "http://rest-api-laravel-flutter.herokuapp.com/api/position/$id"));
-    showInSnackBar("${local?.deletingAttendance}");
+    showInSnackBar("${local!.deletingAttendance}");
     if (response.statusCode == 200) {
       fetchPositions();
-      showInSnackBar("${local?.deletedAttendance}");
+      showInSnackBar("${local.deletedAttendance}");
     } else {
       return false;
     }
@@ -162,7 +162,7 @@ class _TestPositionState extends State<TestPosition> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Position'),
+        title: Text('${local!.position}'),
         actions: [
           IconButton(
             onPressed: () async {
@@ -189,7 +189,7 @@ class _TestPositionState extends State<TestPosition> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      '${local?.position} ',
+                                      '${local.position} ',
                                       style: kParagraph.copyWith(
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -213,7 +213,7 @@ class _TestPositionState extends State<TestPosition> {
                                                   contentPadding:
                                                       EdgeInsets.only(left: 10),
                                                   hintText:
-                                                      '${local?.enterPosition}',
+                                                      '${local.enterPosition}',
                                                   errorStyle: TextStyle(
                                                     fontSize: 15,
                                                     fontWeight: FontWeight.bold,
@@ -237,7 +237,7 @@ class _TestPositionState extends State<TestPosition> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  '${local?.startDate} ',
+                                  '${local.startDate} ',
                                   style: kParagraph.copyWith(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -257,7 +257,7 @@ class _TestPositionState extends State<TestPosition> {
                                           readOnly: true,
                                           decoration: InputDecoration(
                                             hintText:
-                                                '${local?.selectStartDate}',
+                                                '${local.selectStartDate}',
                                             suffixIcon: IconButton(
                                                 onPressed: () {
                                                   _startDatePicker();
@@ -289,7 +289,7 @@ class _TestPositionState extends State<TestPosition> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  '${local?.endDate} ',
+                                  '${local.endDate} ',
                                   style: kParagraph.copyWith(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -308,7 +308,7 @@ class _TestPositionState extends State<TestPosition> {
                                         child: TextFormField(
                                           readOnly: true,
                                           decoration: InputDecoration(
-                                            hintText: '${local?.selectEndDate}',
+                                            hintText: '${local.selectEndDate}',
                                             suffixIcon: IconButton(
                                                 onPressed: () {
                                                   _endDatePicker();
@@ -350,7 +350,7 @@ class _TestPositionState extends State<TestPosition> {
                                   },
                                   color: Theme.of(context).primaryColor,
                                   child: Text(
-                                    '${local?.save}',
+                                    '${local.save}',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
@@ -366,7 +366,7 @@ class _TestPositionState extends State<TestPosition> {
                                   },
                                   color: Colors.red,
                                   child: Text(
-                                    '${local?.cancel}',
+                                    '${local.cancel}',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
@@ -393,7 +393,7 @@ class _TestPositionState extends State<TestPosition> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('${local?.fetchData}'),
+                  Text('${local.fetchData}'),
                   const CircularProgressIndicator(
                     color: kWhite,
                   ),
@@ -451,7 +451,7 @@ class _TestPositionState extends State<TestPosition> {
                             BaselineRow(
                               children: [
                                 Text(
-                                  '${local?.name} : ',
+                                  '${local.name} : ',
                                   style: kParagraph.copyWith(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -470,7 +470,7 @@ class _TestPositionState extends State<TestPosition> {
                             BaselineRow(
                               children: [
                                 Text(
-                                  '${local?.id} : ',
+                                  '${local.id} : ',
                                   style: kParagraph.copyWith(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -495,8 +495,8 @@ class _TestPositionState extends State<TestPosition> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Position Record',
+                      Text(
+                        '${local.positionRecord}',
                         style: TextStyle(
                           fontSize: 25,
                         ),
@@ -509,7 +509,8 @@ class _TestPositionState extends State<TestPosition> {
                         },
                         child: Row(
                           children: [
-                            Text(table ? 'Timeline' : 'Table'),
+                            Text(
+                                table ? '${local.timeline}' : '${local.table}'),
                             const SizedBox(
                               width: 5,
                             ),
@@ -606,7 +607,7 @@ class _TestPositionState extends State<TestPosition> {
                                                                     .spaceBetween,
                                                             children: [
                                                               Text(
-                                                                '${local?.position} ',
+                                                                '${local.position} ',
                                                                 style: kParagraph.copyWith(
                                                                     fontWeight:
                                                                         FontWeight
@@ -639,7 +640,7 @@ class _TestPositionState extends State<TestPosition> {
                                                                             contentPadding:
                                                                                 EdgeInsets.only(left: 10),
                                                                             hintText:
-                                                                                '${local?.enterPosition}',
+                                                                                '${local.enterPosition}',
                                                                             errorStyle:
                                                                                 TextStyle(
                                                                               fontSize: 15,
@@ -679,7 +680,7 @@ class _TestPositionState extends State<TestPosition> {
                                                                     .spaceBetween,
                                                             children: [
                                                               Text(
-                                                                '${local?.startDate} ',
+                                                                '${local.startDate} ',
                                                                 style: kParagraph.copyWith(
                                                                     fontWeight:
                                                                         FontWeight
@@ -714,7 +715,7 @@ class _TestPositionState extends State<TestPosition> {
                                                                             contentPadding:
                                                                                 EdgeInsets.only(left: 10),
                                                                             hintText:
-                                                                                '${local?.selectEndDate}',
+                                                                                '${local.selectEndDate}',
                                                                             suffixIcon: IconButton(
                                                                                 onPressed: () {
                                                                                   _startDatePicker();
@@ -762,7 +763,7 @@ class _TestPositionState extends State<TestPosition> {
                                                                     .spaceBetween,
                                                             children: [
                                                               Text(
-                                                                '${local?.endDate} ',
+                                                                '${local.endDate} ',
                                                                 style: kParagraph.copyWith(
                                                                     fontWeight:
                                                                         FontWeight
@@ -797,7 +798,7 @@ class _TestPositionState extends State<TestPosition> {
                                                                             contentPadding:
                                                                                 EdgeInsets.only(left: 10),
                                                                             hintText:
-                                                                                '${local?.selectEndDate}',
+                                                                                '${local.selectEndDate}',
                                                                             suffixIcon: IconButton(
                                                                                 onPressed: () {
                                                                                   _endDatePicker();
@@ -845,7 +846,7 @@ class _TestPositionState extends State<TestPosition> {
                                                               Theme.of(context)
                                                                   .primaryColor,
                                                           child: Text(
-                                                            '${local?.save}',
+                                                            '${local.save}',
                                                             style: TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
@@ -864,7 +865,7 @@ class _TestPositionState extends State<TestPosition> {
                                                           },
                                                           color: Colors.red,
                                                           child: Text(
-                                                            '${local?.cancel}',
+                                                            '${local.cancel}',
                                                             style: TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
@@ -890,16 +891,16 @@ class _TestPositionState extends State<TestPosition> {
                                       await showDialog(
                                         context: context,
                                         builder: (ctx) => AlertDialog(
-                                          title: Text('${local?.areYouSure}'),
+                                          title: Text('${local.areYouSure}'),
                                           content:
-                                              Text('${local?.cannotUndone}'),
+                                              Text('${local.cannotUndone}'),
                                           actions: [
                                             OutlineButton(
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                                 deleteData(positionId!);
                                               },
-                                              child: Text('${local?.yes}'),
+                                              child: Text('${local.yes}'),
                                               borderSide: BorderSide(
                                                   color: Colors.green),
                                             ),
@@ -909,7 +910,7 @@ class _TestPositionState extends State<TestPosition> {
                                               },
                                               borderSide:
                                                   BorderSide(color: Colors.red),
-                                              child: Text('${local?.no}'),
+                                              child: Text('${local.no}'),
                                             )
                                           ],
                                         ),
@@ -920,7 +921,7 @@ class _TestPositionState extends State<TestPosition> {
                                   itemBuilder: (_) => [
                                     PopupMenuItem(
                                       child: Text(
-                                        '${local?.edit}',
+                                        '${local.edit}',
                                         style: TextStyle(
                                           fontSize: isEnglish ? 15 : 16,
                                         ),
@@ -929,7 +930,7 @@ class _TestPositionState extends State<TestPosition> {
                                     ),
                                     PopupMenuItem(
                                       child: Text(
-                                        '${local?.delete}',
+                                        '${local.delete}',
                                         style: TextStyle(
                                             fontSize: isEnglish ? 15 : 16),
                                       ),
@@ -982,7 +983,7 @@ class _TestPositionState extends State<TestPosition> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  '${local?.from}:',
+                                                  '${local.from}:',
                                                 ),
                                                 Padding(
                                                   padding:
@@ -1008,7 +1009,7 @@ class _TestPositionState extends State<TestPosition> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  '${local?.to}:',
+                                                  '${local.to}:',
                                                 ),
                                                 Padding(
                                                   padding:
@@ -1016,7 +1017,7 @@ class _TestPositionState extends State<TestPosition> {
                                                           right: 5),
                                                   child: Text(
                                                     endDate == null
-                                                        ? '${local?.now}'
+                                                        ? '${local.now}'
                                                         : DateFormat(
                                                                 'dd-MM-yyyy')
                                                             .format(endDate
@@ -1107,7 +1108,7 @@ class _TestPositionState extends State<TestPosition> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                '${local?.from}: ',
+                                                '${local.from}: ',
                                               ),
                                               Text(
                                                 DateFormat('dd-MM-yyyy')
@@ -1123,11 +1124,11 @@ class _TestPositionState extends State<TestPosition> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                '${local?.to}: ',
+                                                '${local.to}: ',
                                               ),
                                               Text(
                                                 endDate == null
-                                                    ? '${local?.now}'
+                                                    ? '${local.now}'
                                                     : DateFormat('dd-MM-yyyy')
                                                         .format(endDate!),
                                               ),

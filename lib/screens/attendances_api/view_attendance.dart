@@ -172,7 +172,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Time ',
+                    '${local!.time} ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
@@ -207,7 +207,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${local?.date} ',
+                    '${local.date} ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
@@ -234,7 +234,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${local?.note} ',
+                    '${local.note} ',
                     style: kParagraph.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: isEnglish ? 15 : 15.5),
@@ -280,7 +280,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                         Navigator.pop(context);
                       },
                       child: Text(
-                        '${local?.back}',
+                        '${local.back}',
                         style: TextStyle(
                           color: kBlueText,
                           fontWeight: FontWeight.bold,

@@ -505,13 +505,13 @@ class AttendanceService extends BaseService {
     }
   }
 
-  Future<List<AttendanceWithDate>> findMany() async {
+  Future<List<AttendancesWithDateWithUser>> findMany() async {
     try {
       Response response = await get(Uri.parse('$baseUrl/attendances'));
       _code = response.statusCode;
       var jsondata = json.decode(response.body);
-      List<AttendanceWithDate> awd = [];
-      awd = attendancesByDayFromJson(jsondata);
+      List<AttendancesWithDateWithUser> awd = [];
+      awd = attendancesWithUserbyDayFromJson(jsondata);
       return awd;
     } catch (e) {
       throw AttendanceException(code: _code);

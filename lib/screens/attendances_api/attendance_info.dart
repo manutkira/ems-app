@@ -316,18 +316,18 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     } catch (err) {}
   }
 
-  fetchManyAttendances() {
-    try {
-      _attendanceService.findManyAttendances().then((usersFromServer) {
-        if (mounted) {
-          setState(() {
-            attendancesDisplay = [];
-            attendancesDisplay.addAll(usersFromServer);
-          });
-        }
-      });
-    } catch (err) {}
-  }
+  // fetchManyAttendances() {
+  //   try {
+  //     _attendanceService.findManyAttendances().then((usersFromServer) {
+  //       if (mounted) {
+  //         setState(() {
+  //           attendancesDisplay = [];
+  //           attendancesDisplay.addAll(usersFromServer);
+  //         });
+  //       }
+  //     });
+  //   } catch (err) {}
+  // }
 
   checkPresent(AttendancesWithDate element) {
     if (element.list[0].getT1?.note != 'absent' &&
@@ -502,7 +502,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     super.initState();
     try {
       fetchNoDate();
-      fetchManyAttendances();
+      // fetchManyAttendances();
       fetchAttedancesById();
       fetchAllAttendance();
       fetchUserById();
@@ -533,7 +533,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       appBar: AppBar(
         title: Text('${local?.attendance}'),
       ),
-      body: _isLoading && _isLoadingNoDate && _loadingUser
+      body: _loadingUser
           ? Container(
               padding: const EdgeInsets.only(top: 320),
               alignment: Alignment.center,

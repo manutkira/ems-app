@@ -355,7 +355,7 @@ class PersonalInfo extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Bank',
+                        '${local?.bank}',
                         style: TextStyle(
                           fontSize: 27,
                         ),
@@ -389,7 +389,7 @@ class PersonalInfo extends StatelessWidget {
                                             Expanded(
                                               flex: 3,
                                               child: Text(
-                                                'Bank Name ',
+                                                '${local?.bankName} ',
                                                 style: kParagraph.copyWith(
                                                     fontWeight:
                                                         FontWeight.bold),
@@ -407,7 +407,8 @@ class PersonalInfo extends StatelessWidget {
                                                     contentPadding:
                                                         EdgeInsets.only(
                                                             left: 10),
-                                                    hintText: 'Enter Bank Name',
+                                                    hintText:
+                                                        '${local?.enterbankName}',
                                                     errorStyle: TextStyle(
                                                       fontSize: 15,
                                                       fontWeight:
@@ -432,7 +433,7 @@ class PersonalInfo extends StatelessWidget {
                                             Expanded(
                                               flex: 3,
                                               child: Text(
-                                                'Account Name ',
+                                                '${local?.accountBankName} ',
                                                 style: kParagraph.copyWith(
                                                     fontWeight:
                                                         FontWeight.bold),
@@ -451,7 +452,7 @@ class PersonalInfo extends StatelessWidget {
                                                         EdgeInsets.only(
                                                             left: 10),
                                                     hintText:
-                                                        'Enter Account Name',
+                                                        '${local?.enteraccountBankName}',
                                                     errorStyle: TextStyle(
                                                       fontSize: 15,
                                                       fontWeight:
@@ -476,7 +477,7 @@ class PersonalInfo extends StatelessWidget {
                                             Expanded(
                                               flex: 3,
                                               child: Text(
-                                                'Account Number ',
+                                                '${local?.accountBankNumber} ',
                                                 style: kParagraph.copyWith(
                                                     fontWeight:
                                                         FontWeight.bold),
@@ -495,7 +496,7 @@ class PersonalInfo extends StatelessWidget {
                                                         EdgeInsets.only(
                                                             left: 10),
                                                     hintText:
-                                                        'Enter Account Number',
+                                                        '${local?.enteraccountBankNumber}',
                                                     errorStyle: TextStyle(
                                                       fontSize: 15,
                                                       fontWeight:

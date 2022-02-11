@@ -1,4 +1,5 @@
 import 'package:ems/models/attendance.dart';
+import 'package:ems/models/attendances.dart';
 import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/models/user.dart';
@@ -22,19 +23,20 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
   UserService _userService = UserService.instance;
 
   List userDisplay = [];
-  List attendanceDisplay = [];
+  List<AttendancesWithUser> attendanceDisplay = [];
   List<User> users = [];
   bool _isLoading = true;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
 
   fetchAttendances() async {
-    List<AttendanceWithDate> atts = [];
+    List<AttendancesWithDateWithUser> atts = [];
     atts = await _attendanceService.findMany();
-    List<Attendance> att2 = attendancesFromAttendancesByDay(atts);
+    List<AttendancesWithUser> att2 =
+        attendancesWithUsesrFromAttendancesbyDay(atts);
     setState(() {
       attendanceDisplay = att2;
-      attendanceDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+      attendanceDisplay.sort((a, b) => a.id.compareTo(b.id as int));
     });
   }
 
@@ -65,13 +67,6 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     _controller.clear();
   }
 
-  // @override
-  // void dispose() {
-  //   // TODO: implement dispose
-  //   yearController.dispose();
-  //   super.dispose();
-  // }
-
   void _byDayDatePicker() {
     showDatePicker(
             context: context,
@@ -90,155 +85,117 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     });
   }
 
-  String? get _errorText {
-    final text = yearController.value.text;
-    if (text.isEmpty || text == null) {
-      return 'Please Enter Year';
+  checkPresent(AttendancesWithUser element) {
+    if (element.getT1?.note != 'absent' &&
+        element.getT1?.note != 'permission') {
+      if (element.getT1!.time.hour == 7) {
+        if (element.getT1!.time.minute <= 15) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.getT1!.time.hour < 7) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
     }
-    if (double.tryParse(text) == null) {
-      return 'Please Enter valid number';
+  }
+
+  checkPresengetT2(AttendancesWithUser element) {
+    if (element.getT3?.note != 'absent' &&
+        element.getT3?.note != 'permission') {
+      if (element.getT3!.time.hour == 13) {
+        if (element.getT3!.time.minute <= 15) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.getT3!.time.hour < 13) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
     }
-    if (text.length < 4 || text.length > 4) {
-      return 'Enter 4 Digits';
+  }
+
+  checkLate1(AttendancesWithUser element) {
+    if (element.getT1?.note != 'absent' &&
+        element.getT1?.note != 'permission') {
+      if (element.getT1!.time.hour == 7) {
+        if (element.getT1!.time.minute >= 16) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.getT1!.time.hour > 7) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
     }
-    return null;
+  }
+
+  checkLate2(AttendancesWithUser element) {
+    if (element.getT3?.note != 'absent' &&
+        element.getT3?.note != 'permission') {
+      if (element.getT3!.time.hour == 13) {
+        if (element.getT3!.time.minute >= 16) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (element.getT3!.time.hour > 13) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsengetT1(AttendancesWithUser element) {
+    if (element.getT1!.note == 'absent') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkAbsengetT2(AttendancesWithUser element) {
+    if (element.getT3!.note == 'absent') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissiongetT1(AttendancesWithUser element) {
+    if (element.getT1!.note == 'permission') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkPermissiongetT2(AttendancesWithUser element) {
+    if (element.getT3!.note == 'permission') {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   bool _validate = false;
 
   final _formKey = GlobalKey<FormState>();
-
-  checkLate(Attendance element) {
-    if (element.code == 'cin1') {
-      if (element.type == 'checkin') {
-        if (element.date!.hour == 7) {
-          if (element.date!.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.date!.hour > 7) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkLateNoon(Attendance element) {
-    if (element.code == 'cin2') {
-      if (element.type == 'checkin') {
-        if (element.date!.hour == 13) {
-          if (element.date!.minute >= 16) {
-            return true;
-          } else {
-            return false;
-          }
-        } else if (element.date!.hour > 13) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkPresent(Attendance element) {
-    if (element.code == 'cin1') {
-      if (element.type == 'checkin') {
-        if (element.date!.hour <= 7) {
-          if (element.date!.minute <= 15) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkPresentNoon(Attendance element) {
-    if (element.code == 'cin2') {
-      if (element.type == 'checkin') {
-        if (element.date!.hour <= 13) {
-          if (element.date!.minute <= 15) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkAbsent(Attendance element) {
-    if (element.code == 'cin1') {
-      if (element.type == 'absent') {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkAbsentNoon(Attendance element) {
-    if (element.code == 'cin2') {
-      if (element.type == 'absent') {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkPermission(Attendance element) {
-    if (element.code == 'cin1') {
-      if (element.type == 'permission') {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
-  checkPermissionNoon(Attendance element) {
-    if (element.code == 'cin2') {
-      if (element.type == 'permission') {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
 
   void monthPick() {
     AppLocalizations? local = AppLocalizations.of(context);
@@ -349,18 +306,6 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                       children: [
                                         Column(
                                           children: [
-                                            // TextField(
-                                            //   keyboardType: TextInputType.number,
-                                            //   decoration: InputDecoration(
-                                            //       errorText: _validate
-                                            //           ? '${local?.enter4Digits}'
-                                            //           : '${local?.enter4Digits}',
-                                            //       hintText: '${local?.enterYear}'),
-                                            //   controller: yearController,
-                                            // ),
-                                            // const SizedBox(
-                                            //   height: 10,
-                                            // ),
                                             Container(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -739,6 +684,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                         return element.userId == userDisplay[index].id &&
                                                                             element.date.month ==
                                                                                 _selectMonth &&
+                                                                            element.getT1 !=
+                                                                                null &&
                                                                             checkPresent(
                                                                                 element) &&
                                                                             element.date.year ==
@@ -750,7 +697,9 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                         return element.userId == userDisplay[index].id &&
                                                                             element.date.month ==
                                                                                 _selectMonth &&
-                                                                            checkPresentNoon(
+                                                                            element.getT3 !=
+                                                                                null &&
+                                                                            checkPresengetT2(
                                                                                 element) &&
                                                                             element.date.year ==
                                                                                 int.parse(pickedYear);
@@ -762,7 +711,9 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                         return element.userId == userDisplay[index].id &&
                                                                             element.date.month ==
                                                                                 _selectMonth &&
-                                                                            checkPresentNoon(
+                                                                            element.getT3 !=
+                                                                                null &&
+                                                                            checkPresengetT2(
                                                                                 element) &&
                                                                             element.date.year ==
                                                                                 int.parse(pickedYear);
@@ -775,6 +726,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                               (element) {
                                                                             return element.userId == userDisplay[index].id &&
                                                                                 element.date.month == _selectMonth &&
+                                                                                element.getT1 != null &&
                                                                                 checkPresent(element) &&
                                                                                 element.date.year == int.parse(pickedYear);
                                                                           })
@@ -802,7 +754,9 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month ==
                                                                                   _selectMonth &&
-                                                                              checkAbsent(
+                                                                              element.getT1 !=
+                                                                                  null &&
+                                                                              checkAbsengetT1(
                                                                                   element) &&
                                                                               element.date.year ==
                                                                                   int.parse(
@@ -811,7 +765,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                       attendanceDisplay
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month == _selectMonth &&
-                                                                              checkAbsentNoon(element) &&
+                                                                              element.getT3 != null &&
+                                                                              checkAbsengetT2(element) &&
                                                                               element.date.year == int.parse(pickedYear)))
                                                                           .length)
                                                                   .toString())
@@ -820,7 +775,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                       attendanceDisplay
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month == _selectMonth &&
-                                                                              checkAbsentNoon(element) &&
+                                                                              element.getT3 != null &&
+                                                                              checkAbsengetT2(element) &&
                                                                               element.date.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
@@ -829,7 +785,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                       attendanceDisplay
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month == _selectMonth &&
-                                                                              checkAbsent(element) &&
+                                                                              element.getT1 != null &&
+                                                                              checkAbsengetT1(element) &&
                                                                               element.date.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
@@ -862,7 +819,9 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month ==
                                                                                   _selectMonth &&
-                                                                              checkLate(
+                                                                              element.getT1 !=
+                                                                                  null &&
+                                                                              checkLate1(
                                                                                   element) &&
                                                                               element.date.year ==
                                                                                   int.parse(
@@ -871,7 +830,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                       attendanceDisplay
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month == _selectMonth &&
-                                                                              checkLateNoon(element) &&
+                                                                              element.getT3 != null &&
+                                                                              checkLate2(element) &&
                                                                               element.date.year == int.parse(pickedYear)))
                                                                           .length)
                                                                   .toString())
@@ -880,7 +840,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                       attendanceDisplay
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month == _selectMonth &&
-                                                                              checkLateNoon(element) &&
+                                                                              element.getT3 != null &&
+                                                                              checkLate2(element) &&
                                                                               element.date.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
@@ -889,7 +850,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                       attendanceDisplay
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month == _selectMonth &&
-                                                                              checkLate(element) &&
+                                                                              element.getT1 != null &&
+                                                                              checkLate1(element) &&
                                                                               element.date.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
@@ -915,7 +877,9 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month ==
                                                                                   _selectMonth &&
-                                                                              checkPermission(
+                                                                              element.getT1 !=
+                                                                                  null &&
+                                                                              checkPermissiongetT1(
                                                                                   element) &&
                                                                               element.date.year ==
                                                                                   int.parse(
@@ -924,7 +888,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                       attendanceDisplay
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month == _selectMonth &&
-                                                                              checkPermissionNoon(element) &&
+                                                                              element.getT3 != null &&
+                                                                              checkPermissiongetT2(element) &&
                                                                               element.date.year == int.parse(pickedYear)))
                                                                           .length)
                                                                   .toString())
@@ -933,7 +898,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                       attendanceDisplay
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month == _selectMonth &&
-                                                                              checkPermissionNoon(element) &&
+                                                                              element.getT3 != null &&
+                                                                              checkPermissiongetT2(element) &&
                                                                               element.date.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
@@ -942,7 +908,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                       attendanceDisplay
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
                                                                               element.date.month == _selectMonth &&
-                                                                              checkPermission(element) &&
+                                                                              element.getT1 != null &&
+                                                                              checkPermissiongetT1(element) &&
                                                                               element.date.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
