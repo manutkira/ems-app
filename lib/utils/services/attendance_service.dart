@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:ems/models/attendance.dart';
 import 'package:ems/models/attendances.dart';
+import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
@@ -48,6 +49,82 @@ class AttendanceService extends BaseService {
       return int.parse(response.body);
     } catch (e) {
       throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<void> createOneRecord({
+    required int userId,
+    required DateTime datetime,
+    String? note,
+  }) async {
+    String uri = "$baseUrl/attendances";
+
+    Map<String, dynamic> payload = {
+      "user_id": userId,
+      "date": datetime.toIso8601String(),
+    };
+
+    if (note != null && note != 'null') {
+      payload['note'] = note;
+    }
+
+    try {
+      Response response = await post(
+        Uri.parse(uri),
+        headers: headers(),
+        body: jsonEncode(payload),
+      );
+      _code = response.statusCode;
+      var decoded = jsonDecode(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<AttendanceRecord> updateOneRecord({
+    required AttendanceRecord record,
+  }) async {
+    String uri = "$baseUrl/attendance_record/${record.id}";
+
+    Map<String, String> payload = {};
+    if (record.time != null) {
+      payload['time'] = '${record.time?.hour}:${record.time?.minute}:00';
+    }
+    if (record.note != null) {
+      payload['note'] = record.note.toString();
+    }
+    if (payload.isEmpty) return record;
+
+    try {
+      Response response = await put(
+        Uri.parse(uri),
+        headers: headers(),
+        body: jsonEncode(payload),
+      );
+      _code = response.statusCode;
+      var decoded = jsonDecode(response.body);
+      return AttendanceRecord.fromMap(decoded);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<bool> deleteOneRecord(int id) async {
+    try {
+      Response response = await delete(
+        Uri.parse('$baseUrl/attendance_record/$id'),
+        headers: headers(),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 404) {
+        return true;
+      } else {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
+    } catch (e) {
+      throw AttendanceException(code: _code);
+      //
     }
   }
 

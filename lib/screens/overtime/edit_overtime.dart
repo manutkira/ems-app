@@ -1,4 +1,3 @@
-import 'package:ems/models/attendance.dart';
 import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/attendance_service.dart';
@@ -50,48 +49,40 @@ class _EditOvertimeState extends State<EditOvertime> {
         /// creating Attendance objects
         ///
 
-        AttendanceRecord checkInRecord = checkIn == null
-            ? AttendanceRecord(
-                time: startedTime,
-                note: _noteController.text,
-              )
-            : checkIn!.copyWith(
-                time: startedTime,
-                note: _noteController.text,
-              );
-
-        AttendanceRecord checkOutRecord = checkOut == null
-            ? AttendanceRecord(
-                time: endedTime,
-                note: _noteController.text,
-              )
-            : checkOut!.copyWith(
-                time: endedTime,
-                note: _noteController.text,
-              );
-
-        Attendance checkInAttendance = Attendance(
-          id: checkIn?.id,
-          userId: user?.id,
-          date: selectedDate.copyWith(
-            hour: startedTime?.hour,
-            minute: startedTime?.minute,
-          ),
-          type: AttendanceType.typeCheckIn,
-          note: _noteController.text,
-          code: 'cin3',
-        );
-        Attendance checkOutAttendance = Attendance(
-          id: checkOut?.id,
-          userId: user?.id,
-          date: selectedDate.copyWith(
-            hour: endedTime?.hour,
-            minute: endedTime?.minute,
-          ),
-          type: AttendanceType.typeCheckOut,
-          note: _noteController.text,
-          code: 'cout3',
-        );
+        if (checkIn != null && checkIn!.id != null) {
+          await _attendanceService.updateOneRecord(
+            record: checkIn!.copyWith(
+              time: startedTime,
+              note: _noteController.text,
+            ),
+          );
+        } else {
+          await _attendanceService.createOneRecord(
+            userId: record.user?.id as int,
+            datetime: record.date.copyWith(
+              hour: startedTime?.hour,
+              minute: startedTime?.minute,
+            ),
+            note: _noteController.text,
+          );
+        }
+        if (checkOut != null && checkOut!.id != null) {
+          await _attendanceService.updateOneRecord(
+            record: checkOut!.copyWith(
+              time: endedTime,
+              note: _noteController.text,
+            ),
+          );
+        } else {
+          await _attendanceService.createOneRecord(
+            userId: record.user?.id as int,
+            datetime: record.date.copyWith(
+              hour: endedTime?.hour,
+              minute: endedTime?.minute,
+            ),
+            note: _noteController.text,
+          );
+        }
 
         /// the service will use the same data for check in and check out object
         /// if there's no check out data from the api.
@@ -139,10 +130,26 @@ class _EditOvertimeState extends State<EditOvertime> {
       checkOut = record.checkOut;
 
       // hour and minute
-      int checkInHour = checkOut == null ? 0 : checkIn?.time?.hour as int;
-      int checkInMinute = checkOut == null ? 0 : checkIn?.time?.minute as int;
-      int checkOutHour = checkOut == null ? 0 : checkOut?.time?.hour as int;
-      int checkOutMinute = checkOut == null ? 0 : checkOut?.time?.minute as int;
+      int checkInHour = checkIn == null
+          ? checkOut == null
+              ? 0
+              : checkOut?.time?.hour as int
+          : checkIn?.time?.hour as int;
+      int checkInMinute = checkIn == null
+          ? checkOut == null
+              ? 0
+              : checkOut?.time?.minute as int
+          : checkIn?.time?.minute as int;
+      int checkOutHour = checkOut == null
+          ? checkIn == null
+              ? 0
+              : checkIn?.time?.hour as int
+          : checkOut?.time?.hour as int;
+      int checkOutMinute = checkOut == null
+          ? checkIn == null
+              ? 0
+              : checkIn?.time?.minute as int
+          : checkOut?.time?.minute as int;
 
       selectedDate = record.date;
 
