@@ -25,7 +25,7 @@ class AttendanceInfoNoData extends StatelessWidget {
           SizedBox(
             height: isEnglish ? 30 : 0,
           ),
-          Text(
+          const Text(
             '🤷🏼',
             style: TextStyle(
               fontSize: 60,

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
-
-import 'package:ems/models/attendance.dart';
 import 'package:ems/models/attendances.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/screens/attendances_api/view_attendance.dart';
-import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/utils/utils.dart';
 
 import '../../../../constants.dart';
@@ -64,7 +60,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
               SizedBox(
                 height: isEnglish ? 30 : 0,
               ),
-              Text(
+              const Text(
                 '🤷🏼',
                 style: TextStyle(
                   fontSize: 60,
@@ -81,7 +77,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
             displacement: 3 + 0,
             color: kWhite,
             child: ListView.builder(
-              physics: ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               shrinkWrap: true,
               itemCount: multiday
                   ? attendanceList.length
@@ -217,7 +213,6 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
 
   popUp1(AttendancesWithDate record, BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     return PopupMenuButton(
       color: Colors.black,
       shape: const RoundedRectangleBorder(
@@ -350,7 +345,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    deleteData(record.list[0].getT1!.id as int);
+                    deleteData(record.list[0].getT2!.id as int);
                   },
                   child: Text('Yes'),
                   borderSide: BorderSide(color: Colors.green),
@@ -846,7 +841,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT1!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Text(record.list[0].getT1?.time == null
@@ -1181,7 +1176,6 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
   Widget _buildMultipleResult(
       AttendancesWithDate record, BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
 
     return ExpansionTile(
       collapsedBackgroundColor: Color(0xff254973),
@@ -1227,7 +1221,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT1!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Text(record.list[0].getT1?.time == null
@@ -1309,7 +1303,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT3!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Text(record.list[0].getT3?.time == null

@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:ems/models/position.dart';
 import 'package:http/http.dart' as http;
-import 'package:ems/screens/card/card.screen.dart';
 import 'package:ems/utils/services/position_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:timeline_tile/timeline_tile.dart';
 
 import '../../../../constants.dart';
 
@@ -135,7 +133,6 @@ class _TestPositionState extends State<TestPosition> {
 
   Future deleteData(int id) async {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     final response = await http.delete(Uri.parse(
         "http://rest-api-laravel-flutter.herokuapp.com/api/position/$id"));
     showInSnackBar("${local!.deletingAttendance}");
@@ -211,10 +208,11 @@ class _TestPositionState extends State<TestPosition> {
                                               child: TextFormField(
                                                 decoration: InputDecoration(
                                                   contentPadding:
-                                                      EdgeInsets.only(left: 10),
+                                                      const EdgeInsets.only(
+                                                          left: 10),
                                                   hintText:
                                                       '${local.enterPosition}',
-                                                  errorStyle: TextStyle(
+                                                  errorStyle: const TextStyle(
                                                     fontSize: 15,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -280,7 +278,7 @@ class _TestPositionState extends State<TestPosition> {
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Padding(
@@ -332,7 +330,7 @@ class _TestPositionState extends State<TestPosition> {
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Padding(
@@ -351,13 +349,13 @@ class _TestPositionState extends State<TestPosition> {
                                   color: Theme.of(context).primaryColor,
                                   child: Text(
                                     '${local.save}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 15,
                                 ),
                                 RaisedButton(
@@ -367,7 +365,7 @@ class _TestPositionState extends State<TestPosition> {
                                   color: Colors.red,
                                   child: Text(
                                     '${local.cancel}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -382,7 +380,7 @@ class _TestPositionState extends State<TestPosition> {
                   });
               fetchPositions();
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.add,
             ),
           ),
@@ -409,8 +407,8 @@ class _TestPositionState extends State<TestPosition> {
                   padding:
                       const EdgeInsets.only(left: 19, right: 20, bottom: 20),
                   child: Container(
-                    margin: EdgeInsets.only(top: 0),
-                    padding: EdgeInsets.only(
+                    margin: const EdgeInsets.only(top: 0),
+                    padding: const EdgeInsets.only(
                         top: 20, bottom: 20, right: 16, left: 30),
                     width: MediaQuery.of(context).size.width * 0.9,
                     decoration: BoxDecoration(
@@ -424,7 +422,7 @@ class _TestPositionState extends State<TestPosition> {
                           height: 75,
                           decoration: BoxDecoration(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
+                                  const BorderRadius.all(Radius.circular(100)),
                               border: Border.all(
                                 width: 1,
                                 color: Colors.white,
@@ -442,7 +440,7 @@ class _TestPositionState extends State<TestPosition> {
                                   ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Column(
@@ -455,7 +453,7 @@ class _TestPositionState extends State<TestPosition> {
                                   style: kParagraph.copyWith(
                                       fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 SizedBox(
@@ -464,7 +462,7 @@ class _TestPositionState extends State<TestPosition> {
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
                             BaselineRow(
@@ -474,7 +472,7 @@ class _TestPositionState extends State<TestPosition> {
                                   style: kParagraph.copyWith(
                                       fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 Text(widget.id.toString()),
@@ -497,7 +495,7 @@ class _TestPositionState extends State<TestPosition> {
                     children: [
                       Text(
                         '${local.positionRecord}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 25,
                         ),
                       ),
@@ -527,7 +525,7 @@ class _TestPositionState extends State<TestPosition> {
                     ? ListView.builder(
                         // reverse: true,
                         shrinkWrap: true,
-                        physics: ClampingScrollPhysics(),
+                        physics: const ClampingScrollPhysics(),
                         itemBuilder: (BuildContext context, int index) {
                           startDate =
                               DateTime.parse(positionsDisplay[index].startDate);
@@ -540,7 +538,7 @@ class _TestPositionState extends State<TestPosition> {
                                 right: -4,
                                 child: PopupMenuButton(
                                   color: kBlack,
-                                  shape: RoundedRectangleBorder(
+                                  shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(10))),
                                   onSelected: (int selectedValue) async {
@@ -585,7 +583,7 @@ class _TestPositionState extends State<TestPosition> {
                                               ),
                                               child: Column(
                                                 children: [
-                                                  SizedBox(
+                                                  const SizedBox(
                                                     height: 20,
                                                   ),
                                                   Padding(
@@ -642,7 +640,7 @@ class _TestPositionState extends State<TestPosition> {
                                                                             hintText:
                                                                                 '${local.enterPosition}',
                                                                             errorStyle:
-                                                                                TextStyle(
+                                                                                const TextStyle(
                                                                               fontSize: 15,
                                                                               fontWeight: FontWeight.bold,
                                                                             ),
@@ -713,7 +711,7 @@ class _TestPositionState extends State<TestPosition> {
                                                                           decoration:
                                                                               InputDecoration(
                                                                             contentPadding:
-                                                                                EdgeInsets.only(left: 10),
+                                                                                const EdgeInsets.only(left: 10),
                                                                             hintText:
                                                                                 '${local.selectEndDate}',
                                                                             suffixIcon: IconButton(
@@ -827,7 +825,7 @@ class _TestPositionState extends State<TestPosition> {
                                                       ],
                                                     ),
                                                   ),
-                                                  SizedBox(
+                                                  const SizedBox(
                                                     height: 20,
                                                   ),
                                                   Padding(
@@ -847,7 +845,8 @@ class _TestPositionState extends State<TestPosition> {
                                                                   .primaryColor,
                                                           child: Text(
                                                             '${local.save}',
-                                                            style: TextStyle(
+                                                            style:
+                                                                const TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -855,7 +854,7 @@ class _TestPositionState extends State<TestPosition> {
                                                             ),
                                                           ),
                                                         ),
-                                                        SizedBox(
+                                                        const SizedBox(
                                                           width: 15,
                                                         ),
                                                         RaisedButton(
@@ -866,7 +865,8 @@ class _TestPositionState extends State<TestPosition> {
                                                           color: Colors.red,
                                                           child: Text(
                                                             '${local.cancel}',
-                                                            style: TextStyle(
+                                                            style:
+                                                                const TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -901,15 +901,15 @@ class _TestPositionState extends State<TestPosition> {
                                                 deleteData(positionId!);
                                               },
                                               child: Text('${local.yes}'),
-                                              borderSide: BorderSide(
+                                              borderSide: const BorderSide(
                                                   color: Colors.green),
                                             ),
                                             OutlineButton(
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              borderSide:
-                                                  BorderSide(color: Colors.red),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.red),
                                               child: Text('${local.no}'),
                                             )
                                           ],
@@ -950,7 +950,7 @@ class _TestPositionState extends State<TestPosition> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 130.0),
                                 child: Card(
-                                  margin: EdgeInsets.all(20.0),
+                                  margin: const EdgeInsets.all(20.0),
                                   child: Container(
                                     width: 200,
                                     height: 110.0,
@@ -967,11 +967,11 @@ class _TestPositionState extends State<TestPosition> {
                                           Text(
                                             positionsDisplay[index]
                                                 .positionName,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 15,
                                           ),
                                           Padding(
@@ -1049,15 +1049,15 @@ class _TestPositionState extends State<TestPosition> {
                                 child: Container(
                                   height: 20.0,
                                   width: 20.0,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors.white,
                                   ),
                                   child: Container(
-                                    margin: new EdgeInsets.all(5.0),
+                                    margin: const EdgeInsets.all(5.0),
                                     height: 30.0,
                                     width: 30.0,
-                                    decoration: new BoxDecoration(
+                                    decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: Colors.red),
                                   ),
@@ -1071,7 +1071,7 @@ class _TestPositionState extends State<TestPosition> {
                     : Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Table(
-                          columnWidths: {
+                          columnWidths: const {
                             0: FlexColumnWidth(2),
                             1: FlexColumnWidth(4),
                           },
@@ -1145,7 +1145,7 @@ class _TestPositionState extends State<TestPosition> {
                                       TableCellVerticalAlignment.middle,
                                   child: IconButton(
                                       onPressed: () {},
-                                      icon: Icon(Icons.more_vert)))
+                                      icon: const Icon(Icons.more_vert)))
                             ]);
                           }).toList(),
                         ),
@@ -1156,8 +1156,6 @@ class _TestPositionState extends State<TestPosition> {
   }
 
   addPosition() async {
-    AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     var aPositionName = positionName.text;
     DateTime aStartDate = pickStart!;
 
@@ -1188,8 +1186,6 @@ class _TestPositionState extends State<TestPosition> {
   }
 
   editPosition() async {
-    AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     var aPositionName = positionName.text;
 
     var request = await http.MultipartRequest(

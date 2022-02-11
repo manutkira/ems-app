@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/image_input/edit_emp_id.dart';
 import 'package:ems/widgets/image_input/edit_emp_profile.dart';
 
@@ -37,15 +36,13 @@ class EditPersonal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
-    final _form = GlobalKey<FormState>();
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             ImageInputProfileEdit(selectImage, imageUrl),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Row(
@@ -55,7 +52,7 @@ class EditPersonal extends StatelessWidget {
                   '${local?.name} ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Container(
@@ -68,7 +65,7 @@ class EditPersonal extends StatelessWidget {
                         child: TextFormField(
                           decoration: InputDecoration(
                             hintText: '${local?.enterName}',
-                            errorStyle: TextStyle(
+                            errorStyle: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -88,7 +85,7 @@ class EditPersonal extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             Row(
@@ -98,7 +95,7 @@ class EditPersonal extends StatelessWidget {
                   '${local?.phoneNumber} ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Container(
@@ -111,7 +108,7 @@ class EditPersonal extends StatelessWidget {
                         child: TextFormField(
                           decoration: InputDecoration(
                             hintText: '${local?.enterPhone}',
-                            errorStyle: TextStyle(
+                            errorStyle: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
@@ -137,7 +134,7 @@ class EditPersonal extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             Row(
@@ -147,7 +144,7 @@ class EditPersonal extends StatelessWidget {
                   '${local?.email} ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Container(
@@ -160,7 +157,7 @@ class EditPersonal extends StatelessWidget {
                         child: TextFormField(
                           decoration: InputDecoration(
                             hintText: '${local?.enterEmail}',
-                            errorStyle: TextStyle(
+                            errorStyle: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -182,12 +179,12 @@ class EditPersonal extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 15,
             ),
             Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Column(
@@ -197,7 +194,7 @@ class EditPersonal extends StatelessWidget {
                       '${local?.address} ',
                       style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                       height: 15,
                     ),
@@ -211,7 +208,7 @@ class EditPersonal extends StatelessWidget {
                             child: TextFormField(
                               decoration: InputDecoration(
                                 hintText: '${local?.enterAddress}',
-                                errorStyle: TextStyle(
+                                errorStyle: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -226,7 +223,7 @@ class EditPersonal extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Column(
@@ -236,7 +233,7 @@ class EditPersonal extends StatelessWidget {
                       '${local?.background} ',
                       style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Container(
@@ -249,7 +246,7 @@ class EditPersonal extends StatelessWidget {
                             child: TextFormField(
                               decoration: InputDecoration(
                                 hintText: '${local?.enterBackground}',
-                                errorStyle: TextStyle(
+                                errorStyle: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -264,19 +261,20 @@ class EditPersonal extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 ImageInputPickerId(selectImageId, idUrl)
               ],
             ),
             Container(
-              padding: EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(right: 10),
+                    padding: const EdgeInsets.only(right: 10),
+                    // ignore: deprecated_member_use
                     child: RaisedButton(
                       onPressed: () {
                         showDialog(
@@ -285,9 +283,10 @@ class EditPersonal extends StatelessWidget {
                                   title: Text('${local?.areYouSure}'),
                                   content: Text('${local?.saveChanges}'),
                                   actions: [
+                                    // ignore: deprecated_member_use
                                     OutlineButton(
                                       borderSide:
-                                          BorderSide(color: Colors.green),
+                                          const BorderSide(color: Colors.green),
                                       child: Text('${local?.yes}'),
                                       onPressed: () {
                                         if (!form.currentState!.validate()) {
@@ -301,12 +300,11 @@ class EditPersonal extends StatelessWidget {
                                             title: Text('${local?.editing}'),
                                             content: Flex(
                                               direction: Axis.horizontal,
-                                              children: [
+                                              children: const [
                                                 Flexible(
                                                   child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 100),
+                                                    padding: EdgeInsets.only(
+                                                        left: 100),
                                                     child:
                                                         CircularProgressIndicator(
                                                       color: Colors.white,
@@ -319,12 +317,14 @@ class EditPersonal extends StatelessWidget {
                                         );
                                       },
                                     ),
+                                    // ignore: deprecated_member_use
                                     OutlineButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
                                       child: Text('${local?.no}'),
-                                      borderSide: BorderSide(color: Colors.red),
+                                      borderSide:
+                                          const BorderSide(color: Colors.red),
                                     )
                                   ],
                                 ));
@@ -333,28 +333,34 @@ class EditPersonal extends StatelessWidget {
                       color: Theme.of(context).primaryColor,
                     ),
                   ),
+                  // ignore: deprecated_member_use
                   RaisedButton(
                     onPressed: () {
                       showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
                                 title: Text('${local?.areYouSure}'),
-                                content: Text('Your changes will be lost.'),
+                                content:
+                                    const Text('Your changes will be lost.'),
                                 actions: [
+                                  // ignore: deprecated_member_use
                                   OutlineButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       Navigator.pop(context);
                                     },
                                     child: Text('${local?.yes}'),
-                                    borderSide: BorderSide(color: Colors.green),
+                                    borderSide:
+                                        const BorderSide(color: Colors.green),
                                   ),
+                                  // ignore: deprecated_member_use
                                   OutlineButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
                                     child: Text('${local?.no}'),
-                                    borderSide: BorderSide(color: Colors.red),
+                                    borderSide:
+                                        const BorderSide(color: Colors.red),
                                   )
                                 ],
                               ));

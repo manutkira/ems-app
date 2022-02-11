@@ -38,8 +38,6 @@ class PersonalInfo extends StatelessWidget {
     String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
     addBankList() async {
-      AppLocalizations? local = AppLocalizations.of(context);
-      bool isEnglish = isInEnglish(context);
       var aBankName = bankNameController.text;
       var aAccountNumber = accountNumberController.text;
       var aAccountName = accountNameController.text;
@@ -66,8 +64,6 @@ class PersonalInfo extends StatelessWidget {
     }
 
     editBank() async {
-      AppLocalizations? local = AppLocalizations.of(context);
-      bool isEnglish = isInEnglish(context);
       var aBankName = bankNameController.text;
       var aAccountNumber = accountNumberController.text;
       var aAccountName = accountNameController.text;
@@ -101,7 +97,7 @@ class PersonalInfo extends StatelessWidget {
       Scaffold.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          duration: Duration(milliseconds: 2000),
+          duration: const Duration(milliseconds: 2000),
           backgroundColor: kBlueBackground,
           content: Text(
             value,
@@ -113,7 +109,6 @@ class PersonalInfo extends StatelessWidget {
 
     Future deleteData(int id) async {
       AppLocalizations? local = AppLocalizations.of(context);
-      bool isEnglish = isInEnglish(context);
       final response = await http.delete(Uri.parse(
           "http://rest-api-laravel-flutter.herokuapp.com/api/bank/$id"));
       showInSnackBar("${local?.deletingAttendance}");
@@ -131,7 +126,7 @@ class PersonalInfo extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               left: 20,
               right: 10,
             ),
@@ -144,7 +139,7 @@ class PersonalInfo extends StatelessWidget {
                     children: [
                       Text(
                         '${local?.personal}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 27,
                         ),
                       ),
@@ -170,14 +165,14 @@ class PersonalInfo extends StatelessWidget {
                                         userDisplay[0].imageId.toString())));
                             fetchUserById();
                           },
-                          icon: Icon(Icons.edit)),
+                          icon: const Icon(Icons.edit)),
                     ],
                   ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Row(
@@ -342,7 +337,7 @@ class PersonalInfo extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 20,
               left: 20,
               right: 10,
@@ -356,7 +351,7 @@ class PersonalInfo extends StatelessWidget {
                     children: [
                       Text(
                         '${local?.bank}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 27,
                         ),
                       ),
@@ -376,11 +371,11 @@ class PersonalInfo extends StatelessWidget {
                                   ),
                                   child: Column(
                                     children: [
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 15,
                                       ),
                                       Container(
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                             horizontal: 20, vertical: 10),
                                         width:
                                             MediaQuery.of(context).size.width,
@@ -400,16 +395,16 @@ class PersonalInfo extends StatelessWidget {
                                             ),
                                             Expanded(
                                               flex: 4,
-                                              child: Container(
+                                              child: SizedBox(
                                                 height: 35,
                                                 child: TextFormField(
                                                   decoration: InputDecoration(
                                                     contentPadding:
-                                                        EdgeInsets.only(
+                                                        const EdgeInsets.only(
                                                             left: 10),
                                                     hintText:
                                                         '${local?.enterbankName}',
-                                                    errorStyle: TextStyle(
+                                                    errorStyle: const TextStyle(
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -424,7 +419,7 @@ class PersonalInfo extends StatelessWidget {
                                         ),
                                       ),
                                       Container(
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                             horizontal: 20, vertical: 10),
                                         width:
                                             MediaQuery.of(context).size.width,
@@ -444,16 +439,16 @@ class PersonalInfo extends StatelessWidget {
                                             ),
                                             Expanded(
                                               flex: 4,
-                                              child: Container(
+                                              child: SizedBox(
                                                 height: 35,
                                                 child: TextFormField(
                                                   decoration: InputDecoration(
                                                     contentPadding:
-                                                        EdgeInsets.only(
+                                                        const EdgeInsets.only(
                                                             left: 10),
                                                     hintText:
                                                         '${local?.enteraccountBankName}',
-                                                    errorStyle: TextStyle(
+                                                    errorStyle: const TextStyle(
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -468,7 +463,7 @@ class PersonalInfo extends StatelessWidget {
                                         ),
                                       ),
                                       Container(
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                             horizontal: 20, vertical: 10),
                                         width:
                                             MediaQuery.of(context).size.width,
@@ -488,16 +483,16 @@ class PersonalInfo extends StatelessWidget {
                                             ),
                                             Expanded(
                                               flex: 4,
-                                              child: Container(
+                                              child: SizedBox(
                                                 height: 35,
                                                 child: TextFormField(
                                                   decoration: InputDecoration(
                                                     contentPadding:
-                                                        EdgeInsets.only(
+                                                        const EdgeInsets.only(
                                                             left: 10),
                                                     hintText:
                                                         '${local?.enteraccountBankNumber}',
-                                                    errorStyle: TextStyle(
+                                                    errorStyle: const TextStyle(
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -511,7 +506,7 @@ class PersonalInfo extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 50,
                                       ),
                                       Padding(
@@ -521,6 +516,7 @@ class PersonalInfo extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: [
+                                            // ignore: deprecated_member_use
                                             RaisedButton(
                                               onPressed: () {
                                                 addBankList();
@@ -534,15 +530,16 @@ class PersonalInfo extends StatelessWidget {
                                                   .primaryColor,
                                               child: Text(
                                                 '${local?.save}',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               width: 15,
                                             ),
+                                            // ignore: deprecated_member_use
                                             RaisedButton(
                                               onPressed: () {
                                                 Navigator.pop(context);
@@ -550,7 +547,7 @@ class PersonalInfo extends StatelessWidget {
                                               color: Colors.red,
                                               child: Text(
                                                 '${local?.cancel}',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -565,7 +562,7 @@ class PersonalInfo extends StatelessWidget {
                               });
                           fetchBankData();
                         },
-                        icon: Icon(Icons.add),
+                        icon: const Icon(Icons.add),
                       )
                     ],
                   ),
@@ -575,7 +572,7 @@ class PersonalInfo extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Table(
-                        columnWidths: {
+                        columnWidths: const {
                           0: FlexColumnWidth(2),
                           1: FlexColumnWidth(4),
                         },
@@ -600,7 +597,7 @@ class PersonalInfo extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     width: 175,
                                     child: Column(
                                       children: [
@@ -649,7 +646,7 @@ class PersonalInfo extends StatelessWidget {
                                   TableCellVerticalAlignment.middle,
                               child: PopupMenuButton(
                                 color: kBlack,
-                                shape: RoundedRectangleBorder(
+                                shape: const RoundedRectangleBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 onSelected: (int selectedValue) async {
@@ -675,11 +672,12 @@ class PersonalInfo extends StatelessWidget {
                                             ),
                                             child: Column(
                                               children: [
-                                                SizedBox(
+                                                const SizedBox(
                                                   height: 20,
                                                 ),
                                                 Container(
-                                                  padding: EdgeInsets.symmetric(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
                                                       horizontal: 20,
                                                       vertical: 10),
                                                   width: MediaQuery.of(context)
@@ -704,11 +702,11 @@ class PersonalInfo extends StatelessWidget {
                                                       ),
                                                       Expanded(
                                                         flex: 4,
-                                                        child: Container(
+                                                        child: SizedBox(
                                                           height: 35,
                                                           child: TextFormField(
                                                             decoration:
-                                                                InputDecoration(
+                                                                const InputDecoration(
                                                               contentPadding:
                                                                   EdgeInsets.only(
                                                                       left: 10),
@@ -731,7 +729,8 @@ class PersonalInfo extends StatelessWidget {
                                                   ),
                                                 ),
                                                 Container(
-                                                  padding: EdgeInsets.symmetric(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
                                                       horizontal: 20,
                                                       vertical: 10),
                                                   width: MediaQuery.of(context)
@@ -756,11 +755,11 @@ class PersonalInfo extends StatelessWidget {
                                                       ),
                                                       Expanded(
                                                         flex: 4,
-                                                        child: Container(
+                                                        child: SizedBox(
                                                           height: 35,
                                                           child: TextFormField(
                                                             decoration:
-                                                                InputDecoration(
+                                                                const InputDecoration(
                                                               contentPadding:
                                                                   EdgeInsets.only(
                                                                       left: 10),
@@ -783,7 +782,8 @@ class PersonalInfo extends StatelessWidget {
                                                   ),
                                                 ),
                                                 Container(
-                                                  padding: EdgeInsets.symmetric(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
                                                       horizontal: 20,
                                                       vertical: 10),
                                                   width: MediaQuery.of(context)
@@ -808,11 +808,11 @@ class PersonalInfo extends StatelessWidget {
                                                       ),
                                                       Expanded(
                                                         flex: 4,
-                                                        child: Container(
+                                                        child: SizedBox(
                                                           height: 35,
                                                           child: TextFormField(
                                                             decoration:
-                                                                InputDecoration(
+                                                                const InputDecoration(
                                                               contentPadding:
                                                                   EdgeInsets.only(
                                                                       left: 10),
@@ -845,6 +845,7 @@ class PersonalInfo extends StatelessWidget {
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.end,
                                                     children: [
+                                                      // ignore: deprecated_member_use
                                                       RaisedButton(
                                                         onPressed: () {
                                                           editBank();
@@ -853,16 +854,18 @@ class PersonalInfo extends StatelessWidget {
                                                             .primaryColor,
                                                         child: Text(
                                                           '${local?.save}',
-                                                          style: TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 15,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                           ),
                                                         ),
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         width: 15,
                                                       ),
+                                                      // ignore: deprecated_member_use
                                                       RaisedButton(
                                                         onPressed: () {
                                                           Navigator.pop(
@@ -871,7 +874,8 @@ class PersonalInfo extends StatelessWidget {
                                                         color: Colors.red,
                                                         child: Text(
                                                           '${local?.cancel}',
-                                                          style: TextStyle(
+                                                          style:
+                                                              const TextStyle(
                                                             fontSize: 15,
                                                             fontWeight:
                                                                 FontWeight.bold,
@@ -898,21 +902,23 @@ class PersonalInfo extends StatelessWidget {
                                         title: Text('${local?.areYouSure}'),
                                         content: Text('${local?.cannotUndone}'),
                                         actions: [
+                                          // ignore: deprecated_member_use
                                           OutlineButton(
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                               deleteData(bankId!);
                                             },
                                             child: Text('${local?.yes}'),
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
+                                            borderSide: const BorderSide(
+                                                color: Colors.green),
                                           ),
+                                          // ignore: deprecated_member_use
                                           OutlineButton(
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
-                                            borderSide:
-                                                BorderSide(color: Colors.red),
+                                            borderSide: const BorderSide(
+                                                color: Colors.red),
                                             child: Text('${local?.no}'),
                                           )
                                         ],
@@ -940,7 +946,7 @@ class PersonalInfo extends StatelessWidget {
                                     value: 1,
                                   ),
                                 ],
-                                icon: Icon(Icons.more_vert),
+                                icon: const Icon(Icons.more_vert),
                               ),
                             )
                           ]);

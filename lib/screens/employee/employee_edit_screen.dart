@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:ems/screens/employee/widgets/employee_edit.dart/edit_personal.dart';
-import 'package:ems/utils/utils.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -97,7 +97,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
 
     String checkRole() {
       if (widget.role == 'admin') {
@@ -168,25 +167,27 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                           title: Text('${local?.areYouSure}'),
                           content: Text('${local?.changesWillLost}.'),
                           actions: [
+                            // ignore: deprecated_member_use
                             OutlineButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 Navigator.of(context).pop();
                               },
                               child: Text('${local?.yes}'),
-                              borderSide: BorderSide(color: Colors.green),
+                              borderSide: const BorderSide(color: Colors.green),
                             ),
+                            // ignore: deprecated_member_use
                             OutlineButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
                               child: Text('${local?.no}'),
-                              borderSide: BorderSide(color: Colors.red),
+                              borderSide: const BorderSide(color: Colors.red),
                             )
                           ],
                         ));
               },
-              icon: Icon(Icons.arrow_back)),
+              icon: const Icon(Icons.arrow_back)),
         ),
         body: Form(
             key: _form,
@@ -243,17 +244,18 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
           context: context,
           builder: (ctx) => AlertDialog(
                 title: Text('${local?.failed}',
-                    style: TextStyle(color: Colors.red)),
+                    style: const TextStyle(color: Colors.red)),
                 content: Text('${local?.editFailed}'),
                 actions: [
+                  // ignore: deprecated_member_use
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.red),
+                    borderSide: const BorderSide(color: Colors.red),
                     onPressed: () {
                       Navigator.pop(context);
                       // Navigator.pop(context);
                     },
                     child: Text('${local?.back}',
-                        style: TextStyle(color: Colors.red)),
+                        style: const TextStyle(color: Colors.red)),
                   ),
                 ],
               ));
@@ -266,15 +268,17 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                 title: Text('${local?.success}'),
                 content: Text('${local?.edited}'),
                 actions: [
+                  // ignore: deprecated_member_use
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.grey),
+                    borderSide: const BorderSide(color: Colors.grey),
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     child: Text('${local?.done}'),
                   ),
+                  // ignore: deprecated_member_use
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.green),
+                    borderSide: const BorderSide(color: Colors.green),
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pop(context);

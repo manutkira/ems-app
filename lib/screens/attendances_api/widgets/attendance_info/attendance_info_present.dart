@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:ems/utils/utils.dart';
-
 import '../../../../constants.dart';
 
 class AttendanceInfoPresent extends StatelessWidget {
@@ -51,7 +49,6 @@ class AttendanceInfoPresent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isEnglish = isInEnglish(context);
     var counted = afternoon ? presentAfternoon : presentMorning;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -93,7 +90,7 @@ class AttendanceInfoPresent extends StatelessWidget {
                   ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Text(

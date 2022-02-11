@@ -1,4 +1,3 @@
-import 'package:ems/models/attendance.dart';
 import 'package:ems/models/attendances.dart';
 import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
@@ -19,13 +18,12 @@ class AttendancesByMonthScreen extends StatefulWidget {
 }
 
 class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
-  AttendanceService _attendanceService = AttendanceService.instance;
-  UserService _userService = UserService.instance;
+  final AttendanceService _attendanceService = AttendanceService.instance;
+  final UserService _userService = UserService.instance;
 
   List userDisplay = [];
   List<AttendancesWithUser> attendanceDisplay = [];
   List<User> users = [];
-  bool _isLoading = true;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
 
@@ -36,7 +34,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
         attendancesWithUsesrFromAttendancesbyDay(atts);
     setState(() {
       attendanceDisplay = att2;
-      attendanceDisplay.sort((a, b) => a.id.compareTo(b.id as int));
+      attendanceDisplay.sort((a, b) => a.id.compareTo(b.id));
     });
   }
 
@@ -193,14 +191,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     }
   }
 
-  bool _validate = false;
-
   final _formKey = GlobalKey<FormState>();
-
-  void monthPick() {
-    AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -238,14 +229,14 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
           PopupMenuButton(
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10))),
-              color: Color(0xff43c3c52),
+              color: const Color(0xff43c3c52),
               onSelected: (item) => onSelected(context, item as int),
-              icon: Icon(Icons.filter_list),
+              icon: const Icon(Icons.filter_list),
               itemBuilder: (_) => [
                     PopupMenuItem(
                       child: Text(
                         '${local?.byDay}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
@@ -255,7 +246,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                     PopupMenuItem(
                       child: Text(
                         '${local?.byAllTime}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
@@ -352,7 +343,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                 }).toList(),
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 10,
                                             ),
                                             Container(
@@ -364,7 +355,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                 crossAxisCount: 3,
                                                 shrinkWrap: true,
                                                 physics:
-                                                    NeverScrollableScrollPhysics(),
+                                                    const NeverScrollableScrollPhysics(),
                                                 children: [
                                                   ...monthList
                                                       .asMap()
@@ -614,7 +605,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                         : 3),
                                                             child: Text(
                                                               '${local?.name}: ',
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold),
@@ -645,7 +636,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                         : 3),
                                                             child: Text(
                                                               '${local?.id}: ',
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold),

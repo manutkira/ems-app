@@ -1,9 +1,5 @@
-import 'dart:io';
-
 import 'package:ems/screens/employee/widgets/employee_list/employee_list.dart';
 import 'package:flutter/material.dart';
-
-import '../../screens/employee/new_employee_screen.dart';
 
 class EmployeeListScreen extends StatelessWidget {
   static const routeName = '/employee-list';

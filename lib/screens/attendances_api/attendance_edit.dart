@@ -36,7 +36,6 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   TextEditingController dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   TextEditingController? _noteController = TextEditingController();
-  TextEditingController? _codeController = TextEditingController();
   TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
   String? _hour, _minute, _time;
   DateTime? dateTime;
@@ -49,8 +48,8 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   void initState() {
     id.text = widget.id.toString();
     _selectDate = widget.date;
-    selectedTime = TimeOfDay(
-        hour: widget.time.hour as int, minute: widget.time.minute as int);
+    selectedTime =
+        TimeOfDay(hour: widget.time.hour, minute: widget.time.minute);
     _noteController?.text = widget.note.toString();
     dateController.text = DateFormat('dd-MM-yyyy').format(widget.date);
     _timeController.text = widget.time.hour.toString().padLeft(2, '0') +
@@ -348,15 +347,8 @@ class _AttedancesEditState extends State<AttedancesEdit> {
 
   uploadImage() async {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
-    var aUserId = idController.text;
-    var aType = type;
     var aNote = _noteController?.text;
     var aTime = _time;
-    DateTime aDate = _selectDate?.copyWith(
-        hour: selectedTime.hour,
-        minute: selectedTime.minute,
-        second: 0) as DateTime;
 
     var request = await http.MultipartRequest(
         'POST', Uri.parse("$url/${widget.id}?_method=PUT"));
@@ -386,14 +378,14 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                 content: Text('${local?.edited}'),
                 actions: [
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.grey),
+                    borderSide: const BorderSide(color: Colors.grey),
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     child: Text('${local?.done}'),
                   ),
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.green),
+                    borderSide: const BorderSide(color: Colors.green),
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pop(context);

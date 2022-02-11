@@ -56,15 +56,12 @@ class EmploymentInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
 
     TextEditingController skillNameController = TextEditingController();
     TextEditingController scoreController = TextEditingController();
     int? rateId;
 
     editRate() async {
-      AppLocalizations? local = AppLocalizations.of(context);
-      bool isEnglish = isInEnglish(context);
       var aName = skillNameController.text;
       var aScore = scoreController.text;
 
@@ -94,7 +91,7 @@ class EmploymentInfo extends StatelessWidget {
       Scaffold.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          duration: Duration(milliseconds: 2000),
+          duration: const Duration(milliseconds: 2000),
           backgroundColor: kBlueBackground,
           content: Text(
             value,
@@ -106,7 +103,6 @@ class EmploymentInfo extends StatelessWidget {
 
     Future deleteData(int id) async {
       AppLocalizations? local = AppLocalizations.of(context);
-      bool isEnglish = isInEnglish(context);
       final response = await http.delete(Uri.parse(
           "http://rest-api-laravel-flutter.herokuapp.com/api/ratework/$id"));
       showInSnackBar("${local?.deletingAttendance}");
@@ -120,7 +116,7 @@ class EmploymentInfo extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Container(
-        margin: EdgeInsets.only(
+        margin: const EdgeInsets.only(
           left: 20,
           right: 20,
         ),
@@ -136,7 +132,7 @@ class EmploymentInfo extends StatelessWidget {
                     children: [
                       Text(
                         '${local?.employment}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 27,
                         ),
                       ),
@@ -160,7 +156,7 @@ class EmploymentInfo extends StatelessWidget {
                             userDisplay = [];
                             fetchUserById();
                           },
-                          icon: Icon(Icons.edit)),
+                          icon: const Icon(Icons.edit)),
                     ],
                   ),
                 ),
@@ -213,7 +209,7 @@ class EmploymentInfo extends StatelessWidget {
                                         )));
                             fetchUserPosition();
                           },
-                          icon: Icon(MdiIcons.eye, size: 18),
+                          icon: const Icon(MdiIcons.eye, size: 18),
                         )
                       ],
                     ),
@@ -289,7 +285,7 @@ class EmploymentInfo extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 14,
             ),
             Padding(
@@ -299,7 +295,7 @@ class EmploymentInfo extends StatelessWidget {
                 children: [
                   Text(
                     '${local?.rate}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 27,
                     ),
                   ),
@@ -347,18 +343,20 @@ class EmploymentInfo extends StatelessWidget {
                                                   direction: Axis.horizontal,
                                                   children: [
                                                     Flexible(
+                                                      // ignore: sized_box_for_whitespace
                                                       child: Container(
                                                         height: 35,
                                                         child: TextFormField(
                                                           decoration:
                                                               InputDecoration(
                                                             contentPadding:
-                                                                EdgeInsets.only(
+                                                                const EdgeInsets
+                                                                        .only(
                                                                     left: 10),
                                                             hintText:
                                                                 '${local?.enterSkill}',
                                                             errorStyle:
-                                                                TextStyle(
+                                                                const TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -407,18 +405,19 @@ class EmploymentInfo extends StatelessWidget {
                                                   direction: Axis.horizontal,
                                                   children: [
                                                     Flexible(
-                                                      child: Container(
+                                                      child: SizedBox(
                                                         height: 35,
                                                         child: TextFormField(
                                                           decoration:
                                                               InputDecoration(
                                                             contentPadding:
-                                                                EdgeInsets.only(
+                                                                const EdgeInsets
+                                                                        .only(
                                                                     left: 10),
                                                             hintText:
                                                                 '${local?.enterScore}',
                                                             errorStyle:
-                                                                TextStyle(
+                                                                const TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
                                                                   FontWeight
@@ -438,7 +437,7 @@ class EmploymentInfo extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 20,
                                     ),
                                     Padding(
@@ -447,6 +446,7 @@ class EmploymentInfo extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
+                                          // ignore: deprecated_member_use
                                           RaisedButton(
                                             onPressed: () {
                                               addRateList();
@@ -459,15 +459,16 @@ class EmploymentInfo extends StatelessWidget {
                                                 Theme.of(context).primaryColor,
                                             child: Text(
                                               '${local?.save}',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 15,
                                           ),
+                                          // ignore: deprecated_member_use
                                           RaisedButton(
                                             onPressed: () {
                                               Navigator.pop(context);
@@ -475,7 +476,7 @@ class EmploymentInfo extends StatelessWidget {
                                             color: Colors.red,
                                             child: Text(
                                               '${local?.cancel}',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -490,16 +491,17 @@ class EmploymentInfo extends StatelessWidget {
                             });
                         fetchRateDate();
                       },
-                      icon: Icon(Icons.add))
+                      icon: const Icon(Icons.add))
                 ],
               ),
             ),
+            // ignore: avoid_unnecessary_containers
             Container(
               child: Center(
                 child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   itemCount: rateDisplay.length,
                   itemBuilder: (context, index) {
                     return Column(
@@ -507,7 +509,7 @@ class EmploymentInfo extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 8),
                           child: Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               border: Border(
                                 bottom: BorderSide(
                                   width: 1,
@@ -523,7 +525,7 @@ class EmploymentInfo extends StatelessWidget {
                                   children: [
                                     Text(
                                         '${rateDisplay[index].score.toString()} / 10'),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 5,
                                     ),
                                     IconButton(
@@ -550,7 +552,7 @@ class EmploymentInfo extends StatelessWidget {
                                                 ),
                                                 child: Column(
                                                   children: [
-                                                    SizedBox(
+                                                    const SizedBox(
                                                       height: 20,
                                                     ),
                                                     Padding(
@@ -596,16 +598,16 @@ class EmploymentInfo extends StatelessWidget {
                                                                     children: [
                                                                       Flexible(
                                                                         child:
-                                                                            Container(
+                                                                            SizedBox(
                                                                           height:
                                                                               35,
                                                                           child:
                                                                               TextFormField(
                                                                             decoration:
                                                                                 InputDecoration(
-                                                                              contentPadding: EdgeInsets.only(left: 10),
+                                                                              contentPadding: const EdgeInsets.only(left: 10),
                                                                               hintText: '${local?.enterSkill}',
-                                                                              errorStyle: TextStyle(
+                                                                              errorStyle: const TextStyle(
                                                                                 fontSize: 15,
                                                                                 fontWeight: FontWeight.bold,
                                                                               ),
@@ -671,16 +673,16 @@ class EmploymentInfo extends StatelessWidget {
                                                                     children: [
                                                                       Flexible(
                                                                         child:
-                                                                            Container(
+                                                                            SizedBox(
                                                                           height:
                                                                               35,
                                                                           child:
                                                                               TextFormField(
                                                                             decoration:
                                                                                 InputDecoration(
-                                                                              contentPadding: EdgeInsets.only(left: 10),
+                                                                              contentPadding: const EdgeInsets.only(left: 10),
                                                                               hintText: '${local?.enterScore}',
-                                                                              errorStyle: TextStyle(
+                                                                              errorStyle: const TextStyle(
                                                                                 fontSize: 15,
                                                                                 fontWeight: FontWeight.bold,
                                                                               ),
@@ -701,7 +703,7 @@ class EmploymentInfo extends StatelessWidget {
                                                         ],
                                                       ),
                                                     ),
-                                                    SizedBox(
+                                                    const SizedBox(
                                                       height: 20,
                                                     ),
                                                     Padding(
@@ -713,6 +715,7 @@ class EmploymentInfo extends StatelessWidget {
                                                             MainAxisAlignment
                                                                 .end,
                                                         children: [
+                                                          // ignore: deprecated_member_use
                                                           RaisedButton(
                                                             onPressed: () {
                                                               editRate();
@@ -722,7 +725,8 @@ class EmploymentInfo extends StatelessWidget {
                                                                 .primaryColor,
                                                             child: Text(
                                                               '${local?.save}',
-                                                              style: TextStyle(
+                                                              style:
+                                                                  const TextStyle(
                                                                 fontSize: 15,
                                                                 fontWeight:
                                                                     FontWeight
@@ -730,9 +734,10 @@ class EmploymentInfo extends StatelessWidget {
                                                               ),
                                                             ),
                                                           ),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             width: 15,
                                                           ),
+                                                          // ignore: deprecated_member_use
                                                           RaisedButton(
                                                             onPressed: () {
                                                               Navigator.pop(
@@ -741,7 +746,8 @@ class EmploymentInfo extends StatelessWidget {
                                                             color: Colors.red,
                                                             child: Text(
                                                               '${local?.cancel}',
-                                                              style: TextStyle(
+                                                              style:
+                                                                  const TextStyle(
                                                                 fontSize: 15,
                                                                 fontWeight:
                                                                     FontWeight
@@ -758,14 +764,14 @@ class EmploymentInfo extends StatelessWidget {
                                             });
                                         fetchRateDate();
                                       },
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.edit,
                                         size: 20,
                                       ),
                                     ),
                                     IconButton(
-                                        padding: EdgeInsets.only(left: 0),
-                                        constraints: BoxConstraints(),
+                                        padding: const EdgeInsets.only(left: 0),
+                                        constraints: const BoxConstraints(),
                                         onPressed: () async {
                                           await showDialog(
                                             context: context,
@@ -775,6 +781,7 @@ class EmploymentInfo extends StatelessWidget {
                                               content: Text(
                                                   '${local?.cannotUndone}'),
                                               actions: [
+                                                // ignore: deprecated_member_use
                                                 OutlineButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
@@ -782,14 +789,15 @@ class EmploymentInfo extends StatelessWidget {
                                                         rateDisplay[index].id);
                                                   },
                                                   child: Text('${local?.yes}'),
-                                                  borderSide: BorderSide(
+                                                  borderSide: const BorderSide(
                                                       color: Colors.green),
                                                 ),
+                                                // ignore: deprecated_member_use
                                                 OutlineButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
                                                   },
-                                                  borderSide: BorderSide(
+                                                  borderSide: const BorderSide(
                                                       color: Colors.red),
                                                   child: Text('${local?.no}'),
                                                 )
@@ -798,7 +806,7 @@ class EmploymentInfo extends StatelessWidget {
                                           );
                                           fetchRateDate();
                                         },
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.delete,
                                           size: 20,
                                           color: Colors.red,
@@ -815,7 +823,7 @@ class EmploymentInfo extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 65,
             )
           ],

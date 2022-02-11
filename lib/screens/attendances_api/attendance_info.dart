@@ -7,7 +7,6 @@ import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_i
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_present.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
-import 'package:ems/widgets/attendance/attendacne_all_time_list.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -28,13 +27,12 @@ class AttendancesInfoScreen extends StatefulWidget {
 }
 
 class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
-  AttendanceService _attendanceNoDateService = AttendanceService.instance;
+  final AttendanceService _attendanceNoDateService = AttendanceService.instance;
   List<Attendance> attendanceDisplay = [];
   List<Attendance> attendanceAllDisplay = [];
-  List<AttendanceWithDate> _attendanceDisplay = [];
   List<AttendanceWithDate> _attendanceNoDateDisplay = [];
 
-  AttendanceService _attendanceService = AttendanceService.instance;
+  final AttendanceService _attendanceService = AttendanceService.instance;
   List<Attendances> attendancesDisplay = [];
   List<AttendancesWithDate> attendancesByIdDisplay = [];
   List<AttendancesWithDate> attendanceList = [];
@@ -47,7 +45,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   bool isOneDay = false;
   bool multiday = false;
   bool isFilterExpanded = false;
-  bool _isLoading = true;
+  final bool _isLoading = true;
   List isToday = [];
   List<AttendancesWithDate> onedayList = [];
   String sortByValue = '';
@@ -78,7 +76,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   bool multipleDay = false;
   bool _isLoadingNoDate = true;
   bool order = false;
-  List<Appointment>? _appointment;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
   List isTodayNoon = [];
@@ -316,19 +313,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     } catch (err) {}
   }
 
-  // fetchManyAttendances() {
-  //   try {
-  //     _attendanceService.findManyAttendances().then((usersFromServer) {
-  //       if (mounted) {
-  //         setState(() {
-  //           attendancesDisplay = [];
-  //           attendancesDisplay.addAll(usersFromServer);
-  //         });
-  //       }
-  //     });
-  //   } catch (err) {}
-  // }
-
   checkPresent(AttendancesWithDate element) {
     if (element.list[0].getT1?.note != 'absent' &&
         element.list[0].getT1?.note != 'permission') {
@@ -442,7 +426,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
   Future deleteData(int id) async {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     final response = await http.delete(Uri.parse("$url/$id"));
     print(response.statusCode);
     showInSnackBar("${local?.deletingAttendance}");
@@ -478,10 +461,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
   }
 
   void showInSnackBar(String value) {
-    _scaffoldKey.currentState!.showSnackBar(
+    _scaffoldKey.currentState?.showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
-        duration: Duration(milliseconds: 2000),
+        duration: const Duration(milliseconds: 2000),
         backgroundColor: kBlueBackground,
         content: Text(
           value,
@@ -542,7 +525,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text('${local?.fetchData}'),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Image.asset(
@@ -562,7 +545,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text('${local?.fetchData}'),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Image.asset(
@@ -881,8 +864,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.only(top: 25),
-                          padding: EdgeInsets.all(15),
+                          margin: const EdgeInsets.only(top: 25),
+                          padding: const EdgeInsets.all(15),
                           width: MediaQuery.of(context).size.width * 0.9,
                           decoration: BoxDecoration(
                             color: kDarkestBlue,
@@ -894,7 +877,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   name: userDisplay[0].name.toString(),
                                   id: userDisplay[0].id.toString(),
                                   image: userDisplay[0].image.toString()),
-                              SizedBox(
+                              const SizedBox(
                                 height: 25,
                               ),
                               Row(
@@ -1112,7 +1095,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                           child: Column(
                                             children: [
                                               Text('${local?.fetchData}'),
-                                              SizedBox(
+                                              const SizedBox(
                                                 height: 10,
                                               ),
                                               Center(

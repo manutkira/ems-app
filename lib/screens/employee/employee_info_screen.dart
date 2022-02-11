@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:ems/models/bank.dart';
 import 'package:ems/models/rate.dart';
-import 'package:ems/screens/employee/employee_edit_employment.dart';
 import 'package:ems/screens/employee/widgets/employee_info/employment_info.dart';
 import 'package:ems/screens/employee/widgets/employee_info/personal_info.dart';
 import 'package:ems/utils/services/bank_service.dart';
@@ -14,7 +13,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/card/card.screen.dart';
-import 'package:ems/screens/employee/employee_edit_screen.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -59,7 +57,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
   bool _isloading = true;
   String dropDownValue = '';
   bool personal = true;
-  bool Employeement = false;
+  bool employeement = false;
   static List<Tab> myTabs = <Tab>[];
   late TabController _tabController;
   late Tab _handler;
@@ -235,8 +233,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
               child: Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 10),
-                    padding: EdgeInsets.only(
+                    margin: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(
                         top: 10, bottom: 10, right: 16, left: 30),
                     width: MediaQuery.of(context).size.width * 0.9,
                     decoration: BoxDecoration(
@@ -250,7 +248,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                           height: 75,
                           decoration: BoxDecoration(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
+                                  const BorderRadius.all(Radius.circular(100)),
                               border: Border.all(
                                 width: 1,
                                 color: Colors.white,
@@ -268,7 +266,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                   ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Column(
@@ -281,7 +279,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                   style: kParagraph.copyWith(
                                       fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 SizedBox(
@@ -290,7 +288,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                 ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
                             BaselineRow(
@@ -300,7 +298,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                   style: kParagraph.copyWith(
                                       fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 20,
                                 ),
                                 Text(userDisplay[0].id.toString()),
@@ -332,7 +330,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                         ),
                                       );
                                     },
-                                    icon: Icon(Icons.credit_card)),
+                                    icon: const Icon(Icons.credit_card)),
                               ],
                             ),
                           ],
@@ -340,12 +338,12 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   DefaultTabController(
                     length: 2,
-                    child: Container(
+                    child: SizedBox(
                       width: 350,
                       child: TabBar(
                         // ),
@@ -363,11 +361,11 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                   ),
                   Container(
                       height: 500,
-                      margin: EdgeInsets.only(top: 0),
+                      margin: const EdgeInsets.only(top: 0),
                       width: double.infinity,
                       child: Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
+                            borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20),
                             ),
@@ -382,7 +380,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                         child: SizedBox(
                           height: 100,
                           child: TabBarView(
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             controller: _tabController,
                             children: [
                               PersonalInfo(
@@ -422,7 +420,6 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
 
   addRate() async {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     var aName = rateNameController.text;
     var aScore = rateScoreController.text;
     var request = await http.MultipartRequest(
