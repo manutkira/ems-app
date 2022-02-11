@@ -35,7 +35,6 @@ class PositionService extends BaseService {
         throw 'error';
       }
       Map<String, dynamic> jsondata = json.decode(response.body);
-      print(jsondata['positions']);
       var data = jsondata['positions'];
       return data;
     } catch (e) {

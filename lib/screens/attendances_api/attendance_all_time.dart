@@ -302,7 +302,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
       margin: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.black, width: 2))),
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         child: Row(
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -334,7 +334,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
             const SizedBox(
               width: 10,
             ),
-            Container(
+            SizedBox(
               width: 270,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

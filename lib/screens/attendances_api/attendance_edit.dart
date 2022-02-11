@@ -272,6 +272,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   children: [
                     Container(
                       padding: const EdgeInsets.only(right: 10),
+                      // ignore: deprecated_member_use
                       child: RaisedButton(
                         onPressed: () {
                           showDialog(
@@ -280,6 +281,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                                     title: Text('${local?.areYouSure}'),
                                     content: Text('${local?.saveChanges}'),
                                     actions: [
+                                      // ignore: deprecated_member_use
                                       OutlineButton(
                                         borderSide: const BorderSide(
                                             color: Colors.green),
@@ -313,6 +315,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                                                   ));
                                         },
                                       ),
+                                      // ignore: deprecated_member_use
                                       OutlineButton(
                                         onPressed: () {
                                           Navigator.of(context).pop();
@@ -328,6 +331,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
+                    // ignore: deprecated_member_use
                     RaisedButton(
                       onPressed: () {
                         Navigator.pop(context);
@@ -377,6 +381,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                 title: Text('${local?.success}'),
                 content: Text('${local?.edited}'),
                 actions: [
+                  // ignore: deprecated_member_use
                   OutlineButton(
                     borderSide: const BorderSide(color: Colors.grey),
                     onPressed: () {
@@ -384,6 +389,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                     },
                     child: Text('${local?.done}'),
                   ),
+                  // ignore: deprecated_member_use
                   OutlineButton(
                     borderSide: const BorderSide(color: Colors.green),
                     onPressed: () {

@@ -238,7 +238,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
       margin: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.black, width: 2))),
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         child: Row(
           children: [
@@ -266,7 +266,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
             const SizedBox(
               width: 10,
             ),
-            Container(
+            SizedBox(
               width: 240,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

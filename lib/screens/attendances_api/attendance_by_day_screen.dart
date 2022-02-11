@@ -328,6 +328,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                               : '${local?.date}: ${DateFormat.yMd().format(_selectDate as DateTime)}',
                           style: kParagraph.copyWith(fontSize: 14),
                         ),
+                        // ignore: deprecated_member_use
                         RaisedButton(
                           padding: const EdgeInsets.only(
                               top: 0, bottom: 0, left: 7, right: 7),

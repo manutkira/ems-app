@@ -236,7 +236,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             element.date.month == now.month &&
             element.date.year == now.year);
 
-        List todayFlat = today.expand((element) => element.list).toList();
         isToday = today.toList();
         todayPresent = isToday
             .where((element) =>
@@ -557,7 +556,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                   ),
                 )
               : _attendanceNoDateDisplay.isEmpty
-                  ? AttendanceInfoNoAttenance()
+                  ? const AttendanceInfoNoAttenance()
                   : Column(
                       children: [
                         Padding(

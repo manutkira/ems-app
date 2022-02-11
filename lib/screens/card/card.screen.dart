@@ -24,16 +24,14 @@ class _NationalIdScreenState extends State<NationalIdScreen> {
         });
       });
       super.initState();
-    } catch (err) {
-      print(err);
-    }
+    } catch (err) {}
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'National ID',
           style: kHeadingTwo,
         ),
@@ -42,12 +40,12 @@ class _NationalIdScreenState extends State<NationalIdScreen> {
           ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Text('Fetching Data'),
                   SizedBox(
                     height: 10,
                   ),
-                  const CircularProgressIndicator(
+                  CircularProgressIndicator(
                     color: kWhite,
                   ),
                 ],
@@ -66,7 +64,7 @@ class _NationalIdScreenState extends State<NationalIdScreen> {
                           width: 1,
                           color: Colors.white,
                         )),
-                    child: user.image != null
+                    child: user.imageId != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(20),
                             child: Image.network(
@@ -75,7 +73,7 @@ class _NationalIdScreenState extends State<NationalIdScreen> {
                               width: double.infinity,
                             ),
                           )
-                        : Text(
+                        : const Text(
                             'No ID Image',
                             textAlign: TextAlign.center,
                           ),

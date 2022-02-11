@@ -51,7 +51,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
         ? Column(
             children: [
               Text(
-                '${local?.noAttendance}',
+                '${local!.noAttendance}',
                 style: kHeadingThree.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -243,28 +243,30 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
               title: Text('${local?.areYouSure}'),
               content: Text('${local?.cannotUndone}'),
               actions: [
+                // ignore: deprecated_member_use
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    deleteData(record.list[0].getT1!.id as int);
+                    deleteData(record.list[0].getT1!.id);
                   },
                   child: Text('Yes'),
-                  borderSide: BorderSide(color: Colors.green),
+                  borderSide: const BorderSide(color: Colors.green),
                 ),
+                // ignore: deprecated_member_use
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  borderSide: BorderSide(color: Colors.red),
-                  child: Text('No'),
+                  borderSide: const BorderSide(color: Colors.red),
+                  child: const Text('No'),
                 )
               ],
             ),
           );
         }
         if (selectedValue == 2) {
-          final int id = record.list[0].getT1!.id as int;
-          final DateTime date = record.list[0].date as DateTime;
+          final int id = record.list[0].getT1!.id;
+          final DateTime date = record.list[0].date;
           final TimeOfDay time = record.list[0].getT1!.time;
           final String? note = record.list[0].getT1!.note;
           final String userName = record.list[0].user!.name.toString();
@@ -310,7 +312,6 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
 
   popUp2(AttendancesWithDate record, BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
 
     return PopupMenuButton(
       color: Colors.black,
@@ -318,8 +319,8 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(10))),
       onSelected: (int selectedValue) async {
         if (selectedValue == 0) {
-          final int id = record.list[0].getT2!.id as int;
-          final DateTime date = record.list[0].date as DateTime;
+          final int id = record.list[0].getT2!.id;
+          final DateTime date = record.list[0].date;
           final String? note = record.list[0].getT2!.note;
           final TimeOfDay time = record.list[0].getT2!.time;
           await Navigator.of(context).push(
@@ -342,28 +343,30 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
               title: Text('${local?.areYouSure}'),
               content: Text('${local?.cannotUndone}'),
               actions: [
+                // ignore: deprecated_member_use
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    deleteData(record.list[0].getT2!.id as int);
+                    deleteData(record.list[0].getT2!.id);
                   },
-                  child: Text('Yes'),
-                  borderSide: BorderSide(color: Colors.green),
+                  child: const Text('Yes'),
+                  borderSide: const BorderSide(color: Colors.green),
                 ),
+                // ignore: deprecated_member_use
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  borderSide: BorderSide(color: Colors.red),
-                  child: Text('No'),
+                  borderSide: const BorderSide(color: Colors.red),
+                  child: const Text('No'),
                 )
               ],
             ),
           );
         }
         if (selectedValue == 2) {
-          final int id = record.list[0].id as int;
-          final DateTime date = record.list[0].date as DateTime;
+          final int id = record.list[0].id;
+          final DateTime date = record.list[0].date;
           final TimeOfDay time = record.list[0].getT2!.time;
           final String? note = record.list[0].getT2!.note;
           final String userName = record.list[0].user!.name.toString();
@@ -409,15 +412,14 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
 
   popUp3(AttendancesWithDate record, BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     return PopupMenuButton(
       color: Colors.black,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10))),
       onSelected: (int selectedValue) async {
         if (selectedValue == 0) {
-          final int id = record.list[0].getT3!.id as int;
-          final DateTime date = record.list[0].date as DateTime;
+          final int id = record.list[0].getT3!.id;
+          final DateTime date = record.list[0].date;
           final String? note = record.list[0].getT3!.note;
           final TimeOfDay time = record.list[0].getT3!.time;
           await Navigator.of(context).push(
@@ -440,28 +442,30 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
               title: Text('${local?.areYouSure}'),
               content: Text('${local?.cannotUndone}'),
               actions: [
+                // ignore: deprecated_member_use
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    deleteData(record.list[0].getT3!.id as int);
+                    deleteData(record.list[0].getT3!.id);
                   },
-                  child: Text('Yes'),
-                  borderSide: BorderSide(color: Colors.green),
+                  child: const Text('Yes'),
+                  borderSide: const BorderSide(color: Colors.green),
                 ),
+                // ignore: deprecated_member_use
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  borderSide: BorderSide(color: Colors.red),
-                  child: Text('No'),
+                  borderSide: const BorderSide(color: Colors.red),
+                  child: const Text('No'),
                 )
               ],
             ),
           );
         }
         if (selectedValue == 2) {
-          final int id = record.list[0].getT3!.id as int;
-          final DateTime date = record.list[0].date as DateTime;
+          final int id = record.list[0].getT3!.id;
+          final DateTime date = record.list[0].date;
           final TimeOfDay time = record.list[0].getT3!.time;
           final String? note = record.list[0].getT3!.note;
           final String userName = record.list[0].user!.name.toString();
@@ -507,15 +511,14 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
 
   popUp4(AttendancesWithDate record, BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     return PopupMenuButton(
       color: Colors.black,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10))),
       onSelected: (int selectedValue) async {
         if (selectedValue == 0) {
-          final int id = record.list[0].getT4!.id as int;
-          final DateTime date = record.list[0].date as DateTime;
+          final int id = record.list[0].getT4!.id;
+          final DateTime date = record.list[0].date;
           final String? note = record.list[0].getT4!.note;
           final TimeOfDay time = record.list[0].getT4!.time;
           await Navigator.of(context).push(
@@ -538,28 +541,30 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
               title: Text('${local?.areYouSure}'),
               content: Text('${local?.cannotUndone}'),
               actions: [
+                // ignore: deprecated_member_use
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    deleteData(record.list[0].getT4!.id as int);
+                    deleteData(record.list[0].getT4!.id);
                   },
-                  child: Text('Yes'),
-                  borderSide: BorderSide(color: Colors.green),
+                  child: const Text('Yes'),
+                  borderSide: const BorderSide(color: Colors.green),
                 ),
+                // ignore: deprecated_member_use
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  borderSide: BorderSide(color: Colors.red),
-                  child: Text('No'),
+                  borderSide: const BorderSide(color: Colors.red),
+                  child: const Text('No'),
                 )
               ],
             ),
           );
         }
         if (selectedValue == 2) {
-          final int id = record.list[0].getT3!.id as int;
-          final DateTime date = record.list[0].date as DateTime;
+          final int id = record.list[0].getT3!.id;
+          final DateTime date = record.list[0].date;
           final TimeOfDay time = record.list[0].getT4!.time;
           final String? note = record.list[0].getT4!.note;
           final String userName = record.list[0].user!.name.toString();
@@ -605,11 +610,10 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
 
   Widget _buildAllResult(AttendancesWithDate record, BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
 
     return ExpansionTile(
       collapsedBackgroundColor: Color(0xff254973),
-      backgroundColor: Color(0xff254973),
+      backgroundColor: const Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
       initiallyExpanded: true,
@@ -651,7 +655,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT1!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Text(record.list[0].getT1 == null
@@ -733,7 +737,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT3!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Text(record.list[0].getT3?.time == null
@@ -795,7 +799,6 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
 
   Widget _buildNowResult(AttendancesWithDate record, BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
 
     return ExpansionTile(
       collapsedBackgroundColor: Color(0xff254973),
@@ -923,7 +926,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT3!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Text(record.list[0].getT3?.time == null
@@ -1178,8 +1181,8 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
-      collapsedBackgroundColor: Color(0xff254973),
-      backgroundColor: Color(0xff254973),
+      collapsedBackgroundColor: const Color(0xff254973),
+      backgroundColor: const Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
       initiallyExpanded: true,

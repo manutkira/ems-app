@@ -275,6 +275,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                           : '${local?.monthYear}: $_selectMonth/$pickedYear',
                       style: kParagraph.copyWith(fontSize: 14),
                     ),
+                    // ignore: deprecated_member_use
                     RaisedButton(
                       color: kDarkestBlue,
                       shape: RoundedRectangleBorder(
@@ -290,7 +291,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(10.0))),
                                   title: Text('${local?.pickMonth}'),
-                                  content: Container(
+                                  content: SizedBox(
                                     height: 300,
                                     width: 400,
                                     child: Column(
@@ -346,7 +347,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                             const SizedBox(
                                               height: 10,
                                             ),
-                                            Container(
+                                            SizedBox(
                                               height: 250,
                                               child: GridView.count(
                                                 mainAxisSpacing: 20,
@@ -652,8 +653,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                   ),
                                                 ],
                                               ),
-                                              Container(
-                                                  child: Row(
+                                              Row(
                                                 children: [
                                                   Column(
                                                     children: [
@@ -910,7 +910,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                     ],
                                                   ),
                                                 ],
-                                              ))
+                                              )
                                             ],
                                           ),
                                         );

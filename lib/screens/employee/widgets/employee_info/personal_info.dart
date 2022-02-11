@@ -289,7 +289,7 @@ class PersonalInfo extends StatelessWidget {
                                 left: 15,
                               ),
                               child: Text(
-                                userDisplay[0].address == null
+                                userDisplay[0].address == 'null'
                                     ? '${local?.noData}'
                                     : userDisplay[0].address.toString(),
                                 style: kParagraph.copyWith(
@@ -320,7 +320,7 @@ class PersonalInfo extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 15),
                             child: Text(
-                              userDisplay[0].background == null
+                              userDisplay[0].background == 'null'
                                   ? '${local?.noData}'
                                   : userDisplay[0].background.toString(),
                               style: kParagraph.copyWith(
