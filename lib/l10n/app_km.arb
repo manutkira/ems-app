@@ -213,5 +213,8 @@
   "selectEndDate": "ជ្រើសរើសថ្ងៃបញ្ចប់",
   "now": "បច្ចុប្បន្ន",
   "accountName": "ឈ្មោះគណនី",
-  "accountNumber": "លេខគណនី"
+  "accountNumber": "លេខគណនី",
+  "takeAttendance": "កត់វត្តមាន",
+  "scanFailed": "ស្កេនបានបរាជ័យ",
+  "qrCode": "QR កូដ"
 }

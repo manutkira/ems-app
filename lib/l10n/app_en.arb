@@ -881,5 +881,17 @@
   "accountNumber": "Number",
   "@accountNumber": {
     "description": "add employee"
+  },
+  "takeAttendance": "Take Attendance",
+  "@takeAttendance": {
+    "description": "take attendance"
+  },
+  "scanFailed": "Scan failed",
+  "@scanFailed": {
+    "description": "take attendance"
+  },
+  "qrCode": "QR Code",
+  "@QRCode": {
+    "description": "take attendance"
   }
 }

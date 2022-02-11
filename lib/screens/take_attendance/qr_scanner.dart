@@ -14,8 +14,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRCodeScanner extends ConsumerStatefulWidget {
-  final String type;
-  const QRCodeScanner({Key? key, required this.type}) : super(key: key);
+  const QRCodeScanner({Key? key}) : super(key: key);
 
   @override
   ConsumerState createState() => _QRCodeScannerState();
@@ -85,7 +84,6 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
       {required IconData icon,
       required Color backgroundColor,
       required Color textColor,
-      required String type,
       required String message}) {
     return SnackBar(
       duration: const Duration(seconds: 2),
@@ -124,11 +122,12 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
 
     /// use to set note from confirmation panel before registering the record
     /// confirmation to true
+    /// TODO: DO THIS NEXT
     void ok(String note) {
       setState(() {
         attendance = Attendance(
           userId: id,
-          type: widget.type,
+          // type: widget.type,
           date: DateTime.now(),
         );
       });
@@ -179,7 +178,9 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
                       name: name,
                       profile: profile,
                       ok: (note) => ok(note),
-                      type: widget.type,
+
+                      /// TODO: DO THIS NEXT
+                      // type: widget.type,
                     ),
                   ),
                 ),
@@ -354,16 +355,12 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   /// build scan failed screen
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _buildScanFailed() {
     AppLocalizations? local = AppLocalizations.of(context);
-    String localType = widget.type == AttendanceType.typeCheckIn
-        ? "${local?.checkin}"
-        : "${local?.checkout}";
     return ScaffoldMessenger.of(context).showSnackBar(
       _buildSnackBar(
         icon: Icons.close,
         textColor: kRedText,
         backgroundColor: kRedBackground,
-        type: widget.type,
-        message: '$localType ${local?.failed}!',
+        message: '${local?.scanFailed}',
       ),
     );
   }

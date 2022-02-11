@@ -1,3 +1,4 @@
+import 'package:ems/screens/take_attendance/qr_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,13 +9,22 @@ class EMSAppBar extends ConsumerWidget with PreferredSizeWidget {
   const EMSAppBar({Key? key, required this.openDrawer}) : super(key: key);
   final Function() openDrawer;
 
+  void seeQRCode(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const QRCode(),
+      ),
+    );
+  }
+
   @override
   PreferredSizeWidget build(BuildContext context, WidgetRef ref) {
     return AppBar(
-      leading: GestureDetector(
-        onTap: openDrawer,
-        child: Container(
-          padding: kPaddingAll,
+      leading: IconButton(
+        onPressed: openDrawer,
+        icon: SizedBox(
+          width: 25,
+          height: 25,
           child: SvgPicture.asset(
             'assets/images/menuburger.svg',
             semanticsLabel: "menu",
@@ -22,7 +32,20 @@ class EMSAppBar extends ConsumerWidget with PreferredSizeWidget {
         ),
       ),
       title: const Text('Internal EMS'),
-      actions: const [],
+      actions: [
+        IconButton(
+          onPressed: () => seeQRCode(context),
+          icon: SizedBox(
+            width: 25,
+            height: 25,
+            child: SvgPicture.asset(
+              "assets/images/qr-code-icon.svg",
+              height: 50,
+              color: kWhite,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

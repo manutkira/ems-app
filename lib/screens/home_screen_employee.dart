@@ -10,7 +10,6 @@ import 'package:ems/screens/test_attendances.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/appbar.dart';
 import 'package:ems/widgets/check_status.dart';
-import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -173,35 +172,44 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             Container(
               height: 170,
               padding: const EdgeInsets.symmetric(
-                horizontal: 15,
                 vertical: 12,
+                horizontal: 15,
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: MenuItem(
-                      onTap: _goToCheckInScreen,
-                      illustration: SvgPicture.asset(
-                        "assets/images/tick.svg",
-                        width: MediaQuery.of(context).size.width * 0.15,
+              child: GestureDetector(
+                onTap: _goToCheckInScreen,
+                child: SizedBox(
+                  width: _size.width,
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Container(
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: kLightBlue,
+                        borderRadius: BorderRadius.all(kBorderRadius),
                       ),
-                      label: "${local?.checkin}",
+                      padding: kPaddingAll,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            "assets/images/scan-qr-code-icon.svg",
+                            height: 100,
+                          ),
+                          Text(
+                            "${local?.checkInOut}",
+                            style: kSubtitle.copyWith(
+                              color: kBlack,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
+                            ),
+                            textAlign: TextAlign.center,
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    flex: 1,
-                    child: MenuItem(
-                      onTap: _goToCheckoutScreen,
-                      illustration: SvgPicture.asset(
-                        "assets/images/close.svg",
-                        width: MediaQuery.of(context).size.width * 0.15,
-                      ),
-                      label: "${local?.checkout}",
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
             _buildSpacerVertical,
