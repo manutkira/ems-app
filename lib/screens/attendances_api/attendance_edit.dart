@@ -47,12 +47,10 @@ class _AttedancesEditState extends State<AttedancesEdit> {
 
   @override
   void initState() {
-    // type = widget.type;
     id.text = widget.id.toString();
     _selectDate = widget.date;
     selectedTime = TimeOfDay(
         hour: widget.time.hour as int, minute: widget.time.minute as int);
-    // typeController.text = widget.type;
     _noteController?.text = widget.note.toString();
     dateController.text = DateFormat('dd-MM-yyyy').format(widget.date);
     _timeController.text = widget.time.hour.toString().padLeft(2, '0') +
@@ -99,36 +97,11 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     });
   }
 
-  // void _fullTime() {
-  //   dateTime = _selectDate! + selectedTime;
-  // }
-
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    // checkType() {
-    //   if (widget.type == 'checkin') {
-    //     return local!.checkIn;
-    //   }
-    //   if (widget.type == 'checkout') {
-    //     return local!.checkOut;
-    //   }
-    //   if (widget.type == 'absent') {
-    //     return local!.absent;
-    //   } else {
-    //     return local!.permission;
-    //   }
-    // }
 
-    setState(() {
-      // if (type.isEmpty) {
-      //   type = checkType();
-      // }
-      // if (widget.note == null) {
-      //   _noteController!.text = 'null';
-      // }
-    });
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -174,46 +147,6 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${local?.userId} ',
-                    style: kParagraph.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: isEnglish ? 15 : 15.5),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flex(
-                      direction: Axis.horizontal,
-                      children: [
-                        Flexible(
-                          child: TextFormField(
-                            readOnly: true,
-                            decoration: const InputDecoration(
-                              hintText: 'Enter Name',
-                              errorStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            controller: idController,
-                            textInputAction: TextInputAction.next,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
                     '${local?.date} ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
@@ -228,11 +161,12 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                       children: [
                         Flexible(
                           child: TextFormField(
+                            readOnly: true,
                             decoration: InputDecoration(
                               suffixIcon: IconButton(
                                   onPressed: () {
                                     // _fullTime();
-                                    _byDayDatePicker();
+                                    // _byDayDatePicker();
                                   },
                                   icon: const Icon(Icons.calendar_today)),
                               hintText: 'Enter Name',
@@ -271,6 +205,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                       children: [
                         Flexible(
                           child: TextFormField(
+                            readOnly: true,
                             decoration: InputDecoration(
                               suffixIcon: IconButton(
                                   onPressed: () {
@@ -429,31 +364,10 @@ class _AttedancesEditState extends State<AttedancesEdit> {
       "Accept": "application/json",
       "Content": "charset-UTF-8",
     };
-    // String checkType() {
-    //   if (aType == local?.checkIn) {
-    //     return 'checkin';
-    //   }
-    //   if (aType == local?.checkOut) {
-    //     return 'checkout';
-    //   }
-    //   if (aType == local?.absent) {
-    //     return 'absent';
-    //   }
-    //   if (aType == local?.permission) {
-    //     return 'permission';
-    //   } else {
-    //     return '';
-    //   }
-    // }
-
-    // request.files
-    //     .add(http.MultipartFile.fromString('user_id', aUserId.toString()));
     if (aNote!.isNotEmpty) {
       request.files
           .add(http.MultipartFile.fromString('note', aNote.toString()));
     }
-
-    // request.files.add(http.MultipartFile.fromString('type', checkType()));
     if (aTime != null) {
       request.files
           .add(http.MultipartFile.fromString('time', aTime.toString()));

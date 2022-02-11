@@ -881,5 +881,45 @@
   "accountNumber": "Number",
   "@accountNumber": {
     "description": "add employee"
+  },
+  "positionRecord": "Position Record",
+  "@positionRecord": {
+    "description": "position"
+  },
+  "table": "Table",
+  "@table": {
+    "description": "position"
+  },
+  "timeline": "Timeline",
+  "@timeline": {
+    "description": "position"
+  },
+  "bank": "Bank",
+  "@bank": {
+    "description": "position"
+  },
+  "bankName": "Bank Name",
+  "@bankName": {
+    "description": "position"
+  },
+  "accountBankName": "Account Name",
+  "@accountBankName": {
+    "description": "position"
+  },
+  "accountBankNumber": "Account Number",
+  "@accountBankNumber": {
+    "description": "position"
+  },
+  "enterbankName": "Enter Bank Name",
+  "@enterbankName": {
+    "description": "position"
+  },
+  "enteraccountBankName": "Enter Account Name",
+  "@enteraccountBankName": {
+    "description": "position"
+  },
+  "enteraccountBankNumber": "Enter Account Number",
+  "@enteraccountBankNumber": {
+    "description": "position"
   }
 }

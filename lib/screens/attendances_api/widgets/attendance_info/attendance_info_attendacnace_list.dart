@@ -637,9 +637,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: Checkin'),
+                    Text('1: ${local!.checkIn}'),
                     record.list[0].getT1 == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -662,12 +662,12 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                               Text(record.list[0].getT1 == null
                                   ? 'null'
                                   : checkPresent(record)
-                                      ? '( Present )'
+                                      ? '( ${local.present} )'
                                       : checkLate1(record)
-                                          ? '( late )'
+                                          ? '( ${local.late} )'
                                           : checkAbsengetT1(record)
-                                              ? '( absent )'
-                                              : '( permission )'),
+                                              ? '( ${local.absent} )'
+                                              : '( ${local.permission} )'),
                               popUp1(record, context)
                             ],
                           ),
@@ -684,9 +684,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: Checkout'),
+                    Text('1: ${local.checkOut}'),
                     record.list[0].getT2 == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -719,9 +719,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: Checkin'),
+                    Text('2: ${local.checkIn}'),
                     record.list[0].getT3 == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -744,12 +744,12 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                               Text(record.list[0].getT3?.time == null
                                   ? 'null'
                                   : checkPresengetT2(record)
-                                      ? '( Present )'
+                                      ? '( ${local.present} )'
                                       : checkLate2(record)
-                                          ? '( late )'
+                                          ? '( ${local.late} )'
                                           : checkAbsengetT2(record)
-                                              ? '( absent )'
-                                              : '( permission )'),
+                                              ? '( ${local.absent} )'
+                                              : '( ${local.permission} )'),
                               popUp3(record, context)
                             ],
                           ),
@@ -766,9 +766,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: Checkout'),
+                    Text('2: ${local.checkOut}'),
                     record.list[0].getT4 == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -827,9 +827,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: Checkin'),
+                    Text('1: ${local!.checkIn}'),
                     record.list[0].getT1?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -852,12 +852,12 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                               Text(record.list[0].getT1?.time == null
                                   ? 'null'
                                   : checkPresent(record)
-                                      ? '( Present )'
+                                      ? '( ${local.present} )'
                                       : checkLate1(record)
-                                          ? '( late )'
+                                          ? '( ${local.late} )'
                                           : checkAbsengetT1(record)
-                                              ? '( absent )'
-                                              : '( permission )'),
+                                              ? '( ${local.absent} )'
+                                              : '( ${local.permission} )'),
                               popUp1(record, context)
                             ],
                           ),
@@ -874,9 +874,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: Checkout'),
+                    Text('1: ${local.checkOut}'),
                     record.list[0].getT2?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -909,9 +909,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: Checkin'),
+                    Text('2: ${local.checkIn}'),
                     record.list[0].getT3?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -934,12 +934,12 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                               Text(record.list[0].getT3?.time == null
                                   ? 'null'
                                   : checkPresengetT2(record)
-                                      ? '( Present )'
+                                      ? '( ${local.present} )'
                                       : checkLate2(record)
-                                          ? '( late )'
+                                          ? '( ${local.late} )'
                                           : checkAbsengetT2(record)
-                                              ? '( absent )'
-                                              : '( permission )'),
+                                              ? '( ${local.absent} )'
+                                              : '( ${local.permission} )'),
                               popUp3(record, context)
                             ],
                           ),
@@ -956,9 +956,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: Checkout'),
+                    Text('2: ${local.checkOut}'),
                     record.list[0].getT4?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -1017,9 +1017,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: Checkin'),
+                    Text('1: ${local!.checkIn}'),
                     record.list[0].getT1?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -1042,12 +1042,12 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                               Text(record.list[0].getT1?.time == null
                                   ? 'null'
                                   : checkPresent(record)
-                                      ? '( Present )'
+                                      ? '( ${local.present} )'
                                       : checkLate1(record)
-                                          ? '( late )'
+                                          ? '( ${local.late} )'
                                           : checkAbsengetT1(record)
-                                              ? '( absent )'
-                                              : '( permission )'),
+                                              ? '( ${local.absent} )'
+                                              : '( ${local.permission} )'),
                               popUp1(record, context)
                             ],
                           ),
@@ -1064,9 +1064,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: Checkout'),
+                    Text('1: ${local.checkOut}'),
                     record.list[0].getT2?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -1099,9 +1099,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: Checkin'),
+                    Text('2: ${local.checkIn}'),
                     record.list[0].getT3?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -1124,12 +1124,12 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                               Text(record.list[0].getT3?.time == null
                                   ? 'null'
                                   : checkPresengetT2(record)
-                                      ? '( Present )'
+                                      ? '( ${local.present} )'
                                       : checkLate2(record)
-                                          ? '( late )'
+                                          ? '( ${local.late} )'
                                           : checkAbsengetT2(record)
-                                              ? '( absent )'
-                                              : '( permission )'),
+                                              ? '( ${local.absent} )'
+                                              : '( ${local.permission} )'),
                               popUp3(record, context)
                             ],
                           ),
@@ -1146,9 +1146,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: Checkout'),
+                    Text('2: ${local.checkOut}'),
                     record.list[0].getT4?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -1208,9 +1208,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: Checkin'),
+                    Text('1: ${local!.checkIn}'),
                     record.list[0].getT1?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -1233,12 +1233,12 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                               Text(record.list[0].getT1?.time == null
                                   ? 'null'
                                   : checkPresent(record)
-                                      ? '( Present )'
+                                      ? '( ${local.present} )'
                                       : checkLate1(record)
-                                          ? '( late )'
+                                          ? '( ${local.late} )'
                                           : checkAbsengetT1(record)
-                                              ? '( absent )'
-                                              : '( permission )'),
+                                              ? '( ${local.absent} )'
+                                              : '( ${local.permission} )'),
                               popUp1(record, context)
                             ],
                           ),
@@ -1255,9 +1255,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: Checkout'),
+                    Text('1: ${local.checkOut}'),
                     record.list[0].getT2?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -1290,9 +1290,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: Checkin'),
+                    Text('2: ${local.checkIn}'),
                     record.list[0].getT3?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
@@ -1315,12 +1315,12 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                               Text(record.list[0].getT3?.time == null
                                   ? 'null'
                                   : checkPresengetT2(record)
-                                      ? '( Present )'
+                                      ? '( ${local.present} )'
                                       : checkLate2(record)
-                                          ? '( late )'
+                                          ? '( ${local.late} )'
                                           : checkAbsengetT2(record)
-                                              ? '( absent )'
-                                              : '( permission )'),
+                                              ? '( ${local.absent} )'
+                                              : '( ${local.permission} )'),
                               popUp3(record, context)
                             ],
                           ),
@@ -1337,9 +1337,9 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: Checkout'),
+                    Text('2: ${local.checkOut}'),
                     record.list[0].getT4?.time.hour == null
-                        ? Text('No data')
+                        ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
