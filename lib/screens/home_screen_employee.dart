@@ -167,53 +167,6 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             ),
             _buildSpacerVertical,
 
-            /// check in/out
-            _buildTitle('${local?.checkInOut}'),
-            Container(
-              height: 170,
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 15,
-              ),
-              child: GestureDetector(
-                onTap: _goToCheckInScreen,
-                child: SizedBox(
-                  width: _size.width,
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: kLightBlue,
-                        borderRadius: BorderRadius.all(kBorderRadius),
-                      ),
-                      padding: kPaddingAll,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            "assets/images/scan-qr-code-icon.svg",
-                            height: 100,
-                          ),
-                          Text(
-                            "${local?.checkInOut}",
-                            style: kSubtitle.copyWith(
-                              color: kBlack,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18,
-                            ),
-                            textAlign: TextAlign.center,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            _buildSpacerVertical,
-
             /// current user attendance
             GestureDetector(
               onTap: () {
