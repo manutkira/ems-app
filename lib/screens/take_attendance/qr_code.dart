@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/widgets/circle_avatar.dart';
@@ -13,8 +12,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../constants.dart';
 
 class QRCode extends ConsumerStatefulWidget {
-  final String type;
-  const QRCode({Key? key, required this.type}) : super(key: key);
+  const QRCode({Key? key}) : super(key: key);
 
   @override
   ConsumerState<QRCode> createState() => _QRCodeState();
@@ -46,57 +44,66 @@ class _QRCodeState extends ConsumerState<QRCode> {
   Widget build(BuildContext context) {
     var size = (MediaQuery.of(context).size.width < 400 ||
             MediaQuery.of(context).size.height < 400)
-        ? 150.0
-        : 200.0;
+        ? 200.0
+        : 250.0;
 
     AppLocalizations? local = AppLocalizations.of(context);
-    String type =
-        "${widget.type == AttendanceType.typeCheckIn ? local?.checkin : local?.checkout}";
+    // String type =
+    //     "${widget.type == AttendanceType.typeCheckIn ? local?.checkin : local?.checkout}";
 
-    return Container(
-      color: kDarkestBlue,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ValueListenableBuilder(
-            valueListenable:
-                ref.watch(currentUserProvider).currentUserListenable,
-            builder: (BuildContext context, Box<User> box, Widget? child) {
-              User? user = box.get(currentUserBoxName);
-              return SizedBox(
-                width: size + 60,
-                child: Column(
-                  children: [
-                    CustomCircleAvatar(
-                      imageUrl: "${user?.image}",
-                      size: size + 25,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '${user?.name?.toUpperCase()}',
-                      style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("${local?.qrCode}"),
+        centerTitle: true,
+      ),
+      body: Container(
+        color: kDarkestBlue,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Visibility(
+              visible: true,
+              child: ValueListenableBuilder(
+                valueListenable:
+                    ref.watch(currentUserProvider).currentUserListenable,
+                builder: (BuildContext context, Box<User> box, Widget? child) {
+                  User? user = box.get(currentUserBoxName);
+                  return Row(
+                    children: [
+                      CustomCircleAvatar(
+                        imageUrl: "${user?.image}",
+                        size: size,
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '${user?.position}',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'ID: ${user?.id}',
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-              );
-            },
-          ),
-          Center(
-            child: Container(
+                      Column(
+                        children: [
+                          Text(
+                            '${user?.name?.toUpperCase()}',
+                            style: const TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            '${user?.position ?? local?.employee}',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'ID: ${user?.id}',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 36),
+            Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -108,11 +115,12 @@ class _QRCodeState extends ConsumerState<QRCode> {
                 size: size,
               ),
             ),
-          ),
-          const SizedBox(height: 20),
-          // Text("${local?.scanToType(type)}"),
-          // const SizedBox(height: 20),
-        ],
+
+            // const SizedBox(height: 20),
+            // Text("${local?.scanToType(type)}"),
+            // const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

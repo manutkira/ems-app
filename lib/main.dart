@@ -1,7 +1,6 @@
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/persistence/setting.dart';
 import 'package:ems/screens/attendance/individual_attendance.dart';
-import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/home_screen.dart';
 import 'package:ems/screens/home_screen_employee.dart';
 import 'package:ems/screens/login_screen.dart';
@@ -77,7 +76,7 @@ class _MyAppState extends ConsumerState<MyApp> {
                 if (box.isEmpty || currentUserData[0].isEmpty) {
                   return const LoginScreen();
                 }
-                if (currentUserData[0].role?.toLowerCase() == 'admin') {
+                if (ref.watch(currentUserProvider).isAdmin) {
                   return const HomeScreenAdmin();
                 } else {
                   return const HomeScreenEmployee();

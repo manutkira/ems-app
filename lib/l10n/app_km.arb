@@ -223,5 +223,8 @@
   "accountBankNumber": "លេខគណនី",
   "enterbankName": "បញ្ចូលឈ្មោះធនាគារ",
   "enteraccountBankName": "បញ្ចូលឈ្មោះគណនី",
-  "enteraccountBankNumber": "បញ្ចូលលេខគណនី"
+  "enteraccountBankNumber": "បញ្ចូលលេខគណនី",
+  "takeAttendance": "កត់វត្តមាន",
+  "scanFailed": "ស្កេនបានបរាជ័យ",
+  "qrCode": "QR កូដ"
 }

@@ -68,6 +68,11 @@ class CurrentUserStore {
     return listFromBox[0];
   }
 
+  bool get isAdmin {
+    return user.role?.toLowerCase() == 'admin' ||
+        user.role?.toLowerCase() == 'superadmin';
+  }
+
   /// to be used with ValueListenableBuilder
   ValueListenable<Box<User>> get currentUserListenable =>
       Hive.box<User>(currentUserBoxName).listenable();

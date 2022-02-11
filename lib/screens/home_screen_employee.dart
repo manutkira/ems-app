@@ -10,7 +10,6 @@ import 'package:ems/screens/test_attendances.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/appbar.dart';
 import 'package:ems/widgets/check_status.dart';
-import 'package:ems/widgets/menu_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -165,44 +164,6 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                   ],
                 ),
               ],
-            ),
-            _buildSpacerVertical,
-
-            /// check in/out
-            _buildTitle('${local?.checkInOut}'),
-            Container(
-              height: 170,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 12,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: MenuItem(
-                      onTap: _goToCheckInScreen,
-                      illustration: SvgPicture.asset(
-                        "assets/images/tick.svg",
-                        width: MediaQuery.of(context).size.width * 0.15,
-                      ),
-                      label: "${local?.checkin}",
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    flex: 1,
-                    child: MenuItem(
-                      onTap: _goToCheckoutScreen,
-                      illustration: SvgPicture.asset(
-                        "assets/images/close.svg",
-                        width: MediaQuery.of(context).size.width * 0.15,
-                      ),
-                      label: "${local?.checkout}",
-                    ),
-                  ),
-                ],
-              ),
             ),
             _buildSpacerVertical,
 

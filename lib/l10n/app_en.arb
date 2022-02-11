@@ -921,5 +921,17 @@
   "enteraccountBankNumber": "Enter Account Number",
   "@enteraccountBankNumber": {
     "description": "position"
+  },
+  "takeAttendance": "Take Attendance",
+  "@takeAttendance": {
+    "description": "take attendance"
+  },
+  "scanFailed": "Scan failed",
+  "@scanFailed": {
+    "description": "take attendance"
+  },
+  "qrCode": "QR Code",
+  "@QRCode": {
+    "description": "take attendance"
   }
 }

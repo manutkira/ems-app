@@ -1,4 +1,3 @@
-import 'package:ems/models/attendance.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/textbox.dart';
@@ -9,16 +8,11 @@ import '../../../constants.dart';
 
 class EmployeeConfirmScreen extends StatefulWidget {
   const EmployeeConfirmScreen(
-      {Key? key,
-      required this.name,
-      required this.profile,
-      required this.ok,
-      required this.type})
+      {Key? key, required this.name, required this.profile, required this.ok})
       : super(key: key);
   final String name;
   final String profile;
   final Function(String note) ok;
-  final String type;
 
   @override
   State<EmployeeConfirmScreen> createState() => _EmployeeConfirmScreenState();
@@ -37,6 +31,8 @@ class _EmployeeConfirmScreenState extends State<EmployeeConfirmScreen> {
   }
 
   void checkIfLate() {
+    /// should be solved if we have shift hour. we could have just compared that from current user object.
+
     DateTime now = DateTime.now();
     bool isCheckInLateMorning = now.isAfter(
           DateTime(
@@ -79,9 +75,9 @@ class _EmployeeConfirmScreenState extends State<EmployeeConfirmScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.type == AttendanceType.typeCheckIn) {
-      checkIfLate();
-    }
+    // if (widget.type == AttendanceType.typeCheckIn) {
+    checkIfLate();
+    // }
   }
 
   @override
