@@ -64,7 +64,6 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
 
     String checkRole() {
       if (widget.role == 'admin') {
@@ -135,6 +134,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                           title: Text('${local?.areYouSure}'),
                           content: Text('${local?.changesWillLost}.'),
                           actions: [
+                            // ignore: deprecated_member_use
                             OutlineButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
@@ -143,6 +143,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                               child: Text('${local?.yes}'),
                               borderSide: const BorderSide(color: Colors.green),
                             ),
+                            // ignore: deprecated_member_use
                             OutlineButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
@@ -215,7 +216,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                       const SizedBox(
                         width: 20,
                       ),
-                      Container(
+                      SizedBox(
                         width: 233,
                         child: DropdownButtonFormField(
                           icon: const Icon(Icons.expand_more),
@@ -252,7 +253,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                       const SizedBox(
                         width: 20,
                       ),
-                      Container(
+                      SizedBox(
                         width: 233,
                         child: DropdownButtonFormField(
                           icon: const Icon(Icons.expand_more),
@@ -288,6 +289,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                       children: [
                         Container(
                           padding: const EdgeInsets.only(right: 10),
+                          // ignore: deprecated_member_use
                           child: RaisedButton(
                             onPressed: () {
                               showDialog(
@@ -296,6 +298,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                         title: Text('${local?.areYouSure}'),
                                         content: Text('${local?.saveChanges}'),
                                         actions: [
+                                          // ignore: deprecated_member_use
                                           OutlineButton(
                                             borderSide: const BorderSide(
                                                 color: Colors.green),
@@ -333,6 +336,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                               );
                                             },
                                           ),
+                                          // ignore: deprecated_member_use
                                           OutlineButton(
                                             onPressed: () {
                                               Navigator.of(context).pop();
@@ -348,6 +352,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                             color: Theme.of(context).primaryColor,
                           ),
                         ),
+                        // ignore: deprecated_member_use
                         RaisedButton(
                           onPressed: () {
                             showDialog(
@@ -357,6 +362,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                       content: const Text(
                                           'Your changes will be lost.'),
                                       actions: [
+                                        // ignore: deprecated_member_use
                                         OutlineButton(
                                           onPressed: () {
                                             Navigator.of(context).pop();
@@ -366,6 +372,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                           borderSide: const BorderSide(
                                               color: Colors.green),
                                         ),
+                                        // ignore: deprecated_member_use
                                         OutlineButton(
                                           onPressed: () {
                                             Navigator.of(context).pop();
@@ -394,15 +401,12 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
 
   uploadImage() async {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
 
     var aName = nameController.text;
     var aPhone = phoneController.text;
-    var aSkill = skillController.text;
     var aSalary = salaryController.text;
     var aRole = role;
     var aStatus = status;
-    var aWorkrate = rate;
 
     var request = await http.MultipartRequest(
         'POST', Uri.parse("$url/${widget.id}?_method=PUT"));
@@ -475,6 +479,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                     style: const TextStyle(color: Colors.red)),
                 content: Text('${local?.editFailed}'),
                 actions: [
+                  // ignore: deprecated_member_use
                   OutlineButton(
                     borderSide: const BorderSide(color: Colors.red),
                     onPressed: () {
@@ -495,6 +500,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                 title: Text('${local?.success}'),
                 content: Text('${local?.edited}'),
                 actions: [
+                  // ignore: deprecated_member_use
                   OutlineButton(
                     borderSide: const BorderSide(color: Colors.grey),
                     onPressed: () {
@@ -502,6 +508,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                     },
                     child: Text('${local?.done}'),
                   ),
+                  // ignore: deprecated_member_use
                   OutlineButton(
                     borderSide: const BorderSide(color: Colors.green),
                     onPressed: () {

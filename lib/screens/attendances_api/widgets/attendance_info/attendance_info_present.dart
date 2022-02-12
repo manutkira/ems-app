@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:ems/utils/utils.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../constants.dart';
 
@@ -93,12 +92,17 @@ class AttendanceInfoPresent extends StatelessWidget {
                   ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Text(
           text,
-          style: kHeadingFour.copyWith(color: kWhite),
+          style: isEnglish
+              ? TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                )
+              : kHeadingFour.copyWith(color: kWhite),
         ),
       ],
     );

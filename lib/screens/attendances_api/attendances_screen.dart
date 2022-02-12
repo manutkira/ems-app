@@ -18,12 +18,12 @@ class AttendancesScreen extends StatefulWidget {
 class _AttendancesScreenState extends State<AttendancesScreen> {
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
-  UserService _userService = UserService.instance;
+  final UserService _userService = UserService.instance;
   List<User> userDisplay = [];
   List<User> user = [];
   bool _isLoading = true;
   bool order = false;
-  var _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   void clearText() {
     _controller.clear();
@@ -55,7 +55,6 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -71,7 +70,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                       PopupMenuItem(
                         child: Text(
                           '${local?.byDay}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -81,7 +80,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                       PopupMenuItem(
                         child: Text(
                           '${local?.byAllTime}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -91,7 +90,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                       PopupMenuItem(
                         child: Text(
                           '${local?.byMonth}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -125,10 +124,10 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text('${local?.fetchData}'),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
-                        CircularProgressIndicator(
+                        const CircularProgressIndicator(
                           color: kWhite,
                         ),
                       ],
@@ -180,7 +179,6 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
 
   _searchBar() {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -236,11 +234,11 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
     bool isEnglish = isInEnglish(context);
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.only(bottom: 20),
       margin: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.black, width: 2))),
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         child: Row(
           children: [
@@ -248,7 +246,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
               width: 75,
               height: 75,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  borderRadius: const BorderRadius.all(Radius.circular(100)),
                   border: Border.all(
                     width: 1,
                     color: Colors.white,
@@ -268,7 +266,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
             const SizedBox(
               width: 10,
             ),
-            Container(
+            SizedBox(
               width: 240,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -36,7 +36,6 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   TextEditingController dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   TextEditingController? _noteController = TextEditingController();
-  TextEditingController? _codeController = TextEditingController();
   TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
   String? _hour, _minute, _time;
   DateTime? dateTime;
@@ -49,8 +48,8 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   void initState() {
     id.text = widget.id.toString();
     _selectDate = widget.date;
-    selectedTime = TimeOfDay(
-        hour: widget.time.hour as int, minute: widget.time.minute as int);
+    selectedTime =
+        TimeOfDay(hour: widget.time.hour, minute: widget.time.minute);
     _noteController?.text = widget.note.toString();
     dateController.text = DateFormat('dd-MM-yyyy').format(widget.date);
     _timeController.text = widget.time.hour.toString().padLeft(2, '0') +
@@ -273,6 +272,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                   children: [
                     Container(
                       padding: const EdgeInsets.only(right: 10),
+                      // ignore: deprecated_member_use
                       child: RaisedButton(
                         onPressed: () {
                           showDialog(
@@ -281,6 +281,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                                     title: Text('${local?.areYouSure}'),
                                     content: Text('${local?.saveChanges}'),
                                     actions: [
+                                      // ignore: deprecated_member_use
                                       OutlineButton(
                                         borderSide: const BorderSide(
                                             color: Colors.green),
@@ -314,6 +315,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                                                   ));
                                         },
                                       ),
+                                      // ignore: deprecated_member_use
                                       OutlineButton(
                                         onPressed: () {
                                           Navigator.of(context).pop();
@@ -329,6 +331,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
+                    // ignore: deprecated_member_use
                     RaisedButton(
                       onPressed: () {
                         Navigator.pop(context);
@@ -348,15 +351,8 @@ class _AttedancesEditState extends State<AttedancesEdit> {
 
   uploadImage() async {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
-    var aUserId = idController.text;
-    var aType = type;
     var aNote = _noteController?.text;
     var aTime = _time;
-    DateTime aDate = _selectDate?.copyWith(
-        hour: selectedTime.hour,
-        minute: selectedTime.minute,
-        second: 0) as DateTime;
 
     var request = await http.MultipartRequest(
         'POST', Uri.parse("$url/${widget.id}?_method=PUT"));
@@ -385,15 +381,17 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                 title: Text('${local?.success}'),
                 content: Text('${local?.edited}'),
                 actions: [
+                  // ignore: deprecated_member_use
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.grey),
+                    borderSide: const BorderSide(color: Colors.grey),
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     child: Text('${local?.done}'),
                   ),
+                  // ignore: deprecated_member_use
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.green),
+                    borderSide: const BorderSide(color: Colors.green),
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pop(context);

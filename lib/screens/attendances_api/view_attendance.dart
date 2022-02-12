@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -65,7 +64,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               Container(
@@ -77,14 +76,15 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                 ),
                 child: Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Container(
                       width: 60,
                       height: 60,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(100)),
                           border: Border.all(
                             width: 1,
                             color: Colors.white,
@@ -102,7 +102,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                               ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     Column(
@@ -115,7 +115,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                               style: kParagraph.copyWith(
                                   fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                             ),
                             Text(widget.userName),
@@ -128,7 +128,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                               style: kParagraph.copyWith(
                                   fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 20,
                             ),
                             Text(userIdController.toString()),
@@ -139,7 +139,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Row(
@@ -149,16 +149,16 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                     '${local?.id} ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Container(
-                    padding: EdgeInsets.only(right: 15),
+                    padding: const EdgeInsets.only(right: 15),
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.6),
                     child: Text(
                       id.toString(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -175,11 +175,11 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                     '${local!.time} ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Container(
-                    padding: EdgeInsets.only(right: 15),
+                    padding: const EdgeInsets.only(right: 15),
                     child: Row(
                       children: [
                         Text(widget.time.format(context))
@@ -200,7 +200,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                   )
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
@@ -210,16 +210,16 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                     '${local.date} ',
                     style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Container(
-                    padding: EdgeInsets.only(right: 15),
+                    padding: const EdgeInsets.only(right: 15),
                     constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.6),
                     child: Text(
                       date.toString(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -239,7 +239,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                         fontWeight: FontWeight.bold,
                         fontSize: isEnglish ? 15 : 15.5),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Container(
@@ -250,12 +250,12 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                       children: [
                         Flexible(
                           child: TextFormField(
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                             readOnly: true,
                             maxLines: 5,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               errorStyle: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -281,7 +281,7 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
                       },
                       child: Text(
                         '${local.back}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: kBlueText,
                           fontWeight: FontWeight.bold,
                         ),

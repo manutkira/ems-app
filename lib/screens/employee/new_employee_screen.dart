@@ -1,15 +1,11 @@
 import 'dart:io';
 import 'dart:convert';
-import 'dart:async';
-
-import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/image_input/new_emp_id_img.dart';
 import 'package:ems/widgets/image_input/new_emp_profile_img.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../constants.dart';
 
@@ -54,7 +50,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     setState(() {
       if (dropDownValue1.isEmpty) {
         dropDownValue1 = '${local?.employee}';
@@ -79,6 +74,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                             title: Text('${local?.areYouSure}'),
                             content: Text('${local?.yourDataWillLost}'),
                             actions: [
+                              // ignore: deprecated_member_use
                               OutlineButton(
                                 onPressed: () async {
                                   Navigator.of(context).pop();
@@ -87,23 +83,24 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                 child: Text('${local?.yes}'),
                                 borderSide: BorderSide(color: Colors.green),
                               ),
+                              // ignore: deprecated_member_use
                               OutlineButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
                                 child: Text('${local?.no}'),
-                                borderSide: BorderSide(color: Colors.red),
+                                borderSide: const BorderSide(color: Colors.red),
                               )
                             ],
                           ));
                 },
-                icon: Icon(Icons.arrow_back)),
+                icon: const Icon(Icons.arrow_back)),
           ),
           body: Form(
             key: _form,
             child: SingleChildScrollView(
               child: Container(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
                     ImageInputPicker(_selectImage),
@@ -258,7 +255,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         const SizedBox(
                           width: 20,
                         ),
-                        Container(
+                        SizedBox(
                           width: 233,
                           child: DropdownButtonFormField(
                             icon: const Icon(Icons.expand_more),
@@ -418,6 +415,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                         children: [
                           Container(
                             padding: const EdgeInsets.only(right: 10),
+                            // ignore: deprecated_member_use
                             child: RaisedButton(
                               onPressed: () {
                                 showDialog(
@@ -427,6 +425,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                           content:
                                               Text('${local?.doYouWantToAdd}'),
                                           actions: [
+                                            // ignore: deprecated_member_use
                                             OutlineButton(
                                               borderSide: const BorderSide(
                                                   color: Colors.green),
@@ -440,33 +439,34 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                                 Navigator.of(context).pop();
                                                 showDialog(
                                                     context: context,
-                                                    builder: (ctx) =>
-                                                        AlertDialog(
-                                                          title: Text(
-                                                              '${local?.adding}'),
-                                                          content: Flex(
-                                                            direction:
-                                                                Axis.horizontal,
-                                                            children: [
-                                                              Flexible(
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      left:
-                                                                          100),
-                                                                  child:
-                                                                      CircularProgressIndicator(
-                                                                    color: Colors
-                                                                        .white,
+                                                    builder:
+                                                        (ctx) => AlertDialog(
+                                                              title: Text(
+                                                                  '${local?.adding}'),
+                                                              content: Flex(
+                                                                direction: Axis
+                                                                    .horizontal,
+                                                                children: const [
+                                                                  Flexible(
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: EdgeInsets.only(
+                                                                          left:
+                                                                              100),
+                                                                      child:
+                                                                          CircularProgressIndicator(
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                    ),
                                                                   ),
-                                                                ),
+                                                                ],
                                                               ),
-                                                            ],
-                                                          ),
-                                                        ));
+                                                            ));
                                               },
                                               child: Text('${local?.yes}'),
                                             ),
+                                            // ignore: deprecated_member_use
                                             OutlineButton(
                                               borderSide: const BorderSide(
                                                   color: Colors.red),
@@ -482,6 +482,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
+                          // ignore: deprecated_member_use
                           RaisedButton(
                             onPressed: () {
                               showDialog(
@@ -491,6 +492,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                         content:
                                             Text('${local?.yourDataWillLost}'),
                                         actions: [
+                                          // ignore: deprecated_member_use
                                           OutlineButton(
                                             borderSide: const BorderSide(
                                                 color: Colors.green),
@@ -500,6 +502,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                             },
                                             child: Text('${local?.yes}'),
                                           ),
+                                          // ignore: deprecated_member_use
                                           OutlineButton(
                                             borderSide: const BorderSide(
                                                 color: Colors.red),
@@ -527,18 +530,13 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
 
   uploadImage() async {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     var aName = name.text;
     var aPhone = phone.text;
     var aEmail = email.text;
     var aAddress = address.text;
-    var aPosition = position.text;
-    var aSkill = skill.text;
-    var aSalary = salary.text;
     var aRole = dropDownValue1;
     var aStatus = dropDownValue;
     var apassword = password.text;
-    var aWorkrate = dropDownValue2;
     var aBackground = background.text;
     var request = await http.MultipartRequest('POST', Uri.parse(urlUser));
     Map<String, String> headers = {
@@ -626,17 +624,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
           context: context,
           builder: (ctx) => AlertDialog(
                 title: Text('${local?.failed}',
-                    style: TextStyle(color: Colors.red)),
+                    style: const TextStyle(color: Colors.red)),
                 content: Text('${local?.addFail}'),
                 actions: [
+                  // ignore: deprecated_member_use
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.red),
+                    borderSide: const BorderSide(color: Colors.red),
                     onPressed: () {
                       Navigator.pop(context);
                       // Navigator.pop(context);
                     },
                     child: Text('${local?.back}',
-                        style: TextStyle(color: Colors.red)),
+                        style: const TextStyle(color: Colors.red)),
                   ),
                 ],
               ));
@@ -649,8 +648,9 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                 title: Text('${local?.success}'),
                 content: Text('${local?.newEmpAdded}'),
                 actions: [
+                  // ignore: deprecated_member_use
                   OutlineButton(
-                    borderSide: BorderSide(color: Colors.green),
+                    borderSide: const BorderSide(color: Colors.green),
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pop(context);

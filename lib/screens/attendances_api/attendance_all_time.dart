@@ -1,4 +1,3 @@
-import 'package:ems/models/attendance.dart';
 import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
@@ -19,8 +18,8 @@ class AttendanceAllTimeScreen extends StatefulWidget {
 }
 
 class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
-  AttendanceService _attendanceService = AttendanceService.instance;
-  UserService _userService = UserService.instance;
+  final AttendanceService _attendanceService = AttendanceService.instance;
+  final UserService _userService = UserService.instance;
 
   List<AttendancesWithUser> attendancedisplay = [];
   List userDisplay = [];
@@ -177,7 +176,6 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     setState(() {
       if (dropDownValue.isEmpty) {
         dropDownValue = local!.morning;
@@ -189,16 +187,16 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
           title: Text('${local?.byAllTime}'),
           actions: [
             PopupMenuButton(
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10))),
-                color: Color(0xff43c3c52),
+                color: const Color(0xff43c3c52),
                 onSelected: (item) => onSelected(context, item as int),
-                icon: Icon(Icons.filter_list),
+                icon: const Icon(Icons.filter_list),
                 itemBuilder: (_) => [
                       PopupMenuItem(
                         child: Text(
                           '${local?.byDay}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -208,7 +206,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                       PopupMenuItem(
                         child: Text(
                           '${local?.byMonth}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -221,7 +219,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
         body: Container(
           width: double.infinity,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
@@ -235,14 +233,14 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
               )),
           child: _isLoading
               ? Container(
-                  padding: EdgeInsets.only(top: 320),
+                  padding: const EdgeInsets.only(top: 320),
                   alignment: Alignment.center,
                   child: Center(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text('${local?.fetchData}'),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         const CircularProgressIndicator(
@@ -257,7 +255,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                       children: [
                         _searchBar(),
                         Container(
-                          padding: EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.only(top: 10),
                           child: Column(
                             children: [
                               Text(
@@ -267,7 +265,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                   color: Colors.black,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 30,
                               ),
                               Image.asset(
@@ -300,11 +298,11 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
     bool isEnglish = isInEnglish(context);
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.only(bottom: 20),
-      margin: EdgeInsets.all(20),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.black, width: 2))),
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         child: Row(
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -313,7 +311,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
               width: 60,
               height: 60,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  borderRadius: const BorderRadius.all(Radius.circular(100)),
                   border: Border.all(
                     width: 1,
                     color: Colors.white,
@@ -333,10 +331,10 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                       ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
-            Container(
+            SizedBox(
               width: 270,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -361,7 +359,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       BaselineRow(
@@ -429,7 +427,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                           .toString()),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           BaselineRow(
@@ -480,7 +478,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 15,
                       ),
                       Column(
@@ -528,7 +526,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                                           .toString()),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           BaselineRow(
@@ -588,9 +586,8 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
 
   _searchBar() {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Row(
         children: [
           Flexible(
@@ -598,7 +595,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
               controller: _controller,
               decoration: InputDecoration(
                 suffixIcon: _controller.text.isEmpty
-                    ? Icon(
+                    ? const Icon(
                         Icons.search,
                         color: Colors.white,
                       )
@@ -612,13 +609,13 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                             }).toList();
                           });
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.clear,
                           color: Colors.white,
                         ),
                       ),
                 hintText: '${local?.search}...',
-                errorStyle: TextStyle(
+                errorStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
@@ -634,7 +631,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
               },
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Container(

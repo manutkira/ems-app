@@ -1,4 +1,3 @@
-import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,14 +18,13 @@ class AttendanceInfoNameId extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     return Row(
       children: [
         Container(
           width: 65,
           height: 65,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(100)),
+              borderRadius: const BorderRadius.all(Radius.circular(100)),
               border: Border.all(
                 width: 1,
                 color: Colors.white,
@@ -44,7 +42,7 @@ class AttendanceInfoNameId extends StatelessWidget {
                   ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 20,
         ),
         Column(
@@ -56,7 +54,7 @@ class AttendanceInfoNameId extends StatelessWidget {
                   '${local?.name} : ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Text(name),
@@ -68,7 +66,7 @@ class AttendanceInfoNameId extends StatelessWidget {
                   '${local?.id} : ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Text(id),

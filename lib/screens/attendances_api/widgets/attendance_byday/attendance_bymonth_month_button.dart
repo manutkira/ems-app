@@ -89,7 +89,7 @@ class _AttendanceByMonthButtonState extends State<AttendanceByMonthButton> {
                       })
                     : widget.validate = true;
               },
-              child: Text('Mar'),
+              child: const Text('Mar'),
               style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(

@@ -5,7 +5,6 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/employee/employee_edit_screen.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
-import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/employee/employee_work_rate.dart';
 import 'package:ems/screens/employee/new_employee_screen.dart';
 import 'package:ems/utils/utils.dart';
@@ -53,7 +52,6 @@ class _EmployeeListState extends State<EmployeeList> {
 
   Future deleteData(int id) async {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     final response = await http.delete(Uri.parse("$url/$id"));
     showInSnackBar("${local?.deleting}");
     if (response.statusCode == 200) {
@@ -76,7 +74,7 @@ class _EmployeeListState extends State<EmployeeList> {
 
   bool order = false;
 
-  var _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   void clearText() {
     _controller.clear();
@@ -92,7 +90,7 @@ class _EmployeeListState extends State<EmployeeList> {
     Scaffold.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
-        duration: Duration(milliseconds: 1500),
+        duration: const Duration(milliseconds: 1500),
         backgroundColor: kDarkestBlue,
         content: Text(
           value,
@@ -105,7 +103,6 @@ class _EmployeeListState extends State<EmployeeList> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('${local?.employee}'),
@@ -113,7 +110,7 @@ class _EmployeeListState extends State<EmployeeList> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: Icon(Icons.arrow_back)),
+            icon: const Icon(Icons.arrow_back)),
         actions: [
           IconButton(
             onPressed: () async {
@@ -126,14 +123,14 @@ class _EmployeeListState extends State<EmployeeList> {
               user = [];
               fetchData();
             },
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
           ),
         ],
       ),
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
             ),
@@ -147,14 +144,14 @@ class _EmployeeListState extends State<EmployeeList> {
             )),
         child: _isLoading
             ? Container(
-                padding: EdgeInsets.only(top: 320),
+                padding: const EdgeInsets.only(top: 320),
                 alignment: Alignment.center,
                 child: Center(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text('${local?.fetchData}'),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       const CircularProgressIndicator(
@@ -169,7 +166,7 @@ class _EmployeeListState extends State<EmployeeList> {
                     children: [
                       _searchBar(),
                       Container(
-                        padding: EdgeInsets.only(top: 150),
+                        padding: const EdgeInsets.only(top: 150),
                         child: Column(
                           children: [
                             Text(
@@ -179,7 +176,7 @@ class _EmployeeListState extends State<EmployeeList> {
                                 color: Colors.black,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 30,
                             ),
                             Image.asset(
@@ -211,7 +208,7 @@ class _EmployeeListState extends State<EmployeeList> {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Row(
         children: [
           Flexible(
@@ -219,7 +216,7 @@ class _EmployeeListState extends State<EmployeeList> {
               controller: _controller,
               decoration: InputDecoration(
                 suffixIcon: _controller.text.isEmpty
-                    ? Icon(
+                    ? const Icon(
                         Icons.search,
                         color: Colors.white,
                       )
@@ -233,7 +230,7 @@ class _EmployeeListState extends State<EmployeeList> {
                             }).toList();
                           });
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.clear,
                           color: Colors.white,
                         ),
@@ -242,7 +239,7 @@ class _EmployeeListState extends State<EmployeeList> {
                 hintStyle: TextStyle(
                   fontSize: isEnglish ? 15 : 13,
                 ),
-                errorStyle: TextStyle(
+                errorStyle: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
@@ -260,7 +257,7 @@ class _EmployeeListState extends State<EmployeeList> {
           ),
           PopupMenuButton(
             color: kDarkestBlue,
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             onSelected: (int selectedValue) {
               if (selectedValue == 0) {
@@ -306,7 +303,7 @@ class _EmployeeListState extends State<EmployeeList> {
                 value: 2,
               ),
             ],
-            icon: Icon(Icons.filter_list),
+            icon: const Icon(Icons.filter_list),
           ),
         ],
       ),
@@ -318,11 +315,11 @@ class _EmployeeListState extends State<EmployeeList> {
     bool isEnglish = isInEnglish(context);
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.only(bottom: 20),
-      margin: EdgeInsets.all(20),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.black, width: 2))),
-      child: Container(
+      child: SizedBox(
         width: double.infinity,
         child: Row(
           children: [
@@ -341,7 +338,7 @@ class _EmployeeListState extends State<EmployeeList> {
                 width: 75,
                 height: 75,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                    borderRadius: const BorderRadius.all(Radius.circular(100)),
                     border: Border.all(
                       width: 1,
                       color: Colors.white,
@@ -359,10 +356,10 @@ class _EmployeeListState extends State<EmployeeList> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
-            Container(
+            SizedBox(
               width: 245,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -409,7 +406,7 @@ class _EmployeeListState extends State<EmployeeList> {
                                 style: TextStyle(
                                   fontSize: isEnglish ? 15 : 15,
                                 )),
-                            SizedBox(
+                            const SizedBox(
                               width: 1,
                             ),
                             Text(userDisplay[index].id.toString()),
@@ -420,7 +417,7 @@ class _EmployeeListState extends State<EmployeeList> {
                   ),
                   PopupMenuButton(
                     color: kDarkestBlue,
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     onSelected: (int selectedValue) async {
                       if (selectedValue == 1) {
@@ -459,24 +456,8 @@ class _EmployeeListState extends State<EmployeeList> {
                         fetchData();
                       }
                       if (selectedValue == 3) {
-                        int id = userDisplay[index].id as int;
-                        String name = userDisplay[index].name.toString();
-                        String phone = userDisplay[index].phone.toString();
-                        String email = userDisplay[index].email.toString();
-                        String address = userDisplay[index].address.toString();
-                        String position =
-                            userDisplay[index].position.toString();
-                        String skill = userDisplay[index].skill.toString();
-                        String salary = userDisplay[index].salary.toString();
-                        String role = userDisplay[index].role.toString();
-                        String status = userDisplay[index].status.toString();
-                        String rate = userDisplay[index].rate.toString();
-                        String background =
-                            userDisplay[index].background.toString();
-                        String image = userDisplay[index].image.toString();
-                        String imageId = userDisplay[index].imageId.toString();
                         await Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => EmployeeWorkRate()));
+                            builder: (_) => const EmployeeWorkRate()));
                         fetchData();
                       }
                       if (selectedValue == 0) {
@@ -495,6 +476,7 @@ class _EmployeeListState extends State<EmployeeList> {
                             title: Text('${local?.areYouSure}'),
                             content: Text('${local?.cannotUndone}'),
                             actions: [
+                              // ignore: deprecated_member_use
                               OutlineButton(
                                 onPressed: () async {
                                   Navigator.of(context).pop();
@@ -502,13 +484,15 @@ class _EmployeeListState extends State<EmployeeList> {
                                   // showInSnackBar('Deleting');
                                 },
                                 child: Text('${local?.yes}'),
-                                borderSide: BorderSide(color: Colors.green),
+                                borderSide:
+                                    const BorderSide(color: Colors.green),
                               ),
+                              // ignore: deprecated_member_use
                               OutlineButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                borderSide: BorderSide(color: Colors.red),
+                                borderSide: const BorderSide(color: Colors.red),
                                 child: Text('${local?.no}'),
                               )
                             ],
@@ -554,7 +538,7 @@ class _EmployeeListState extends State<EmployeeList> {
                         value: 2,
                       ),
                     ],
-                    icon: Icon(Icons.more_vert),
+                    icon: const Icon(Icons.more_vert),
                   )
                 ],
               ),
