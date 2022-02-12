@@ -105,7 +105,7 @@ class _MyAppState extends ConsumerState<MyApp> {
                 if (box.isEmpty || currentUserData[0].isEmpty) {
                   return const LoginScreen();
                 }
-                if (!ref.read(currentUserProvider).isAdmin) {
+                if (ref.read(currentUserProvider).isAdmin) {
                   return HomeScreenAdmin(isOnline: isOnline);
                 } else {
                   return HomeScreenEmployee(isOnline: isOnline);
