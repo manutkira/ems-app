@@ -109,7 +109,6 @@ class _IndividualOvertimeScreenState
       setState(() {
         total = records.total;
         overtimeRecords = records.listOfOvertime;
-        print(overtimeRecords);
         if (overtimeRecords.isNotEmpty) {
           user = overtimeRecords[0].user as User;
         }
@@ -542,7 +541,7 @@ class _IndividualOvertimeScreenState
             "🤷🏽‍",
             style: kHeadingOne.copyWith(fontSize: 100),
           ),
-          Text('${local?.loadingOvertime}', style: kParagraph),
+          Text('${local?.overtimeNotFound}', style: kParagraph),
         ],
       ),
     );

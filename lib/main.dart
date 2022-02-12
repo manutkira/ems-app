@@ -46,6 +46,18 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   final navigatorKey = GlobalKey<NavigatorState>();
+  // bool isOnline = false;
+  //
+  // checkConnection() async {
+  //   isOnline = await isConnected();
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // checkConnection();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -76,7 +88,7 @@ class _MyAppState extends ConsumerState<MyApp> {
                 if (box.isEmpty || currentUserData[0].isEmpty) {
                   return const LoginScreen();
                 }
-                if (ref.watch(currentUserProvider).isAdmin) {
+                if (ref.read(currentUserProvider).isAdmin) {
                   return const HomeScreenAdmin();
                 } else {
                   return const HomeScreenEmployee();

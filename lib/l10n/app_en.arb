@@ -931,7 +931,11 @@
     "description": "take attendance"
   },
   "qrCode": "QR Code",
-  "@QRCode": {
+  "@qrCode": {
+    "description": "take attendance"
+  },
+  "overtimeNotFound": "No overtime record available",
+  "@overtimeNotFound": {
     "description": "take attendance"
   }
 }

@@ -35,6 +35,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var time = 'calculating';
   late Timer _timer;
+  bool isOnline = false;
 
   getTime() async {
     if (mounted) {
@@ -46,7 +47,27 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
     }
   }
 
+  showOfflineSnackbar() {
+    SnackBar snackBar = SnackBar(
+      backgroundColor: kRedBackground,
+      // margin: const EdgeInsets.only(bottom: 16),
+
+      width: MediaQuery.of(context).size.width * 0.9,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      content: Text('No internet connection!'),
+    );
+
+// Find the ScaffoldMessenger in the widget tree
+// and use it to show a SnackBar.
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   void _goToMyAttendance(int userId) {
+    if (!isOnline) {
+      showOfflineSnackbar();
+      return;
+    }
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => AttendancesInfoScreen(userId),
@@ -54,7 +75,15 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
     );
   }
 
+  checkConnection() async {
+    bool check = await isConnected();
+    setState(() {
+      isOnline = check;
+    });
+  }
+
   void _goToMyOvertime(User? currentUser) {
+    if (!isOnline) return;
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => IndividualOvertimeScreen(
@@ -81,6 +110,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   void _goToAttendanceScreen() {
+    if (!isOnline) return;
     Navigator.of(context).push(
       CupertinoPageRoute(
         builder: (context) => AttendancesScreen(),
@@ -89,6 +119,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   void _goToOvertimeScreen() {
+    if (!isOnline) return;
     Navigator.of(context).push(
       CupertinoPageRoute(
         builder: (context) => const OvertimeScreen(),
@@ -97,6 +128,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   void _goToEmployeeManager() {
+    if (!isOnline) return;
     Navigator.of(context).push(
       CupertinoPageRoute(
         builder: (context) => EmployeeListScreen(),
@@ -108,6 +140,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   void initState() {
     super.initState();
     getTime();
+    checkConnection();
   }
 
   @override
