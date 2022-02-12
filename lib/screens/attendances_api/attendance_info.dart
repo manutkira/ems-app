@@ -100,6 +100,132 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       todayAbsentNoon;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  fetchAttendanceCountAll() async {
+    var lc = await _attendanceService.countLateAllByUserId(
+      userId: widget.id,
+    );
+    var pc = await _attendanceService.countPresentAllByUserId(
+      userId: widget.id,
+    );
+
+    if (mounted) {
+      setState(() {
+        lateAll = lc;
+        presentAll = pc;
+      });
+    }
+  }
+
+  fetchPresentMorning() async {
+    var pcm = await _attendanceService.countPresentByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+
+    if (mounted) {
+      setState(() {
+        presentMorning = pcm;
+      });
+    }
+  }
+
+  fetchPresentMorningOneday() async {
+    var pcm1 = await _attendanceService.countPresentByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: startDate,
+    );
+
+    if (mounted) {
+      setState(() {
+        onedayPresent = pcm1;
+      });
+    }
+  }
+
+  fetchPresentAfternoonOneday() async {
+    var pcm1 = await _attendanceService.countPresentNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: startDate,
+    );
+
+    if (mounted) {
+      setState(() {
+        onedayPresentNoon = pcm1;
+      });
+    }
+  }
+
+  fetchLateAfternoonOneday() async {
+    var pcm1 = await _attendanceService.countLateNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: startDate,
+    );
+
+    if (mounted) {
+      setState(() {
+        onedayLateNoon = pcm1;
+      });
+    }
+  }
+
+  fetchLateMorningOneday() async {
+    var pcm1 = await _attendanceService.countLateByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: startDate,
+    );
+
+    if (mounted) {
+      setState(() {
+        onedayLate = pcm1;
+      });
+    }
+  }
+
+  fetchLateMorning() async {
+    var lcm = await _attendanceService.countLateByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        lateMorning = lcm;
+      });
+    }
+  }
+
+  fetchPresentAfternoon() async {
+    var pcn = await _attendanceService.countPresentNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        presentAfternoon = pcn;
+        print('noon: $presentAfternoon');
+      });
+    }
+  }
+
+  fetchLateAfternoon() async {
+    var lcn = await _attendanceService.countLateNoonByUserId(
+      userId: widget.id,
+      start: startDate,
+      end: endDate,
+    );
+    if (mounted) {
+      setState(() {
+        lateAfternoon = lcn;
+      });
+    }
+  }
+
   fetchNoDate() async {
     try {
       List<AttendanceWithDate> attendanceNoDateDisplay =
@@ -146,22 +272,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       });
       List flat = _attendanceAll.expand((element) => element.list).toList();
       attendanceListAll = flat.toList();
-      int presentAllMorning = attendanceDisplay
-          .where((element) =>
-              element.list[0].getT1 != null && checkPresent(element))
-          .length;
-      int presentAllAfternoon = attendanceDisplay
-          .where((element) =>
-              element.list[0].getT3 != null && checkPresengetT2(element))
-          .length;
-      int lateAllMorning = attendanceDisplay
-          .where(
-              (element) => element.list[0].getT1 != null && checkLate1(element))
-          .length;
-      int lateAllAfternoon = attendanceDisplay
-          .where(
-              (element) => element.list[0].getT3 != null && checkLate2(element))
-          .length;
+
       int absentAllMorning = attendanceDisplay
           .where((element) =>
               element.list[0].getT1 != null && checkAbsengetT1(element))
@@ -178,8 +289,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
           .where((element) =>
               element.list[0].getT3 != null && checkPermissiongetT2(element))
           .length;
-      presentAll = presentAllMorning + presentAllAfternoon;
-      lateAll = lateAllMorning + lateAllAfternoon;
       absentAll = absentAllMorning + absentAllAfternoon;
       permissionAll = permissionAllMorning + permissionAllAfternoon;
     } catch (e) {}
@@ -198,14 +307,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       setState(() {
         attendancesByIdDisplay = attendanceDisplay;
         _isLoadingById = false;
-        presentMorning = attendanceDisplay
-            .where((element) =>
-                element.list[0].getT1 != null && checkPresent(element))
-            .length;
-        presentAfternoon = attendanceDisplay
-            .where((element) =>
-                element.list[0].getT3 != null && checkPresent(element))
-            .length;
+
         absentMorning = attendanceDisplay
             .where((element) =>
                 element.list[0].getT1 != null && checkAbsengetT1(element))
@@ -214,14 +316,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             .where((element) =>
                 element.list[0].getT3 != null && checkAbsengetT2(element))
             .length;
-        lateMorning = attendanceDisplay
-            .where((element) =>
-                element.list[0].getT1 != null && checkLate1(element))
-            .length;
-        lateAfternoon = attendanceDisplay
-            .where((element) =>
-                element.list[0].getT3 != null && checkLate2(element))
-            .length;
+
         permissionMorning = attendanceDisplay
             .where((element) =>
                 element.list[0].getT1 != null && checkPermissiongetT1(element))
@@ -275,22 +370,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             element.date.month == startDate.month &&
             element.date.year == startDate.year);
         onedayList = oneDay.toList();
-        onedayPresent = oneDay
-            .where((element) =>
-                element.list[0].getT1 != null && checkPresent(element))
-            .length;
-        onedayPresentNoon = oneDay
-            .where((element) =>
-                element.list[0].getT3 != null && checkPresengetT2(element))
-            .length;
-        onedayLate = oneDay
-            .where((element) =>
-                element.list[0].getT1 != null && checkLate1(element))
-            .length;
-        onedayLateNoon = oneDay
-            .where((element) =>
-                element.list[0].getT3 != null && checkLate2(element))
-            .length;
         onedayAbsent = oneDay
             .where((element) =>
                 element.list[0].getT1 != null && checkAbsengetT1(element))
@@ -435,24 +514,15 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       onedayList = [];
       fetchAttedancesById();
       fetchAllAttendance();
-      showInSnackBar("${local?.deletedAttendance}");
-    } else {
-      return false;
-    }
-  }
-
-  Future deleteData1(int id) async {
-    AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
-    final response = await http.delete(Uri.parse("$url/$id"));
-    showInSnackBar("${local?.deletingAttendance}");
-    if (response.statusCode == 200) {
-      attendanceAllDisplay = [];
-      attendanceList = [];
-      _attendanceAll = [];
-      onedayList = [];
-      // fetchAttendanceById();
-      // fetchAllAttendance();
+      fetchAttendanceCountAll();
+      fetchPresentMorning();
+      fetchPresentMorningOneday();
+      fetchPresentAfternoonOneday();
+      fetchLateAfternoonOneday();
+      fetchLateMorningOneday();
+      fetchLateMorning();
+      fetchPresentAfternoon();
+      fetchLateAfternoon();
       showInSnackBar("${local?.deletedAttendance}");
     } else {
       return false;
@@ -484,6 +554,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     super.initState();
     try {
       fetchNoDate();
+      fetchAttendanceCountAll();
       // fetchManyAttendances();
       fetchAttedancesById();
       fetchAllAttendance();
@@ -806,6 +877,11 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                   onedayList = [];
                                                   fetchAttedancesById();
                                                   fetchAllAttendance();
+                                                  fetchAttendanceCountAll();
+                                                  fetchPresentMorning();
+                                                  fetchPresentAfternoon();
+                                                  fetchLateAfternoon();
+                                                  fetchLateMorning();
                                                 }
                                                 if (sortByValue ==
                                                     '${local?.optionAllTime}') {
@@ -834,6 +910,10 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                   onedayList = [];
                                                   fetchAttedancesById();
                                                   fetchAllAttendance();
+                                                  fetchPresentAfternoonOneday();
+                                                  fetchPresentMorningOneday();
+                                                  fetchLateAfternoonOneday();
+                                                  fetchLateMorningOneday();
                                                 }
                                               },
                                               child: Row(
@@ -1111,22 +1191,41 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                             padding:
                                                 const EdgeInsets.only(top: 15),
                                             child: AttendanceInfoAttendanceList(
-                                                deleteData: deleteData,
-                                                multiday: multiday,
-                                                isOneDay: isOneDay,
-                                                alltime: alltime,
-                                                now: now,
-                                                attendanceList: attendanceList,
-                                                onedayList: onedayList,
-                                                attendanceListAll:
-                                                    attendanceListAll,
-                                                attendancesByIdDisplay:
-                                                    attendancesByIdDisplay,
-                                                attendanceAll: _attendanceAll,
-                                                fetchAttedancesById:
-                                                    fetchAttedancesById,
-                                                fetchAllAttendance:
-                                                    fetchAllAttendance),
+                                              deleteData: deleteData,
+                                              multiday: multiday,
+                                              isOneDay: isOneDay,
+                                              alltime: alltime,
+                                              now: now,
+                                              attendanceList: attendanceList,
+                                              onedayList: onedayList,
+                                              attendanceListAll:
+                                                  attendanceListAll,
+                                              attendancesByIdDisplay:
+                                                  attendancesByIdDisplay,
+                                              attendanceAll: _attendanceAll,
+                                              fetchAttedancesById:
+                                                  fetchAttedancesById,
+                                              fetchAllAttendance:
+                                                  fetchAllAttendance,
+                                              fetchAttendanceCountAll:
+                                                  fetchAttendanceCountAll,
+                                              fetchLateAfternoon:
+                                                  fetchLateAfternoon,
+                                              fetchLateAfternoonOneday:
+                                                  fetchLateAfternoonOneday,
+                                              fetchLateMorning:
+                                                  fetchLateMorning,
+                                              fetchLateMorningOneday:
+                                                  fetchLateMorningOneday,
+                                              fetchPresentAfternoon:
+                                                  fetchPresentAfternoon,
+                                              fetchPresentAfternoonOneday:
+                                                  fetchPresentAfternoonOneday,
+                                              fetchPresentMorning:
+                                                  fetchPresentMorning,
+                                              fetchPresentMorningOneday:
+                                                  fetchPresentMorningOneday,
+                                            ),
                                           ),
                                         ),
                             ],

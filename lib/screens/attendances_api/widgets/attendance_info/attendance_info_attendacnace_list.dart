@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:ems/models/attendances.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/screens/attendances_api/view_attendance.dart';
@@ -21,6 +22,15 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
   final Function fetchAttedancesById;
   final Function fetchAllAttendance;
   final Function deleteData;
+  final Function fetchAttendanceCountAll;
+  final Function fetchPresentMorning;
+  final Function fetchPresentMorningOneday;
+  final Function fetchPresentAfternoonOneday;
+  final Function fetchLateAfternoonOneday;
+  final Function fetchLateMorningOneday;
+  final Function fetchLateMorning;
+  final Function fetchPresentAfternoon;
+  final Function fetchLateAfternoon;
 
   AttendanceInfoAttendanceList({
     Key? key,
@@ -36,6 +46,15 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     required this.fetchAttedancesById,
     required this.fetchAllAttendance,
     required this.deleteData,
+    required this.fetchAttendanceCountAll,
+    required this.fetchPresentMorning,
+    required this.fetchPresentMorningOneday,
+    required this.fetchPresentAfternoonOneday,
+    required this.fetchLateAfternoonOneday,
+    required this.fetchLateMorningOneday,
+    required this.fetchLateMorning,
+    required this.fetchPresentAfternoon,
+    required this.fetchLateAfternoon,
   }) : super(key: key);
 
   _onrefresh() {
@@ -235,6 +254,15 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
           );
           fetchAttedancesById();
           fetchAllAttendance();
+          fetchAttendanceCountAll();
+          fetchPresentMorning();
+          fetchPresentMorningOneday();
+          fetchPresentAfternoonOneday();
+          fetchLateAfternoonOneday();
+          fetchLateMorningOneday();
+          fetchLateMorning();
+          fetchPresentAfternoon();
+          fetchLateAfternoon();
         }
         if (selectedValue == 1) {
           showDialog(
@@ -335,6 +363,15 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
           );
           fetchAttedancesById();
           fetchAllAttendance();
+          fetchAttendanceCountAll();
+          fetchPresentMorning();
+          fetchPresentMorningOneday();
+          fetchPresentAfternoonOneday();
+          fetchLateAfternoonOneday();
+          fetchLateMorningOneday();
+          fetchLateMorning();
+          fetchPresentAfternoon();
+          fetchLateAfternoon();
         }
         if (selectedValue == 1) {
           showDialog(
@@ -434,6 +471,15 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
           );
           fetchAttedancesById();
           fetchAllAttendance();
+          fetchAttendanceCountAll();
+          fetchPresentMorning();
+          fetchPresentMorningOneday();
+          fetchPresentAfternoonOneday();
+          fetchLateAfternoonOneday();
+          fetchLateMorningOneday();
+          fetchLateMorning();
+          fetchPresentAfternoon();
+          fetchLateAfternoon();
         }
         if (selectedValue == 1) {
           showDialog(
@@ -533,6 +579,15 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
           );
           fetchAttedancesById();
           fetchAllAttendance();
+          fetchAttendanceCountAll();
+          fetchPresentMorning();
+          fetchPresentMorningOneday();
+          fetchPresentAfternoonOneday();
+          fetchLateAfternoonOneday();
+          fetchLateMorningOneday();
+          fetchLateMorning();
+          fetchPresentAfternoon();
+          fetchLateAfternoon();
         }
         if (selectedValue == 1) {
           showDialog(
@@ -636,7 +691,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: ${local!.checkIn}'),
+                    Text('1- ${local!.checkIn}'),
                     record.list[0].getT1 == null
                         ? Text('${local.noData}')
                         : Row(
@@ -683,7 +738,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: ${local.checkOut}'),
+                    Text('1- ${local.checkOut}'),
                     record.list[0].getT2 == null
                         ? Text('${local.noData}')
                         : Row(
@@ -718,7 +773,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: ${local.checkIn}'),
+                    Text('2- ${local.checkIn}'),
                     record.list[0].getT3 == null
                         ? Text('${local.noData}')
                         : Row(
@@ -765,7 +820,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: ${local.checkOut}'),
+                    Text('2- ${local.checkOut}'),
                     record.list[0].getT4 == null
                         ? Text('${local.noData}')
                         : Row(
@@ -825,7 +880,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: ${local!.checkIn}'),
+                    Text('1- ${local!.checkIn}'),
                     record.list[0].getT1?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(
@@ -872,7 +927,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: ${local.checkOut}'),
+                    Text('1- ${local.checkOut}'),
                     record.list[0].getT2?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(
@@ -907,7 +962,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: ${local.checkIn}'),
+                    Text('2- ${local.checkIn}'),
                     record.list[0].getT3?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(
@@ -954,7 +1009,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: ${local.checkOut}'),
+                    Text('2- ${local.checkOut}'),
                     record.list[0].getT4?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(
@@ -1015,7 +1070,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: ${local!.checkIn}'),
+                    Text('1- ${local!.checkIn}'),
                     record.list[0].getT1?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(
@@ -1062,7 +1117,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: ${local.checkOut}'),
+                    Text('1- ${local.checkOut}'),
                     record.list[0].getT2?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(
@@ -1097,7 +1152,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: ${local.checkIn}'),
+                    Text('2- ${local.checkIn}'),
                     record.list[0].getT3?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(
@@ -1144,7 +1199,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: ${local.checkOut}'),
+                    Text('2- ${local.checkOut}'),
                     record.list[0].getT4?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(
@@ -1176,8 +1231,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     );
   }
 
-  Widget _buildMultipleResult(
-      AttendancesWithDate record, BuildContext context) {
+  Widget _buildMultipleResult(AttendancesWithDate record, context) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
@@ -1205,7 +1259,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: ${local!.checkIn}'),
+                    Text('1- ${local!.checkIn}'),
                     record.list[0].getT1?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(
@@ -1252,7 +1306,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('1: ${local.checkOut}'),
+                    Text('1- ${local.checkOut}'),
                     record.list[0].getT2?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(
@@ -1287,7 +1341,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: ${local.checkIn}'),
+                    Text('2- ${local.checkIn}'),
                     record.list[0].getT3?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(
@@ -1334,7 +1388,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2: ${local.checkOut}'),
+                    Text('2- ${local.checkOut}'),
                     record.list[0].getT4?.time.hour == null
                         ? Text('${local.noData}')
                         : Row(

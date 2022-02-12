@@ -1,3 +1,4 @@
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../constants.dart';
@@ -49,6 +50,7 @@ class AttendanceInfoPresent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isEnglish = isInEnglish(context);
     var counted = afternoon ? presentAfternoon : presentMorning;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -95,7 +97,12 @@ class AttendanceInfoPresent extends StatelessWidget {
         ),
         Text(
           text,
-          style: kHeadingFour.copyWith(color: kWhite),
+          style: isEnglish
+              ? TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                )
+              : kHeadingFour.copyWith(color: kWhite),
         ),
       ],
     );

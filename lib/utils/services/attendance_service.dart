@@ -30,28 +30,6 @@ class AttendanceService extends BaseService {
     return date != null ? DateFormat('y-M-d').format(date) : '';
   }
 
-  Future<int> countPresentByUserId({
-    required int userId,
-    DateTime? start,
-    DateTime? end,
-  }) async {
-    String startDate = _formatDate(start);
-    String endDate = _formatDate(end);
-
-    bool hasNoStartOrEndDate =
-        start == null || end == null || startDate.isEmpty || endDate.isEmpty;
-
-    try {
-      String url =
-          '$baseUrl/attendance_count?start=$startDate&end=$endDate&present_morning=$userId';
-      Response response = await get(Uri.parse(url));
-      _code = response.statusCode;
-      return int.parse(response.body);
-    } catch (e) {
-      throw AttendanceException(code: _code);
-    }
-  }
-
   Future<void> createOneRecord({
     required int userId,
     required DateTime datetime,
@@ -128,22 +106,49 @@ class AttendanceService extends BaseService {
     }
   }
 
-  Future<int> countPresentNoonByUserId({
+  // Future<int> countLateByUserId({
+  //   required int userId,
+  //   DateTime? start,
+  //   DateTime? end,
+  // }) async {
+  //   String startDate = _formatDate(start);
+  //   String endDate = _formatDate(end);
+
+  //   bool hasNoStartOrEndDate =
+  //       start == null || end == null || startDate.isEmpty || endDate.isEmpty;
+
+  //   try {
+  //     String url =
+  //         '$baseUrl/attendance_count?start=$startDate&end=$endDate&late_morning=$userId';
+  //     Response response = await get(Uri.parse(url));
+  //     _code = response.statusCode;
+  //     return int.parse(response.body);
+  //   } catch (e) {
+  //     throw AttendanceException(code: _code);
+  //   }
+  // }
+  Future<int> countLateAllByUserId({
     required int userId,
-    DateTime? start,
-    DateTime? end,
   }) async {
-    String startDate = _formatDate(start);
-    String endDate = _formatDate(end);
-
-    bool hasNoStartOrEndDate =
-        start == null || end == null || startDate.isEmpty || endDate.isEmpty;
-
     try {
-      String url =
-          '$baseUrl/attendance_count?start=$startDate&end=$endDate&present_afternoon=$userId';
+      String url = '$baseUrl/attendance_count?late=$userId';
       Response response = await get(Uri.parse(url));
       _code = response.statusCode;
+
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countPresentAllByUserId({
+    required int userId,
+  }) async {
+    try {
+      String url = '$baseUrl/attendance_count?present=$userId';
+      Response response = await get(Uri.parse(url));
+      _code = response.statusCode;
+
       return int.parse(response.body);
     } catch (e) {
       throw AttendanceException(code: _code);
@@ -163,7 +168,7 @@ class AttendanceService extends BaseService {
 
     try {
       String url =
-          '$baseUrl/attendance_count?start=$startDate&end=$endDate&late_morning=$userId';
+          '$baseUrl/attendance_count?late-morning=$userId&start=$startDate&end=$endDate';
       Response response = await get(Uri.parse(url));
       _code = response.statusCode;
       return int.parse(response.body);
@@ -185,7 +190,7 @@ class AttendanceService extends BaseService {
 
     try {
       String url =
-          '$baseUrl/attendance_count?start=$startDate&end=$endDate&late_afternoon=$userId';
+          '$baseUrl/attendance_count?late-afternoon=$userId&start=$startDate&end=$endDate';
       Response response = await get(Uri.parse(url));
       _code = response.statusCode;
       return int.parse(response.body);
@@ -193,6 +198,83 @@ class AttendanceService extends BaseService {
       throw AttendanceException(code: _code);
     }
   }
+
+  Future<int> countPresentByUserId({
+    required int userId,
+    DateTime? start,
+    DateTime? end,
+  }) async {
+    String startDate = _formatDate(start);
+    String endDate = _formatDate(end);
+
+    bool hasNoStartOrEndDate =
+        start == null || end == null || startDate.isEmpty || endDate.isEmpty;
+
+    try {
+      String url =
+          '$baseUrl/attendance_count?present-morning=$userId&start=$startDate&end=$endDate';
+      Response response = await get(Uri.parse(url));
+      _code = response.statusCode;
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
+  Future<int> countPresentNoonByUserId({
+    required int userId,
+    DateTime? start,
+    DateTime? end,
+  }) async {
+    String startDate = _formatDate(start);
+    String endDate = _formatDate(end);
+
+    bool hasNoStartOrEndDate =
+        start == null || end == null || startDate.isEmpty || endDate.isEmpty;
+
+    try {
+      String url =
+          '$baseUrl/attendance_count?present-afternoon=$userId&start=$startDate&end=$endDate';
+      Response response = await get(Uri.parse(url));
+      _code = response.statusCode;
+      return int.parse(response.body);
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+  // Future<int> countLateNoonByUserId({
+  //   required int userId,
+  //   DateTime? start,
+  //   DateTime? end,
+  // }) async {
+  //   String startDate = _formatDate(start);
+  //   String endDate = _formatDate(end);
+
+  //   bool hasNoStartOrEndDate =
+  //       start == null || end == null || startDate.isEmpty || endDate.isEmpty;
+
+  //   try {
+  //     String url =
+  //         '$baseUrl/attendance_count?start=$startDate&end=$endDate&late_afternoon=$userId';
+  //     Response response = await get(Uri.parse(url));
+  //     _code = response.statusCode;
+  //     return int.parse(response.body);
+  //   } catch (e) {
+  //     throw AttendanceException(code: _code);
+  //   }
+  // }
+  // Future<int> countLateNoonByUserId({
+  //   required int userId,
+  // }) async {
+  //   try {
+  //     String url = '$baseUrl/attendance_count?present-afternoon=$userId';
+  //     Response response = await get(Uri.parse(url));
+  //     _code = response.statusCode;
+  //     return int.parse(response.body);
+  //   } catch (e) {
+  //     throw AttendanceException(code: _code);
+  //   }
+  // }
 
   Future<int> countAbsentByUserId({
     required int userId,
