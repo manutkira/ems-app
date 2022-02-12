@@ -31,9 +31,15 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
   List<String> dropdownItems = [];
   List<String> options = [];
 
+  setStateIfMounted(void Function() function) {
+    if (mounted) {
+      setState(function);
+    }
+  }
+
   init() {
     AppLocalizations? local = AppLocalizations.of(context);
-    setState(() {
+    setStateIfMounted(() {
       if (sortByValue.isEmpty) {
         sortByValue = '${local?.optionAllTime}';
       }
@@ -61,7 +67,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
 
   /// toggles filter section
   void _toggleFilter() {
-    setState(() {
+    setStateIfMounted(() {
       isFilterExpanded = !isFilterExpanded;
     });
   }
@@ -70,7 +76,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
   void fetchOvertimeRecord() async {
     AppLocalizations? local = AppLocalizations.of(context);
 
-    setState(() {
+    setStateIfMounted(() {
       // shows loading
       isFetching = true;
       // closes filter
@@ -99,14 +105,14 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
         records = await _overtimeService.findMany();
       }
 
-      setState(() {
+      setStateIfMounted(() {
         // set newly received data to as overtime records
         overtimeRecords = records;
         // stop loading
         isFetching = false;
       });
     } catch (err) {
-      setState(() {
+      setStateIfMounted(() {
         error = err.toString();
         isFetching = false;
       });
@@ -119,7 +125,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     // AppLocalizations? local = AppLocalizations.of(context);
     // bool isEnglish = isInEnglish(context);
 
-    setState(() {
+    setStateIfMounted(() {
       // shows loading
       isFetching = true;
       // closes filter
@@ -133,14 +139,14 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     try {
       records = await _overtimeService.findMany();
 
-      setState(() {
+      setStateIfMounted(() {
         // set newly received data to as overtime records
         overtimeRecords = records;
         // stop loading
         isFetching = false;
       });
     } catch (err) {
-      setState(() {
+      setStateIfMounted(() {
         error = err.toString();
         isFetching = false;
       });
