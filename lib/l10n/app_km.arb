@@ -227,5 +227,6 @@
   "takeAttendance": "កត់វត្តមាន",
   "scanFailed": "ស្កេនបានបរាជ័យ",
   "qrCode": "QR កូដ",
-  "overtimeNotFound": "មិនមានទិន្ន័យថែមម៉ោងនោះទេ"
+  "overtimeNotFound": "មិនមានទិន្ន័យថែមម៉ោងនោះទេ",
+  "noInternetConnection": "មិនមានអ៊ិនធឺណេត"
 }

@@ -10,9 +10,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../constants.dart';
 
 class CheckStatus extends ConsumerStatefulWidget {
-  const CheckStatus({
-    Key? key,
-  }) : super(key: key);
+  CheckStatus({Key? key, required this.isOnline}) : super(key: key);
+  bool isOnline;
 
   @override
   ConsumerState createState() => _CheckStatusState();
@@ -26,6 +25,11 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
   bool isAfternoonCheckOut = false;
 
   void getStatus() async {
+    if (!widget.isOnline) {
+      print('offline from check status');
+      return;
+    }
+
     if (mounted) {
       setState(() {
         isFetchingStatus = true;
@@ -79,7 +83,9 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
   @override
   void initState() {
     super.initState();
-    getStatus();
+    if (widget.isOnline) {
+      getStatus();
+    }
   }
 
   @override

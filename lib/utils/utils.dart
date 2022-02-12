@@ -114,14 +114,10 @@ Future<bool> isConnected() async {
   print('hi from isConnected');
   try {
     final result = await InternetAddress.lookup('google.com');
-    final result2 = await InternetAddress.lookup('facebook.com');
-    final result3 = await InternetAddress.lookup('microsoft.com');
 
-    print("$result\n$result2\n$result3");
+    print("$result");
 
-    if ((result.isNotEmpty && result[0].rawAddress.isNotEmpty) ||
-        (result2.isNotEmpty && result2[0].rawAddress.isNotEmpty) ||
-        (result3.isNotEmpty && result3[0].rawAddress.isNotEmpty)) {
+    if ((result.isNotEmpty && result[0].rawAddress.isNotEmpty)) {
       print('from if');
       return true;
     } else {

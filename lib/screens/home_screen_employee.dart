@@ -4,8 +4,6 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/slide_menu.dart';
-import 'package:ems/screens/take_attendance/check_in_screen.dart';
-import 'package:ems/screens/take_attendance/check_out_screen.dart';
 import 'package:ems/screens/test_attendances.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/appbar.dart';
@@ -22,8 +20,8 @@ import 'attendances_api/attendance_info.dart';
 import 'overtime/individual_overtime_screen.dart';
 
 class HomeScreenEmployee extends ConsumerStatefulWidget {
-  const HomeScreenEmployee({Key? key}) : super(key: key);
-
+  HomeScreenEmployee({Key? key, required this.isOnline}) : super(key: key);
+  bool isOnline;
   @override
   ConsumerState createState() => _HomeScreenEmployeeState();
 }
@@ -43,7 +41,26 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
     }
   }
 
+  showOfflineSnackbar() {
+    AppLocalizations? local = AppLocalizations.of(context);
+    SnackBar snackBar = SnackBar(
+      backgroundColor: kRedBackground,
+      // margin: const EdgeInsets.only(bottom: 16),
+
+      width: MediaQuery.of(context).size.width * 0.92,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      content: Text('${local?.noInternetConnection}'),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   void _goToMyAttendance(int userId) {
+    if (!widget.isOnline) {
+      showOfflineSnackbar();
+      return;
+    }
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => AttendancesInfoScreen(userId),
@@ -52,27 +69,15 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
   }
 
   void _goToMyOvertime(User? currentUser) {
+    if (!widget.isOnline) {
+      showOfflineSnackbar();
+      return;
+    }
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => IndividualOvertimeScreen(
           user: currentUser as User,
         ),
-      ),
-    );
-  }
-
-  void _goToCheckoutScreen() {
-    Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: (context) => const CheckOutScreen(),
-      ),
-    );
-  }
-
-  void _goToCheckInScreen() {
-    Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: (context) => const CheckInScreen(),
       ),
     );
   }
@@ -100,7 +105,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
       appBar: EMSAppBar(
         openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
       ),
-      drawer: const MenuDrawer(),
+      drawer: MenuDrawer(isOnline: widget.isOnline),
       body: SafeArea(
         bottom: false,
         child: ListView(
@@ -160,7 +165,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                       ),
                     ),
                     SizedBox(height: isEnglish ? 30 : 25),
-                    const CheckStatus(),
+                    CheckStatus(isOnline: widget.isOnline),
                   ],
                 ),
               ],

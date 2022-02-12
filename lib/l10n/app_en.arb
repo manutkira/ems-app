@@ -937,5 +937,9 @@
   "overtimeNotFound": "No overtime record available",
   "@overtimeNotFound": {
     "description": "take attendance"
+  },
+  "noInternetConnection": "No internet connection!",
+  "@noInternetConnection": {
+    "description": "take attendance"
   }
 }

@@ -69,3 +69,12 @@ class SettingsStore {
 final settingsProvider = Provider<SettingsStore>(
   (ref) => throw UnimplementedError(),
 );
+
+// final connectionStatusProvider = StateProvider<bool>((ref) {
+//   bool isOnline = false;
+//   InternetConnectionChecker().onStatusChange.listen((status) {
+//     isOnline = status == InternetConnectionStatus.connected;
+//     print('from provider $isOnline');
+//   });
+//   return isOnline;
+// });
