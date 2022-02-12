@@ -71,10 +71,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         builder: (context) {
           // if user is an admin, load the admin screen
           if (user.role!.toLowerCase() == 'admin') {
-            return const HomeScreenAdmin();
+            return HomeScreenAdmin(isOnline: true);
           } else {
             // otherwise, load the employee screen
-            return const HomeScreenEmployee();
+            return HomeScreenEmployee(isOnline: true);
           }
         },
       ),

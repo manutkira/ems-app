@@ -2,7 +2,6 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
-import 'package:ems/screens/your_profile/your_profile_edit.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,19 +29,19 @@ class YourProfileViewScreen extends ConsumerWidget {
         title: Text(
           "${local?.myProfile}",
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => const YourProfileEditScreen(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.edit_outlined),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         CupertinoPageRoute(
+        //           builder: (context) => const YourProfileEditScreen(),
+        //         ),
+        //       );
+        //     },
+        //     icon: const Icon(Icons.edit_outlined),
+        //   ),
+        // ],
       ),
       body: ValueListenableBuilder(
         valueListenable: ref.watch(currentUserProvider).currentUserListenable,

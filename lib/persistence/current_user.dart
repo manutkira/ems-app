@@ -1,5 +1,6 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/auth_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -48,13 +49,24 @@ class CurrentUserStore {
         await userBox.delete(currentUserBoxName);
       }
 
-      /// fetch user via api route /me
-      /// token will be sent through headers of the request
-      final AuthService _authService = AuthService.instance;
-      User? user = await _authService.findMe();
+      bool isOnline = await isConnected();
+      print('from current user');
+      if (isOnline) {
+        print("online");
 
-      /// after that set current user to returned user;
-      userBox.put(currentUserBoxName, user);
+        /// fetch user via api route /me
+        /// token will be sent through headers of the request
+        final AuthService _authService = AuthService.instance;
+        User? user = await _authService.findMe();
+
+        /// after that set current user to returned user;
+        userBox.put(currentUserBoxName, user);
+      } else {
+        print('offline');
+        print(user.name);
+        return;
+        // throw Exception('Not connected to the internet');
+      }
     } catch (err) {
       await tokenBox.delete('token');
       await userBox.delete(currentUserBoxName);
