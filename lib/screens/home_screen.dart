@@ -7,7 +7,7 @@ import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/overtime/overtime_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
-import 'package:ems/screens/take_attendance/widgets/qr_code_scan.dart';
+import 'package:ems/screens/take_attendance/qr_code_scan.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/appbar.dart';
 import 'package:ems/widgets/check_status.dart';
@@ -93,7 +93,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   void _goToCheckInScreen() {
     Navigator.of(context).push(
       CupertinoPageRoute(
-        builder: (context) => const TakeAttendanceScreen(),
+        builder: (context) => TakeAttendanceScreen(isOnline: widget.isOnline),
       ),
     );
   }
