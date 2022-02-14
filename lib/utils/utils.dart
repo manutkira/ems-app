@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ems/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -106,4 +108,24 @@ bool isInEnglish(BuildContext context) =>
 
 void goBack(BuildContext context) {
   Navigator.of(context).pop();
+}
+
+Future<bool> isConnected() async {
+  print('hi from isConnected');
+  try {
+    final result = await InternetAddress.lookup('google.com');
+
+    print("$result");
+
+    if ((result.isNotEmpty && result[0].rawAddress.isNotEmpty)) {
+      print('from if');
+      return true;
+    } else {
+      print('from else');
+      return false;
+    }
+  } on SocketException catch (err) {
+    print('$err');
+    return false;
+  }
 }

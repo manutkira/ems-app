@@ -80,7 +80,7 @@ class _IndividualOvertimeScreenState
   void fetchOvertimeRecord() async {
     AppLocalizations? local = AppLocalizations.of(context);
     int userId = widget.user.id ?? 0;
-    setState(() {
+    setStateIfMounted(() {
       isFetching = true;
       isFilterExpanded = false;
       // resetting
@@ -106,17 +106,16 @@ class _IndividualOvertimeScreenState
         records = await _overtimeService.findManyByUserId(userId: userId);
       }
 
-      setState(() {
+      setStateIfMounted(() {
         total = records.total;
         overtimeRecords = records.listOfOvertime;
-        print(overtimeRecords);
         if (overtimeRecords.isNotEmpty) {
           user = overtimeRecords[0].user as User;
         }
         isFetching = false;
       });
     } catch (err) {
-      setState(() {
+      setStateIfMounted(() {
         error = err.toString();
         isFetching = false;
       });
@@ -138,7 +137,7 @@ class _IndividualOvertimeScreenState
     try {
       records = await _overtimeService.findManyByUserId(userId: userId);
 
-      setState(() {
+      setStateIfMounted(() {
         total = records.total;
         overtimeRecords = records.listOfOvertime;
         if (overtimeRecords.isNotEmpty) {
@@ -147,16 +146,22 @@ class _IndividualOvertimeScreenState
         isFetching = false;
       });
     } catch (err) {
-      setState(() {
+      setStateIfMounted(() {
         error = err.toString();
         isFetching = false;
       });
     }
   }
 
+  setStateIfMounted(void Function() function) {
+    if (mounted) {
+      setState(function);
+    }
+  }
+
   /// show/hide filter
   void _toggleFilter() {
-    setState(() {
+    setStateIfMounted(() {
       isFilterExpanded = !isFilterExpanded;
     });
   }
@@ -177,7 +182,7 @@ class _IndividualOvertimeScreenState
     User _currentUser = ref.read(currentUserProvider).user;
     bool isAdmin = _currentUser.role?.toLowerCase() == 'admin';
     AppLocalizations? local = AppLocalizations.of(context);
-    setState(() {
+    setStateIfMounted(() {
       if (sortByValue.isEmpty) {
         sortByValue = '${local?.optionAllTime}';
       }
@@ -542,7 +547,7 @@ class _IndividualOvertimeScreenState
             "🤷🏽‍",
             style: kHeadingOne.copyWith(fontSize: 100),
           ),
-          Text('${local?.loadingOvertime}', style: kParagraph),
+          Text('${local?.overtimeNotFound}', style: kParagraph),
         ],
       ),
     );

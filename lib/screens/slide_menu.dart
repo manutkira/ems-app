@@ -19,10 +19,11 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../constants.dart';
 
 class MenuDrawer extends ConsumerStatefulWidget {
-  const MenuDrawer({
+  MenuDrawer({
     Key? key,
+    required this.isOnline,
   }) : super(key: key);
-
+  bool isOnline;
   @override
   ConsumerState createState() => _MenuDrawerState();
 }
@@ -114,72 +115,82 @@ class _MenuDrawerState extends ConsumerState<MenuDrawer> {
                   ),
 
                   //Edit Profile button
-                  Material(
-                    type: MaterialType.transparency,
-                    child: ListTile(
-                      leading: const Icon(MdiIcons.pencil),
-                      title: Text(
-                        "${local?.editProfile}",
-                        style: TextStyle(fontSize: isEnglish ? 16 : 14),
+                  Visibility(
+                    visible: widget.isOnline,
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: ListTile(
+                        leading: const Icon(MdiIcons.pencil),
+                        title: Text(
+                          "${local?.editProfile}",
+                          style: TextStyle(fontSize: isEnglish ? 16 : 14),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) =>
+                                  const YourProfileEditScreen(),
+                            ),
+                          );
+                        },
                       ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => const YourProfileEditScreen(),
-                          ),
-                        );
-                      },
                     ),
                   ),
 
                   //Change password button
-                  Material(
-                    type: MaterialType.transparency,
-                    child: ListTile(
-                      leading: const Icon(MdiIcons.key),
-                      title: Text(
-                        "${local?.changePassword}",
-                        style: TextStyle(fontSize: isEnglish ? 16 : 14),
+                  Visibility(
+                    visible: widget.isOnline,
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: ListTile(
+                        leading: const Icon(MdiIcons.key),
+                        title: Text(
+                          "${local?.changePassword}",
+                          style: TextStyle(fontSize: isEnglish ? 16 : 14),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) =>
+                                  const YourProfilePasswordScreen(),
+                            ),
+                          );
+                        },
                       ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) =>
-                                const YourProfilePasswordScreen(),
-                          ),
-                        );
-                      },
                     ),
                   ),
 
                   //Logout button
-                  Material(
-                    type: MaterialType.transparency,
-                    child: ListTile(
-                      leading: const Icon(MdiIcons.arrowLeftBottom),
-                      title: Text(
-                        "${local?.logout}",
-                        style: TextStyle(fontSize: isEnglish ? 16 : 14),
+                  Visibility(
+                    visible: widget.isOnline,
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: ListTile(
+                        leading: const Icon(MdiIcons.arrowLeftBottom),
+                        title: Text(
+                          "${local?.logout}",
+                          style: TextStyle(fontSize: isEnglish ? 16 : 14),
+                        ),
+                        onTap: () async {
+                          try {
+                            await _auth.logout();
+                            await ref.read(currentUserProvider).reset();
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => const LoginScreen(),
+                              ),
+                            );
+                          } catch (err) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("$err"),
+                              ),
+                            );
+                          }
+                        },
                       ),
-                      onTap: () async {
-                        try {
-                          await _auth.logout();
-                          await ref.read(currentUserProvider).reset();
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => const LoginScreen(),
-                            ),
-                          );
-                        } catch (err) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("$err"),
-                            ),
-                          );
-                        }
-                      },
                     ),
                   ),
                 ],

@@ -7,7 +7,6 @@ import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/overtime/overtime_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
-import 'package:ems/screens/take_attendance/check_out_screen.dart';
 import 'package:ems/screens/take_attendance/widgets/qr_code_scan.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/appbar.dart';
@@ -19,14 +18,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
 
 import 'attendances_api/attendance_info.dart';
 import 'overtime/individual_overtime_screen.dart';
 
 class HomeScreenAdmin extends ConsumerStatefulWidget {
-  const HomeScreenAdmin({Key? key}) : super(key: key);
-
+  HomeScreenAdmin({Key? key, required this.isOnline}) : super(key: key);
+  bool isOnline;
   @override
   ConsumerState createState() => _HomeScreenAdminState();
 }
@@ -35,6 +35,8 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var time = 'calculating';
   late Timer _timer;
+
+  bool isConnected = false;
 
   getTime() async {
     if (mounted) {
@@ -46,7 +48,27 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
     }
   }
 
+  showOfflineSnackbar() {
+    AppLocalizations? local = AppLocalizations.of(context);
+    SnackBar snackBar = SnackBar(
+      backgroundColor: kRedBackground,
+      // margin: const EdgeInsets.only(bottom: 16),
+
+      width: MediaQuery.of(context).size.width * 0.92,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      content: Text('${local?.noInternetConnection}'),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   void _goToMyAttendance(int userId) {
+    if (!widget.isOnline) {
+      showOfflineSnackbar();
+      return;
+    }
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => AttendancesInfoScreen(userId),
@@ -55,19 +77,15 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   void _goToMyOvertime(User? currentUser) {
+    if (!widget.isOnline) {
+      showOfflineSnackbar();
+      return;
+    }
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => IndividualOvertimeScreen(
           user: currentUser as User,
         ),
-      ),
-    );
-  }
-
-  void _goToCheckoutScreen() {
-    Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: (context) => const CheckOutScreen(),
       ),
     );
   }
@@ -81,6 +99,10 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   void _goToAttendanceScreen() {
+    if (!widget.isOnline) {
+      showOfflineSnackbar();
+      return;
+    }
     Navigator.of(context).push(
       CupertinoPageRoute(
         builder: (context) => AttendancesScreen(),
@@ -89,6 +111,10 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   void _goToOvertimeScreen() {
+    if (!widget.isOnline) {
+      showOfflineSnackbar();
+      return;
+    }
     Navigator.of(context).push(
       CupertinoPageRoute(
         builder: (context) => const OvertimeScreen(),
@@ -97,6 +123,10 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   void _goToEmployeeManager() {
+    if (!widget.isOnline) {
+      showOfflineSnackbar();
+      return;
+    }
     Navigator.of(context).push(
       CupertinoPageRoute(
         builder: (context) => EmployeeListScreen(),
@@ -105,9 +135,22 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  checkInternet() async {
+    bool status = await InternetConnectionChecker().hasConnection;
+    return status;
+  }
+
+  @override
   void initState() {
     super.initState();
     getTime();
+
+    // checkConnection();
+    // isConnected = ref.watch(connectionStatusProvider);
   }
 
   @override
@@ -127,7 +170,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
       appBar: EMSAppBar(
         openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
       ),
-      drawer: const MenuDrawer(),
+      drawer: MenuDrawer(isOnline: widget.isOnline),
       body: SafeArea(
         bottom: false,
         child: ListView(
@@ -180,14 +223,19 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                             child: const SizedBox(height: 5),
                           ),
                           Text(
-                            "${local?.timeText(time, getDateStringFromDateTime(DateTime.now()))}",
+                            "${local?.timeText(
+                              time,
+                              getDateStringFromDateTime(
+                                DateTime.now(),
+                              ),
+                            )}",
                             style: kSubtitleTwo,
                           ),
                         ],
                       ),
                     ),
                     SizedBox(height: isEnglish ? 30 : 25),
-                    const CheckStatus(),
+                    CheckStatus(isOnline: widget.isOnline),
                   ],
                 ),
               ],

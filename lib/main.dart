@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/persistence/setting.dart';
 import 'package:ems/screens/attendance/individual_attendance.dart';
@@ -10,6 +13,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import './constants.dart';
 import './screens/employee/employee_list_screen.dart';
@@ -46,6 +50,32 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   final navigatorKey = GlobalKey<NavigatorState>();
+  late StreamSubscription listener;
+  bool isOnline = false;
+  //
+  // checkConnection() async {
+  //   isOnline = await isConnected();
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // checkConnection();
+    listener = InternetConnectionChecker().onStatusChange.listen((status) {
+      log('CONNECTION STATUS: $status ${status == InternetConnectionStatus.connected}');
+
+      setState(() {
+        isOnline = status == InternetConnectionStatus.connected;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    listener.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -61,7 +91,6 @@ class _MyAppState extends ConsumerState<MyApp> {
         valueListenable: ref.watch(settingsProvider).settingsListenable,
         builder: (BuildContext context, Box<int> box, Widget? child) {
           int index = box.values.toList()[0];
-
           return MaterialApp(
             locale: L10n.all[index],
             navigatorKey: navigatorKey,
@@ -76,10 +105,10 @@ class _MyAppState extends ConsumerState<MyApp> {
                 if (box.isEmpty || currentUserData[0].isEmpty) {
                   return const LoginScreen();
                 }
-                if (ref.watch(currentUserProvider).isAdmin) {
-                  return const HomeScreenAdmin();
+                if (ref.read(currentUserProvider).isAdmin) {
+                  return HomeScreenAdmin(isOnline: isOnline);
                 } else {
-                  return const HomeScreenEmployee();
+                  return HomeScreenEmployee(isOnline: isOnline);
                 }
               },
             ),
