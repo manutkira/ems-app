@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:ems/persistence/attendances.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/persistence/setting.dart';
 import 'package:ems/screens/attendance/individual_attendance.dart';
@@ -25,14 +26,17 @@ void main() async {
   // initializing local database
   final dataStore = CurrentUserStore();
   final settingsStore = SettingsStore();
+  final localAttendanceStore = AttendanceDataStore();
   await dataStore.init();
   await settingsStore.init();
+  await localAttendanceStore.init();
 
   runApp(
     ProviderScope(
       overrides: [
         settingsProvider.overrideWithValue(settingsStore),
         currentUserProvider.overrideWithValue(dataStore),
+        localAttendanceCacheProvider.overrideWithValue(localAttendanceStore),
       ],
       child: const MyApp(),
     ),

@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:ems/constants.dart';
 import 'package:ems/models/attendance.dart';
+import 'package:ems/persistence/attendances.dart';
 import 'package:ems/screens/take_attendance/widgets/employee_confirmation.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/widgets/statuses/info.dart';
@@ -15,8 +15,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRCodeScanner extends ConsumerStatefulWidget {
-  const QRCodeScanner({Key? key}) : super(key: key);
-
+  QRCodeScanner({Key? key, required this.isOnline}) : super(key: key);
+  bool isOnline;
   @override
   ConsumerState createState() => _QRCodeScannerState();
 }
@@ -69,12 +69,33 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
 
     // registering record
     try {
-      await _attService.createOneRecord(
-        userId: attendance?.userId as int,
-        datetime: DateTime.now(),
-        note: attendance?.note,
-        // attendance: attendance as Attendance,
-      );
+      if (widget.isOnline) {
+        await _attService.createOneRecord(
+          userId: attendance?.userId as int,
+          datetime: attendance?.date as DateTime,
+          note: attendance?.note,
+          // attendance: attendance as Attendance,
+        );
+      } else {
+        Map<String, dynamic> userFromQR = decodeQR("${result?.code}");
+        Map<String, dynamic> att = {
+          "user": {
+            "id": userFromQR['id'],
+            "profile": "${userFromQR['profile']}",
+            "name": userFromQR['name'],
+          },
+          "user_id": userFromQR['id'],
+          "date": attendance?.date,
+        };
+
+        if (attendance?.note == null ||
+            "${attendance?.note}".isEmpty ||
+            "${attendance?.note}" == "null") {
+          att['note'] = "${attendance?.note}";
+        }
+
+        await ref.read(localAttendanceCacheProvider).add(att);
+      }
     } catch (err) {
       _buildScanFailed();
     } finally {
@@ -111,6 +132,21 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     );
   }
 
+  Map<String, dynamic> decodeQR(String code) {
+    var json = jsonDecode(code);
+    int? id = int.tryParse(json['id']);
+    String? profile = json['profile'];
+    String? name = json['name'];
+    if (id == null || name == null) {
+      return {};
+    }
+    return {
+      "id": id,
+      "profile": profile,
+      "name": name,
+    };
+  }
+
   /// confirm screen, create attendance object
   Future<bool> confirmEmployee(String code) async {
     AppLocalizations? local = AppLocalizations.of(context);
@@ -122,6 +158,8 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
       return false;
     }
 
+    Map<String, dynamic> userFromQR = decodeQR(code);
+    if (userFromQR.isEmpty) return false;
     bool confirmation = false;
 
     /// use to set note from confirmation panel before registering the record
@@ -144,14 +182,12 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
       confirmation = true;
     }
 
-    log('before\n\n\n\n\n\n');
     await showMaterialModalBottomSheet(
       isDismissible: false,
       enableDrag: false,
       backgroundColor: Colors.transparent,
       context: context,
       builder: (BuildContext context) {
-        log('hey\n\n\n\n\n\n');
         return ClipRRect(
           borderRadius: const BorderRadius.only(
             topRight: Radius.circular(30),
