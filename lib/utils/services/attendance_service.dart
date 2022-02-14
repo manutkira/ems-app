@@ -600,6 +600,19 @@ class AttendanceService extends BaseService {
     }
   }
 
+  Future<AttendancesWithUser> findoneById(int id) async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/attendances/$id'));
+      _code = response.statusCode;
+      var jsondata = json.decode(response.body);
+      var data = AttendancesWithUser.fromJson(jsondata);
+      print(data);
+      return data;
+    } catch (e) {
+      throw AttendanceException(code: _code);
+    }
+  }
+
   Future<List<AttendanceWithDate>> findManyByUserId({
     required int userId,
     DateTime? start,

@@ -240,95 +240,104 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
           border: Border(bottom: BorderSide(color: Colors.black, width: 2))),
       child: SizedBox(
         width: double.infinity,
-        child: Row(
-          children: [
-            Container(
-              width: 75,
-              height: 75,
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(100)),
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.white,
-                  )),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(150),
-                child: userDisplay[index].image == null
-                    ? Image.asset('assets/images/profile-icon-png-910.png')
-                    : Image.network(
-                        userDisplay[index].image!,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 75,
-                      ),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) =>
+                        AttendancesInfoScreen(userDisplay[index].id!)));
+          },
+          child: Row(
+            children: [
+              Container(
+                width: 75,
+                height: 75,
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(100)),
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.white,
+                    )),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(150),
+                  child: userDisplay[index].image == null
+                      ? Image.asset('assets/images/profile-icon-png-910.png')
+                      : Image.network(
+                          userDisplay[index].image!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 75,
+                        ),
+                ),
               ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            SizedBox(
-              width: 240,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
-                            child: Text(
-                              '${local?.name}: ',
-                              style: TextStyle(
-                                fontSize: isEnglish ? 15 : 15,
+              const SizedBox(
+                width: 10,
+              ),
+              SizedBox(
+                width: 240,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                              child: Text(
+                                '${local?.name}: ',
+                                style: TextStyle(
+                                  fontSize: isEnglish ? 15 : 15,
+                                ),
                               ),
                             ),
-                          ),
-                          Text(
-                            userDisplay[index].name.toString(),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
-                            child: Text(
-                              '${local?.id}: ',
-                              style: TextStyle(
-                                fontSize: isEnglish ? 15 : 15,
+                            Text(
+                              userDisplay[index].name.toString(),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                              child: Text(
+                                '${local?.id}: ',
+                                style: TextStyle(
+                                  fontSize: isEnglish ? 15 : 15,
+                                ),
                               ),
                             ),
-                          ),
-                          Text(userDisplay[index].id.toString()),
-                        ],
-                      )
-                    ],
-                  ),
-                  PopupMenuButton(
-                    color: kDarkestBlue,
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    onSelected: (int selectedValue) {
-                      if (selectedValue == 0) {
-                        int id = userDisplay[index].id as int;
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => AttendancesInfoScreen(id)));
-                      }
-                    },
-                    itemBuilder: (_) => [
-                      PopupMenuItem(
-                        child: Text('${local?.info}'),
-                        value: 0,
-                      ),
-                    ],
-                    icon: const Icon(Icons.more_vert),
-                  )
-                ],
+                            Text(userDisplay[index].id.toString()),
+                          ],
+                        )
+                      ],
+                    ),
+                    PopupMenuButton(
+                      color: kDarkestBlue,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      onSelected: (int selectedValue) {
+                        if (selectedValue == 0) {
+                          int id = userDisplay[index].id as int;
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => AttendancesInfoScreen(id)));
+                        }
+                      },
+                      itemBuilder: (_) => [
+                        PopupMenuItem(
+                          child: Text('${local?.info}'),
+                          value: 0,
+                        ),
+                      ],
+                      icon: const Icon(Icons.more_vert),
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
