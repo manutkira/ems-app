@@ -243,27 +243,65 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                     ),
                     child: Row(
                       children: [
-                        Container(
-                          width: 75,
-                          height: 75,
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(100)),
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.white,
-                              )),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(150),
-                            child: userDisplay[0].image == null
-                                ? Image.asset(
-                                    'assets/images/profile-icon-png-910.png',
-                                    width: 70,
-                                  )
-                                : Image.network(
-                                    userDisplay[0].image.toString(),
-                                    height: 70,
-                                  ),
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                      content: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          userDisplay[0].image == null
+                                              ? Container(
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                    width: 1,
+                                                    color: Colors.white,
+                                                  )),
+                                                  child: Image.asset(
+                                                    'assets/images/profile-icon-png-910.png',
+                                                    height: 200,
+                                                  ),
+                                                )
+                                              : Container(
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                    width: 1,
+                                                    color: Colors.white,
+                                                  )),
+                                                  child: Image.network(
+                                                    userDisplay[0]
+                                                        .image
+                                                        .toString(),
+                                                    height: 200,
+                                                  ),
+                                                ),
+                                        ],
+                                      ),
+                                    ));
+                          },
+                          child: Container(
+                            width: 75,
+                            height: 75,
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(100)),
+                                border: Border.all(
+                                  width: 1,
+                                  color: Colors.white,
+                                )),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(150),
+                              child: userDisplay[0].image == null
+                                  ? Image.asset(
+                                      'assets/images/profile-icon-png-910.png',
+                                      width: 70,
+                                    )
+                                  : Image.network(
+                                      userDisplay[0].image.toString(),
+                                      height: 70,
+                                    ),
+                            ),
                           ),
                         ),
                         const SizedBox(
@@ -309,26 +347,92 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                               children: [
                                 InkWell(
                                     onTap: () {
-                                      int id = userDisplay[0].id as int;
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (ctx) => NationalIdScreen(
-                                            id: id.toString(),
-                                          ),
-                                        ),
-                                      );
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                                content: Stack(
+                                                  alignment: Alignment.center,
+                                                  children: [
+                                                    userDisplay[0].imageId ==
+                                                            null
+                                                        ? Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    border:
+                                                                        Border
+                                                                            .all(
+                                                              width: 1,
+                                                              color:
+                                                                  Colors.white,
+                                                            )),
+                                                            child: Text(
+                                                                'No Image'))
+                                                        : Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    border:
+                                                                        Border
+                                                                            .all(
+                                                              width: 1,
+                                                              color:
+                                                                  Colors.white,
+                                                            )),
+                                                            child:
+                                                                Image.network(
+                                                              userDisplay[0]
+                                                                  .imageId
+                                                                  .toString(),
+                                                              height: 200,
+                                                            ),
+                                                          ),
+                                                  ],
+                                                ),
+                                              ));
                                     },
                                     child: Text('${local?.optionView}')),
                                 IconButton(
                                     onPressed: () {
-                                      int id = userDisplay[0].id as int;
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (ctx) => NationalIdScreen(
-                                            id: id.toString(),
-                                          ),
-                                        ),
-                                      );
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                                content: Stack(
+                                                  alignment: Alignment.center,
+                                                  children: [
+                                                    userDisplay[0].imageId ==
+                                                            null
+                                                        ? Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    border:
+                                                                        Border
+                                                                            .all(
+                                                              width: 1,
+                                                              color:
+                                                                  Colors.white,
+                                                            )),
+                                                            child: Text(
+                                                                'No Image'))
+                                                        : Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    border:
+                                                                        Border
+                                                                            .all(
+                                                              width: 1,
+                                                              color:
+                                                                  Colors.white,
+                                                            )),
+                                                            child:
+                                                                Image.network(
+                                                              userDisplay[0]
+                                                                  .imageId
+                                                                  .toString(),
+                                                              height: 200,
+                                                            ),
+                                                          ),
+                                                  ],
+                                                ),
+                                              ));
                                     },
                                     icon: const Icon(Icons.credit_card)),
                               ],

@@ -1,5 +1,6 @@
 import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
+import 'package:ems/screens/attendances_api/calendat_test.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_attendacnace_list.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_no_attendance.dart';
@@ -208,7 +209,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     if (mounted) {
       setState(() {
         presentAfternoon = pcn;
-        print('noon: $presentAfternoon');
       });
     }
   }
@@ -253,6 +253,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             userDisplay = [];
             user.add(usersFromServer);
             userDisplay = user;
+            print(userDisplay[0].id);
             _loadingUser = false;
           });
         }
@@ -585,6 +586,19 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text('${local?.attendance}'),
+        actions: [
+          !_loadingUser
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                AttendanceCalendar(id: userDisplay[0].id!)));
+                  },
+                  icon: Icon(Icons.calendar_today))
+              : Text(''),
+        ],
       ),
       body: _loadingUser
           ? Container(

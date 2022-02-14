@@ -293,6 +293,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
           );
         }
         if (selectedValue == 2) {
+          final int attendanceId = record.list[0].id;
           final int id = record.list[0].getT1!.id;
           final DateTime date = record.list[0].date;
           final TimeOfDay time = record.list[0].getT1!.time;
