@@ -33,12 +33,45 @@ class EmployeeInfoScreen extends StatefulWidget {
 
 class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
     with SingleTickerProviderStateMixin {
-  // rate list
   String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
+
+  // services
+  final UserService _userService = UserService.instance;
+  final RateServices _rateServices = RateServices.instance;
+  final BankService _bankService = BankService.instance;
+  final PositionService _positionService = PositionService.instance;
+
+  // list user
+  List<User> userDisplay = [];
+  List<User> user = [];
+
+  // list position
+  List positionDisplay = [];
+
+  // list bank
+  List<Bank> bankDisplay = [];
+
+  // list rate
   final List<Rate> rateList = [];
+  List rateDisplay = [];
+  List<Rate> ratesDisplay = [];
+
+  // text controller
   final rateNameController = TextEditingController();
   final rateScoreController = TextEditingController();
   final idController = TextEditingController();
+
+  // bollean
+  bool _isloading = true;
+  bool personal = true;
+  bool employeement = false;
+
+  // variable
+  Object snapshotData = '';
+  String dropDownValue = '';
+  static List<Tab> myTabs = <Tab>[];
+  late TabController _tabController;
+  late Tab _handler;
 
   void deleteRateItem(int id) {
     setState(() {
@@ -46,22 +79,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
     });
   }
 
-  // late int employeeId;
-  Object snapshotData = '';
-  final UserService _userService = UserService.instance;
-  List<User> userDisplay = [];
-  List<User> user = [];
-  final RateServices _rateServices = RateServices.instance;
-  List rateDisplay = [];
-  List<Rate> ratesDisplay = [];
-  bool _isloading = true;
-  String dropDownValue = '';
-  bool personal = true;
-  bool employeement = false;
-  static List<Tab> myTabs = <Tab>[];
-  late TabController _tabController;
-  late Tab _handler;
-
+  // fetch user from api
   fetchUserById() async {
     try {
       _isloading = true;
@@ -80,6 +98,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
     } catch (err) {}
   }
 
+  // fetch rate from api
   fetchRateData() {
     try {
       _rateServices.findOne(widget.id).then((usersFromServer) {
@@ -93,9 +112,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
     } catch (err) {}
   }
 
-  final BankService _bankService = BankService.instance;
-  List<Bank> bankDisplay = [];
-
+  // fetch bank info from api
   fetchBankData() {
     try {
       _bankService.findOne(widget.id).then((usersFromServer) {
@@ -109,9 +126,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
     } catch (err) {}
   }
 
-  final PositionService _positionService = PositionService.instance;
-  List positionDisplay = [];
-
+  // fetch position from api
   fetchUserPosition() {
     try {
       _positionService.findPosition(widget.id).then((usersFromServer) {

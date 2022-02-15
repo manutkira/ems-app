@@ -965,5 +965,9 @@
   "deletedPosition": "Position has been deleted!",
   "@deletedPosition": {
     "description": "take attendance"
+  },
+  "calendarAttendance": "Calendar",
+  "@calendarAttendance": {
+    "description": "take attendance"
   }
 }

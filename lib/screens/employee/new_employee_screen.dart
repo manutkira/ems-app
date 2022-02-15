@@ -18,6 +18,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/image";
   String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
+  // text controller
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController email = TextEditingController();
@@ -31,14 +32,18 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   TextEditingController workrate = TextEditingController();
   TextEditingController background = TextEditingController();
 
+  // variables
   String dropDownValue = '';
   String dropDownValue1 = '';
   String dropDownValue2 = '';
 
   final _form = GlobalKey<FormState>();
+
+  // files
   File? pickedImg;
   File? pickedId;
 
+  // image picker
   void _selectImage(File pickedImage) {
     pickedImg = pickedImage;
   }
@@ -435,7 +440,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                                   return Navigator.of(context)
                                                       .pop();
                                                 }
-                                                uploadImage();
+                                                addNewEmployee();
                                                 Navigator.of(context).pop();
                                                 showDialog(
                                                     context: context,
@@ -528,7 +533,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     );
   }
 
-  uploadImage() async {
+  addNewEmployee() async {
     AppLocalizations? local = AppLocalizations.of(context);
     var aName = name.text;
     var aPhone = phone.text;
@@ -557,9 +562,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     request.files.add(http.MultipartFile.fromString('phone', aPhone));
     request.files.add(http.MultipartFile.fromString('email', aEmail));
     request.files.add(http.MultipartFile.fromString('address', aAddress));
-    // request.files.add(http.MultipartFile.fromString('position', aPosition));
-    // request.files.add(http.MultipartFile.fromString('skill', aSkill));
-    // request.files.add(http.MultipartFile.fromString('salary', aSalary));
 
     String checkRole() {
       if (aRole == local?.employee) {
@@ -593,26 +595,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
 
     request.files.add(http.MultipartFile.fromString('status', checkStatus()));
     request.files.add(http.MultipartFile.fromString('password', apassword));
-
-    // String checkRate() {
-    //   if (aWorkrate == local?.veryGood) {
-    //     return 'verygood';
-    //   }
-    //   if (aWorkrate == local?.good) {
-    //     return 'good';
-    //   }
-    //   if (aWorkrate == local?.medium) {
-    //     return 'medium';
-    //   }
-    //   if (aWorkrate == local?.low) {
-    //     return 'low';
-    //   } else {
-    //     return '';
-    //   }
-    // }
-
-    // request.files.add(http.MultipartFile.fromString('rate', checkRate()));
-
     request.files.add(http.MultipartFile.fromString('background', aBackground));
     request.headers.addAll(headers);
 
@@ -632,7 +614,6 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                     borderSide: const BorderSide(color: Colors.red),
                     onPressed: () {
                       Navigator.pop(context);
-                      // Navigator.pop(context);
                     },
                     child: Text('${local?.back}',
                         style: const TextStyle(color: Colors.red)),

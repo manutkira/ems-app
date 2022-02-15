@@ -16,10 +16,10 @@ import '../../employee_edit_employment.dart';
 
 class EmploymentInfo extends StatelessWidget {
   List<User> userDisplay;
-  List positionDisplay;
   List<User> user;
   List<Rate> rateDisplay;
   List rateList;
+  List positionDisplay;
   final Function fetchUserById;
   final Function checkRole;
   final Function checkSatus;
@@ -57,10 +57,13 @@ class EmploymentInfo extends StatelessWidget {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
 
+    // text controller
     TextEditingController skillNameController = TextEditingController();
     TextEditingController scoreController = TextEditingController();
+
     int? rateId;
 
+    // edit rate from api
     editRate() async {
       var aName = skillNameController.text;
       var aScore = scoreController.text;
@@ -101,6 +104,7 @@ class EmploymentInfo extends StatelessWidget {
       );
     }
 
+    // delete rate from api
     Future deleteData(int id) async {
       AppLocalizations? local = AppLocalizations.of(context);
       final response = await http.delete(Uri.parse(

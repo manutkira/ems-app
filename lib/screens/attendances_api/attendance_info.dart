@@ -1,6 +1,6 @@
 import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
-import 'package:ems/screens/attendances_api/calendat_test.dart';
+import 'package:ems/screens/attendances_api/calendar_attendance.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_attendacnace_list.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_no_attendance.dart';
@@ -28,33 +28,60 @@ class AttendancesInfoScreen extends StatefulWidget {
 }
 
 class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
+  // services
   final AttendanceService _attendanceNoDateService = AttendanceService.instance;
+  final AttendanceService _attendanceService = AttendanceService.instance;
+  final UserService _userService = UserService.instance;
+
+  // list attendance
   List<Attendance> attendanceDisplay = [];
   List<Attendance> attendanceAllDisplay = [];
-  List<AttendanceWithDate> _attendanceNoDateDisplay = [];
 
-  final AttendanceService _attendanceService = AttendanceService.instance;
+  // list attendances with date
   List<Attendances> attendancesDisplay = [];
+  List<AttendanceWithDate> _attendanceNoDateDisplay = [];
   List<AttendancesWithDate> attendancesByIdDisplay = [];
   List<AttendancesWithDate> attendanceList = [];
   List<AttendancesWithDate> _attendanceAll = [];
+  List<AttendancesWithDate> onedayList = [];
+
+  // list user
+  List<User> userDisplay = [];
+  List<User> user = [];
+
+  // list dynamic
   List attendanceListAll = [];
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
+  List isToday = [];
+  List<String> dropdownItems = [];
+  List isTodayNoon = [];
+  List oneDayMorning = [];
+  List oneDayNoon = [];
+  List attendanceListNoon = [];
+
+  // boolean
   bool now = true;
   bool alltime = false;
   bool isOneDay = false;
   bool multiday = false;
   bool isFilterExpanded = false;
-  final bool _isLoading = true;
-  List isToday = [];
-  List<AttendancesWithDate> onedayList = [];
-  String sortByValue = '';
-  List<String> dropdownItems = [];
-
-  String dropDownValue = '';
   bool afternoon = false;
   bool total = false;
+  bool _loadingUser = true;
+  bool _isLoadingAll = true;
+  bool _isLoadingById = true;
+  bool multipleDay = false;
+  bool _isLoadingNoDate = true;
+  bool order = false;
+  bool _loadingOneday = true;
+  final bool _isLoading = true;
+
+  // datetime
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+
+  // variables
+  String sortByValue = '';
+  String dropDownValue = '';
   dynamic countPresent,
       countPresentNoon,
       countLate,
@@ -75,15 +102,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       lateAll,
       permissionAll,
       absentAll;
-  bool multipleDay = false;
-  bool _isLoadingNoDate = true;
-  bool order = false;
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
-  List isTodayNoon = [];
-  List oneDayMorning = [];
-  List oneDayNoon = [];
-  List attendanceListNoon = [];
   int? onedayPresent,
       onedayPresentNoon,
       onedayLate,
@@ -102,6 +122,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
       todayAbsentNoon;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  // fetch attendance count from api
   fetchAttendanceCountAll() async {
     var lc = await _attendanceService.countLateAllByUserId(
       userId: widget.id,
@@ -132,7 +153,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
-  bool _loadingOneday = true;
   fetchPresentMorningOneday() async {
     _loadingOneday = true;
     var pcm1 = await _attendanceService.countPresentByUserId(
@@ -234,6 +254,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
+  // fetch user from api
   fetchNoDate() async {
     try {
       List<AttendanceWithDate> attendanceNoDateDisplay =
@@ -246,10 +267,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     } catch (e) {}
   }
 
-  final UserService _userService = UserService.instance;
-  List<User> userDisplay = [];
-  List<User> user = [];
-  bool _loadingUser = true;
   fetchUserById() async {
     try {
       _loadingUser = true;
@@ -268,7 +285,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     } catch (err) {}
   }
 
-  bool _isLoadingAll = true;
+  // fetch attendance from api
   fetchAllAttendance() async {
     _isLoadingAll = true;
     try {
@@ -302,7 +319,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     } catch (e) {}
   }
 
-  bool _isLoadingById = true;
   fetchAttedancesById() async {
     _isLoadingById = true;
     try {
@@ -399,6 +415,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     } catch (err) {}
   }
 
+  // check attendance status
   checkPresent(AttendancesWithDate element) {
     if (element.list[0].getT1?.note != 'absent' &&
         element.list[0].getT1?.note != 'permission') {
@@ -563,7 +580,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     try {
       fetchNoDate();
       fetchAttendanceCountAll();
-      // fetchManyAttendances();
       fetchAttedancesById();
       fetchAllAttendance();
       fetchUserById();

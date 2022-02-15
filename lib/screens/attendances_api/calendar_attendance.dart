@@ -3,6 +3,7 @@ import 'package:ems/models/attendances.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AttendanceCalendar extends StatefulWidget {
   final int id;
@@ -41,6 +42,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
     } catch (err) {}
   }
 
+  // check attendance status
   checkPresent(AttendancesWithDate element) {
     if (element.list[0].getT1?.note != 'absent' &&
         element.list[0].getT1?.note != 'permission') {
@@ -117,6 +119,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
     }
   }
 
+  // attendance event list
   List<Appointment> getAppointments() {
     List<Appointment> meetings = <Appointment>[];
     List<AttendancesWithDate> attendancesDisplay = attendancesByIdDisplay
@@ -231,16 +234,16 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchAttedancesById();
   }
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations? local = AppLocalizations.of(context);
     return Scaffold(
         appBar: AppBar(
-          title: Text('Calendar'),
+          title: Text('${local?.calendarAttendance}'),
         ),
         body: _isLoadingById
             ? Container(
@@ -274,7 +277,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
                       height: 25,
                     ),
                     SfCalendar(
-                      scheduleViewSettings: ScheduleViewSettings(
+                      scheduleViewSettings: const ScheduleViewSettings(
                         monthHeaderSettings: MonthHeaderSettings(
                           monthFormat: 'MMMM yyyy',
                           height: 100,

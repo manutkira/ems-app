@@ -36,10 +36,10 @@ class _ViewAttendanceScreenState extends State<ViewAttendanceScreen> {
   String? id;
   String? date;
   String? time;
-  TextEditingController? note = TextEditingController();
-  DateTime? dateTime;
   String type = '';
   String? image;
+  TextEditingController? note = TextEditingController();
+  DateTime? dateTime;
 
   @override
   void initState() {

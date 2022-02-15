@@ -30,18 +30,24 @@ class AttedancesEdit extends StatefulWidget {
 class _AttedancesEditState extends State<AttedancesEdit> {
   String url =
       "http://rest-api-laravel-flutter.herokuapp.com/api/attendance_record";
+
+  // text controller
   TextEditingController idController = TextEditingController();
   TextEditingController id = TextEditingController();
   TextEditingController typeController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   TextEditingController? _noteController = TextEditingController();
+
+  // boolean
+  bool pick = false;
+
+  // variables
   TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
   String? _hour, _minute, _time;
   DateTime? dateTime;
   String type = '';
   String defualtCode = '';
-  bool pick = false;
   late DateTime? _selectDate;
 
   @override
@@ -58,6 +64,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     super.initState();
   }
 
+  // date picker popup
   void _byDayDatePicker() {
     showDatePicker(
       context: context,
@@ -77,6 +84,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     });
   }
 
+  // time picker popup
   void _selectTime() async {
     showTimePicker(
             context: context,

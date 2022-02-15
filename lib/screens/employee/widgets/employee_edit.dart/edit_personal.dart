@@ -10,7 +10,7 @@ class EditPersonal extends StatelessWidget {
   final form;
   final Function selectImageId;
   final Function selectImage;
-  final Function uploadImage;
+  final Function updateEmployee;
   final String imageUrl;
   final String idUrl;
   TextEditingController nameController;
@@ -23,7 +23,7 @@ class EditPersonal extends StatelessWidget {
     required this.form,
     required this.selectImageId,
     required this.selectImage,
-    required this.uploadImage,
+    required this.updateEmployee,
     required this.imageUrl,
     required this.idUrl,
     required this.nameController,
@@ -292,7 +292,7 @@ class EditPersonal extends StatelessWidget {
                                         if (!form.currentState!.validate()) {
                                           return Navigator.of(context).pop();
                                         }
-                                        uploadImage();
+                                        updateEmployee();
                                         Navigator.of(context).pop();
                                         showDialog(
                                           context: context,

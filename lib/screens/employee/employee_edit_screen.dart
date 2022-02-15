@@ -47,6 +47,7 @@ class EmployeeEditScreen extends StatefulWidget {
 class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
+  // text controller
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -55,18 +56,21 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   TextEditingController skillController = TextEditingController();
   TextEditingController salaryController = TextEditingController();
   TextEditingController backgroundController = TextEditingController();
+
+  // variable
   String role = '';
   String status = '';
   String rate = '';
-
-  final _form = GlobalKey<FormState>();
-
   String? imageUrl = '';
   String? idUrl = '';
 
+  final _form = GlobalKey<FormState>();
+
+  // Files
   File? pickedImg;
   File? pickedId;
 
+  // image picker
   void _selectImage(File pickedImage) {
     pickedImg = pickedImage;
   }
@@ -195,7 +199,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                 form: _form,
                 selectImageId: _selectImageId,
                 selectImage: _selectImage,
-                uploadImage: uploadImage,
+                updateEmployee: updateEmployee,
                 imageUrl: imageUrl.toString(),
                 idUrl: idUrl.toString(),
                 nameController: nameController,
@@ -207,7 +211,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     );
   }
 
-  uploadImage() async {
+  updateEmployee() async {
     AppLocalizations? local = AppLocalizations.of(context);
     var aName = nameController.text;
     var aPhone = phoneController.text;
@@ -252,7 +256,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                     borderSide: const BorderSide(color: Colors.red),
                     onPressed: () {
                       Navigator.pop(context);
-                      // Navigator.pop(context);
                     },
                     child: Text('${local?.back}',
                         style: const TextStyle(color: Colors.red)),

@@ -30,20 +30,37 @@ class TestPosition extends StatefulWidget {
 }
 
 class _TestPositionState extends State<TestPosition> {
-  String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
-  bool table = false;
+  // services
   final PositionService _rateService = PositionService.instance;
+  final PositionServices _positionServices = PositionServices.instance;
+
+  // list posotion
+  List<Position> positionsDisplay = [];
+
+  // list dynamic
   List positionDisplay = [];
-  DateTime? startDate;
-  DateTime? endDate;
+
+  // boolean
+  bool table = false;
   bool _isLoading = true;
+
+  // text controller
   TextEditingController positionName = TextEditingController();
   TextEditingController startDateController = TextEditingController();
   TextEditingController endDateController = TextEditingController();
+
+  // datetime
+  DateTime? startDate;
+  DateTime? endDate;
   DateTime? pickStart;
   DateTime? pickEnd;
-  int? positionId;
 
+  // variable
+  String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
+  int? positionId;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // date picker for start date
   void _startDatePicker() {
     showDatePicker(
       context: context,
@@ -63,6 +80,7 @@ class _TestPositionState extends State<TestPosition> {
     });
   }
 
+  // date picker for end date
   void _endDatePicker() {
     showDatePicker(
       context: context,
@@ -82,6 +100,7 @@ class _TestPositionState extends State<TestPosition> {
     });
   }
 
+  // fetch position from api
   fetchPosition() {
     try {
       _isLoading = true;
@@ -97,9 +116,7 @@ class _TestPositionState extends State<TestPosition> {
     } catch (err) {}
   }
 
-  final PositionServices _positionServices = PositionServices.instance;
-  List<Position> positionsDisplay = [];
-
+  // fetch position from api
   fetchPositions() {
     try {
       _isLoading = true;
@@ -115,8 +132,6 @@ class _TestPositionState extends State<TestPosition> {
     } catch (err) {}
   }
 
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   void showInSnackBar(String value) {
     _scaffoldKey.currentState!.showSnackBar(
       SnackBar(
@@ -131,6 +146,7 @@ class _TestPositionState extends State<TestPosition> {
     );
   }
 
+  // delete position from api
   Future deleteData(int id) async {
     AppLocalizations? local = AppLocalizations.of(context);
     final response = await http.delete(Uri.parse(

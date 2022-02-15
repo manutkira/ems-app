@@ -37,12 +37,15 @@ class EmployeeEditEmployment extends StatefulWidget {
 class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
+  // text controller
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController positionController = TextEditingController();
   TextEditingController skillController = TextEditingController();
   TextEditingController salaryController = TextEditingController();
   TextEditingController backgroundController = TextEditingController();
+
+  // variables
   String role = '';
   String status = '';
   String rate = '';
@@ -309,7 +312,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                                 return Navigator.of(context)
                                                     .pop();
                                               }
-                                              uploadImage();
+                                              updateEmployee();
                                               Navigator.of(context).pop();
                                               showDialog(
                                                 context: context,
@@ -399,7 +402,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
     );
   }
 
-  uploadImage() async {
+  updateEmployee() async {
     AppLocalizations? local = AppLocalizations.of(context);
 
     var aName = nameController.text;
@@ -416,7 +419,6 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
     };
     request.files.add(http.MultipartFile.fromString('name', aName));
     request.files.add(http.MultipartFile.fromString('phone', aPhone));
-    // request.files.add(http.MultipartFile.fromString('skill', aSkill));
     request.files.add(http.MultipartFile.fromString('salary', aSalary));
     String checkRole() {
       if (aRole == local?.employee) {
@@ -448,25 +450,6 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
     }
 
     request.files.add(http.MultipartFile.fromString('status', checkStatus()));
-    // String checkRate() {
-    //   if (aWorkrate == local?.veryGood) {
-    //     return 'verygood';
-    //   }
-    //   if (aWorkrate == local?.good) {
-    //     return 'good';
-    //   }
-    //   if (aWorkrate == local?.medium) {
-    //     return 'medium';
-    //   }
-    //   if (aWorkrate == local?.low) {
-    //     return 'low';
-    //   } else {
-    //     return '';
-    //   }
-    // }
-
-    // request.files.add(http.MultipartFile.fromString('rate', checkRate()));
-
     request.headers.addAll(headers);
 
     var res = await request.send();
@@ -484,7 +467,6 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                     borderSide: const BorderSide(color: Colors.red),
                     onPressed: () {
                       Navigator.pop(context);
-                      // Navigator.pop(context);
                     },
                     child: Text('${local?.back}',
                         style: const TextStyle(color: Colors.red)),

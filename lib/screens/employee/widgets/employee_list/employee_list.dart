@@ -20,15 +20,27 @@ class EmployeeList extends StatefulWidget {
 }
 
 class _EmployeeListState extends State<EmployeeList> {
-  final color = const Color(0xff05445E);
-  final color1 = const Color(0xff3982A0);
+  // services
   final UserService _userService = UserService.instance;
+
+  // list user
   List<User> userDisplay = [];
   List<User> user = [];
+
+  // boolean
   bool _isLoading = true;
+  bool order = false;
+
+  // variables
+  final color = const Color(0xff05445E);
+  final color1 = const Color(0xff3982A0);
+
+  // text controller
+  final TextEditingController _controller = TextEditingController();
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
+  // fetch user from api
   fetchData() async {
     setState(() {
       userDisplay = [];
@@ -50,6 +62,7 @@ class _EmployeeListState extends State<EmployeeList> {
     } catch (err) {}
   }
 
+  // delete user from api
   Future deleteData(int id) async {
     AppLocalizations? local = AppLocalizations.of(context);
     final response = await http.delete(Uri.parse("$url/$id"));
@@ -71,10 +84,6 @@ class _EmployeeListState extends State<EmployeeList> {
       return false;
     }
   }
-
-  bool order = false;
-
-  final TextEditingController _controller = TextEditingController();
 
   void clearText() {
     _controller.clear();

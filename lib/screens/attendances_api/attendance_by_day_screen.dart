@@ -17,27 +17,33 @@ class AttendanceByDayScreen extends StatefulWidget {
 }
 
 class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
+  // services
   final AttendanceService _attendanceService = AttendanceService.instance;
   final UserService _userService = UserService.instance;
 
+  // list attendances with user
   List userDisplay = [];
   List<AttendancesWithUser> attendanceDisplay = [];
-  final color = const Color(0xff05445E);
-  final color1 = const Color(0xff3982A0);
-  DateTime testdate = DateTime(10, 11, 2021);
-  bool noData = true;
   List<AttendancesWithUser> checkedDate = [];
   List<AttendancesWithUser> checkedDateNoon = [];
   List<AttendancesWithUser> users = [];
-  String dropDownValue = '';
+
+  // boolean
+  bool noData = true;
   bool afternoon = false;
 
+  // variable
+  final color = const Color(0xff05445E);
+  final color1 = const Color(0xff3982A0);
+  DateTime testdate = DateTime(10, 11, 2021);
+  String dropDownValue = '';
   var _controller = TextEditingController();
 
   void clearText() {
     _controller.clear();
   }
 
+  // fetch attendances from api
   fetchAttendances() async {
     List<AttendancesWithDateWithUser> atts = [];
     atts = await _attendanceService.findMany();
@@ -58,6 +64,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     });
   }
 
+  // check attendance status
   checkPresent(AttendancesWithUser element) {
     if (element.getT1?.note != 'absent' &&
         element.getT1?.note != 'permission') {
@@ -166,6 +173,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     }
   }
 
+  // check date and filter from calendar
   void checkDate(DateTime pick) {
     var checkingDate = attendanceDisplay.where((element) =>
         element.date.day == pick.day &&
@@ -230,6 +238,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
 
   DateTime? _selectDate;
 
+  // date picker popup
   void _byDayDatePicker() {
     showDatePicker(
       context: context,

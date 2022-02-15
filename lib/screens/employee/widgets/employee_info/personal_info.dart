@@ -14,9 +14,8 @@ import '../../employee_edit_screen.dart';
 
 class PersonalInfo extends StatelessWidget {
   List<User> userDisplay;
-  List<Bank> bankDisplay;
-
   List<User> user;
+  List<Bank> bankDisplay;
   final Function fetchUserById;
   final Function fetchBankData;
   PersonalInfo({
@@ -30,6 +29,7 @@ class PersonalInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // text contorller
     TextEditingController bankNameController = TextEditingController();
     TextEditingController accountNumberController = TextEditingController();
     TextEditingController accountNameController = TextEditingController();
@@ -37,6 +37,7 @@ class PersonalInfo extends StatelessWidget {
 
     String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
+    // add new bank info to api
     addBankList() async {
       var aBankName = bankNameController.text;
       var aAccountNumber = accountNumberController.text;
@@ -63,6 +64,7 @@ class PersonalInfo extends StatelessWidget {
       res.stream.transform(utf8.decoder).listen((event) {});
     }
 
+    // edit bank info in api
     editBank() async {
       var aBankName = bankNameController.text;
       var aAccountNumber = accountNumberController.text;
@@ -107,6 +109,7 @@ class PersonalInfo extends StatelessWidget {
       );
     }
 
+    // delete bank info from api
     Future deleteData(int id) async {
       AppLocalizations? local = AppLocalizations.of(context);
       final response = await http.delete(Uri.parse(

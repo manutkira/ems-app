@@ -234,5 +234,6 @@
   "deletingSkill": "កំពុងលុបជំនាញ",
   "deletedSkill": "ជំនាញត្រូវបានលុប",
   "deletingPosition": "កំពុងលុបតួនាទី",
-  "deletedPosition": "តួនាទីត្រូវបានលុប"
+  "deletedPosition": "តួនាទីត្រូវបានលុប",
+  "calendarAttendance": "ប្រតិទិន"
 }

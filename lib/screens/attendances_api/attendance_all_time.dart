@@ -18,25 +18,31 @@ class AttendanceAllTimeScreen extends StatefulWidget {
 }
 
 class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
+  // services
   final AttendanceService _attendanceService = AttendanceService.instance;
   final UserService _userService = UserService.instance;
 
+  // list attendances with user
   List<AttendancesWithUser> attendancedisplay = [];
   List userDisplay = [];
   List<User> users = [];
+
+  // boolean
   bool _isLoading = true;
-  final color = const Color(0xff05445E);
-  final color1 = const Color(0xff3982A0);
-  String dropDownValue = '';
   bool afternoon = false;
   bool total = false;
 
+  // variables
+  final color = const Color(0xff05445E);
+  final color1 = const Color(0xff3982A0);
+  String dropDownValue = '';
   var _controller = TextEditingController();
 
   void clearText() {
     _controller.clear();
   }
 
+  // fetch attendance from api
   fetchAttendances() async {
     List<AttendancesWithDateWithUser> atts = [];
     atts = await _attendanceService.findMany();
@@ -48,6 +54,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
     });
   }
 
+  // check attendance status
   checkPresent(AttendancesWithUser element) {
     if (element.getT1?.note != 'absent' &&
         element.getT1?.note != 'permission') {

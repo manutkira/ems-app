@@ -16,13 +16,20 @@ class AttendancesScreen extends StatefulWidget {
 }
 
 class _AttendancesScreenState extends State<AttendancesScreen> {
-  final color = const Color(0xff05445E);
-  final color1 = const Color(0xff3982A0);
+  // services
   final UserService _userService = UserService.instance;
+
+  // list user
   List<User> userDisplay = [];
   List<User> user = [];
+
+  // boolean
   bool _isLoading = true;
   bool order = false;
+
+  // variables
+  final color = const Color(0xff05445E);
+  final color1 = const Color(0xff3982A0);
   final TextEditingController _controller = TextEditingController();
 
   void clearText() {

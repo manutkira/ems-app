@@ -18,15 +18,28 @@ class AttendancesByMonthScreen extends StatefulWidget {
 }
 
 class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
+  // services
   final AttendanceService _attendanceService = AttendanceService.instance;
   final UserService _userService = UserService.instance;
 
+  // list attendance with user
   List userDisplay = [];
   List<AttendancesWithUser> attendanceDisplay = [];
   List<User> users = [];
+
+  // list dynamic
+  List monthList = [];
+
+  // variable
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
+  DateTime? _selectDate;
+  var _selectMonth;
+  var pickedYear;
+  String dropDownValue = '';
+  String dropDownValue1 = '';
 
+  // fetch attendance from api
   fetchAttendances() async {
     List<AttendancesWithDateWithUser> atts = [];
     atts = await _attendanceService.findMany();
@@ -37,6 +50,14 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
       attendanceDisplay.sort((a, b) => a.id.compareTo(b.id));
     });
   }
+
+  // text controller
+  TextEditingController yearController = TextEditingController();
+  TextEditingController _controller = TextEditingController();
+
+  // boolean
+  bool afternoon = false;
+  bool total = false;
 
   @override
   void initState() {
@@ -49,22 +70,11 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     });
   }
 
-  DateTime? _selectDate;
-  var _selectMonth;
-
-  TextEditingController yearController = TextEditingController();
-  var _controller = TextEditingController();
-  var pickedYear;
-  String dropDownValue = '';
-  String dropDownValue1 = '';
-  bool afternoon = false;
-  bool total = false;
-  List monthList = [];
-
   void clearText() {
     _controller.clear();
   }
 
+  // date picker popup
   void _byDayDatePicker() {
     showDatePicker(
             context: context,
@@ -83,6 +93,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     });
   }
 
+  // check attendance status
   checkPresent(AttendancesWithUser element) {
     if (element.getT1?.note != 'absent' &&
         element.getT1?.note != 'permission') {
