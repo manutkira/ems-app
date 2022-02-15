@@ -35,7 +35,7 @@
   "position": "តំណែង",
   "skill": "ជំនាញ",
   "salary": "ប្រាក់ខែ",
-  "rate": "វាយតំលៃ",
+  "rate": "ជំនាញ",
   "background": "ប្រវត្តិការងារ",
   "notAvailable": "មិនមាន",
   "changing": "កំពុងដូររូប",
@@ -228,5 +228,11 @@
   "scanFailed": "ស្កេនបានបរាជ័យ",
   "qrCode": "QR កូដ",
   "overtimeNotFound": "មិនមានទិន្ន័យថែមម៉ោងនោះទេ",
-  "noInternetConnection": "មិនមានអ៊ិនធឺណេត"
+  "noInternetConnection": "មិនមានអ៊ិនធឺណេត",
+  "deletingBank": "កំពុងលុបព័ត៌មានធនាគារ",
+  "deletedBank": "ព័ត៌មានធនាគារត្រូវបានលុប",
+  "deletingSkill": "កំពុងលុបជំនាញ",
+  "deletedSkill": "ជំនាញត្រូវបានលុប",
+  "deletingPosition": "កំពុងលុបតួនាទី",
+  "deletedPosition": "តួនាទីត្រូវបានលុប"
 }

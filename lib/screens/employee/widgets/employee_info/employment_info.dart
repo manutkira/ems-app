@@ -105,10 +105,10 @@ class EmploymentInfo extends StatelessWidget {
       AppLocalizations? local = AppLocalizations.of(context);
       final response = await http.delete(Uri.parse(
           "http://rest-api-laravel-flutter.herokuapp.com/api/ratework/$id"));
-      showInSnackBar("${local?.deletingAttendance}");
+      showInSnackBar("${local?.deletingSkill}");
       if (response.statusCode == 200) {
         fetchRateDate();
-        showInSnackBar("${local?.deletedAttendance}");
+        showInSnackBar("${local?.deletedSkill}");
       } else {
         return false;
       }

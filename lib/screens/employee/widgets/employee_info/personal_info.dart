@@ -111,10 +111,10 @@ class PersonalInfo extends StatelessWidget {
       AppLocalizations? local = AppLocalizations.of(context);
       final response = await http.delete(Uri.parse(
           "http://rest-api-laravel-flutter.herokuapp.com/api/bank/$id"));
-      showInSnackBar("${local?.deletingAttendance}");
+      showInSnackBar("${local?.deletingBank}");
       if (response.statusCode == 200) {
         fetchBankData();
-        showInSnackBar("${local?.deletedAttendance}");
+        showInSnackBar("${local?.deletedBank}");
       } else {
         return false;
       }

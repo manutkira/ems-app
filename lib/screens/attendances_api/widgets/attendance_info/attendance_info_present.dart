@@ -1,11 +1,13 @@
-import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
+
+import 'package:ems/utils/utils.dart';
 
 import '../../../../constants.dart';
 
 class AttendanceInfoPresent extends StatelessWidget {
   final String text;
   final bool afternoon;
+  final bool total;
   final bool multipleDay;
   final bool isOneday;
   final bool isLoading;
@@ -28,6 +30,7 @@ class AttendanceInfoPresent extends StatelessWidget {
     Key? key,
     required this.text,
     required this.afternoon,
+    required this.total,
     required this.multipleDay,
     required this.isOneday,
     required this.isLoading,
@@ -51,7 +54,6 @@ class AttendanceInfoPresent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isEnglish = isInEnglish(context);
-    var counted = afternoon ? presentAfternoon : presentMorning;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,16 +79,32 @@ class AttendanceInfoPresent extends StatelessWidget {
                     // visible: counted != null,
                     child: Text(
                       now
-                          ? afternoon
-                              ? todayAfternoon
-                              : todayMorning
+                          ? total
+                              ? (int.parse(todayMorning) +
+                                      int.parse(todayAfternoon))
+                                  .toString()
+                              : afternoon
+                                  ? todayAfternoon
+                                  : todayMorning
                           : isOneday && !alltime
-                              ? afternoon
-                                  ? onedayAfternoon
-                                  : onedayMorning
+                              ? total
+                                  ? (int.parse(onedayAfternoon) +
+                                          int.parse(onedayMorning))
+                                      .toString()
+                                  : afternoon
+                                      ? onedayAfternoon
+                                      : onedayMorning
                               : alltime
                                   ? presentAll
-                                  : counted,
+                                  : multipleDay && !isOneday && !alltime
+                                      ? total
+                                          ? (int.parse(presentAfternoon) +
+                                                  int.parse(presentMorning))
+                                              .toString()
+                                          : afternoon
+                                              ? presentAfternoon
+                                              : presentMorning
+                                      : '',
                       style: kHeadingFour.copyWith(color: numColor),
                     ),
                   ),

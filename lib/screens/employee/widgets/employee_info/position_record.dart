@@ -135,10 +135,10 @@ class _TestPositionState extends State<TestPosition> {
     AppLocalizations? local = AppLocalizations.of(context);
     final response = await http.delete(Uri.parse(
         "http://rest-api-laravel-flutter.herokuapp.com/api/position/$id"));
-    showInSnackBar("${local!.deletingAttendance}");
+    showInSnackBar("${local!.deletingPosition}");
     if (response.statusCode == 200) {
       fetchPositions();
-      showInSnackBar("${local.deletedAttendance}");
+      showInSnackBar("${local.deletedPosition}");
     } else {
       return false;
     }

@@ -166,7 +166,7 @@
   "@salary": {
     "description": "My Profile screen"
   },
-  "rate": "Rate",
+  "rate": "Skill",
   "@rate": {
     "description": "My Profile screen"
   },
@@ -940,6 +940,30 @@
   },
   "noInternetConnection": "No internet connection!",
   "@noInternetConnection": {
+    "description": "take attendance"
+  },
+  "deletingBank": "deleting Bank Info",
+  "@deletingBank": {
+    "description": "take attendance"
+  },
+  "deletedBank": "Bank info has been deleted!",
+  "@deletedBank": {
+    "description": "take attendance"
+  },
+  "deletingSkill": "deleting skill",
+  "@deletingSkill": {
+    "description": "take attendance"
+  },
+  "deletedSkill": "Skill has been deleted!",
+  "@deletedSkill": {
+    "description": "take attendance"
+  },
+  "deletingPosition": "deleting position",
+  "@deletingPosition": {
+    "description": "take attendance"
+  },
+  "deletedPosition": "Position has been deleted!",
+  "@deletedPosition": {
     "description": "take attendance"
   }
 }

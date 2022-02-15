@@ -33,6 +33,20 @@ class _ImageInputProfileEditState extends State<ImageInputProfileEdit> {
     cropImage(pickedFile.path);
   }
 
+  Future getImageCamara() async {
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.camera,
+      maxHeight: 450,
+      maxWidth: 450,
+      imageQuality: 1,
+    );
+
+    if (pickedFile == null) {
+      return;
+    }
+    cropImage(pickedFile.path);
+  }
+
   Future cropImage(filePath) async {
     File? cropped = await ImageCropper.cropImage(
         sourcePath: filePath,
@@ -130,7 +144,7 @@ class _ImageInputProfileEditState extends State<ImageInputProfileEdit> {
                           children: [
                             ListTile(
                               onTap: () {
-                                getImage();
+                                getImageCamara();
                                 Navigator.of(context).pop();
                               },
                               leading: Icon(Icons.camera),

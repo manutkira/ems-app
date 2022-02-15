@@ -123,18 +123,18 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
         .where((element) => element.list[0].getT1 != null)
         .toList();
     attendancesDisplay.forEach((element) {
-      final DateTime testDate = element.date;
+      final DateTime date = element.date;
       final DateTime startTime = DateTime(
-        testDate.year,
-        testDate.month,
-        testDate.day,
+        date.year,
+        date.month,
+        date.day,
         element.list[0].getT1?.time.hour as int,
         element.list[0].getT1?.time.minute as int,
       );
       final DateTime endTime = DateTime(
-        testDate.year,
-        testDate.month,
-        testDate.day,
+        date.year,
+        date.month,
+        date.day,
         element.list[0].getT2?.time.hour == null
             ? element.list[0].getT1?.time.hour as int
             : element.list[0].getT2?.time.hour as int,
@@ -160,18 +160,18 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
         .toList();
 
     attendancesDisplay2.forEach((element) {
-      final DateTime testDate = element.date;
+      final DateTime date = element.date;
       final DateTime startTime = DateTime(
-        testDate.year,
-        testDate.month,
-        testDate.day,
+        date.year,
+        date.month,
+        date.day,
         element.list[0].getT3?.time.hour as int,
         element.list[0].getT3?.time.minute as int,
       );
       final DateTime endTime = DateTime(
-        testDate.year,
-        testDate.month,
-        testDate.day,
+        date.year,
+        date.month,
+        date.day,
         element.list[0].getT4?.time.hour == null
             ? element.list[0].getT3?.time.hour as int
             : element.list[0].getT4?.time.hour as int,
@@ -179,6 +179,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
             ? element.list[0].getT3?.time.minute as int
             : element.list[0].getT4?.time.minute as int,
       );
+
       meetings.add(
         Appointment(
             startTime: startTime,
@@ -191,6 +192,40 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
                     : Colors.lightBlue),
       );
     });
+
+    List<AttendancesWithDate> attendancesDisplay3 = attendancesByIdDisplay
+        .where((element) => element.list[0].getT5 != null)
+        .toList();
+    attendancesDisplay3.forEach((element) {
+      final DateTime date = element.date;
+      final DateTime startTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        element.list[0].getT5?.time.hour as int,
+        element.list[0].getT5?.time.minute as int,
+      );
+      final DateTime endTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        element.list[0].getT6?.time.hour == null
+            ? element.list[0].getT5?.time.hour as int
+            : element.list[0].getT6?.time.hour as int,
+        element.list[0].getT6?.time.minute == null
+            ? element.list[0].getT5?.time.minute as int
+            : element.list[0].getT6?.time.minute as int,
+      );
+
+      meetings.add(
+        Appointment(
+            startTime: startTime,
+            endTime: endTime,
+            subject: 'Overtime',
+            color: kBlueBackground),
+      );
+    });
+
     return meetings;
   }
 
@@ -203,12 +238,6 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    List<AttendancesWithDate> attendancesDisplay = attendancesByIdDisplay
-        .where((element) => element.list[0].getT1 != null)
-        .toList();
-    List<AttendancesWithDate> attendancesDisplay2 = attendancesByIdDisplay
-        .where((element) => element.list[0].getT3 != null)
-        .toList();
     return Scaffold(
         appBar: AppBar(
           title: Text('Calendar'),

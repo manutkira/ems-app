@@ -54,6 +54,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
   String dropDownValue = '';
   bool afternoon = false;
+  bool total = false;
   dynamic countPresent,
       countPresentNoon,
       countLate,
@@ -131,7 +132,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     }
   }
 
+  bool _loadingOneday = true;
   fetchPresentMorningOneday() async {
+    _loadingOneday = true;
     var pcm1 = await _attendanceService.countPresentByUserId(
       userId: widget.id,
       start: startDate,
@@ -139,13 +142,16 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
     );
 
     if (mounted) {
+      _loadingOneday = true;
       setState(() {
         onedayPresent = pcm1;
+        _loadingOneday = false;
       });
     }
   }
 
   fetchPresentAfternoonOneday() async {
+    _loadingOneday = true;
     var pcm1 = await _attendanceService.countPresentNoonByUserId(
       userId: widget.id,
       start: startDate,
@@ -154,7 +160,9 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
 
     if (mounted) {
       setState(() {
+        _loadingOneday = true;
         onedayPresentNoon = pcm1;
+        _loadingOneday = false;
       });
     }
   }
@@ -253,7 +261,6 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
             userDisplay = [];
             user.add(usersFromServer);
             userDisplay = user;
-            print(userDisplay[0].id);
             _loadingUser = false;
           });
         }
@@ -978,6 +985,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                     MainAxisAlignment.spaceAround,
                                 children: [
                                   AttendanceInfoPresent(
+                                    total: total,
                                     isLoadingAll: _isLoadingAll,
                                     isLoadingById: _isLoadingById,
                                     numColor: kGreenText,
@@ -1003,6 +1011,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                         : presentMorning.toString(),
                                   ),
                                   AttendanceInfoPresent(
+                                    total: total,
                                     isLoadingAll: _isLoadingAll,
                                     isLoadingById: _isLoadingById,
                                     numColor: kBlueText,
@@ -1030,6 +1039,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                         : permissionMorning.toString(),
                                   ),
                                   AttendanceInfoPresent(
+                                    total: total,
                                     isLoadingAll: _isLoadingAll,
                                     isLoadingById: _isLoadingById,
                                     numColor: kYellowText,
@@ -1054,6 +1064,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                         : lateMorning.toString(),
                                   ),
                                   AttendanceInfoPresent(
+                                    total: total,
                                     isLoadingAll: _isLoadingAll,
                                     isLoadingById: _isLoadingById,
                                     numColor: kRedText,
@@ -1150,6 +1161,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                       '${local?.afternoon}') {
                                                     setState(() {
                                                       afternoon = true;
+                                                      total = false;
                                                       dropDownValue = newValue!;
                                                     });
                                                   }
@@ -1157,6 +1169,15 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                       '${local?.morning}') {
                                                     setState(() {
                                                       afternoon = false;
+                                                      total = false;
+                                                      dropDownValue = newValue!;
+                                                    });
+                                                  }
+                                                  if (newValue ==
+                                                      '${local?.total}') {
+                                                    setState(() {
+                                                      afternoon = false;
+                                                      total = true;
                                                       dropDownValue = newValue!;
                                                     });
                                                   }
@@ -1164,6 +1185,7 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                                 items: <String>[
                                                   '${local?.morning}',
                                                   '${local?.afternoon}',
+                                                  '${local?.total}'
                                                 ].map<DropdownMenuItem<String>>(
                                                     (String value) {
                                                   return DropdownMenuItem<
