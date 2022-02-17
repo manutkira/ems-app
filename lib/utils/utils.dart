@@ -111,21 +111,15 @@ void goBack(BuildContext context) {
 }
 
 Future<bool> isConnected() async {
-  print('hi from isConnected');
   try {
     final result = await InternetAddress.lookup('google.com');
 
-    print("$result");
-
     if ((result.isNotEmpty && result[0].rawAddress.isNotEmpty)) {
-      print('from if');
       return true;
     } else {
-      print('from else');
       return false;
     }
   } on SocketException catch (err) {
-    print('$err');
     return false;
   }
 }

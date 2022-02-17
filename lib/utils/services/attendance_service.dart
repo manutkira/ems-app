@@ -30,6 +30,7 @@ class AttendanceService extends BaseService {
     return date != null ? DateFormat('y-M-d').format(date) : '';
   }
 
+  /// creates one attendance record.
   Future<void> createOneRecord({
     required int userId,
     required DateTime datetime,
@@ -52,13 +53,51 @@ class AttendanceService extends BaseService {
         headers: headers(),
         body: jsonEncode(payload),
       );
-      _code = response.statusCode;
+      if (response.statusCode != 201) {
+        _code = response.statusCode;
+        throw AttendanceException(code: _code);
+      }
       var decoded = jsonDecode(response.body);
     } catch (e) {
       throw AttendanceException(code: _code);
     }
   }
 
+  Future<void> createManyRecords(List<dynamic> cache) async {
+    if (cache.toString() == "[]" || cache.toString() == "null") {
+      return;
+    }
+
+    String uri = "$baseUrl/attendances/mass";
+
+    // removes unnecessary user object
+    // decoding the encoded object to actually copy the object.
+    // with other methods, the local cache got modified.
+    var clean = json.decode(json.encode(cache)).map((att) {
+      att.removeWhere((key, value) => key == 'user');
+      return att;
+    }).toList();
+
+    try {
+      Response res = await post(
+        Uri.parse(uri),
+        headers: headers(),
+        body: jsonEncode(
+          {
+            "data": clean,
+          },
+        ),
+      );
+
+      if (res.statusCode != 200) {
+        throw AttendanceException(code: 500, message: "mass upload failed");
+      }
+    } catch (err) {
+      throw AttendanceException(code: 500, message: "mass upload failed");
+    }
+  }
+
+  /// updates an attendance record
   Future<AttendanceRecord> updateOneRecord({
     required AttendanceRecord record,
   }) async {
@@ -87,6 +126,7 @@ class AttendanceService extends BaseService {
     }
   }
 
+  /// deletes an attendance record
   Future<bool> deleteOneRecord(int id) async {
     try {
       Response response = await delete(

@@ -1,4 +1,4 @@
-import 'package:ems/screens/take_attendance/qr_code.dart';
+import 'package:ems/take_attendance/qr_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';

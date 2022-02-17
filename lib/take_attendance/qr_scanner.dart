@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:ems/constants.dart';
 import 'package:ems/models/attendance.dart';
 import 'package:ems/persistence/attendances.dart';
-import 'package:ems/screens/take_attendance/widgets/employee_confirmation.dart';
+import 'package:ems/take_attendance/widgets/employee_confirmation.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/widgets/statuses/info.dart';
 import 'package:flutter/foundation.dart';
@@ -46,11 +46,13 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   /// reset loading states to normal
   void resetLoading() {
     setState(() {
+      result = null;
       _loadingMessage = '';
       _isLoading = false;
     });
   }
 
+  /// add attendance to the api or to the local cache depending on the connection status.
   addAttendance(Barcode _result) async {
     AppLocalizations? local = AppLocalizations.of(context);
 
@@ -70,6 +72,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     // registering record
     try {
       if (widget.isOnline) {
+        // if online
         await _attService.createOneRecord(
           userId: attendance?.userId as int,
           datetime: attendance?.date as DateTime,
@@ -77,6 +80,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
           // attendance: attendance as Attendance,
         );
       } else {
+        // if offline
         Map<String, dynamic> userFromQR = decodeQR("${result?.code}");
         Map<String, dynamic> att = {
           "user": {
@@ -85,7 +89,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
             "name": userFromQR['name'],
           },
           "user_id": userFromQR['id'],
-          "date": attendance?.date,
+          "time": attendance?.date?.toIso8601String(),
         };
 
         if (attendance?.note == null ||
@@ -97,6 +101,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
         await ref.read(localAttendanceCacheProvider).add(att);
       }
     } catch (err) {
+      // if fails show fail panel
       _buildScanFailed();
     } finally {
       // finally, reset things
@@ -105,11 +110,12 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   }
 
   /// Full screen snackbar widget
-  SnackBar _buildSnackBar(
-      {required IconData icon,
-      required Color backgroundColor,
-      required Color textColor,
-      required String message}) {
+  SnackBar _buildSnackBar({
+    required IconData icon,
+    required Color backgroundColor,
+    required Color textColor,
+    required String message,
+  }) {
     return SnackBar(
       duration: const Duration(seconds: 2),
       backgroundColor: backgroundColor,
@@ -132,6 +138,15 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     );
   }
 
+  /// decodes the QR code result then returns user obj.
+  ///
+  /// ```dart
+  /// {
+  ///   "id": int,
+  ///   "profile": String,
+  ///   "name": String,
+  /// }
+  /// ```
   Map<String, dynamic> decodeQR(String code) {
     var json = jsonDecode(code);
     int? id = int.tryParse(json['id']);
@@ -162,9 +177,8 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     if (userFromQR.isEmpty) return false;
     bool confirmation = false;
 
-    /// use to set note from confirmation panel before registering the record
-    /// confirmation to true
-    /// TODO: DO THIS NEXT
+    // use to set note from confirmation panel before registering the record
+    // confirmation to true
     void ok(String note) {
       setState(() {
         attendance = Attendance(
@@ -220,9 +234,6 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
                       name: name,
                       profile: '$profile',
                       ok: (note) => ok(note),
-
-                      /// TODO: DO THIS NEXT
-                      // type: widget.type,
                     ),
                   ),
                 ),
@@ -250,7 +261,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     );
   }
 
-  /// build scanner ui
+  /// builds scanner ui.
   Widget _buildScanner(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
 
@@ -292,7 +303,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     );
   }
 
-  /// qr scanner
+  /// builds the qr code scanner.
   Widget _buildQrView(BuildContext context) {
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
             MediaQuery.of(context).size.height < 400)
@@ -312,7 +323,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     );
   }
 
-  /// set controller and listen to events
+  /// sets controller and listens to events
   void _onQRViewCreated(QRViewController controller) {
     setState(() {
       this.controller = controller;
@@ -324,7 +335,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
           result = scanData;
         });
 
-        // stop the camera to let user know that the app got the data
+        // stops the camera after app scanned the qr code
         if (Platform.isAndroid) {
           await this.controller!.stopCamera();
         }
@@ -332,16 +343,16 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
           await this.controller!.pauseCamera();
         }
 
-        // add attendance
+        // adds attendance
         await addAttendance(scanData);
 
-        // then resume camera again
+        // then resumes camera again
         await this.controller!.resumeCamera();
       }
     });
   }
 
-  /// check permission
+  /// checks permission
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
     AppLocalizations? local = AppLocalizations.of(context);
 
@@ -368,7 +379,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     super.dispose();
   }
 
-  /// loading widget
+  /// builds the loading widget
   Widget _loading(BuildContext context, String message) {
     Size _size = MediaQuery.of(context).size;
 
@@ -394,7 +405,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
     );
   }
 
-  /// build scan failed screen
+  /// builds scan failed screen
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _buildScanFailed() {
     AppLocalizations? local = AppLocalizations.of(context);
     return ScaffoldMessenger.of(context).showSnackBar(

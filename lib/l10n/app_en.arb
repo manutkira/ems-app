@@ -942,6 +942,38 @@
   "@noInternetConnection": {
     "description": "take attendance"
   },
+  "noRecordFound": "No Record Found.",
+  "@noRecordFound": {
+    "description": "local cache"
+  },
+  "localCache": "Local Cache",
+  "@localCache": {
+    "description": "local cache"
+  },
+  "clearAll": "Clear All",
+  "@clearAll": {
+    "description": "local cache"
+  },
+  "confirmDelete": "Delete Confirmation",
+  "@confirmDelete": {
+    "description": "local cache"
+  },
+  "confirmDeleteQuestion": "Are you sure you want to delete the local attendance cache?",
+  "@confirmDeleteQuestion": {
+    "description": "local cache"
+  },
+  "upload": "Upload",
+  "@upload": {
+    "description": "local cache"
+  },
+  "savingLocalAttendanceFailed": "uploading attendances failed",
+  "@savingLocalAttendanceFailed": {
+    "description": "local cache"
+  },
+  "savingLocalAttendanceSuccess": "uploading attendances succeeded",
+  "@savingLocalAttendanceSuccess": {
+    "description": "local cache"
+  },
   "deletingBank": "deleting Bank Info",
   "@deletingBank": {
     "description": "take attendance"
