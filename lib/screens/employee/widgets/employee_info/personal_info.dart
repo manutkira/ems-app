@@ -394,7 +394,7 @@ class PersonalInfo extends StatelessWidget {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: isEnglish ? 52 : 20,
+                                              width: isEnglish ? 32 : 20,
                                             ),
                                             Expanded(
                                               flex: 4,
@@ -438,7 +438,7 @@ class PersonalInfo extends StatelessWidget {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: isEnglish ? 52 : 20,
+                                              width: isEnglish ? 32 : 20,
                                             ),
                                             Expanded(
                                               flex: 4,
@@ -482,13 +482,15 @@ class PersonalInfo extends StatelessWidget {
                                               ),
                                             ),
                                             SizedBox(
-                                              width: isEnglish ? 52 : 20,
+                                              width: isEnglish ? 32 : 20,
                                             ),
                                             Expanded(
                                               flex: 4,
                                               child: SizedBox(
                                                 height: 35,
                                                 child: TextFormField(
+                                                  keyboardType:
+                                                      TextInputType.number,
                                                   decoration: InputDecoration(
                                                     contentPadding:
                                                         const EdgeInsets.only(
@@ -691,7 +693,7 @@ class PersonalInfo extends StatelessWidget {
                                                       Expanded(
                                                         flex: 3,
                                                         child: Text(
-                                                          'Bank Name ',
+                                                          '${local?.bankName} ',
                                                           style: kParagraph
                                                               .copyWith(
                                                                   fontWeight:
@@ -709,14 +711,15 @@ class PersonalInfo extends StatelessWidget {
                                                           height: 35,
                                                           child: TextFormField(
                                                             decoration:
-                                                                const InputDecoration(
+                                                                InputDecoration(
                                                               contentPadding:
-                                                                  EdgeInsets.only(
+                                                                  const EdgeInsets
+                                                                          .only(
                                                                       left: 10),
                                                               hintText:
-                                                                  'Enter Bank Name',
+                                                                  '${local?.enterbankName}',
                                                               errorStyle:
-                                                                  TextStyle(
+                                                                  const TextStyle(
                                                                 fontSize: 15,
                                                                 fontWeight:
                                                                     FontWeight
@@ -744,7 +747,7 @@ class PersonalInfo extends StatelessWidget {
                                                       Expanded(
                                                         flex: 3,
                                                         child: Text(
-                                                          'Account Name ',
+                                                          '${local?.accountBankName} ',
                                                           style: kParagraph
                                                               .copyWith(
                                                                   fontWeight:
@@ -762,14 +765,15 @@ class PersonalInfo extends StatelessWidget {
                                                           height: 35,
                                                           child: TextFormField(
                                                             decoration:
-                                                                const InputDecoration(
+                                                                InputDecoration(
                                                               contentPadding:
-                                                                  EdgeInsets.only(
+                                                                  const EdgeInsets
+                                                                          .only(
                                                                       left: 10),
                                                               hintText:
-                                                                  'Enter Account Name',
+                                                                  '${local?.enteraccountBankName}',
                                                               errorStyle:
-                                                                  TextStyle(
+                                                                  const TextStyle(
                                                                 fontSize: 15,
                                                                 fontWeight:
                                                                     FontWeight
@@ -797,7 +801,7 @@ class PersonalInfo extends StatelessWidget {
                                                       Expanded(
                                                         flex: 3,
                                                         child: Text(
-                                                          'Account Number ',
+                                                          '${local?.accountBankNumber} ',
                                                           style: kParagraph
                                                               .copyWith(
                                                                   fontWeight:
@@ -814,15 +818,19 @@ class PersonalInfo extends StatelessWidget {
                                                         child: SizedBox(
                                                           height: 35,
                                                           child: TextFormField(
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
                                                             decoration:
-                                                                const InputDecoration(
+                                                                InputDecoration(
                                                               contentPadding:
-                                                                  EdgeInsets.only(
+                                                                  const EdgeInsets
+                                                                          .only(
                                                                       left: 10),
                                                               hintText:
-                                                                  'Enter Account Number',
+                                                                  '${local?.enteraccountBankNumber}',
                                                               errorStyle:
-                                                                  TextStyle(
+                                                                  const TextStyle(
                                                                 fontSize: 15,
                                                                 fontWeight:
                                                                     FontWeight

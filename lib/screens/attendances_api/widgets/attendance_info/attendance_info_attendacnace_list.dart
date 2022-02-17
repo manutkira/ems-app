@@ -92,7 +92,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           )
         : RefreshIndicator(
             onRefresh: () {
-              return fetchAttedancesById();
+              return multiday ? fetchAttedancesById() : fetchAllAttendance();
             },
             strokeWidth: 2,
             backgroundColor: Colors.transparent,
@@ -1241,7 +1241,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
   }
 
   Widget _buildMultipleResult(
-      AttendancesWithDate record, context, bool isAdmin) {
+      AttendancesWithDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(

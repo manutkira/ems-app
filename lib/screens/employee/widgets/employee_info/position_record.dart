@@ -193,21 +193,27 @@ class _TestPositionState extends State<TestPosition> {
                       ),
                       child: Column(
                         children: [
+                          SizedBox(
+                            height: isEnglish ? 15 : 0,
+                          ),
                           Row(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(20.0),
+                                padding: EdgeInsets.all(isEnglish ? 5.0 : 30),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    SizedBox(
+                                      width: isEnglish ? 15 : 0,
+                                    ),
                                     Text(
                                       '${local.position} ',
                                       style: kParagraph.copyWith(
                                           fontWeight: FontWeight.bold),
                                     ),
                                     SizedBox(
-                                      width: isEnglish ? 52 : 56,
+                                      width: isEnglish ? 37 : 45,
                                     ),
                                     Container(
                                       constraints: BoxConstraints(
@@ -244,6 +250,9 @@ class _TestPositionState extends State<TestPosition> {
                                 ),
                               ),
                             ],
+                          ),
+                          SizedBox(
+                            height: isEnglish ? 15 : 0,
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 30, left: 20),
@@ -604,16 +613,15 @@ class _TestPositionState extends State<TestPosition> {
                                                   ),
                                                   Padding(
                                                     padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
+                                                        const EdgeInsets.all(0),
                                                     child: Row(
                                                       children: [
                                                         Padding(
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(
-                                                                  left: 20,
-                                                                  right: 20,
+                                                                  left: 25,
+                                                                  right: 5,
                                                                   bottom: 15),
                                                           child: Row(
                                                             mainAxisAlignment:
@@ -677,16 +685,15 @@ class _TestPositionState extends State<TestPosition> {
                                                   ),
                                                   Padding(
                                                     padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
+                                                        const EdgeInsets.all(0),
                                                     child: Row(
                                                       children: [
                                                         Padding(
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(
-                                                                  left: 20,
-                                                                  right: 20,
+                                                                  left: 25,
+                                                                  right: 5,
                                                                   bottom: 15),
                                                           child: Row(
                                                             mainAxisAlignment:
@@ -702,7 +709,7 @@ class _TestPositionState extends State<TestPosition> {
                                                               ),
                                                               SizedBox(
                                                                 width: isEnglish
-                                                                    ? 40
+                                                                    ? 36
                                                                     : 29,
                                                               ),
                                                               Container(
@@ -760,16 +767,15 @@ class _TestPositionState extends State<TestPosition> {
                                                   ),
                                                   Padding(
                                                     padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
+                                                        const EdgeInsets.all(0),
                                                     child: Row(
                                                       children: [
                                                         Padding(
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(
-                                                                  left: 20,
-                                                                  right: 20,
+                                                                  left: 25,
+                                                                  right: 5,
                                                                   bottom: 15),
                                                           child: Row(
                                                             mainAxisAlignment:
@@ -785,7 +791,7 @@ class _TestPositionState extends State<TestPosition> {
                                                               ),
                                                               SizedBox(
                                                                 width: isEnglish
-                                                                    ? 40
+                                                                    ? 45
                                                                     : 45,
                                                               ),
                                                               Container(
@@ -1157,11 +1163,399 @@ class _TestPositionState extends State<TestPosition> {
                                 ),
                               )),
                               TableCell(
-                                  verticalAlignment:
-                                      TableCellVerticalAlignment.middle,
-                                  child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.more_vert)))
+                                verticalAlignment:
+                                    TableCellVerticalAlignment.middle,
+                                child: PopupMenuButton(
+                                  color: kBlack,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  onSelected: (int selectedValue) async {
+                                    if (selectedValue == 0) {
+                                      positionId = e.id;
+                                      positionName.text = e.positionName;
+                                      startDateController.text =
+                                          DateFormat('dd-MM-yyyy').format(
+                                              DateTime.tryParse(e.startDate)!);
+                                      endDateController.text = e.endDate == null
+                                          ? 'Null'
+                                          : DateFormat('dd-MM-yyyy').format(
+                                              DateTime.tryParse(
+                                                  e.endDate.toString())!);
+                                      pickStart =
+                                          DateTime.tryParse(e.startDate);
+                                      if (e.endDate != null) {
+                                        pickEnd = DateTime.tryParse(
+                                            e.endDate.toString());
+                                      }
+                                      await showModalBottomSheet(
+                                          context: context,
+                                          builder: (_) {
+                                            return Container(
+                                              height: 340,
+                                              decoration: const BoxDecoration(
+                                                color: kBlue,
+                                                borderRadius: BorderRadius.only(
+                                                  topRight: Radius.circular(30),
+                                                  topLeft: Radius.circular(30),
+                                                ),
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  const SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(0),
+                                                    child: Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 25,
+                                                                  right: 5,
+                                                                  bottom: 15),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                '${local.position} ',
+                                                                style: kParagraph.copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              SizedBox(
+                                                                width: isEnglish
+                                                                    ? 52
+                                                                    : 48,
+                                                              ),
+                                                              Container(
+                                                                constraints: BoxConstraints(
+                                                                    maxWidth: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.6),
+                                                                child: Flex(
+                                                                  direction: Axis
+                                                                      .horizontal,
+                                                                  children: [
+                                                                    Flexible(
+                                                                      child:
+                                                                          Container(
+                                                                        height:
+                                                                            40,
+                                                                        child:
+                                                                            TextFormField(
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            contentPadding:
+                                                                                EdgeInsets.only(left: 10),
+                                                                            hintText:
+                                                                                '${local.enterPosition}',
+                                                                            errorStyle:
+                                                                                const TextStyle(
+                                                                              fontSize: 15,
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                          controller:
+                                                                              positionName,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(0),
+                                                    child: Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 25,
+                                                                  right: 5,
+                                                                  bottom: 15),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                '${local.startDate} ',
+                                                                style: kParagraph.copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              SizedBox(
+                                                                width: isEnglish
+                                                                    ? 36
+                                                                    : 29,
+                                                              ),
+                                                              Container(
+                                                                constraints: BoxConstraints(
+                                                                    maxWidth: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.6),
+                                                                child: Flex(
+                                                                  direction: Axis
+                                                                      .horizontal,
+                                                                  children: [
+                                                                    Flexible(
+                                                                      child:
+                                                                          Container(
+                                                                        height:
+                                                                            50,
+                                                                        child:
+                                                                            TextFormField(
+                                                                          readOnly:
+                                                                              true,
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            contentPadding:
+                                                                                const EdgeInsets.only(left: 10),
+                                                                            hintText:
+                                                                                '${local.selectEndDate}',
+                                                                            suffixIcon: IconButton(
+                                                                                onPressed: () {
+                                                                                  _startDatePicker();
+                                                                                },
+                                                                                icon: const Icon(
+                                                                                  MdiIcons.calendar,
+                                                                                  color: Colors.white,
+                                                                                )),
+                                                                            errorStyle:
+                                                                                const TextStyle(
+                                                                              fontSize: 15,
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                          controller:
+                                                                              startDateController,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(0),
+                                                    child: Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 25,
+                                                                  right: 5,
+                                                                  bottom: 15),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                '${local.endDate} ',
+                                                                style: kParagraph.copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              SizedBox(
+                                                                width: isEnglish
+                                                                    ? 45
+                                                                    : 45,
+                                                              ),
+                                                              Container(
+                                                                constraints: BoxConstraints(
+                                                                    maxWidth: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.6),
+                                                                child: Flex(
+                                                                  direction: Axis
+                                                                      .horizontal,
+                                                                  children: [
+                                                                    Flexible(
+                                                                      child:
+                                                                          Container(
+                                                                        height:
+                                                                            50,
+                                                                        child:
+                                                                            TextFormField(
+                                                                          readOnly:
+                                                                              true,
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            contentPadding:
+                                                                                EdgeInsets.only(left: 10),
+                                                                            hintText:
+                                                                                '${local.selectEndDate}',
+                                                                            suffixIcon: IconButton(
+                                                                                onPressed: () {
+                                                                                  _endDatePicker();
+                                                                                },
+                                                                                icon: const Icon(
+                                                                                  MdiIcons.calendar,
+                                                                                  color: Colors.white,
+                                                                                )),
+                                                                            errorStyle:
+                                                                                const TextStyle(
+                                                                              fontSize: 15,
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                          controller:
+                                                                              endDateController,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 30),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        RaisedButton(
+                                                          onPressed: () {
+                                                            editPosition();
+                                                          },
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                          child: Text(
+                                                            '${local.save}',
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 15,
+                                                        ),
+                                                        RaisedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          color: Colors.red,
+                                                          child: Text(
+                                                            '${local.cancel}',
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                      positionName.text = '';
+                                      startDateController.text = '';
+                                      endDateController.text = '';
+                                      fetchPositions();
+                                    }
+                                    if (selectedValue == 1) {
+                                      positionId = e.id;
+                                      await showDialog(
+                                        context: context,
+                                        builder: (ctx) => AlertDialog(
+                                          title: Text('${local.areYouSure}'),
+                                          content:
+                                              Text('${local.cannotUndone}'),
+                                          actions: [
+                                            OutlineButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                deleteData(positionId!);
+                                              },
+                                              child: Text('${local.yes}'),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.green),
+                                            ),
+                                            OutlineButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              borderSide: const BorderSide(
+                                                  color: Colors.red),
+                                              child: Text('${local.no}'),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                      fetchPosition();
+                                    }
+                                  },
+                                  itemBuilder: (_) => [
+                                    PopupMenuItem(
+                                      child: Text(
+                                        '${local.edit}',
+                                        style: TextStyle(
+                                          fontSize: isEnglish ? 15 : 16,
+                                        ),
+                                      ),
+                                      value: 0,
+                                    ),
+                                    PopupMenuItem(
+                                      child: Text(
+                                        '${local.delete}',
+                                        style: TextStyle(
+                                            fontSize: isEnglish ? 15 : 16),
+                                      ),
+                                      value: 1,
+                                    ),
+                                  ],
+                                  icon: Icon(Icons.more_vert),
+                                ),
+                              )
                             ]);
                           }).toList(),
                         ),

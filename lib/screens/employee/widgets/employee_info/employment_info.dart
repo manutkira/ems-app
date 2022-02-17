@@ -334,7 +334,7 @@ class EmploymentInfo extends StatelessWidget {
                                                         FontWeight.bold),
                                               ),
                                               SizedBox(
-                                                width: isEnglish ? 52 : 20,
+                                                width: isEnglish ? 52 : 50,
                                               ),
                                               Container(
                                                 constraints: BoxConstraints(
@@ -396,7 +396,7 @@ class EmploymentInfo extends StatelessWidget {
                                                         FontWeight.bold),
                                               ),
                                               SizedBox(
-                                                width: isEnglish ? 40 : 40,
+                                                width: isEnglish ? 40 : 70,
                                               ),
                                               Container(
                                                 constraints: BoxConstraints(
