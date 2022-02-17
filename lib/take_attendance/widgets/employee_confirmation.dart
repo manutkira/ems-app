@@ -32,7 +32,9 @@ class _EmployeeConfirmScreenState extends State<EmployeeConfirmScreen> {
 
   void checkIfLate() {
     /// should be solved if we have shift hour. we could have just compared that from current user object.
-
+    ///
+    /// should probably make a request to the api to get the attendance for the day
+    /// too many requests?
     DateTime now = DateTime.now();
     bool isCheckInLateMorning = now.isAfter(
           DateTime(
