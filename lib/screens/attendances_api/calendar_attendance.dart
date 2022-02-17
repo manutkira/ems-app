@@ -125,6 +125,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
     List<AttendancesWithDate> attendancesDisplay = attendancesByIdDisplay
         .where((element) => element.list[0].getT1 != null)
         .toList();
+    print(attendancesDisplay[0].list[0].getT1!.time);
     attendancesDisplay.forEach((element) {
       final DateTime date = element.date;
       final DateTime startTime = DateTime(
@@ -192,7 +193,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
                 ? kGreenBackground
                 : checkLate2(element)
                     ? kYellowBackground
-                    : Colors.lightBlue),
+                    : Colors.red),
       );
     });
 

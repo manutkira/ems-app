@@ -1,3 +1,4 @@
+import 'package:ems/persistence/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -5,10 +6,11 @@ import 'package:ems/models/attendances.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/screens/attendances_api/view_attendance.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../constants.dart';
 
-class AttendanceInfoAttendanceList extends StatelessWidget {
+class AttendanceInfoAttendanceList extends ConsumerWidget {
   final bool multiday;
   final bool isOneDay;
   final bool alltime;
@@ -63,7 +65,8 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    bool isAdmin = ref.read(currentUserProvider).isAdmin;
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     return isOneDay && onedayList.isEmpty
@@ -124,16 +127,18 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                 }
                 if (multiday) {
                   AttendancesWithDate multiday = attendanceList[index];
+
                   multidayAttendance = multiday;
                 }
 
                 return multiday
-                    ? _buildMultipleResult(multidayAttendance, context)
+                    ? _buildMultipleResult(multidayAttendance, context, isAdmin)
                     : isOneDay
-                        ? _buildOnedayResult(onedayAttendance, context)
+                        ? _buildOnedayResult(onedayAttendance, context, isAdmin)
                         : alltime
-                            ? _buildAllResult(all, context)
-                            : _buildNowResult(todayAttendance, context);
+                            ? _buildAllResult(all, context, isAdmin)
+                            : _buildNowResult(
+                                todayAttendance, context, isAdmin);
               },
             ),
           );
@@ -230,7 +235,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     }
   }
 
-  popUp1(AttendancesWithDate record, BuildContext context) {
+  popUp1(AttendancesWithDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
     return PopupMenuButton(
       color: Colors.black,
@@ -322,13 +327,13 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
               style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
           value: 2,
         ),
-        if (record.list[0].user!.role == 'admin')
+        if (isAdmin)
           PopupMenuItem(
             child: Text('${local?.edit}',
                 style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
             value: 0,
           ),
-        if (record.list[0].user!.role == 'admin')
+        if (isAdmin)
           PopupMenuItem(
             child: Text('${local?.delete}',
                 style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
@@ -339,7 +344,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     );
   }
 
-  popUp2(AttendancesWithDate record, BuildContext context) {
+  popUp2(AttendancesWithDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return PopupMenuButton(
@@ -431,13 +436,13 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
               style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
           value: 2,
         ),
-        if (record.list[0].user!.role == 'admin')
+        if (isAdmin)
           PopupMenuItem(
             child: Text('${local?.edit}',
                 style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
             value: 0,
           ),
-        if (record.list[0].user!.role == 'admin')
+        if (isAdmin)
           PopupMenuItem(
             child: Text('${local?.delete}',
                 style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
@@ -448,7 +453,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     );
   }
 
-  popUp3(AttendancesWithDate record, BuildContext context) {
+  popUp3(AttendancesWithDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
     return PopupMenuButton(
       color: Colors.black,
@@ -539,13 +544,13 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
               style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
           value: 2,
         ),
-        if (record.list[0].user!.role == 'admin')
+        if (isAdmin)
           PopupMenuItem(
             child: Text('${local?.edit}',
                 style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
             value: 0,
           ),
-        if (record.list[0].user!.role == 'admin')
+        if (isAdmin)
           PopupMenuItem(
             child: Text('${local?.delete}',
                 style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
@@ -556,7 +561,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     );
   }
 
-  popUp4(AttendancesWithDate record, BuildContext context) {
+  popUp4(AttendancesWithDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
     return PopupMenuButton(
       color: Colors.black,
@@ -647,13 +652,13 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
               style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
           value: 2,
         ),
-        if (record.list[0].user!.role == 'admin')
+        if (isAdmin)
           PopupMenuItem(
             child: Text('${local?.edit}',
                 style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
             value: 0,
           ),
-        if (record.list[0].user!.role == 'admin')
+        if (isAdmin)
           PopupMenuItem(
             child: Text('${local?.delete}',
                 style: kParagraph.copyWith(fontWeight: FontWeight.bold)),
@@ -664,7 +669,8 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     );
   }
 
-  Widget _buildAllResult(AttendancesWithDate record, BuildContext context) {
+  Widget _buildAllResult(
+      AttendancesWithDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
@@ -723,7 +729,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( ${local.absent} )'
                                               : '( ${local.permission} )'),
-                              popUp1(record, context)
+                              popUp1(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -758,7 +764,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              popUp2(record, context)
+                              popUp2(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -805,7 +811,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( ${local.absent} )'
                                               : '( ${local.permission} )'),
-                              popUp3(record, context)
+                              popUp3(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -840,7 +846,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              popUp4(record, context)
+                              popUp4(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -853,7 +859,8 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     );
   }
 
-  Widget _buildNowResult(AttendancesWithDate record, BuildContext context) {
+  Widget _buildNowResult(
+      AttendancesWithDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
@@ -912,7 +919,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( ${local.absent} )'
                                               : '( ${local.permission} )'),
-                              popUp1(record, context)
+                              popUp1(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -947,7 +954,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              popUp2(record, context)
+                              popUp2(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -994,7 +1001,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( ${local.absent} )'
                                               : '( ${local.permission} )'),
-                              popUp3(record, context)
+                              popUp3(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -1029,7 +1036,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              popUp4(record, context)
+                              popUp4(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -1042,7 +1049,8 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     );
   }
 
-  Widget _buildOnedayResult(AttendancesWithDate record, BuildContext context) {
+  Widget _buildOnedayResult(
+      AttendancesWithDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
 
@@ -1102,7 +1110,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( ${local.absent} )'
                                               : '( ${local.permission} )'),
-                              popUp1(record, context)
+                              popUp1(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -1137,7 +1145,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              popUp2(record, context)
+                              popUp2(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -1184,7 +1192,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( ${local.absent} )'
                                               : '( ${local.permission} )'),
-                              popUp3(record, context)
+                              popUp3(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -1219,7 +1227,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              popUp4(record, context)
+                              popUp4(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -1232,7 +1240,8 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
     );
   }
 
-  Widget _buildMultipleResult(AttendancesWithDate record, context) {
+  Widget _buildMultipleResult(
+      AttendancesWithDate record, context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
@@ -1291,7 +1300,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT1(record)
                                               ? '( ${local.absent} )'
                                               : '( ${local.permission} )'),
-                              popUp1(record, context)
+                              popUp1(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -1326,7 +1335,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              popUp2(record, context)
+                              popUp2(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -1373,7 +1382,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                           : checkAbsengetT2(record)
                                               ? '( ${local.absent} )'
                                               : '( ${local.permission} )'),
-                              popUp3(record, context)
+                              popUp3(record, context, isAdmin)
                             ],
                           ),
                   ],
@@ -1408,7 +1417,7 @@ class AttendanceInfoAttendanceList extends StatelessWidget {
                                     : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              popUp4(record, context)
+                              popUp4(record, context, isAdmin)
                             ],
                           ),
                   ],

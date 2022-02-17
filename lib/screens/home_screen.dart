@@ -71,7 +71,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => AttendancesInfoScreen(userId),
+        builder: (_) => AttendancesInfoScreen(id: userId),
       ),
     );
   }

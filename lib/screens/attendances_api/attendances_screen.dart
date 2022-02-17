@@ -252,8 +252,9 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) =>
-                        AttendancesInfoScreen(userDisplay[index].id!)));
+                    builder: (_) => AttendancesInfoScreen(
+                          id: userDisplay[index].id!,
+                        )));
           },
           child: Row(
             children: [
@@ -329,7 +330,9 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                         if (selectedValue == 0) {
                           int id = userDisplay[index].id as int;
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => AttendancesInfoScreen(id)));
+                              builder: (_) => AttendancesInfoScreen(
+                                    id: id,
+                                  )));
                         }
                       },
                       itemBuilder: (_) => [

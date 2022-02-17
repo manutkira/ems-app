@@ -34,11 +34,10 @@ class _EmployeeListState extends State<EmployeeList> {
   // variables
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
+  String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
   // text controller
   final TextEditingController _controller = TextEditingController();
-
-  String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
   // fetch user from api
   fetchData() async {

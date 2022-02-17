@@ -63,7 +63,9 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
     }
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => AttendancesInfoScreen(userId),
+        builder: (_) => AttendancesInfoScreen(
+          id: userId,
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -18,6 +19,7 @@ class AttendanceInfoNameId extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Row(
       children: [
         Container(
@@ -59,6 +61,9 @@ class AttendanceInfoNameId extends StatelessWidget {
                 ),
                 Text(name),
               ],
+            ),
+            SizedBox(
+              height: isEnglish ? 10 : 0,
             ),
             BaselineRow(
               children: [

@@ -1,3 +1,11 @@
+import 'package:ems/persistence/current_user.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
+
 import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/attendances_api/calendar_attendance.dart';
@@ -8,26 +16,24 @@ import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_i
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_present.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 import '../../models/attendance.dart';
 import '../../utils/services/attendance_service.dart';
 
-class AttendancesInfoScreen extends StatefulWidget {
+class AttendancesInfoScreen extends ConsumerStatefulWidget {
   static const routeName = '/attendances-info';
   final int id;
+  const AttendancesInfoScreen({
+    Key? key,
+    required this.id,
+  }) : super(key: key);
 
-  AttendancesInfoScreen(this.id);
   @override
-  _AttendancesInfoScreenState createState() => _AttendancesInfoScreenState();
+  ConsumerState createState() => _AttendancesInfoScreenState();
 }
 
-class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
+class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
   // services
   final AttendanceService _attendanceNoDateService = AttendanceService.instance;
   final AttendanceService _attendanceService = AttendanceService.instance;
@@ -1217,7 +1223,8 @@ class _AttendancesInfoScreenState extends State<AttendancesInfoScreen> {
                                   ],
                                 ),
                               ),
-                              isToday.isEmpty && now && isTodayNoon.isEmpty
+                              (isToday.isEmpty && now && isTodayNoon.isEmpty) ||
+                                      (multiday && attendanceList.isEmpty)
                                   ? AttendanceInfoNoData()
                                   : _isLoading && _isLoadingAll ||
                                           _isLoadingById
