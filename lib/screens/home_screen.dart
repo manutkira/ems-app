@@ -6,6 +6,8 @@ import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/overtime/overtime_screen.dart';
+import 'package:ems/screens/payroll/payroll_list_screen.dart';
+import 'package:ems/screens/payroll/payroll_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/take_attendance/qr_code_scan.dart';
 import 'package:ems/utils/utils.dart';
@@ -289,7 +291,15 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             _buildSpacerVertical,
 
             /// current user attendance
-            _buildTitle('${local?.attendance}'),
+            InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => PayrollListScreen()));
+              },
+              child: _buildTitle(
+                '${local?.attendance}',
+              ),
+            ),
             Container(
               height: 170,
               padding: const EdgeInsets.symmetric(
