@@ -1,6 +1,7 @@
 import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
+import 'package:ems/screens/payroll/generate_screen.dart';
 import 'package:ems/screens/payroll/payroll_screen.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/utils/services/user_service.dart';
@@ -267,37 +268,25 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
         width: double.infinity,
         child: Row(
           children: [
-            GestureDetector(
-              onTap: () async {
-                await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) =>
-                            EmployeeInfoScreen(id: userList[index].id as int)));
-                userList = [];
-                user = [];
-                fetchUser();
-              },
-              child: Container(
-                width: 75,
-                height: 75,
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(100)),
-                    border: Border.all(
-                      width: 1,
-                      color: Colors.white,
-                    )),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(150),
-                  child: userList[index].image == null
-                      ? Image.asset('assets/images/profile-icon-png-910.png')
-                      : Image.network(
-                          userList[index].image!,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: 75,
-                        ),
-                ),
+            Container(
+              width: 75,
+              height: 75,
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(100)),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.white,
+                  )),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(150),
+                child: userList[index].image == null
+                    ? Image.asset('assets/images/profile-icon-png-910.png')
+                    : Image.network(
+                        userList[index].image!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 75,
+                      ),
               ),
             ),
             const SizedBox(
@@ -308,56 +297,44 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () async {
-                      await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => EmployeeInfoScreen(
-                                  id: userList[index].id as int)));
-                      userList = [];
-                      user = [];
-                      fetchUser();
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        BaselineRow(
-                          children: [
-                            Text(
-                              '${local?.name}: ',
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BaselineRow(
+                        children: [
+                          Text(
+                            '${local?.name}: ',
+                            style: TextStyle(
+                              fontSize: isEnglish ? 15 : 15,
+                            ),
+                          ),
+                          SizedBox(
+                            width: isEnglish ? 2 : 4,
+                          ),
+                          SizedBox(
+                            width: 140,
+                            child: Text(
+                              userList[index].name.toString(),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: isEnglish ? 10 : 0,
+                      ),
+                      BaselineRow(
+                        children: [
+                          Text('${local?.id}: ',
                               style: TextStyle(
                                 fontSize: isEnglish ? 15 : 15,
-                              ),
-                            ),
-                            SizedBox(
-                              width: isEnglish ? 2 : 4,
-                            ),
-                            SizedBox(
-                              width: 140,
-                              child: Text(
-                                userList[index].name.toString(),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: isEnglish ? 10 : 0,
-                        ),
-                        BaselineRow(
-                          children: [
-                            Text('${local?.id}: ',
-                                style: TextStyle(
-                                  fontSize: isEnglish ? 15 : 15,
-                                )),
-                            const SizedBox(
-                              width: 1,
-                            ),
-                            Text(userList[index].id.toString()),
-                          ],
-                        )
-                      ],
-                    ),
+                              )),
+                          const SizedBox(
+                            width: 1,
+                          ),
+                          Text(userList[index].id.toString()),
+                        ],
+                      )
+                    ],
                   ),
                   PopupMenuButton(
                     color: kDarkestBlue,
@@ -367,7 +344,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
                       if (selectedValue == 0) {
                         int id = userList[index].id as int;
                         await Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => PayrollScreen(id: id),
+                          builder: (_) => GeneratePaymentScreen(id: id),
                         ));
                         userList = [];
                         user = [];
