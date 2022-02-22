@@ -33,13 +33,23 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
 
   fetchPayrollById() async {
     try {
-      _isLoading = true;
       Payroll payrollDisplay =
           await _payrollService.findOnePayroll(paymentId: widget.paymentId);
-      setState(() {
-        payroll = payrollDisplay;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = true;
+          payroll = payrollDisplay;
+          _isLoading = false;
+        });
+      }
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  updateStatus() async {
+    try {
+      await _payrollService.updateStatus(widget.paymentId);
     } catch (err) {
       rethrow;
     }
@@ -47,7 +57,6 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchPayrollById();
   }
@@ -256,10 +265,9 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                         children: [
                           // ignore: deprecated_member_use
                           RaisedButton(
-                            onPressed: () {
-                              setState(() {
-                                pending = false;
-                              });
+                            onPressed: () async {
+                              await updateStatus();
+                              await fetchPayrollById();
                             },
                             child: const Text('Pay'),
                           )

@@ -1,7 +1,9 @@
+import 'package:ems/models/attendance_count.dart';
 import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/payroll/generate_screen.dart';
+import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/screens/payroll/payroll_screen.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/utils/services/user_service.dart';
@@ -30,6 +32,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
 
   // list attendances
   List<AttendancesWithDate> attendancesList = [];
+  AttendanceCount? attendanceCount;
 
   // text controller
   final TextEditingController _controller = TextEditingController();
@@ -42,14 +45,22 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
   final color1 = const Color(0xff3982A0);
 
   // fetch user from api
-  fetchUser() async {
+  fetchData() async {
     try {
-      _isLoading = true;
-      List<User> userDisplay = await _userService.findMany();
       setState(() {
-        userList = userDisplay;
-        user = userList;
-        _isLoading = false;
+        _isLoading = true;
+      });
+      _userService.findMany().then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            userList = [];
+            user = [];
+            user.addAll(usersFromServer);
+            userList = user;
+            userList.sort((a, b) => a.id!.compareTo(b.id as int));
+            _isLoading = false;
+          });
+        }
       });
     } catch (err) {}
   }
@@ -62,7 +73,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
   @override
   void initState() {
     super.initState();
-    fetchUser();
+    fetchData();
   }
 
   @override
@@ -343,12 +354,18 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
                     onSelected: (int selectedValue) async {
                       if (selectedValue == 0) {
                         int id = userList[index].id as int;
-                        await Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => GeneratePaymentScreen(id: id),
-                        ));
-                        userList = [];
-                        user = [];
-                        fetchUser();
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => GeneratePaymentScreen(id: id),
+                          ),
+                        );
+                      }
+                      if (selectedValue == 1) {
+                        int id = userList[index].id as int;
+                        await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => LoanRecord(id: id)));
                       }
                     },
                     itemBuilder: (_) => [
@@ -360,6 +377,15 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
                           ),
                         ),
                         value: 0,
+                      ),
+                      PopupMenuItem(
+                        child: Text(
+                          'Loan Record',
+                          style: TextStyle(
+                            fontSize: isEnglish ? 15 : 16,
+                          ),
+                        ),
+                        value: 1,
                       ),
                     ],
                     icon: const Icon(Icons.more_vert),

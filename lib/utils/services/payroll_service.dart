@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ems/models/loan.dart';
 import 'package:ems/models/payroll.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -21,7 +22,7 @@ class PayrollService extends BaseService {
       var payment = payrollFromJson(jsondata['payments']);
       return payment;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -38,7 +39,30 @@ class PayrollService extends BaseService {
       var payroll = Payroll.fromJson(jsondata);
       return payroll;
     } catch (err) {
-      throw err;
+      rethrow;
+    }
+  }
+
+  Future updateStatus(int id) async {
+    try {
+      Response response =
+          await get(Uri.parse('$baseUrl/payment/$id/change-status'));
+      _code = response.statusCode;
+      var jsondata = json.decode(response.body);
+      return jsondata;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Loan>> findManyLoanById(int id) async {
+    try {
+      Response response = await get(Uri.parse('$baseUrl/users/$id/loan'));
+      var jsondata = json.decode(response.body);
+      var loan = loanFromJson(jsondata['loans']);
+      return loan;
+    } catch (err) {
+      rethrow;
     }
   }
 }

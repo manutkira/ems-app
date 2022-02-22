@@ -50,16 +50,17 @@ class _PayrollScreenState extends State<PayrollScreen> {
         start: startDate,
         end: endDate,
       );
-
-      setState(() {
-        attendanceList = attendanceDisplay;
-        salary = int.parse(attendanceList[0].list[0].user!.salary!);
-        double sum = 0;
-        attendanceList.map((element) {
-          sum += double.parse(element.list[0].t);
-        }).toList();
-        total = sum;
-      });
+      if (mounted) {
+        setState(() {
+          attendanceList = attendanceDisplay;
+          salary = int.parse(attendanceList[0].list[0].user!.salary!);
+          double sum = 0;
+          attendanceList.map((element) {
+            sum += double.parse(element.list[0].t);
+          }).toList();
+          total = sum;
+        });
+      }
       _isLoading = false;
     } catch (err) {}
   }

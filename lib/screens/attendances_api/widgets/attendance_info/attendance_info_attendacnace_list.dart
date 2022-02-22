@@ -1,12 +1,12 @@
-import 'package:ems/persistence/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:ems/models/attendances.dart';
+import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/screens/attendances_api/view_attendance.dart';
 import 'package:ems/utils/utils.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../constants.dart';
 
@@ -24,15 +24,8 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
   final Function fetchAttedancesById;
   final Function fetchAllAttendance;
   final Function deleteData;
-  final Function fetchAttendanceCountAll;
-  final Function fetchPresentMorning;
-  final Function fetchPresentMorningOneday;
-  final Function fetchPresentAfternoonOneday;
-  final Function fetchLateAfternoonOneday;
-  final Function fetchLateMorningOneday;
-  final Function fetchLateMorning;
-  final Function fetchPresentAfternoon;
-  final Function fetchLateAfternoon;
+  Function fetchAttendanceCountAll;
+  Function fetchAttendanceCount;
 
   AttendanceInfoAttendanceList({
     Key? key,
@@ -49,14 +42,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     required this.fetchAllAttendance,
     required this.deleteData,
     required this.fetchAttendanceCountAll,
-    required this.fetchPresentMorning,
-    required this.fetchPresentMorningOneday,
-    required this.fetchPresentAfternoonOneday,
-    required this.fetchLateAfternoonOneday,
-    required this.fetchLateMorningOneday,
-    required this.fetchLateMorning,
-    required this.fetchPresentAfternoon,
-    required this.fetchLateAfternoon,
+    required this.fetchAttendanceCount,
   }) : super(key: key);
 
   _onrefresh() {
@@ -73,7 +59,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
         ? Column(
             children: [
               Text(
-                '${local!.noAttendance}',
+                local!.noAttendance,
                 style: kHeadingThree.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -260,14 +246,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           fetchAttedancesById();
           fetchAllAttendance();
           fetchAttendanceCountAll();
-          fetchPresentMorning();
-          fetchPresentMorningOneday();
-          fetchPresentAfternoonOneday();
-          fetchLateAfternoonOneday();
-          fetchLateMorningOneday();
-          fetchLateMorning();
-          fetchPresentAfternoon();
-          fetchLateAfternoon();
+          fetchAttendanceCount();
         }
         if (selectedValue == 1) {
           showDialog(
@@ -370,14 +349,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           fetchAttedancesById();
           fetchAllAttendance();
           fetchAttendanceCountAll();
-          fetchPresentMorning();
-          fetchPresentMorningOneday();
-          fetchPresentAfternoonOneday();
-          fetchLateAfternoonOneday();
-          fetchLateMorningOneday();
-          fetchLateMorning();
-          fetchPresentAfternoon();
-          fetchLateAfternoon();
+          fetchAttendanceCount();
         }
         if (selectedValue == 1) {
           showDialog(
@@ -478,14 +450,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           fetchAttedancesById();
           fetchAllAttendance();
           fetchAttendanceCountAll();
-          fetchPresentMorning();
-          fetchPresentMorningOneday();
-          fetchPresentAfternoonOneday();
-          fetchLateAfternoonOneday();
-          fetchLateMorningOneday();
-          fetchLateMorning();
-          fetchPresentAfternoon();
-          fetchLateAfternoon();
+          fetchAttendanceCount();
         }
         if (selectedValue == 1) {
           showDialog(
@@ -586,14 +551,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           fetchAttedancesById();
           fetchAllAttendance();
           fetchAttendanceCountAll();
-          fetchPresentMorning();
-          fetchPresentMorningOneday();
-          fetchPresentAfternoonOneday();
-          fetchLateAfternoonOneday();
-          fetchLateMorningOneday();
-          fetchLateMorning();
-          fetchPresentAfternoon();
-          fetchLateAfternoon();
+          fetchAttendanceCount();
         }
         if (selectedValue == 1) {
           showDialog(

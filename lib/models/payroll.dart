@@ -66,11 +66,11 @@ class Payroll {
   DateTime dateFrom;
   DateTime dateTo;
   bool status;
-  double dayOfWork;
+  String dayOfWork;
   String overtime;
   String salary;
   String loan;
-  double netSalary;
+  String netSalary;
   Payroll({
     required this.paymentId,
     required this.userId,

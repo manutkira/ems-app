@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:ems/models/payroll.dart';
 import 'package:ems/screens/payroll/view_payroll.dart';
@@ -47,13 +48,17 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
   // fetch payroll from api
   fetchPaymentById() async {
     try {
-      _isLoading = true;
+      setState(() {
+        _isLoading = true;
+      });
       List<Payment> payrollDisplay =
           await _payrollService.findManyPayrollById(widget.id);
-      setState(() {
-        payrollList = payrollDisplay;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          payrollList = payrollDisplay;
+          _isLoading = false;
+        });
+      }
     } catch (err) {
       rethrow;
     }
@@ -77,10 +82,10 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
     AppLocalizations? local = AppLocalizations.of(context);
     final response = await http.delete(Uri.parse(
         "http://rest-api-laravel-flutter.herokuapp.com/api/payment/$id"));
-    showInSnackBar("${local?.deletingPosition}", context);
+    showInSnackBar("${local?.deletingPayment}", context);
     if (response.statusCode == 200) {
       fetchPaymentById();
-      showInSnackBar("${local?.deletedPosition}", context);
+      showInSnackBar("${local?.deletedPayment}", context);
     } else {
       return false;
     }
@@ -177,6 +182,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                                                   .selectedRange?.startDate;
                                               endDate = _datePickerController
                                                   .selectedRange?.endDate;
+                                              Navigator.of(context).pop();
                                               addPayment();
                                             });
                                           },
@@ -302,11 +308,12 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                                   onSelected: (int selectedValue) async {
                                     if (selectedValue == 0) {
                                       int paymentId = e.id;
-                                      Navigator.push(
+                                      await Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (_) => ViewPayrollScreen(
                                                   paymentId: paymentId)));
+                                      fetchPaymentById();
                                     }
                                     if (selectedValue == 1) {
                                       deleteData(e.id, context);
@@ -368,8 +375,8 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
     var res = await request.send();
     print(res.statusCode);
     if (res.statusCode == 201) {
-      Navigator.of(context).pop();
       fetchPaymentById();
+      _datePickerController.selectedRange = null;
     }
     res.stream.transform(utf8.decoder).listen((event) {});
   }

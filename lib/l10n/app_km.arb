@@ -243,5 +243,7 @@
   "deletedSkill": "ជំនាញត្រូវបានលុប",
   "deletingPosition": "កំពុងលុបតួនាទី",
   "deletedPosition": "តួនាទីត្រូវបានលុប",
+  "deletingPayment": "កំពុងលុបការទូទាត់",
+  "deletedPayment": "ការទូទាត់ត្រូវបានលុប",
   "calendarAttendance": "ប្រតិទិន"
 }

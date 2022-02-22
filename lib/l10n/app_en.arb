@@ -998,6 +998,14 @@
   "@deletedPosition": {
     "description": "take attendance"
   },
+  "deletingPayment": "deleting payment",
+  "@deletingPayment": {
+    "description": "take attendance"
+  },
+  "deletedPayment": "Payment has been deleted!",
+  "@deletedPayment": {
+    "description": "take attendance"
+  },
   "calendarAttendance": "Calendar",
   "@calendarAttendance": {
     "description": "take attendance"
