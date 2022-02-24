@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:html';
 
 import 'package:ems/models/payroll.dart';
 import 'package:ems/screens/payroll/view_payroll.dart';
@@ -7,6 +8,7 @@ import 'package:ems/utils/services/payroll_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
@@ -201,6 +203,19 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                           ],
                         ),
                       ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Expanded(
+                          child: ListView.builder(
+                        physics: const ClampingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          Payment record = payrollList[index];
+                          return _buildPayment(context, record);
+                        },
+                        itemCount: payrollList.length,
+                      )),
                       Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Table(
@@ -353,6 +368,152 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                   ),
                 ),
               ));
+  }
+
+  Widget _buildPayment(context, Payment record) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
+    return ExpansionTile(
+      collapsedBackgroundColor: const Color(0xff254973),
+      backgroundColor: const Color(0xff254973),
+      textColor: Colors.white,
+      iconColor: Colors.white,
+      initiallyExpanded: false,
+      title: Row(
+        children: [
+          Text(
+            getDateStringFromDateTime(
+                DateTime.parse(record.dateFrom.toString())),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: record.status == false ? Colors.orange : Colors.green,
+            ),
+            child: Text(
+              !record.status ? 'Pending' : 'Paid',
+              style: TextStyle(
+                fontSize: 11,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ],
+      ),
+      children: [
+        Container(
+          color: Colors.black38,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 20,
+              right: 20,
+              bottom: 18,
+              top: 10,
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Ref no'),
+                    Text(record.refNo),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('From'),
+                    Text(
+                      DateFormat('mm-DD-yyyy').format(record.dateFrom),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('To'),
+                    Text(
+                      DateFormat('dd-MM-yyyy').format(record.dateTo),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    RaisedButton(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      color: kBlack,
+                      onPressed: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                ViewPayrollScreen(paymentId: record.id),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'View',
+                      ),
+                    ),
+                    RaisedButton(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      color: Colors.red,
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text('${local?.areYouSure}'),
+                            content: Text('${local?.cannotUndone}'),
+                            actions: [
+                              OutlineButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  deleteData(record.id, context);
+                                },
+                                child: Text('${local?.yes}'),
+                                borderSide:
+                                    const BorderSide(color: Colors.green),
+                              ),
+                              OutlineButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                borderSide: const BorderSide(color: Colors.red),
+                                child: Text('${local?.no}'),
+                              )
+                            ],
+                          ),
+                        );
+                        fetchPaymentById();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   addPayment() async {
