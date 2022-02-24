@@ -1,6 +1,6 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:convert';
-import 'dart:ffi';
-import 'dart:html';
 
 import 'package:ems/models/payroll.dart';
 import 'package:ems/screens/payroll/view_payroll.dart';
@@ -8,7 +8,6 @@ import 'package:ems/utils/services/payroll_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
@@ -45,7 +44,6 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
 
   // variable
   String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // fetch payroll from api
   fetchPaymentById() async {
@@ -102,7 +100,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
+    // bool isEnglish = isInEnglish(context);
     return Scaffold(
         appBar: AppBar(
           title: const Text('Payroll'),
@@ -149,7 +147,6 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8),
-                              // ignore: deprecated_member_use
                               child: RaisedButton(
                                 elevation: 10,
                                 shape: RoundedRectangleBorder(
@@ -203,7 +200,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Expanded(
@@ -216,151 +213,151 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                         },
                         itemCount: payrollList.length,
                       )),
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Table(
-                          columnWidths: const {
-                            0: FlexColumnWidth(2),
-                            1: FlexColumnWidth(3),
-                          },
-                          border:
-                              TableBorder.all(width: 1, color: Colors.white),
-                          children: payrollList.map<TableRow>((e) {
-                            return TableRow(children: [
-                              TableCell(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: e.status == false
-                                            ? Colors.orange
-                                            : Colors.green,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2.8),
-                                        child: Text(
-                                          e.status == false
-                                              ? 'Pending'
-                                              : 'Paid',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 10, left: 10),
-                                      child: Text(
-                                        e.refNo,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                              TableCell(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 13, bottom: 13, left: 8, right: 2),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: 150,
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '${local?.from}: ',
-                                              ),
-                                              Text(
-                                                DateFormat('dd-MM-yyyy')
-                                                    .format(e.dateFrom),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: isEnglish ? 15 : 4,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '${local?.to}: ',
-                                              ),
-                                              Text(
-                                                endDate == null
-                                                    ? '${local?.now}'
-                                                    : DateFormat('dd-MM-yyyy')
-                                                        .format(e.dateTo),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                              TableCell(
-                                verticalAlignment:
-                                    TableCellVerticalAlignment.middle,
-                                child: PopupMenuButton(
-                                  color: kBlack,
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  onSelected: (int selectedValue) async {
-                                    if (selectedValue == 0) {
-                                      int paymentId = e.id;
-                                      await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) => ViewPayrollScreen(
-                                                  paymentId: paymentId)));
-                                      fetchPaymentById();
-                                    }
-                                    if (selectedValue == 1) {
-                                      deleteData(e.id, context);
-                                    }
-                                  },
-                                  itemBuilder: (_) => [
-                                    PopupMenuItem(
-                                      child: Text(
-                                        '${local?.optionView}',
-                                        style: TextStyle(
-                                          fontSize: isEnglish ? 15 : 16,
-                                        ),
-                                      ),
-                                      value: 0,
-                                    ),
-                                    PopupMenuItem(
-                                      child: Text(
-                                        '${local?.delete}',
-                                        style: TextStyle(
-                                          fontSize: isEnglish ? 15 : 16,
-                                        ),
-                                      ),
-                                      value: 1,
-                                    ),
-                                  ],
-                                  icon: const Icon(Icons.more_vert),
-                                ),
-                              )
-                            ]);
-                          }).toList(),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(20.0),
+                      //   child: Table(
+                      //     columnWidths: const {
+                      //       0: FlexColumnWidth(2),
+                      //       1: FlexColumnWidth(3),
+                      //     },
+                      //     border:
+                      //         TableBorder.all(width: 1, color: Colors.white),
+                      //     children: payrollList.map<TableRow>((e) {
+                      //       return TableRow(children: [
+                      //         TableCell(
+                      //             child: Padding(
+                      //           padding: const EdgeInsets.all(8.0),
+                      //           child: Column(
+                      //             crossAxisAlignment: CrossAxisAlignment.start,
+                      //             children: [
+                      //               Container(
+                      //                 decoration: BoxDecoration(
+                      //                   borderRadius: BorderRadius.circular(5),
+                      //                   color: e.status == false
+                      //                       ? Colors.orange
+                      //                       : Colors.green,
+                      //                 ),
+                      //                 child: Padding(
+                      //                   padding: const EdgeInsets.all(2.8),
+                      //                   child: Text(
+                      //                     e.status == false
+                      //                         ? 'Pending'
+                      //                         : 'Paid',
+                      //                     style: const TextStyle(
+                      //                       fontSize: 11,
+                      //                       color: Colors.black,
+                      //                     ),
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //               Padding(
+                      //                 padding: const EdgeInsets.only(
+                      //                     top: 10, left: 10),
+                      //                 child: Text(
+                      //                   e.refNo,
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         )),
+                      //         TableCell(
+                      //             child: Padding(
+                      //           padding: const EdgeInsets.only(
+                      //               top: 13, bottom: 13, left: 8, right: 2),
+                      //           child: Row(
+                      //             mainAxisAlignment:
+                      //                 MainAxisAlignment.spaceBetween,
+                      //             children: [
+                      //               SizedBox(
+                      //                 width: 150,
+                      //                 child: Column(
+                      //                   children: [
+                      //                     Row(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.spaceBetween,
+                      //                       children: [
+                      //                         Text(
+                      //                           '${local?.from}: ',
+                      //                         ),
+                      //                         Text(
+                      //                           DateFormat('dd-MM-yyyy')
+                      //                               .format(e.dateFrom),
+                      //                         ),
+                      //                       ],
+                      //                     ),
+                      //                     SizedBox(
+                      //                       height: isEnglish ? 15 : 4,
+                      //                     ),
+                      //                     Row(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.spaceBetween,
+                      //                       children: [
+                      //                         Text(
+                      //                           '${local?.to}: ',
+                      //                         ),
+                      //                         Text(
+                      //                           endDate == null
+                      //                               ? '${local?.now}'
+                      //                               : DateFormat('dd-MM-yyyy')
+                      //                                   .format(e.dateTo),
+                      //                         ),
+                      //                       ],
+                      //                     ),
+                      //                   ],
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         )),
+                      //         TableCell(
+                      //           verticalAlignment:
+                      //               TableCellVerticalAlignment.middle,
+                      //           child: PopupMenuButton(
+                      //             color: kBlack,
+                      //             shape: const RoundedRectangleBorder(
+                      //                 borderRadius: BorderRadius.all(
+                      //                     Radius.circular(10))),
+                      //             onSelected: (int selectedValue) async {
+                      //               if (selectedValue == 0) {
+                      //                 int paymentId = e.id;
+                      //                 await Navigator.push(
+                      //                     context,
+                      //                     MaterialPageRoute(
+                      //                         builder: (_) => ViewPayrollScreen(
+                      //                             paymentId: paymentId)));
+                      //                 fetchPaymentById();
+                      //               }
+                      //               if (selectedValue == 1) {
+                      //                 deleteData(e.id, context);
+                      //               }
+                      //             },
+                      //             itemBuilder: (_) => [
+                      //               PopupMenuItem(
+                      //                 child: Text(
+                      //                   '${local?.optionView}',
+                      //                   style: TextStyle(
+                      //                     fontSize: isEnglish ? 15 : 16,
+                      //                   ),
+                      //                 ),
+                      //                 value: 0,
+                      //               ),
+                      //               PopupMenuItem(
+                      //                 child: Text(
+                      //                   '${local?.delete}',
+                      //                   style: TextStyle(
+                      //                     fontSize: isEnglish ? 15 : 16,
+                      //                   ),
+                      //                 ),
+                      //                 value: 1,
+                      //               ),
+                      //             ],
+                      //             icon: const Icon(Icons.more_vert),
+                      //           ),
+                      //         )
+                      //       ]);
+                      //     }).toList(),
+                      //   ),
+                      // ),
                       const SizedBox(
                         height: 30,
                       )
@@ -372,7 +369,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
 
   Widget _buildPayment(context, Payment record) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
+    // bool isEnglish = isInEnglish(context);
     return ExpansionTile(
       collapsedBackgroundColor: const Color(0xff254973),
       backgroundColor: const Color(0xff254973),
@@ -396,7 +393,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
             ),
             child: Text(
               !record.status ? 'Pending' : 'Paid',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 11,
                 color: Colors.black,
               ),
@@ -419,7 +416,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Ref no'),
+                    const Text('Ref no'),
                     Text(record.refNo),
                   ],
                 ),
@@ -429,7 +426,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('From'),
+                    const Text('From'),
                     Text(
                       DateFormat('mm-DD-yyyy').format(record.dateFrom),
                     ),
@@ -441,7 +438,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('To'),
+                    const Text('To'),
                     Text(
                       DateFormat('dd-MM-yyyy').format(record.dateTo),
                     ),
@@ -467,7 +464,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                           ),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         'View',
                       ),
                     ),

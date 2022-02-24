@@ -1,11 +1,8 @@
 import 'package:ems/models/attendance_count.dart';
 import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
-import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/payroll/generate_screen.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
-import 'package:ems/screens/payroll/payroll_screen.dart';
-import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -24,7 +21,7 @@ class PayrollListScreen extends StatefulWidget {
 class _PayrollListScreenState extends State<PayrollListScreen> {
   // servicers
   final UserService _userService = UserService.instance;
-  final AttendanceService _attendanceService = AttendanceService.instance;
+  // final AttendanceService _attendanceService = AttendanceService.instance;
 
   // list users
   List<User> userList = [];
@@ -62,7 +59,9 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
           });
         }
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // clear
@@ -81,7 +80,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
     AppLocalizations? local = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payroll'),
+        title: const Text('Payroll'),
       ),
       body: Container(
         width: double.infinity,

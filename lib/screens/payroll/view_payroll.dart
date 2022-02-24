@@ -1,4 +1,5 @@
-import 'package:ems/utils/utils.dart';
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 import 'package:ems/models/payroll.dart';
@@ -64,10 +65,10 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
+    // bool isEnglish = isInEnglish(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payroll'),
+        title: const Text('Payroll'),
       ),
       body: Column(
         children: [
@@ -263,11 +264,35 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          // ignore: deprecated_member_use
                           RaisedButton(
                             onPressed: () async {
-                              await updateStatus();
-                              await fetchPayrollById();
+                              await showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text('${local?.areYouSure}'),
+                                  content: const Text('Do you want to pay?'),
+                                  actions: [
+                                    OutlineButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        updateStatus();
+                                      },
+                                      child: Text('${local?.yes}'),
+                                      borderSide:
+                                          const BorderSide(color: Colors.green),
+                                    ),
+                                    OutlineButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      borderSide:
+                                          const BorderSide(color: Colors.red),
+                                      child: Text('${local?.no}'),
+                                    )
+                                  ],
+                                ),
+                              );
+                              fetchPayrollById();
                             },
                             child: const Text('Pay'),
                           )

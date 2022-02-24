@@ -62,7 +62,9 @@ class _PayrollScreenState extends State<PayrollScreen> {
         });
       }
       _isLoading = false;
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
