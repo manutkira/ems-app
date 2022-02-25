@@ -45,7 +45,6 @@ class _LoanRecordState extends State<LoanRecord> {
   TextEditingController amountController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController reasonController = TextEditingController();
-  TextEditingController repayController = TextEditingController();
 
   // fetch loan from api
   fetchLoanById() async {
@@ -96,7 +95,7 @@ class _LoanRecordState extends State<LoanRecord> {
     bool isEnglish = isInEnglish(context);
     return Scaffold(
       appBar: AppBar(
-        title:const Text('Loan'),
+        title: const Text('Loan'),
         actions: [
           IconButton(
             onPressed: () {
@@ -325,7 +324,7 @@ class _LoanRecordState extends State<LoanRecord> {
                     );
                   });
             },
-            icon:const Icon(Icons.add),
+            icon: const Icon(Icons.add),
           ),
         ],
       ),
@@ -346,7 +345,7 @@ class _LoanRecordState extends State<LoanRecord> {
                 Padding(
                   padding: const EdgeInsets.all(18.0),
                   child: Row(
-                    children:const [
+                    children: const [
                       Text(
                         'Loan Record',
                         style: kHeadingTwo,
@@ -375,7 +374,7 @@ class _LoanRecordState extends State<LoanRecord> {
 
   Widget _buildResult(Loan record, BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
- bool isEnglish = isInEnglish(context);
+    bool isEnglish = isInEnglish(context);
     return ExpansionTile(
       collapsedBackgroundColor: const Color(0xff254973),
       backgroundColor: const Color(0xff254973),
@@ -404,397 +403,104 @@ class _LoanRecordState extends State<LoanRecord> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                     Row(
-                       crossAxisAlignment: CrossAxisAlignment.end,
-                       children: [
-                         PopupMenuButton(
-                                      color: kBlack,
-                                      shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                      onSelected: (int selectedValue) async {
-                                                                            if (selectedValue == 0) {
-                                        int loanId = record.id ;
-                                          amountController.text =
-                                             record.amount;
-                                          dateController.text =
-                                              DateFormat('dd-MM-yyyy').format(
-                                                  DateTime.tryParse(
-                                                      record
-                                                          .date.toString())!);
-                                          reasonController.text =
-                                             record.reason;
-                                             repayController.text = record.repay.toString();
-                                          pickStart = DateTime.tryParse(
-                                              record.date!.toString());
-                                          
-                                          await showModalBottomSheet(
-                                              context: context,
-                                              builder: (_) {
-                                                return Container(
-                                                  height: 340,
-                                                  decoration: const BoxDecoration(
-                                                    color: kBlue,
-                                                    borderRadius: BorderRadius.only(
-                                                      topRight: Radius.circular(30),
-                                                      topLeft: Radius.circular(30),
-                                                    ),
-                                                  ),
-                                                  child: Column(
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        PopupMenuButton(
+                          color: kBlack,
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          onSelected: (int selectedValue) async {
+                            if (selectedValue == 0) {
+                              int loanId = record.id;
+                              amountController.text = record.amount;
+                              dateController.text = DateFormat('dd-MM-yyyy')
+                                  .format(DateTime.tryParse(
+                                      record.date.toString())!);
+                              reasonController.text = record.reason;
+                              pickStart =
+                                  DateTime.tryParse(record.date!.toString());
+
+                              await showModalBottomSheet(
+                                  context: context,
+                                  builder: (_) {
+                                    return Container(
+                                      height: 340,
+                                      decoration: const BoxDecoration(
+                                        color: kBlue,
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(30),
+                                          topLeft: Radius.circular(30),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(0),
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 25,
+                                                          right: 5,
+                                                          bottom: 15),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
-                                                      const SizedBox(
-                                                        height: 20,
+                                                      Text(
+                                                        'Amount ',
+                                                        style:
+                                                            kParagraph.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
                                                       ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.all(0),
-                                                        child: Row(
+                                                      SizedBox(
+                                                        width:
+                                                            isEnglish ? 52 : 48,
+                                                      ),
+                                                      Container(
+                                                        constraints: BoxConstraints(
+                                                            maxWidth: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.6),
+                                                        child: Flex(
+                                                          direction:
+                                                              Axis.horizontal,
                                                           children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left: 25,
-                                                                      right: 5,
-                                                                      bottom: 15),
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                    'Amount ',
-                                                                    style: kParagraph.copyWith(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: isEnglish
-                                                                        ? 52
-                                                                        : 48,
-                                                                  ),
-                                                                  Container(
-                                                                    constraints: BoxConstraints(
-                                                                        maxWidth: MediaQuery.of(context)
-                                                                                .size
-                                                                                .width *
-                                                                            0.6),
-                                                                    child: Flex(
-                                                                      direction: Axis
-                                                                          .horizontal,
-                                                                      children: [
-                                                                        Flexible(
-                                                                          child:
-                                                                              SizedBox(
-                                                                            height:
-                                                                                40,
-                                                                            child:
-                                                                                TextFormField(
-                                                                              decoration:
-                                                                                const  InputDecoration(
-                                                                                contentPadding:
-                                                                                    EdgeInsets.only(left: 10),
-                                                                                hintText:
-                                                                                    'Enter amount',
-                                                                                errorStyle:
-                                                                                     TextStyle(
-                                                                                  fontSize: 15,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              ),
-                                                                              controller:
-                                                                                  amountController,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
+                                                            Flexible(
+                                                              child: SizedBox(
+                                                                height: 40,
+                                                                child:
+                                                                    TextFormField(
+                                                                  decoration:
+                                                                      const InputDecoration(
+                                                                    contentPadding:
+                                                                        EdgeInsets.only(
+                                                                            left:
+                                                                                10),
+                                                                    hintText:
+                                                                        'Enter amount',
+                                                                    errorStyle:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
                                                                     ),
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.all(0),
-                                                        child: Row(
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left: 25,
-                                                                      right: 5,
-                                                                      bottom: 15),
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                    'date ',
-                                                                    style: kParagraph.copyWith(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: isEnglish
-                                                                        ? 36
-                                                                        : 29,
-                                                                  ),
-                                                                  Container(
-                                                                    constraints: BoxConstraints(
-                                                                        maxWidth: MediaQuery.of(context)
-                                                                                .size
-                                                                                .width *
-                                                                            0.6),
-                                                                    child: Flex(
-                                                                      direction: Axis
-                                                                          .horizontal,
-                                                                      children: [
-                                                                        Flexible(
-                                                                          child:
-                                                                              SizedBox(
-                                                                            height:
-                                                                                50,
-                                                                            child:
-                                                                                TextFormField(
-                                                                              readOnly:
-                                                                                  true,
-                                                                              decoration:
-                                                                                  InputDecoration(
-                                                                                contentPadding:
-                                                                                    const EdgeInsets.only(left: 10),
-                                                                                hintText:
-                                                                                    'enter date',
-                                                                                suffixIcon: IconButton(
-                                                                                    onPressed: () {
-                                                                                      _startDatePicker();
-                                                                                    },
-                                                                                    icon: const Icon(
-                                                                                      MdiIcons.calendar,
-                                                                                      color: Colors.white,
-                                                                                    )),
-                                                                                errorStyle:
-                                                                                    const TextStyle(
-                                                                                  fontSize: 15,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              ),
-                                                                              controller:
-                                                                                  dateController,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.all(0),
-                                                        child: Row(
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left: 25,
-                                                                      right: 5,
-                                                                      bottom: 15),
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                    'Repay ',
-                                                                    style: kParagraph.copyWith(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: isEnglish
-                                                                        ? 45
-                                                                        : 45,
-                                                                  ),
-                                                                  Container(
-                                                                    constraints: BoxConstraints(
-                                                                        maxWidth: MediaQuery.of(context)
-                                                                                .size
-                                                                                .width *
-                                                                            0.6),
-                                                                    child: Flex(
-                                                                      direction: Axis
-                                                                          .horizontal,
-                                                                      children: [
-                                                                        Flexible(
-                                                                          child:
-                                                                              SizedBox(
-                                                                            height:
-                                                                                50,
-                                                                            child:
-                                                                                TextFormField(
-                                                                              readOnly:
-                                                                                  true,
-                                                                              decoration:
-                                                                                const  InputDecoration(
-                                                                                contentPadding:
-                                                                                    EdgeInsets.only(left: 10),
-                                                                                hintText:
-                                                                                    'Enter Repay amount',
-                                                                               
-                                                                                errorStyle:
-                                                                                     TextStyle(
-                                                                                  fontSize: 15,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              ),
-                                                                              controller:
-                                                                                  repayController,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.all(0),
-                                                        child: Row(
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left: 25,
-                                                                      right: 5,
-                                                                      bottom: 15),
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                    'Reason ',
-                                                                    style: kParagraph.copyWith(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: isEnglish
-                                                                        ? 45
-                                                                        : 45,
-                                                                  ),
-                                                                  Container(
-                                                                    constraints: BoxConstraints(
-                                                                        maxWidth: MediaQuery.of(context)
-                                                                                .size
-                                                                                .width *
-                                                                            0.6),
-                                                                    child: Flex(
-                                                                      direction: Axis
-                                                                          .horizontal,
-                                                                      children: [
-                                                                        Flexible(
-                                                                          child:
-                                                                              SizedBox(
-                                                                            height:
-                                                                                50,
-                                                                            child:
-                                                                                TextFormField(
-                                                                              readOnly:
-                                                                                  true,
-                                                                              decoration:
-                                                                               const   InputDecoration(
-                                                                                contentPadding:
-                                                                                    EdgeInsets.only(left: 10),
-                                                                                hintText:
-                                                                                    'Enter Reason',
-                                                                               
-                                                                                errorStyle:
-                                                                                     TextStyle(
-                                                                                  fontSize: 15,
-                                                                                  fontWeight: FontWeight.bold,
-                                                                                ),
-                                                                              ),
-                                                                              controller:
-                                                                                  reasonController,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.only(
-                                                                right: 30),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment.end,
-                                                          children: [
-                                                            RaisedButton(
-                                                              onPressed: () {
-                                                                editLoan(loanId);
-                                                              },
-                                                              color:
-                                                                  Theme.of(context)
-                                                                      .primaryColor,
-                                                              child: Text(
-                                                                '${local?.save}',
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 15,
-                                                            ),
-                                                            RaisedButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                              color: Colors.red,
-                                                              child: Text(
-                                                                '${local?.cancel}',
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                                  controller:
+                                                                      amountController,
                                                                 ),
                                                               ),
                                                             ),
@@ -803,71 +509,283 @@ class _LoanRecordState extends State<LoanRecord> {
                                                       ),
                                                     ],
                                                   ),
-                                                );
-                                              });
-                                          amountController.text = '';
-                                          dateController.text = '';
-                                          reasonController.text = '';
-                                          fetchLoanById();
-                                        }
-                                    if (selectedValue == 1) {
-                                      int loanId = record.id;
-                                      await showDialog(
-                                        context: context,
-                                        builder: (ctx) => AlertDialog(
-                                          title: Text('${local?.areYouSure}'),
-                                          content:
-                                              Text('${local?.cannotUndone}'),
-                                          actions: [
-                                            OutlineButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                                deleteData(loanId);
-                                              },
-                                              child: Text('${local?.yes}'),
-                                              borderSide: const BorderSide(
-                                                  color: Colors.green),
+                                                ),
+                                              ],
                                             ),
-                                            OutlineButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              borderSide: const BorderSide(
-                                                  color: Colors.red),
-                                              child: Text('${local?.no}'),
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                      fetchLoanById();
-                                    }
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(0),
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 25,
+                                                          right: 5,
+                                                          bottom: 15),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        '${local?.date}',
+                                                        style:
+                                                            kParagraph.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                      ),
+                                                      SizedBox(
+                                                        width:
+                                                            isEnglish ? 36 : 29,
+                                                      ),
+                                                      Container(
+                                                        constraints: BoxConstraints(
+                                                            maxWidth: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.6),
+                                                        child: Flex(
+                                                          direction:
+                                                              Axis.horizontal,
+                                                          children: [
+                                                            Flexible(
+                                                              child: SizedBox(
+                                                                height: 50,
+                                                                child:
+                                                                    TextFormField(
+                                                                  readOnly:
+                                                                      true,
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    contentPadding:
+                                                                        const EdgeInsets.only(
+                                                                            left:
+                                                                                10),
+                                                                    hintText:
+                                                                        'enter date',
+                                                                    suffixIcon:
+                                                                        IconButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                              _startDatePicker();
+                                                                            },
+                                                                            icon:
+                                                                                const Icon(
+                                                                              MdiIcons.calendar,
+                                                                              color: Colors.white,
+                                                                            )),
+                                                                    errorStyle:
+                                                                        const TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                  controller:
+                                                                      dateController,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(0),
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 25,
+                                                          right: 5,
+                                                          bottom: 15),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        'Reason ',
+                                                        style:
+                                                            kParagraph.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                      ),
+                                                      SizedBox(
+                                                        width:
+                                                            isEnglish ? 45 : 45,
+                                                      ),
+                                                      Container(
+                                                        constraints: BoxConstraints(
+                                                            maxWidth: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.6),
+                                                        child: Flex(
+                                                          direction:
+                                                              Axis.horizontal,
+                                                          children: [
+                                                            Flexible(
+                                                              child: SizedBox(
+                                                                height: 50,
+                                                                child:
+                                                                    TextFormField(
+                                                                  readOnly:
+                                                                      true,
+                                                                  decoration:
+                                                                      const InputDecoration(
+                                                                    contentPadding:
+                                                                        EdgeInsets.only(
+                                                                            left:
+                                                                                10),
+                                                                    hintText:
+                                                                        'Enter Reason',
+                                                                    errorStyle:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                  controller:
+                                                                      reasonController,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 30),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                RaisedButton(
+                                                  onPressed: () {
+                                                    editLoan(loanId);
+                                                  },
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  child: Text(
+                                                    '${local?.save}',
+                                                    style: const TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 15,
+                                                ),
+                                                RaisedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  color: Colors.red,
+                                                  child: Text(
+                                                    '${local?.cancel}',
+                                                    style: const TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  });
+                              amountController.text = '';
+                              dateController.text = '';
+                              reasonController.text = '';
+                              fetchLoanById();
+                            }
+                            if (selectedValue == 1) {
+                              int loanId = record.id;
+                              await showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text('${local?.areYouSure}'),
+                                  content: Text('${local?.cannotUndone}'),
+                                  actions: [
+                                    OutlineButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        deleteData(loanId);
                                       },
-                                      itemBuilder: (_) => [
-                                        PopupMenuItem(
-                                          child: Text(
-                                            '${local?.edit}',
-                                            style: TextStyle(
-                                              fontSize: isEnglish ? 15 : 16,
-                                            ),
-                                          ),
-                                          value: 0,
-                                        ),
-                                        PopupMenuItem(
-                                          child: Text(
-                                            '${local?.delete}',
-                                            style: TextStyle(
-                                              fontSize: isEnglish ? 15 : 16,
-                                            ),
-                                          ),
-                                          value: 1,
-                                        ),
-                                      ],
-                                      icon: const Icon(Icons.more_vert),
+                                      child: Text('${local?.yes}'),
+                                      borderSide:
+                                          const BorderSide(color: Colors.green),
                                     ),
-                       ],
-                     ),
-         
-                const    Text(
+                                    OutlineButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      borderSide:
+                                          const BorderSide(color: Colors.red),
+                                      child: Text('${local?.no}'),
+                                    )
+                                  ],
+                                ),
+                              );
+                              fetchLoanById();
+                            }
+                          },
+                          itemBuilder: (_) => [
+                            PopupMenuItem(
+                              child: Text(
+                                '${local?.edit}',
+                                style: TextStyle(
+                                  fontSize: isEnglish ? 15 : 16,
+                                ),
+                              ),
+                              value: 0,
+                            ),
+                            PopupMenuItem(
+                              child: Text(
+                                '${local?.delete}',
+                                style: TextStyle(
+                                  fontSize: isEnglish ? 15 : 16,
+                                ),
+                              ),
+                              value: 1,
+                            ),
+                          ],
+                          icon: const Icon(Icons.more_vert),
+                        ),
+                      ],
+                    ),
+                    const Text(
                       'ID',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -876,13 +794,13 @@ class _LoanRecordState extends State<LoanRecord> {
                     Text(record.id.toString()),
                   ],
                 ),
-              const SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                  const  Text(
+                    const Text(
                       'Amount',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -891,13 +809,13 @@ class _LoanRecordState extends State<LoanRecord> {
                     Text('\$${record.amount}'),
                   ],
                 ),
-               const SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                   const Text(
+                    const Text(
                       'Reason',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -908,18 +826,18 @@ class _LoanRecordState extends State<LoanRecord> {
                       child: Text(
                         record.reason,
                         textAlign: TextAlign.end,
-                        style:const TextStyle(height: 1.5),
+                        style: const TextStyle(height: 1.5),
                       ),
                     ),
                   ],
                 ),
-               const SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                  const  Text(
+                    const Text(
                       'Repay',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -928,13 +846,13 @@ class _LoanRecordState extends State<LoanRecord> {
                     Text(record.repay.toString()),
                   ],
                 ),
-               const SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                  const  Text(
+                    const Text(
                       'Remain',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -953,7 +871,7 @@ class _LoanRecordState extends State<LoanRecord> {
     );
   }
 
-   void showInSnackBar(String value, context) {
+  void showInSnackBar(String value, context) {
     Scaffold.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
@@ -981,10 +899,9 @@ class _LoanRecordState extends State<LoanRecord> {
     }
   }
 
-   editLoan(int loanId) async {
+  editLoan(int loanId) async {
     var aAmount = amountController.text;
     var aReason = reasonController.text;
-    var aRepay = repayController.text;
     DateTime aDate = pickStart!;
 
     var request = await http.MultipartRequest(
@@ -996,17 +913,13 @@ class _LoanRecordState extends State<LoanRecord> {
       "Content": "charset-UTF-8",
     };
 
-    request.files
-        .add(http.MultipartFile.fromString('amount', aAmount));
-    request.files
-        .add(http.MultipartFile.fromString('reason', aReason));
-    request.files
-        .add(http.MultipartFile.fromString('repay', aRepay));
+    request.files.add(http.MultipartFile.fromString('amount', aAmount));
+    request.files.add(http.MultipartFile.fromString('reason', aReason));
 
     if (pickStart != null) {
       DateTime aStartDate = pickStart as DateTime;
-      request.files.add(
-          http.MultipartFile.fromString('date', aDate.toString()));
+      request.files
+          .add(http.MultipartFile.fromString('date', aDate.toString()));
     }
 
     request.headers.addAll(headers);
@@ -1018,6 +931,7 @@ class _LoanRecordState extends State<LoanRecord> {
     }
     res.stream.transform(utf8.decoder).listen((event) {});
   }
+
   addLoan() async {
     var aAmount = amountController.text;
     var aReason = reasonController.text;

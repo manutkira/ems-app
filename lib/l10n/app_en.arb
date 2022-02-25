@@ -1006,6 +1006,18 @@
   "@deletedPayment": {
     "description": "take attendance"
   },
+  "payroll": "Payroll",
+  "@payroll": {
+    "description": "payroll"
+  },
+  "amount": "Amount",
+  "@amount": {
+    "description": "payroll"
+  },
+  "reason": "Reason",
+  "@reason": {
+    "description": "payroll"
+  },
   "calendarAttendance": "Calendar",
   "@calendarAttendance": {
     "description": "take attendance"

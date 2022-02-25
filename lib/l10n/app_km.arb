@@ -245,5 +245,8 @@
   "deletedPosition": "តួនាទីត្រូវបានលុប",
   "deletingPayment": "កំពុងលុបការទូទាត់",
   "deletedPayment": "ការទូទាត់ត្រូវបានលុប",
+  "payroll": "ការទូទាត់",
+  "amount": "ចំនួនទឹកប្រាក់",
+  "reason": "ហេតុផល",
   "calendarAttendance": "ប្រតិទិន"
 }

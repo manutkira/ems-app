@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
@@ -58,7 +57,9 @@ class _EmployeeListState extends State<EmployeeList> {
           });
         }
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // delete user from api
@@ -95,6 +96,7 @@ class _EmployeeListState extends State<EmployeeList> {
   }
 
   void showInSnackBar(String value) {
+    // ignore: deprecated_member_use
     Scaffold.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,

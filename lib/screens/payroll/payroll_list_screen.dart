@@ -2,6 +2,7 @@ import 'package:ems/models/attendance_count.dart';
 import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/generate_screen.dart';
+import 'package:ems/screens/payroll/loan/loan_all.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
@@ -80,7 +81,33 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
     AppLocalizations? local = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payroll'),
+        title: const Text('Payment & Loan'),
+        actions: [
+          PopupMenuButton(
+            color: kDarkestBlue,
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            onSelected: (int selectedValue) {
+              if (selectedValue == 0) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => LoanAll(),
+                  ),
+                );
+              }
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text(
+                  'All employee',
+                ),
+                value: 0,
+              ),
+            ],
+            icon: Icon(Icons.more_vert),
+          ),
+        ],
       ),
       body: Container(
         width: double.infinity,
