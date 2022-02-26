@@ -1,5 +1,8 @@
 import 'package:ems/constants.dart';
+import 'package:ems/models/loan.dart';
 import 'package:ems/models/user.dart';
+import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
+import 'package:ems/utils/services/loan_service.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,6 +17,13 @@ class LoanAll extends StatefulWidget {
 }
 
 class _LoanAllState extends State<LoanAll> {
+  // service
+  LoanService _loanService = LoanService.instance;
+
+  // loan all list
+  List<LoanALl> loanAllList = [];
+  List<LoanALl> loan = [];
+
   // text controller
   final TextEditingController _controller = TextEditingController();
 
@@ -21,167 +31,264 @@ class _LoanAllState extends State<LoanAll> {
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
 
-  // list user
-  List userDisplay = [];
+  // boolean
+  bool _isloading = true;
 
-  List user = [];
+  // fetch loan all from api
+  fetchLoanAll() async {
+    _isloading = true;
+    try {
+      List<LoanALl> loanAllDIsplay = await _loanService.findManyLoan();
+      setState(() {
+        loanAllList = loanAllDIsplay;
+        loan = loanAllList;
+        _isloading = false;
+      });
+    } catch (err) {}
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLoanAll();
+  }
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      if (userDisplay.isEmpty) {
-        userDisplay = [
-          {
-            'name': 'manut1',
-            'id': '1',
-          },
-          {
-            'name': 'manut2',
-            'id': '2',
-          },
-          {
-            'name': 'manut3',
-            'id': '3',
-          },
-          {
-            'name': 'manut4',
-            'id': '4',
-          },
-          {
-            'name': 'manut5',
-            'id': '5',
-          },
-        ];
-      }
-      user = userDisplay;
-    });
+    AppLocalizations? local = AppLocalizations.of(context);
+    bool isEnglish = isInEnglish(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Loan'),
       ),
-      body: Column(
-        children: [
-          const Text(
-            'Employee',
-            style: kHeadingTwo,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-                gradient: LinearGradient(
-                  colors: [
-                    color1,
-                    color,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                )),
-            child: Column(
-              children: [
-                _searchBar(),
-                ListView.builder(
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: Colors.black,
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: _isloading
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('${local?.fetchData}'),
+                  const CircularProgressIndicator(
+                    color: kWhite,
+                  ),
+                ],
+              ),
+            )
+          : Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                  gradient: LinearGradient(
+                    colors: [
+                      color1,
+                      color,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  )),
+              child: Column(
+                children: [
+                  _searchBar(),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return Column(
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 45,
-                                    height: 45,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        width: 1,
-                                      ),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/images/profile-icon-png-910.png',
-                                      width: 50,
+                              Container(
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Colors.black,
+                                      width: 1,
                                     ),
                                   ),
-                                  Column(
-                                    children: const [
-                                      BaselineRow(
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
                                         children: [
-                                          Text(
-                                            'Name:',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 15,
+                                          Container(
+                                            width: 55,
+                                            height: 55,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(100)),
+                                                border: Border.all(
+                                                  width: 1,
+                                                  color: Colors.white,
+                                                )),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(150),
+                                              child: loanAllList[index]
+                                                          .user!
+                                                          .image ==
+                                                      null
+                                                  ? Image.asset(
+                                                      'assets/images/profile-icon-png-910.png')
+                                                  : Image.network(
+                                                      loanAllList[index]
+                                                          .user!
+                                                          .image!,
+                                                      fit: BoxFit.cover,
+                                                      width: double.infinity,
+                                                      height: 75,
+                                                    ),
                                             ),
                                           ),
-                                          Text(
-                                            'Manut',
-                                            style: TextStyle(
-                                              fontSize: 14,
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          SizedBox(
+                                            width: 185,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    BaselineRow(
+                                                      children: [
+                                                        Text(
+                                                          '${local?.name}: ',
+                                                          style: TextStyle(
+                                                            fontSize: isEnglish
+                                                                ? 15
+                                                                : 15,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width:
+                                                              isEnglish ? 2 : 4,
+                                                        ),
+                                                        SizedBox(
+                                                          width: 140,
+                                                          child: Text(
+                                                            loanAllList[index]
+                                                                .user!
+                                                                .name
+                                                                .toString(),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height:
+                                                          isEnglish ? 10 : 0,
+                                                    ),
+                                                    BaselineRow(
+                                                      children: [
+                                                        Text('${local?.id}: ',
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  isEnglish
+                                                                      ? 15
+                                                                      : 15,
+                                                            )),
+                                                        const SizedBox(
+                                                          width: 1,
+                                                        ),
+                                                        Text(loanAllList[index]
+                                                            .user!
+                                                            .id
+                                                            .toString()),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
                                       ),
-                                      BaselineRow(children: [
-                                        Text(
-                                          'ID:',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w700,
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 85,
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Total: ',
+                                                ),
+                                                Text(
+                                                  '\$${loanAllList[index].amountTotal.toString()}',
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          '3',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                          ),
-                                        )
-                                      ])
+                                          PopupMenuButton(
+                                            color: kDarkestBlue,
+                                            shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10))),
+                                            onSelected:
+                                                (int selectedValue) async {
+                                              if (selectedValue == 0) {
+                                                // int id = loanAllList[index].user!.id as int;
+                                                // await Navigator.of(context).push(
+                                                //   MaterialPageRoute(
+                                                //     builder: (_) => GeneratePaymentScreen(id: id),
+                                                //   ),
+                                                // );
+                                              }
+                                              if (selectedValue == 1) {
+                                                int id = loanAllList[index]
+                                                    .user!
+                                                    .id as int;
+                                                await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            LoanTotalIndividual(
+                                                              id: id,
+                                                            )));
+                                              }
+                                            },
+                                            itemBuilder: (_) => [
+                                              PopupMenuItem(
+                                                child: Text(
+                                                  'Detail',
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        isEnglish ? 15 : 16,
+                                                  ),
+                                                ),
+                                                value: 1,
+                                              ),
+                                            ],
+                                            icon: const Icon(Icons.more_vert),
+                                          )
+                                        ],
+                                      )
                                     ],
-                                  )
-                                ],
-                              ),
-                              Row(
-                                children: const [
-                                  Text(
-                                    'Amount: ',
                                   ),
-                                  Text(
-                                    '\$500',
-                                  )
-                                ],
-                              )
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
                             ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    );
-                  },
-                  itemCount: 5,
-                ),
-              ],
+                          );
+                        },
+                        itemCount: loanAllList.length,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -209,8 +316,8 @@ class _LoanAllState extends State<LoanAll> {
                         onPressed: () {
                           setState(() {
                             clearText();
-                            userDisplay = user.where((user) {
-                              var userName = user.name!.toLowerCase();
+                            loan = loanAllList.where((user) {
+                              var userName = user.user!.name!.toLowerCase();
                               return userName.contains(_controller.text);
                             }).toList();
                           });
@@ -232,8 +339,8 @@ class _LoanAllState extends State<LoanAll> {
               onChanged: (text) {
                 text = text.toLowerCase();
                 setState(() {
-                  userDisplay = user.where((user) {
-                    var userName = user.name!.toLowerCase();
+                  loan = loanAllList.where((user) {
+                    var userName = user.user!.name!.toLowerCase();
                     return userName.contains(text);
                   }).toList();
                 });
@@ -247,19 +354,22 @@ class _LoanAllState extends State<LoanAll> {
             onSelected: (int selectedValue) {
               if (selectedValue == 0) {
                 setState(() {
-                  userDisplay.sort((a, b) =>
-                      a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+                  loanAllList.sort((a, b) => a.user!.name!
+                      .toLowerCase()
+                      .compareTo(b.user!.name!.toLowerCase()));
                 });
               }
               if (selectedValue == 1) {
                 setState(() {
-                  userDisplay.sort((b, a) =>
-                      a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+                  loanAllList.sort((b, a) => a.user!.name!
+                      .toLowerCase()
+                      .compareTo(b.user!.name!.toLowerCase()));
                 });
               }
               if (selectedValue == 2) {
                 setState(() {
-                  userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+                  loanAllList
+                      .sort((a, b) => a.user!.id!.compareTo(b.user!.id as int));
                 });
               }
             },

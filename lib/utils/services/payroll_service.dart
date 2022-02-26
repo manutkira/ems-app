@@ -36,6 +36,7 @@ class PayrollService extends BaseService {
         throw 'error';
       }
       var jsondata = json.decode(response.body);
+
       var payroll = Payroll.fromJson(jsondata);
       return payroll;
     } catch (err) {
@@ -59,7 +60,7 @@ class PayrollService extends BaseService {
     try {
       Response response = await get(Uri.parse('$baseUrl/users/$id/loan'));
       var jsondata = json.decode(response.body);
-      var loan = loanFromJson(jsondata['loans']);
+      var loan = loanFromJson(jsondata['loan_records']);
       return loan;
     } catch (err) {
       rethrow;

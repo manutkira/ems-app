@@ -4,6 +4,7 @@ import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/generate_screen.dart';
 import 'package:ems/screens/payroll/loan/loan_all.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
+import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -391,7 +392,9 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
                         await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => LoanRecord(id: id)));
+                                builder: (_) => LoanTotalIndividual(
+                                      id: id,
+                                    )));
                       }
                     },
                     itemBuilder: (_) => [
