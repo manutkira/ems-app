@@ -83,32 +83,6 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Payment & Loan'),
-        actions: [
-          PopupMenuButton(
-            color: kDarkestBlue,
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            onSelected: (int selectedValue) {
-              if (selectedValue == 0) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => LoanAll(),
-                  ),
-                );
-              }
-            },
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                child: Text(
-                  'All employee',
-                ),
-                value: 0,
-              ),
-            ],
-            icon: Icon(Icons.more_vert),
-          ),
-        ],
       ),
       body: Container(
         width: double.infinity,
@@ -331,7 +305,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
               width: 10,
             ),
             SizedBox(
-              width: 245,
+              width: 295,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -407,15 +381,15 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
                         ),
                         value: 0,
                       ),
-                      PopupMenuItem(
-                        child: Text(
-                          'Loan Record',
-                          style: TextStyle(
-                            fontSize: isEnglish ? 15 : 16,
-                          ),
-                        ),
-                        value: 1,
-                      ),
+                      // PopupMenuItem(
+                      //   child: Text(
+                      //     'Loan Record',
+                      //     style: TextStyle(
+                      //       fontSize: isEnglish ? 15 : 16,
+                      //     ),
+                      //   ),
+                      //   value: 1,
+                      // ),
                     ],
                     icon: const Icon(Icons.more_vert),
                   )

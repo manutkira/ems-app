@@ -6,6 +6,7 @@ import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/overtime/overtime_screen.dart';
+import 'package:ems/screens/payroll/loan/loan_all.dart';
 import 'package:ems/screens/payroll/payroll_list_screen.dart';
 import 'package:ems/screens/payroll/payroll_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
@@ -346,7 +347,15 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             _buildSpacerVertical,
 
             /// current user overtime
-            _buildTitle('${local?.overtime}'),
+            InkWell(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => LoanAll(),
+                ),
+              ),
+              child: _buildTitle('${local?.overtime}'),
+            ),
             Container(
               height: 170,
               padding: const EdgeInsets.symmetric(
