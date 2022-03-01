@@ -180,226 +180,238 @@ class _TestPositionState extends State<TestPosition> {
           IconButton(
             onPressed: () async {
               await showModalBottomSheet(
+                  isScrollControlled: true,
                   context: context,
                   builder: (_) {
-                    return Container(
-                      height: 340,
-                      decoration: const BoxDecoration(
-                        color: kBlue,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(30),
-                          topLeft: Radius.circular(30),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: isEnglish ? 15 : 0,
+                    return Padding(
+                      padding: MediaQuery.of(context).viewInsets,
+                      child: Container(
+                        height: 340,
+                        decoration: const BoxDecoration(
+                          color: kBlue,
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(30),
+                            topLeft: Radius.circular(30),
                           ),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(isEnglish ? 5.0 : 30),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: isEnglish ? 15 : 0,
-                                    ),
-                                    Text(
-                                      '${local.position} ',
-                                      style: kParagraph.copyWith(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      width: isEnglish ? 37 : 45,
-                                    ),
-                                    Container(
-                                      constraints: BoxConstraints(
-                                          maxWidth: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.6),
-                                      child: Flex(
-                                        direction: Axis.horizontal,
-                                        children: [
-                                          Flexible(
-                                            child: Container(
-                                              height: 45,
-                                              child: TextFormField(
-                                                decoration: InputDecoration(
-                                                  contentPadding:
-                                                      const EdgeInsets.only(
-                                                          left: 10),
-                                                  hintText:
-                                                      '${local.enterPosition}',
-                                                  errorStyle: const TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.bold,
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: isEnglish ? 15 : 0,
+                            ),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(isEnglish ? 5.0 : 30),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        width: isEnglish ? 15 : 0,
+                                      ),
+                                      Text(
+                                        '${local.position} ',
+                                        style: kParagraph.copyWith(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        width: isEnglish ? 37 : 57,
+                                      ),
+                                      Container(
+                                        constraints: BoxConstraints(
+                                            maxWidth: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.6),
+                                        child: Flex(
+                                          direction: Axis.horizontal,
+                                          children: [
+                                            Flexible(
+                                              child: Container(
+                                                height: 45,
+                                                child: TextFormField(
+                                                  decoration: InputDecoration(
+                                                    contentPadding:
+                                                        const EdgeInsets.only(
+                                                            left: 10),
+                                                    hintText:
+                                                        '${local.enterPosition}',
+                                                    errorStyle: const TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
+                                                  controller: positionName,
                                                 ),
-                                                controller: positionName,
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: isEnglish ? 15 : 0,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 30, left: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${local.startDate} ',
+                                    style: kParagraph.copyWith(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                                0.6),
+                                    child: Flex(
+                                      direction: Axis.horizontal,
+                                      children: [
+                                        Flexible(
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  '${local.selectStartDate}',
+                                              suffixIcon: IconButton(
+                                                  onPressed: () {
+                                                    _startDatePicker();
+                                                  },
+                                                  icon: const Icon(
+                                                      MdiIcons.calendar,
+                                                      color: Colors.white)),
+                                              errorStyle: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            controller: startDateController,
+                                            textInputAction:
+                                                TextInputAction.next,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: isEnglish ? 15 : 0,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 30, left: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${local.startDate} ',
-                                  style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Container(
-                                  constraints: BoxConstraints(
-                                      maxWidth:
-                                          MediaQuery.of(context).size.width *
-                                              0.6),
-                                  child: Flex(
-                                    direction: Axis.horizontal,
-                                    children: [
-                                      Flexible(
-                                        child: TextFormField(
-                                          readOnly: true,
-                                          decoration: InputDecoration(
-                                            hintText:
-                                                '${local.selectStartDate}',
-                                            suffixIcon: IconButton(
-                                                onPressed: () {
-                                                  _startDatePicker();
-                                                },
-                                                icon: const Icon(
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 30, left: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${local.endDate} ',
+                                    style: kParagraph.copyWith(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                                0.6),
+                                    child: Flex(
+                                      direction: Axis.horizontal,
+                                      children: [
+                                        Flexible(
+                                          child: TextFormField(
+                                            readOnly: true,
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  '${local.selectEndDate}',
+                                              suffixIcon: IconButton(
+                                                  onPressed: () {
+                                                    _endDatePicker();
+                                                  },
+                                                  icon: const Icon(
                                                     MdiIcons.calendar,
-                                                    color: Colors.white)),
-                                            errorStyle: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  )),
+                                              errorStyle: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
+                                            controller: endDateController,
+                                            textInputAction:
+                                                TextInputAction.next,
                                           ),
-                                          controller: startDateController,
-                                          textInputAction: TextInputAction.next,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 30, left: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${local.endDate} ',
-                                  style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Container(
-                                  constraints: BoxConstraints(
-                                      maxWidth:
-                                          MediaQuery.of(context).size.width *
-                                              0.6),
-                                  child: Flex(
-                                    direction: Axis.horizontal,
-                                    children: [
-                                      Flexible(
-                                        child: TextFormField(
-                                          readOnly: true,
-                                          decoration: InputDecoration(
-                                            hintText: '${local.selectEndDate}',
-                                            suffixIcon: IconButton(
-                                                onPressed: () {
-                                                  _endDatePicker();
-                                                },
-                                                icon: const Icon(
-                                                  MdiIcons.calendar,
-                                                  color: Colors.white,
-                                                )),
-                                            errorStyle: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          controller: endDateController,
-                                          textInputAction: TextInputAction.next,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 30),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                RaisedButton(
-                                  onPressed: () {
-                                    addPosition();
-                                    // Navigator.pop(context);
-                                    positionName.text = '';
-                                    startDateController.text = '';
-                                    endDateController.text = '';
-                                  },
-                                  color: Theme.of(context).primaryColor,
-                                  child: Text(
-                                    '${local.save}',
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
+                                      ],
                                     ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                                RaisedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  color: Colors.red,
-                                  child: Text(
-                                    '${local.cancel}',
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 30),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  RaisedButton(
+                                    onPressed: () {
+                                      addPosition();
+                                      // Navigator.pop(context);
+                                      positionName.text = '';
+                                      startDateController.text = '';
+                                      endDateController.text = '';
+                                    },
+                                    color: Theme.of(context).primaryColor,
+                                    child: Text(
+                                      '${local.save}',
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  RaisedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    color: Colors.red,
+                                    child: Text(
+                                      '${local.cancel}',
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   });
@@ -551,7 +563,7 @@ class _TestPositionState extends State<TestPosition> {
                         // reverse: true,
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
-                        itemBuilder: (BuildContext context, int index) {
+                        itemBuilder: (BuildContext contexxt, int index) {
                           startDate =
                               DateTime.parse(positionsDisplay[index].startDate);
                           endDate = DateTime.tryParse(
@@ -595,311 +607,317 @@ class _TestPositionState extends State<TestPosition> {
                                                 .toString());
                                       }
                                       await showModalBottomSheet(
+                                          isScrollControlled: true,
                                           context: context,
                                           builder: (_) {
-                                            return Container(
-                                              height: 340,
-                                              decoration: const BoxDecoration(
-                                                color: kBlue,
-                                                borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(30),
-                                                  topLeft: Radius.circular(30),
+                                            return Padding(
+                                              padding: MediaQuery.of(context)
+                                                  .viewInsets,
+                                              child: Container(
+                                                height: 340,
+                                                decoration: const BoxDecoration(
+                                                  color: kBlue,
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(30),
+                                                    topLeft:
+                                                        Radius.circular(30),
+                                                  ),
                                                 ),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  const SizedBox(
-                                                    height: 20,
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(0),
-                                                    child: Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 25,
-                                                                  right: 5,
-                                                                  bottom: 15),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                '${local.position} ',
-                                                                style: kParagraph.copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                              SizedBox(
-                                                                width: isEnglish
-                                                                    ? 52
-                                                                    : 48,
-                                                              ),
-                                                              Container(
-                                                                constraints: BoxConstraints(
-                                                                    maxWidth: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width *
-                                                                        0.6),
-                                                                child: Flex(
-                                                                  direction: Axis
-                                                                      .horizontal,
-                                                                  children: [
-                                                                    Flexible(
-                                                                      child:
-                                                                          Container(
-                                                                        height:
-                                                                            40,
+                                                child: Column(
+                                                  children: [
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              0),
+                                                      child: Row(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 25,
+                                                                    right: 5,
+                                                                    bottom: 15),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  '${local.position} ',
+                                                                  style: kParagraph.copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                                SizedBox(
+                                                                  width:
+                                                                      isEnglish
+                                                                          ? 52
+                                                                          : 48,
+                                                                ),
+                                                                Container(
+                                                                  constraints: BoxConstraints(
+                                                                      maxWidth: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.6),
+                                                                  child: Flex(
+                                                                    direction: Axis
+                                                                        .horizontal,
+                                                                    children: [
+                                                                      Flexible(
                                                                         child:
-                                                                            TextFormField(
-                                                                          decoration:
-                                                                              InputDecoration(
-                                                                            contentPadding:
-                                                                                EdgeInsets.only(left: 10),
-                                                                            hintText:
-                                                                                '${local.enterPosition}',
-                                                                            errorStyle:
-                                                                                const TextStyle(
-                                                                              fontSize: 15,
-                                                                              fontWeight: FontWeight.bold,
+                                                                            Container(
+                                                                          height:
+                                                                              40,
+                                                                          child:
+                                                                              TextFormField(
+                                                                            decoration:
+                                                                                InputDecoration(
+                                                                              contentPadding: EdgeInsets.only(left: 10),
+                                                                              hintText: '${local.enterPosition}',
+                                                                              errorStyle: const TextStyle(
+                                                                                fontSize: 15,
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
                                                                             ),
+                                                                            controller:
+                                                                                positionName,
                                                                           ),
-                                                                          controller:
-                                                                              positionName,
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                  ],
+                                                                    ],
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(0),
-                                                    child: Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 25,
-                                                                  right: 5,
-                                                                  bottom: 15),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                '${local.startDate} ',
-                                                                style: kParagraph.copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                              SizedBox(
-                                                                width: isEnglish
-                                                                    ? 36
-                                                                    : 29,
-                                                              ),
-                                                              Container(
-                                                                constraints: BoxConstraints(
-                                                                    maxWidth: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width *
-                                                                        0.6),
-                                                                child: Flex(
-                                                                  direction: Axis
-                                                                      .horizontal,
-                                                                  children: [
-                                                                    Flexible(
-                                                                      child:
-                                                                          Container(
-                                                                        height:
-                                                                            50,
-                                                                        child:
-                                                                            TextFormField(
-                                                                          readOnly:
-                                                                              true,
-                                                                          decoration:
-                                                                              InputDecoration(
-                                                                            contentPadding:
-                                                                                const EdgeInsets.only(left: 10),
-                                                                            hintText:
-                                                                                '${local.selectEndDate}',
-                                                                            suffixIcon: IconButton(
-                                                                                onPressed: () {
-                                                                                  _startDatePicker();
-                                                                                },
-                                                                                icon: const Icon(
-                                                                                  MdiIcons.calendar,
-                                                                                  color: Colors.white,
-                                                                                )),
-                                                                            errorStyle:
-                                                                                const TextStyle(
-                                                                              fontSize: 15,
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
-                                                                          ),
-                                                                          controller:
-                                                                              startDateController,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(0),
-                                                    child: Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 25,
-                                                                  right: 5,
-                                                                  bottom: 15),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                '${local.endDate} ',
-                                                                style: kParagraph.copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                              SizedBox(
-                                                                width: isEnglish
-                                                                    ? 45
-                                                                    : 45,
-                                                              ),
-                                                              Container(
-                                                                constraints: BoxConstraints(
-                                                                    maxWidth: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width *
-                                                                        0.6),
-                                                                child: Flex(
-                                                                  direction: Axis
-                                                                      .horizontal,
-                                                                  children: [
-                                                                    Flexible(
-                                                                      child:
-                                                                          Container(
-                                                                        height:
-                                                                            50,
-                                                                        child:
-                                                                            TextFormField(
-                                                                          readOnly:
-                                                                              true,
-                                                                          decoration:
-                                                                              InputDecoration(
-                                                                            contentPadding:
-                                                                                EdgeInsets.only(left: 10),
-                                                                            hintText:
-                                                                                '${local.selectEndDate}',
-                                                                            suffixIcon: IconButton(
-                                                                                onPressed: () {
-                                                                                  _endDatePicker();
-                                                                                },
-                                                                                icon: const Icon(
-                                                                                  MdiIcons.calendar,
-                                                                                  color: Colors.white,
-                                                                                )),
-                                                                            errorStyle:
-                                                                                const TextStyle(
-                                                                              fontSize: 15,
-                                                                              fontWeight: FontWeight.bold,
-                                                                            ),
-                                                                          ),
-                                                                          controller:
-                                                                              endDateController,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 20,
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 30),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        RaisedButton(
-                                                          onPressed: () {
-                                                            editPosition();
-                                                          },
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .primaryColor,
-                                                          child: Text(
-                                                            '${local.save}',
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                              ],
                                                             ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 15,
-                                                        ),
-                                                        RaisedButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          color: Colors.red,
-                                                          child: Text(
-                                                            '${local.cancel}',
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              0),
+                                                      child: Row(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 25,
+                                                                    right: 5,
+                                                                    bottom: 15),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  '${local.startDate} ',
+                                                                  style: kParagraph.copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                                SizedBox(
+                                                                  width:
+                                                                      isEnglish
+                                                                          ? 36
+                                                                          : 29,
+                                                                ),
+                                                                Container(
+                                                                  constraints: BoxConstraints(
+                                                                      maxWidth: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.6),
+                                                                  child: Flex(
+                                                                    direction: Axis
+                                                                        .horizontal,
+                                                                    children: [
+                                                                      Flexible(
+                                                                        child:
+                                                                            Container(
+                                                                          height:
+                                                                              50,
+                                                                          child:
+                                                                              TextFormField(
+                                                                            readOnly:
+                                                                                true,
+                                                                            decoration:
+                                                                                InputDecoration(
+                                                                              contentPadding: const EdgeInsets.only(left: 10),
+                                                                              hintText: '${local.selectEndDate}',
+                                                                              suffixIcon: IconButton(
+                                                                                  onPressed: () {
+                                                                                    _startDatePicker();
+                                                                                  },
+                                                                                  icon: const Icon(
+                                                                                    MdiIcons.calendar,
+                                                                                    color: Colors.white,
+                                                                                  )),
+                                                                              errorStyle: const TextStyle(
+                                                                                fontSize: 15,
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
+                                                                            ),
+                                                                            controller:
+                                                                                startDateController,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              0),
+                                                      child: Row(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 25,
+                                                                    right: 5,
+                                                                    bottom: 15),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  '${local.endDate} ',
+                                                                  style: kParagraph.copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                                SizedBox(
+                                                                  width:
+                                                                      isEnglish
+                                                                          ? 45
+                                                                          : 45,
+                                                                ),
+                                                                Container(
+                                                                  constraints: BoxConstraints(
+                                                                      maxWidth: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.6),
+                                                                  child: Flex(
+                                                                    direction: Axis
+                                                                        .horizontal,
+                                                                    children: [
+                                                                      Flexible(
+                                                                        child:
+                                                                            Container(
+                                                                          height:
+                                                                              50,
+                                                                          child:
+                                                                              TextFormField(
+                                                                            readOnly:
+                                                                                true,
+                                                                            decoration:
+                                                                                InputDecoration(
+                                                                              contentPadding: EdgeInsets.only(left: 10),
+                                                                              hintText: '${local.selectEndDate}',
+                                                                              suffixIcon: IconButton(
+                                                                                  onPressed: () {
+                                                                                    _endDatePicker();
+                                                                                  },
+                                                                                  icon: const Icon(
+                                                                                    MdiIcons.calendar,
+                                                                                    color: Colors.white,
+                                                                                  )),
+                                                                              errorStyle: const TextStyle(
+                                                                                fontSize: 15,
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
+                                                                            ),
+                                                                            controller:
+                                                                                endDateController,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 30),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          RaisedButton(
+                                                            onPressed: () {
+                                                              editPosition();
+                                                            },
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                            child: Text(
+                                                              '${local.save}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 15,
+                                                          ),
+                                                          RaisedButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            color: Colors.red,
+                                                            child: Text(
+                                                              '${local.cancel}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             );
                                           });

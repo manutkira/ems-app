@@ -10,6 +10,7 @@ import 'package:ems/models/user.dart';
 import 'package:ems/screens/employee/widgets/employee_info/position_record.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
+import 'package:path/path.dart';
 
 import '../../../../constants.dart';
 import '../../employee_edit_employment.dart';
@@ -31,6 +32,7 @@ class EmploymentInfo extends StatelessWidget {
   TextEditingController rateNameController;
   TextEditingController rateScoreController;
   TextEditingController idController;
+  BuildContext contextt;
 
   EmploymentInfo({
     Key? key,
@@ -50,6 +52,7 @@ class EmploymentInfo extends StatelessWidget {
     required this.rateNameController,
     required this.rateScoreController,
     required this.idController,
+    required this.contextt,
   }) : super(key: key);
 
   @override
@@ -306,190 +309,202 @@ class EmploymentInfo extends StatelessWidget {
                   IconButton(
                       onPressed: () async {
                         await showModalBottomSheet(
-                            context: context,
+                            isScrollControlled: true,
+                            context: contextt,
                             builder: (_) {
-                              return Container(
-                                height: 340,
-                                decoration: const BoxDecoration(
-                                  color: kBlue,
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(30),
-                                    topLeft: Radius.circular(30),
+                              return Padding(
+                                padding: MediaQuery.of(contextt).viewInsets,
+                                child: Container(
+                                  height: 340,
+                                  decoration: const BoxDecoration(
+                                    color: kBlue,
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(30),
+                                      topLeft: Radius.circular(30),
+                                    ),
                                   ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(20.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '${local?.skill} ',
-                                                style: kParagraph.copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              SizedBox(
-                                                width: isEnglish ? 52 : 50,
-                                              ),
-                                              Container(
-                                                constraints: BoxConstraints(
-                                                    maxWidth:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.6),
-                                                child: Flex(
-                                                  direction: Axis.horizontal,
-                                                  children: [
-                                                    Flexible(
-                                                      // ignore: sized_box_for_whitespace
-                                                      child: Container(
-                                                        height: 35,
-                                                        child: TextFormField(
-                                                          decoration:
-                                                              InputDecoration(
-                                                            contentPadding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 10),
-                                                            hintText:
-                                                                '${local?.enterSkill}',
-                                                            errorStyle:
-                                                                const TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                          controller:
-                                                              rateNameController,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20, bottom: 15),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '${local?.score} ',
-                                                style: kParagraph.copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              SizedBox(
-                                                width: isEnglish ? 40 : 70,
-                                              ),
-                                              Container(
-                                                constraints: BoxConstraints(
-                                                    maxWidth:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.6),
-                                                child: Flex(
-                                                  direction: Axis.horizontal,
-                                                  children: [
-                                                    Flexible(
-                                                      child: SizedBox(
-                                                        height: 35,
-                                                        child: TextFormField(
-                                                          decoration:
-                                                              InputDecoration(
-                                                            contentPadding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 10),
-                                                            hintText:
-                                                                '${local?.enterScore}',
-                                                            errorStyle:
-                                                                const TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                          controller:
-                                                              rateScoreController,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 30),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                                  child: Column(
+                                    children: [
+                                      Row(
                                         children: [
-                                          // ignore: deprecated_member_use
-                                          RaisedButton(
-                                            onPressed: () {
-                                              addRateList();
-                                              // Navigator.pop(context);
-                                              rateNameController.text = '';
-                                              rateScoreController.text = '';
-                                              idController.text = '';
-                                            },
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            child: Text(
-                                              '${local?.save}',
-                                              style: const TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 15,
-                                          ),
-                                          // ignore: deprecated_member_use
-                                          RaisedButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            color: Colors.red,
-                                            child: Text(
-                                              '${local?.cancel}',
-                                              style: const TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(20.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  '${local?.skill} ',
+                                                  style: kParagraph.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                SizedBox(
+                                                  width: isEnglish ? 52 : 50,
+                                                ),
+                                                Container(
+                                                  constraints: BoxConstraints(
+                                                      maxWidth:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.6),
+                                                  child: Flex(
+                                                    direction: Axis.horizontal,
+                                                    children: [
+                                                      Flexible(
+                                                        // ignore: sized_box_for_whitespace
+                                                        child: Container(
+                                                          height: 35,
+                                                          child: TextFormField(
+                                                            decoration:
+                                                                InputDecoration(
+                                                              contentPadding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 10),
+                                                              hintText:
+                                                                  '${local?.enterSkill}',
+                                                              errorStyle:
+                                                                  const TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            controller:
+                                                                rateNameController,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20,
+                                                right: 20,
+                                                bottom: 15),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  '${local?.score} ',
+                                                  style: kParagraph.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                SizedBox(
+                                                  width: isEnglish ? 40 : 70,
+                                                ),
+                                                Container(
+                                                  constraints: BoxConstraints(
+                                                      maxWidth:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.6),
+                                                  child: Flex(
+                                                    direction: Axis.horizontal,
+                                                    children: [
+                                                      Flexible(
+                                                        child: SizedBox(
+                                                          height: 35,
+                                                          child: TextFormField(
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              contentPadding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 10),
+                                                              hintText:
+                                                                  '${local?.enterScore}',
+                                                              errorStyle:
+                                                                  const TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            controller:
+                                                                rateScoreController,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 30),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            // ignore: deprecated_member_use
+                                            RaisedButton(
+                                              onPressed: () {
+                                                addRateList();
+                                                // Navigator.pop(context);
+                                                rateNameController.text = '';
+                                                rateScoreController.text = '';
+                                                idController.text = '';
+                                              },
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              child: Text(
+                                                '${local?.save}',
+                                                style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 15,
+                                            ),
+                                            // ignore: deprecated_member_use
+                                            RaisedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              color: Colors.red,
+                                              child: Text(
+                                                '${local?.cancel}',
+                                                style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             });
@@ -507,7 +522,7 @@ class EmploymentInfo extends StatelessWidget {
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(8),
                   itemCount: rateDisplay.length,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (_, index) {
                     return Column(
                       children: [
                         Padding(
@@ -540,229 +555,230 @@ class EmploymentInfo extends StatelessWidget {
                                         scoreController.text =
                                             rateDisplay[index].score;
                                         await showModalBottomSheet(
-                                            context: context,
+                                            isScrollControlled: true,
+                                            context: contextt,
                                             builder: (_) {
-                                              return Container(
-                                                height: 340,
-                                                decoration: const BoxDecoration(
-                                                  color: kBlue,
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(30),
-                                                    topLeft:
-                                                        Radius.circular(30),
+                                              return Padding(
+                                                padding: MediaQuery.of(context)
+                                                    .viewInsets,
+                                                child: Container(
+                                                  height: 340,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: kBlue,
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topRight:
+                                                          Radius.circular(30),
+                                                      topLeft:
+                                                          Radius.circular(30),
+                                                    ),
                                                   ),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    const SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 20,
-                                                                    right: 20,
-                                                                    bottom: 15),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                Text(
-                                                                  '${local?.skill} ',
-                                                                  style: kParagraph.copyWith(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                                SizedBox(
-                                                                  width:
-                                                                      isEnglish
-                                                                          ? 52
-                                                                          : 50,
-                                                                ),
-                                                                Container(
-                                                                  constraints: BoxConstraints(
-                                                                      maxWidth: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          0.6),
-                                                                  child: Flex(
-                                                                    direction: Axis
-                                                                        .horizontal,
-                                                                    children: [
-                                                                      Flexible(
-                                                                        child:
-                                                                            SizedBox(
-                                                                          height:
-                                                                              35,
+                                                  child: Column(
+                                                    children: [
+                                                      const SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Row(
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 20,
+                                                                      right: 20,
+                                                                      bottom:
+                                                                          15),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                    '${local?.skill} ',
+                                                                    style: kParagraph.copyWith(
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width:
+                                                                        isEnglish
+                                                                            ? 52
+                                                                            : 50,
+                                                                  ),
+                                                                  Container(
+                                                                    constraints:
+                                                                        BoxConstraints(
+                                                                            maxWidth:
+                                                                                MediaQuery.of(context).size.width * 0.6),
+                                                                    child: Flex(
+                                                                      direction:
+                                                                          Axis.horizontal,
+                                                                      children: [
+                                                                        Flexible(
                                                                           child:
-                                                                              TextFormField(
-                                                                            decoration:
-                                                                                InputDecoration(
-                                                                              contentPadding: const EdgeInsets.only(left: 10),
-                                                                              hintText: '${local?.enterSkill}',
-                                                                              errorStyle: const TextStyle(
-                                                                                fontSize: 15,
-                                                                                fontWeight: FontWeight.bold,
+                                                                              SizedBox(
+                                                                            height:
+                                                                                35,
+                                                                            child:
+                                                                                TextFormField(
+                                                                              decoration: InputDecoration(
+                                                                                contentPadding: const EdgeInsets.only(left: 10),
+                                                                                hintText: '${local?.enterSkill}',
+                                                                                errorStyle: const TextStyle(
+                                                                                  fontSize: 15,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
                                                                               ),
+                                                                              controller: skillNameController,
+                                                                              // initialValue:
+                                                                              //     rateDisplay[0][index]['skill_name'].toString(),
+                                                                              // controller:
+                                                                              //     rateNameController,
                                                                             ),
-                                                                            controller:
-                                                                                skillNameController,
-                                                                            // initialValue:
-                                                                            //     rateDisplay[0][index]['skill_name'].toString(),
-                                                                            // controller:
-                                                                            //     rateNameController,
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                    ],
+                                                                      ],
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                              ],
+                                                                ],
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ],
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 20,
-                                                                    right: 20,
-                                                                    bottom: 15),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                Text(
-                                                                  '${local?.score} ',
-                                                                  style: kParagraph.copyWith(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
-                                                                ),
-                                                                SizedBox(
-                                                                  width:
-                                                                      isEnglish
-                                                                          ? 40
-                                                                          : 70,
-                                                                ),
-                                                                Container(
-                                                                  constraints: BoxConstraints(
-                                                                      maxWidth: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width *
-                                                                          0.6),
-                                                                  child: Flex(
-                                                                    direction: Axis
-                                                                        .horizontal,
-                                                                    children: [
-                                                                      Flexible(
-                                                                        child:
-                                                                            SizedBox(
-                                                                          height:
-                                                                              35,
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Row(
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 20,
+                                                                      right: 20,
+                                                                      bottom:
+                                                                          15),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                    '${local?.score} ',
+                                                                    style: kParagraph.copyWith(
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width:
+                                                                        isEnglish
+                                                                            ? 40
+                                                                            : 70,
+                                                                  ),
+                                                                  Container(
+                                                                    constraints:
+                                                                        BoxConstraints(
+                                                                            maxWidth:
+                                                                                MediaQuery.of(context).size.width * 0.6),
+                                                                    child: Flex(
+                                                                      direction:
+                                                                          Axis.horizontal,
+                                                                      children: [
+                                                                        Flexible(
                                                                           child:
-                                                                              TextFormField(
-                                                                            decoration:
-                                                                                InputDecoration(
-                                                                              contentPadding: const EdgeInsets.only(left: 10),
-                                                                              hintText: '${local?.enterScore}',
-                                                                              errorStyle: const TextStyle(
-                                                                                fontSize: 15,
-                                                                                fontWeight: FontWeight.bold,
+                                                                              SizedBox(
+                                                                            height:
+                                                                                35,
+                                                                            child:
+                                                                                TextFormField(
+                                                                              decoration: InputDecoration(
+                                                                                contentPadding: const EdgeInsets.only(left: 10),
+                                                                                hintText: '${local?.enterScore}',
+                                                                                errorStyle: const TextStyle(
+                                                                                  fontSize: 15,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                ),
                                                                               ),
+                                                                              controller: scoreController,
+                                                                              // initialValue:
+                                                                              //     rateDisplay[0][index]['score'].toString(),
                                                                             ),
-                                                                            controller:
-                                                                                scoreController,
-                                                                            // initialValue:
-                                                                            //     rateDisplay[0][index]['score'].toString(),
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                    ],
+                                                                      ],
+                                                                    ),
                                                                   ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                right: 30),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .end,
+                                                          children: [
+                                                            // ignore: deprecated_member_use
+                                                            RaisedButton(
+                                                              onPressed: () {
+                                                                editRate();
+                                                              },
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor,
+                                                              child: Text(
+                                                                '${local?.save}',
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
                                                                 ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 30),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          // ignore: deprecated_member_use
-                                                          RaisedButton(
-                                                            onPressed: () {
-                                                              editRate();
-                                                            },
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor,
-                                                            child: Text(
-                                                              '${local?.save}',
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
                                                               ),
                                                             ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 15,
-                                                          ),
-                                                          // ignore: deprecated_member_use
-                                                          RaisedButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            color: Colors.red,
-                                                            child: Text(
-                                                              '${local?.cancel}',
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                            const SizedBox(
+                                                              width: 15,
+                                                            ),
+                                                            // ignore: deprecated_member_use
+                                                            RaisedButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              color: Colors.red,
+                                                              child: Text(
+                                                                '${local?.cancel}',
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                        ],
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               );
                                             });

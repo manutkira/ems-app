@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ems/models/payroll.dart';
@@ -28,6 +29,7 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
   // boolean
   bool _isLoading = true;
   bool pending = true;
+  bool _isfolded = true;
 
   // variable
   String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
@@ -67,6 +69,7 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
     AppLocalizations? local = AppLocalizations.of(context);
     // bool isEnglish = isInEnglish(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Payroll'),
       ),
@@ -224,13 +227,48 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Text(
-                            '- \$${payroll?.loan}',
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 16,
-                            ),
-                          ),
+                          AnimatedContainer(
+                            duration: Duration(milliseconds: 400),
+                            width: _isfolded ? 76 : 120,
+                            height: _isfolded ? 30 : 56,
+                            decoration: BoxDecoration(),
+                            child: _isfolded
+                                ? AnimatedContainer(
+                                    duration: Duration(milliseconds: 400),
+                                    child: RaisedButton(
+                                      color: Colors.black,
+                                      elevation: 10,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      onPressed: () {
+                                        setState(() {
+                                          _isfolded = !_isfolded;
+                                        });
+                                      },
+                                      child: Text(
+                                        'Input',
+                                        style: TextStyle(
+                                          color: kWhite,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.only(left: 16),
+                                      child: !_isfolded
+                                          ? TextField(
+                                              decoration: InputDecoration(
+                                                hintText: 'amount',
+                                                hintStyle: TextStyle(),
+                                                border: InputBorder.none,
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                  ),
+                          )
                         ],
                       ),
                     ),

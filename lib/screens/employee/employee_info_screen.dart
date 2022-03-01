@@ -230,6 +230,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('${local?.employeeInfo}'),
       ),
@@ -504,6 +505,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                             controller: _tabController,
                             children: [
                               PersonalInfo(
+                                  contextt: context,
                                   bankDisplay: bankDisplay,
                                   fetchBankData: fetchBankData,
                                   userDisplay: userDisplay,
@@ -512,6 +514,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                     fetchUserById();
                                   }),
                               EmploymentInfo(
+                                  contextt: context,
                                   fetchUserPosition: fetchUserPosition,
                                   positionDisplay: positionDisplay,
                                   fetchRateDate: fetchRateData,
