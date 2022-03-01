@@ -2,6 +2,7 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/loan.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
+import 'package:ems/screens/payroll/loan/new_loan.dart';
 import 'package:ems/utils/services/loan_service.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +61,19 @@ class _LoanAllState extends State<LoanAll> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Loan'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => NewLoanScreen(),
+                ),
+              );
+            },
+            icon: Icon(Icons.add),
+          ),
+        ],
       ),
       body: _isloading
           ? Center(

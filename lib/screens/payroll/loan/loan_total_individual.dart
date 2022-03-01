@@ -238,7 +238,7 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) =>
-                                      LoanRecord(id: loan!.user!.id as int),
+                                      LoanRecord(id: loan!.user!.id.toString()),
                                 ),
                               );
                             },

@@ -56,7 +56,7 @@ class PayrollService extends BaseService {
     }
   }
 
-  Future<List<Loan>> findManyLoanById(int id) async {
+  Future<List<Loan>> findManyLoanById(String id) async {
     try {
       Response response = await get(Uri.parse('$baseUrl/users/$id/loan'));
       var jsondata = json.decode(response.body);

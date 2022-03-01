@@ -7,6 +7,7 @@ import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/overtime/overtime_screen.dart';
 import 'package:ems/screens/payroll/loan/loan_all.dart';
+import 'package:ems/screens/payroll/loan/new_loan.dart';
 import 'package:ems/screens/payroll/payroll_list_screen.dart';
 import 'package:ems/screens/payroll/payroll_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
