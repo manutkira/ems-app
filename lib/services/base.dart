@@ -1,0 +1,28 @@
+import 'package:dio/dio.dart';
+// import 'package:get_storage/get_storage.dart';
+
+class BaseService {
+  Dio dio = Dio();
+  final String _baseUrl = "http://rest-api-laravel-flutter.herokuapp.com/api/";
+  // final box = GetStorage();
+
+  BaseService() {
+    dio.options.baseUrl = _baseUrl;
+    dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
+      // final box = GetStorage();
+      // TODO: FETCH TOKEN FROM LOCAL STORAGE
+      // String? token = box.read('token');
+      // if (token != null) {
+      //   options.headers['Authorization'] = "Bearer $token";
+      // }
+      options.headers["Content-Type"] = 'application/json';
+      options.headers["Accept"] = 'application/json';
+
+      return handler.next(options); //continue
+    }, onResponse: (response, handler) {
+      return handler.next(response); // continue
+    }, onError: (DioError e, handler) {
+      return handler.next(e); //continue
+    }));
+  }
+}

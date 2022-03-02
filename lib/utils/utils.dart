@@ -123,3 +123,71 @@ Future<bool> isConnected() async {
     return false;
   }
 }
+
+
+DateTime? convertStringToDateTime(String? str) {
+  if (str == null) return null;
+  return DateTime.tryParse(str);
+}
+
+String? convertDateTimeToString(DateTime? datetime) {
+  if (datetime == null) return null;
+  return datetime.toIso8601String();
+}
+
+convertDateToddMMy(DateTime? datetime) {
+  if(datetime==null) return "00-00-0000";
+  return DateFormat('dd-MM-y').format(DateTime.parse(datetime.toIso8601String()));
+}
+
+TimeOfDay? convertStringToTime(String? str) {
+  List<String>? list = str?.split(':');
+  if (list == null) return null;
+
+  int? hour = int.tryParse(list[0]);
+  int? minute = int.tryParse(list[1]);
+
+  return TimeOfDay(hour: hour ?? 0, minute: minute ?? 0);
+}
+
+Duration? convertStringToDuration(String? str) {
+  List<String>? list = str?.split(':');
+  if (list == null || str == null) return null;
+
+  int? hour = int.tryParse(list[0]);
+  int? minute = int.tryParse(list[1]);
+  int? seconds = int.tryParse(list[2]);
+
+  return Duration(
+    hours: hour as int,
+    minutes: minute as int,
+    seconds: seconds as int,
+  );
+}
+
+String? convertDurationToString(Duration? duration) {
+  if (duration == null) return null;
+  String hours = "${duration.inHours}".padLeft(2, '0');
+  String minutes = "${duration.inMinutes}".padLeft(2, '0');
+  String seconds = "${duration.inSeconds}".padLeft(2, '0');
+  return "$hours:$minutes:$seconds";
+}
+
+String convertTimeToString(TimeOfDay? time) {
+  if (time == null) return "00:00:00";
+
+  String hour = time.hour.toString().padLeft(2, '0');
+  String minute = time.minute.toString().padLeft(2, '0');
+
+  return "$hour:$minute:00";
+}
+
+// parse id from json to int || null
+intParse(dynamic id) {
+  return int.tryParse('$id');
+}
+
+// parse number from json to double || null
+doubleParse(dynamic number) {
+  return double.tryParse('$number');
+}
