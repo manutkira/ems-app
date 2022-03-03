@@ -5,7 +5,7 @@ import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
 import 'package:ems/screens/your_profile/your_profile_edit.dart';
 import 'package:ems/screens/your_profile/your_profile_password.dart';
 import 'package:ems/screens/your_profile/your_profile_view.dart';
-import 'package:ems/utils/services/auth_service.dart';
+import 'package:ems/services/auth.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/language_menu.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,6 +24,7 @@ class MenuDrawer extends ConsumerStatefulWidget {
     required this.isOnline,
   }) : super(key: key);
   bool isOnline;
+
   @override
   ConsumerState createState() => _MenuDrawerState();
 }
