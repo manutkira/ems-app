@@ -8,6 +8,7 @@ import 'package:ems/utils/services/attendance_service.dart';
 
 class PayrollScreen extends StatefulWidget {
   int id;
+
   PayrollScreen({
     Key? key,
     required this.id,
@@ -53,7 +54,7 @@ class _PayrollScreenState extends State<PayrollScreen> {
       if (mounted) {
         setState(() {
           attendanceList = attendanceDisplay;
-          salary = int.parse(attendanceList[0].list[0].user!.salary!);
+          salary = attendanceList[0].list[0].user!.salary!.toInt();
           double sum = 0;
           attendanceList.map((element) {
             sum += double.parse(element.list[0].t);

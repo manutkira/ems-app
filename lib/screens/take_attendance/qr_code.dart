@@ -85,11 +85,11 @@ class _QRCodeState extends ConsumerState<QRCode> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          Text(
-                            '${user?.position ?? local?.employee}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(height: 16),
+                          // Text(
+                          //   '${user?.position ?? local?.employee}',
+                          //   style: const TextStyle(fontSize: 16),
+                          // ),
+                          // const SizedBox(height: 16),
                           Text(
                             'ID: ${user?.id}',
                             style: const TextStyle(fontSize: 16),

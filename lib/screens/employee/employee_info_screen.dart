@@ -22,6 +22,7 @@ import '../../constants.dart';
 
 class EmployeeInfoScreen extends StatefulWidget {
   final int id;
+
   const EmployeeInfoScreen({
     Key? key,
     required this.id,
@@ -212,22 +213,22 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
       }
     }
 
-    String checkRate() {
-      if (userDisplay[0].rate == 'verygood') {
-        return '${local?.veryGood}';
-      }
-      if (userDisplay[0].rate == 'good') {
-        return '${local?.good}';
-      }
-      if (userDisplay[0].rate == 'medium') {
-        return '${local?.medium}';
-      }
-      if (userDisplay[0].rate == 'low') {
-        return '${local?.low}';
-      } else {
-        return '';
-      }
-    }
+    // String checkRate() {
+    // if (userDisplay[0].rate == 'verygood') {
+    //   return '${local?.veryGood}';
+    // }
+    // if (userDisplay[0].rate == 'good') {
+    //   return '${local?.good}';
+    // }
+    // if (userDisplay[0].rate == 'medium') {
+    //   return '${local?.medium}';
+    // }
+    // if (userDisplay[0].rate == 'low') {
+    //   return '${local?.low}';
+    // } else {
+    //   return '';
+    // }
+    // }
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -525,7 +526,8 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                   fetchUserById: fetchUserById,
                                   checkRole: checkRole,
                                   checkSatus: checkSatus,
-                                  checkRate: checkRate,
+                                  // checkRate: checkRate,
+                                  checkRate: (){},
                                   addRateList: addRate,
                                   deleteRateItem: deleteRateItem,
                                   rateNameController: rateNameController,

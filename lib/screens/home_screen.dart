@@ -11,7 +11,7 @@ import 'package:ems/screens/payroll/loan/new_loan.dart';
 import 'package:ems/screens/payroll/payroll_list_screen.dart';
 import 'package:ems/screens/payroll/payroll_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
-import 'package:ems/take_attendance/qr_code_scan.dart';
+import 'package:ems/screens/take_attendance/qr_code_scan.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/appbar.dart';
 import 'package:ems/widgets/check_status.dart';

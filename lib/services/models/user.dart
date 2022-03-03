@@ -1,5 +1,3 @@
-
-
 import 'package:ems/services/models/bank.dart';
 import 'package:ems/services/models/loan_record.dart';
 import 'package:ems/services/models/position.dart';
@@ -140,5 +138,18 @@ class User {
       "image": image,
       "image_id": imageId,
     };
+  }
+
+  bool get isEmpty {
+    return id == null ||
+        id == 0 ||
+        id!.isNaN ||
+        id!.isNegative ||
+        name!.isEmpty ||
+        phone!.isEmpty;
+  }
+
+  bool get isNotEmpty {
+    return !isEmpty;
   }
 }

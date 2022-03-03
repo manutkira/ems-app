@@ -159,12 +159,13 @@ class PersonalInfo extends StatelessWidget {
                                         userDisplay[0].phone.toString(),
                                         userDisplay[0].email.toString(),
                                         userDisplay[0].address.toString(),
-                                        userDisplay[0].position.toString(),
-                                        userDisplay[0].skill.toString(),
+                                        // TODO: CHANGE HERE
+                                        "userDisplay[0].position.toString()",
+                                        "userDisplay[0].skill.toString()",
                                         userDisplay[0].salary.toString(),
                                         userDisplay[0].role.toString(),
                                         userDisplay[0].status.toString(),
-                                        userDisplay[0].rate.toString(),
+                                        "userDisplay[0].rate.toString()",
                                         userDisplay[0].background.toString(),
                                         userDisplay[0].image.toString(),
                                         userDisplay[0].imageId.toString())));

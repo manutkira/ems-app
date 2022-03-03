@@ -19,64 +19,49 @@ class UserAdapter extends TypeAdapter<User> {
     return User(
       id: fields[0] as int?,
       name: fields[1] as String?,
-      phone: fields[2] as String?,
-      email: fields[3] as String?,
-      emailVerifiedAt: fields[4] as DateTime?,
-      address: fields[5] as String?,
-      password: fields[6] as String?,
-      position: fields[7] as String?,
-      skill: fields[8] as String?,
-      salary: fields[9] as String?,
-      role: fields[10] as String?,
-      background: fields[11] as String?,
-      status: fields[12] as String?,
-      rate: fields[13] as String?,
-      image: fields[16] as String?,
-      imageId: fields[17] as String?,
-      createdAt: fields[14] as DateTime?,
-      updatedAt: fields[15] as DateTime?,
+      khmer: fields[2] as String?,
+      phone: fields[3] as String?,
+      email: fields[5] as String?,
+      password: fields[4] as String?,
+      salary: fields[10] as double?,
+      status: fields[8] as String?,
+      address: fields[6] as String?,
+      background: fields[9] as String?,
+      role: fields[7] as String?,
+      image: fields[11] as String?,
+      imageId: fields[12] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.phone)
+      ..write(obj.khmer)
       ..writeByte(3)
-      ..write(obj.email)
+      ..write(obj.phone)
       ..writeByte(4)
-      ..write(obj.emailVerifiedAt)
-      ..writeByte(5)
-      ..write(obj.address)
-      ..writeByte(6)
       ..write(obj.password)
+      ..writeByte(5)
+      ..write(obj.email)
+      ..writeByte(6)
+      ..write(obj.address)
       ..writeByte(7)
-      ..write(obj.position)
-      ..writeByte(8)
-      ..write(obj.skill)
-      ..writeByte(9)
-      ..write(obj.salary)
-      ..writeByte(10)
       ..write(obj.role)
-      ..writeByte(11)
-      ..write(obj.background)
-      ..writeByte(12)
+      ..writeByte(8)
       ..write(obj.status)
-      ..writeByte(13)
-      ..write(obj.rate)
-      ..writeByte(14)
-      ..write(obj.createdAt)
-      ..writeByte(15)
-      ..write(obj.updatedAt)
-      ..writeByte(16)
+      ..writeByte(9)
+      ..write(obj.background)
+      ..writeByte(10)
+      ..write(obj.salary)
+      ..writeByte(11)
       ..write(obj.image)
-      ..writeByte(17)
+      ..writeByte(12)
       ..write(obj.imageId);
   }
 

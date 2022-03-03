@@ -436,13 +436,13 @@ class _EmployeeListState extends State<EmployeeList> {
                         String phone = userDisplay[index].phone.toString();
                         String email = userDisplay[index].email.toString();
                         String address = userDisplay[index].address.toString();
-                        String position =
-                            userDisplay[index].position.toString();
-                        String skill = userDisplay[index].skill.toString();
+                        // String position =
+                        //     userDisplay[index].position.toString();
+                        // String skill = userDisplay[index].skill.toString();
                         String salary = userDisplay[index].salary.toString();
                         String role = userDisplay[index].role.toString();
                         String status = userDisplay[index].status.toString();
-                        String rate = userDisplay[index].rate.toString();
+                        // String rate = userDisplay[index].rate.toString();
                         String background =
                             userDisplay[index].background.toString();
                         String image = userDisplay[index].image.toString();
@@ -454,12 +454,12 @@ class _EmployeeListState extends State<EmployeeList> {
                                 phone,
                                 email,
                                 address,
-                                position,
-                                skill,
+                                "position",
+                                "skill",
                                 salary,
                                 role,
                                 status,
-                                rate,
+                                "rate",
                                 background,
                                 image,
                                 imageId)));

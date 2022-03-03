@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:ems/constants.dart';
 import 'package:ems/models/attendance.dart';
 import 'package:ems/persistence/attendances.dart';
-import 'package:ems/take_attendance/widgets/employee_confirmation.dart';
+import 'package:ems/screens/take_attendance/widgets/employee_confirmation.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/widgets/statuses/info.dart';
 import 'package:flutter/foundation.dart';
@@ -17,6 +17,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 class QRCodeScanner extends ConsumerStatefulWidget {
   QRCodeScanner({Key? key, required this.isOnline}) : super(key: key);
   bool isOnline;
+
   @override
   ConsumerState createState() => _QRCodeScannerState();
 }

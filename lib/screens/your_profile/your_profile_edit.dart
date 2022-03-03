@@ -6,6 +6,7 @@ import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
 import 'package:ems/utils/services/auth_service.dart';
 import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:ems/widgets/textbox.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +17,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
+class UserImageType {
+  static String get id => "image_id";
+
+  static String get profile => "image";
+}
 
 class YourProfileEditScreen extends ConsumerStatefulWidget {
   const YourProfileEditScreen({Key? key}) : super(key: key);
@@ -396,55 +403,55 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                           kHeadingThree.copyWith(fontWeight: FontWeight.w400),
                     ),
                     const SizedBox(height: 20),
-                    rowWithInput(
-                      size: _size,
-                      defaultText: _user.position,
-                      label: "${local?.position}",
-                      textHint: "${local?.position}",
-                      getValue: (value) {
-                        setState(() {
-                          _user.position = "$value";
-                        });
-                      },
-                    ),
-                    _buildSpacerHeight(),
-                    rowWithInput(
-                      size: _size,
-                      defaultText: _user.skill,
-                      label: "${local?.skill}",
-                      textHint: "${local?.design}...",
-                      getValue: (value) {
-                        setState(() {
-                          _user.skill = "$value";
-                        });
-                      },
-                    ),
+                    // rowWithInput(
+                    //   size: _size,
+                    //   defaultText: _user.position,
+                    //   label: "${local?.position}",
+                    //   textHint: "${local?.position}",
+                    //   getValue: (value) {
+                    //     setState(() {
+                    //       _user.position = "$value";
+                    //     });
+                    //   },
+                    // ),
+                    // _buildSpacerHeight(),
+                    // rowWithInput(
+                    //   size: _size,
+                    //   defaultText: _user.skill,
+                    //   label: "${local?.skill}",
+                    //   textHint: "${local?.design}...",
+                    //   getValue: (value) {
+                    //     setState(() {
+                    //       _user.skill = "$value";
+                    //     });
+                    //   },
+                    // ),
                     _buildSpacerHeight(),
                     rowWithInput(
                       size: _size,
                       icon: MdiIcons.currencyUsd,
-                      defaultText: _user.salary,
+                      defaultText: _user.salary.toString(),
                       label: "${local?.salary}",
                       textHint: "${local?.salary}",
                       getValue: (value) {
                         setState(() {
-                          _user.salary = "$value";
+                          _user.salary = doubleParse(value);
                         });
                       },
                     ),
                     _buildSpacerHeight(),
-                    rowWithInput(
-                      size: _size,
-                      defaultText: _user.rate,
-                      label: 'Rate',
-                      textHint: 'Good',
-                      getValue: (value) {
-                        setState(() {
-                          _user.rate = "$value";
-                        });
-                      },
-                    ),
-                    _buildSpacerHeight(),
+                    // rowWithInput(
+                    //   size: _size,
+                    //   defaultText: _user.rate,
+                    //   label: 'Rate',
+                    //   textHint: 'Good',
+                    //   getValue: (value) {
+                    //     setState(() {
+                    //       _user.rate = "$value";
+                    //     });
+                    //   },
+                    // ),
+                    // _buildSpacerHeight(),
                   ],
                 ),
               ), // Employment Info

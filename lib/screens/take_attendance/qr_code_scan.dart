@@ -1,5 +1,5 @@
 import 'package:ems/persistence/attendances.dart';
-import 'package:ems/take_attendance/qr_scanner.dart';
+import 'package:ems/screens/take_attendance/qr_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
