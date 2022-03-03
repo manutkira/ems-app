@@ -11,6 +11,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:http/http.dart' as http;
+import '../../../services/loan.dart';
+import '../../../services/models/loan_record.dart' as loanRecord;
+import '../../../services/models/loan_record.dart' as record;
 
 import '../../../constants.dart';
 
@@ -28,6 +31,7 @@ class LoanRecord extends StatefulWidget {
 class _LoanRecordState extends State<LoanRecord> {
   // service
   final PayrollService _payrollService = PayrollService.instance;
+  LoanService _loanService = LoanService();
 
   // list laon
   List<Loan> loanList = [];
@@ -190,6 +194,7 @@ class _LoanRecordState extends State<LoanRecord> {
                                   child: SizedBox(
                                     height: 50,
                                     child: TextFormField(
+                                      keyboardType: TextInputType.number,
                                       textInputAction: TextInputAction.next,
                                       decoration: const InputDecoration(
                                         contentPadding:
@@ -324,8 +329,12 @@ class _LoanRecordState extends State<LoanRecord> {
         actions: [
           IconButton(
             onPressed: () {
+              record.LoanRecord loanRecord = record.LoanRecord(
+                  amount: int.parse(amountController.text),
+                  reason: reasonController.text,
+                  date: pickStart);
               MybottonSheet(
-                () => addLoan(),
+                () => createOne(widget.id, loanRecord),
                 context,
                 isEnglish,
                 local,
@@ -508,6 +517,7 @@ class _LoanRecordState extends State<LoanRecord> {
                                   child: SizedBox(
                                     height: 50,
                                     child: TextFormField(
+                                      keyboardType: TextInputType.number,
                                       textInputAction: TextInputAction.next,
                                       decoration: const InputDecoration(
                                         contentPadding:
@@ -842,6 +852,10 @@ class _LoanRecordState extends State<LoanRecord> {
       Navigator.pop(context);
     }
     res.stream.transform(utf8.decoder).listen((event) {});
+  }
+
+  createOne(String id, loanRecord.LoanRecord record) {
+    _loanService.createOneRecord(id, record);
   }
 
   addLoan() async {

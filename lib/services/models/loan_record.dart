@@ -1,4 +1,3 @@
-
 import '../../utils/utils.dart';
 
 List<LoanRecord> loanRecordsFromJson(List<dynamic>? list) {
@@ -11,7 +10,7 @@ class LoanRecord {
   int? id;
   int? userId;
   DateTime? date;
-  String? amount;
+  int? amount;
   String? reason;
   String? remain;
 
@@ -28,7 +27,7 @@ class LoanRecord {
         id: int.tryParse("${json?['id']}"),
         userId: int.tryParse("${json?['user_id']}"),
         date: convertStringToDateTime(json?['date']),
-        amount: json?['amount'],
+        amount: int.tryParse("${json?['amount']}"),
         reason: json?['reasons'],
         remain: json?['remain'],
       );
@@ -48,7 +47,7 @@ class LoanRecord {
     int? id,
     int? userId,
     DateTime? date,
-    String? amount,
+    int? amount,
     String? reason,
     String? remain,
   ) =>

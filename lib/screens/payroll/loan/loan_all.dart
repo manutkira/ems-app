@@ -1,13 +1,15 @@
 import 'package:ems/constants.dart';
-import 'package:ems/models/loan.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
 import 'package:ems/screens/payroll/loan/new_loan.dart';
-import 'package:ems/utils/services/loan_service.dart';
+import 'package:ems/services/loan.dart';
+import 'package:ems/utils/services/loan_service.dart' as loanService;
+// import 'package:ems/utils/services/loan_service.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../services/models/loan.dart';
 import '../../../utils/utils.dart';
 
 class LoanAll extends StatefulWidget {
@@ -19,11 +21,11 @@ class LoanAll extends StatefulWidget {
 
 class _LoanAllState extends State<LoanAll> {
   // service
-  LoanService _loanService = LoanService.instance;
+  LoanService _loanService = LoanService();
 
   // loan all list
-  List<LoanALl> loanAllList = [];
-  List<LoanALl> loan = [];
+  List<Loan> loanAllList = [];
+  List<Loan> loan = [];
 
   // text controller
   final TextEditingController _controller = TextEditingController();
@@ -39,7 +41,7 @@ class _LoanAllState extends State<LoanAll> {
   fetchLoanAll() async {
     _isloading = true;
     try {
-      List<LoanALl> loanAllDIsplay = await _loanService.findManyLoan();
+      List<Loan> loanAllDIsplay = await _loanService.findManyLoans();
       setState(() {
         loanAllList = loanAllDIsplay;
         loan = loanAllList;
@@ -237,7 +239,7 @@ class _LoanAllState extends State<LoanAll> {
                                                   'Total: ',
                                                 ),
                                                 Text(
-                                                  '\$${loanAllList[index].amountTotal.toString()}',
+                                                  '\$${loanAllList[index].amountTotal!.toStringAsFixed(0)}',
                                                 ),
                                               ],
                                             ),

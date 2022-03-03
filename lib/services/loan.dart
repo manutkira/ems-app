@@ -51,7 +51,7 @@ class LoanService extends BaseService {
     }
   }
 
-  createOneRecord(int userId, LoanRecord record) async {
+  createOneRecord(String userId, LoanRecord record) async {
     var payload = record.toJson();
     // removes unnecessary things
     payload.removeWhere((key, value) {
