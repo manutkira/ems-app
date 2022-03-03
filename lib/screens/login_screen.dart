@@ -4,7 +4,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/home_screen.dart';
-import 'package:ems/utils/services/auth_service.dart';
+import 'package:ems/services/auth.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/inputfield.dart';
 import 'package:ems/widgets/language_menu.dart';
@@ -37,6 +37,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   final AuthService _authService = AuthService.instance;
+
   Future<void> logUserIn() async {
     // reset error, start loading
     setStateIfMounted(() {

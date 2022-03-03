@@ -1,27 +1,45 @@
 // box.write('quote', 'GetX is the best');
 
 import 'package:dio/dio.dart';
+import 'package:ems/models/user.dart';
 import 'package:ems/services/base.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import '../persistence/current_user.dart';
 
 class AuthService extends BaseService {
+  static AuthService get instance => AuthService();
+
   // login(String phone, String password) async {
-  login() async {
+  login({
+    required String phone,
+    required String password,
+  }) async {
     try {
-      print('hey');
       Response res = await dio.post(
         'login',
         data: {
-          "phone": "123456789", // phone,
-          "password": "123456789", // password,
+          "phone": phone.toString(), // phone,
+          "password": password.toString(), // password,
         },
         options: Options(validateStatus: (status) => status == 200),
       );
-      // TODO: SAVE TOKEN AND USER TO LOCAL STORAGE
-      // await box.write(tokenBoxName, res.data['token']);
-      //
-      // print(box.read(tokenBoxName));
-      //
-      // print(res.data);
+
+      var tokenBox = Hive.box<String>(tokenBoxName);
+      var userBox = Hive.box<User>(currentUserBoxName);
+
+      User _user = User.fromJson(res.data['user']);
+      String _token = res.data['token'];
+
+      await userBox.put(
+        currentUserBoxName,
+        _user.copyWith(
+          image: _user.image.runtimeType != String ? null : _user.image,
+          role: _user.role ?? "Employee",
+          status: _user.status ?? "Active",
+        ),
+      );
+      await tokenBox.put(tokenBoxName, _token);
     } catch (err) {
       if (err is DioError) {
         print(err.response?.data);
@@ -36,8 +54,8 @@ class AuthService extends BaseService {
         'logout',
         options: Options(validateStatus: (status) => status == 200),
       );
-      // TODO: REMOVE TOKEN FROM LOCAL STORAGE
-      // await box.remove(tokenBoxName);
+      var tokenBox = Hive.box<String>(tokenBoxName);
+      await tokenBox.delete(tokenBoxName);
     } catch (err) {
       if (err is DioError) {
         print(err.response?.data);
@@ -53,14 +71,8 @@ class AuthService extends BaseService {
         'verify/$id?password=$password',
         options: Options(validateStatus: (status) => status == 200),
       );
-      print('hey');
       return true;
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
-        return false;
-      }
-      print(err);
       return false;
     }
   }
