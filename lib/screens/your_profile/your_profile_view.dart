@@ -244,7 +244,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                       ),
                       Expanded(
                         child: Text(
-                          "_currentUser.salary.toString()",
+                          "\$ ${_currentUser.salary?.toInt()}",
                           // ?? notAvailable
                           style: kParagraph,
                         ),

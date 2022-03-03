@@ -4,8 +4,8 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
-import 'package:ems/utils/services/auth_service.dart';
-import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/services/auth.dart';
+import 'package:ems/services/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:ems/widgets/textbox.dart';
@@ -38,6 +38,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   String mainError = "";
   bool isUploadingProfile = false;
   bool isUploadingID = false;
+  File? image;
+  File? imageId;
 
   late User _user;
   final AuthService _authService = AuthService.instance;
@@ -63,10 +65,17 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
     }
 
     try {
-      bool isVerified = await _authService.verifyPassword(
-          id: _user.id as int, password: oldPassword);
+      bool isVerified = await _authService.verify(
+        _user.id as int,
+        oldPassword,
+      );
+      // bool isVerified = await _authService.verify(
+      //   _user.id as int,
+      //   oldPassword,
+      // );
       return isVerified;
     } catch (err) {
+      print(err);
       setState(() {
         error = err.toString();
       });
@@ -78,9 +87,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   /// then setting the current user state
   Future<void> updateProfile() async {
     try {
-      User user = await _userService.updateOne(
-        user: _user.copyWith(),
-      );
+      User user = await _userService.updateOne(_user.copyWith(),
+          image: image, imageId: imageId);
       ref.read(currentUserProvider).setUser(user: user.copyWith());
     } catch (err) {
       //
@@ -140,9 +148,17 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
           }
         });
         try {
-          newUser = await _userService.uploadImage(
-              field: field, image: cropped, user: _user);
-          ref.read(currentUserProvider).setUser(user: newUser.copyWith());
+          setState(() {
+            if (field == UserImageType.profile) {
+              image = cropped;
+            }
+            if (field == UserImageType.id) {
+              imageId = cropped;
+            }
+          });
+          // newUser = await _userService.uploadImage(
+          //     field: field, image: cropped, user: _user);
+          // ref.read(currentUserProvider).setUser(user: newUser.copyWith());
         } catch (err) {
           // write error handling here
           setState(() {
@@ -742,6 +758,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         });
                       }
                       var isVerified = await confirmPassword();
+
                       if (isVerified) {
                         // update info here
                         await updateProfile();
