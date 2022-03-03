@@ -9,23 +9,23 @@ const currentUserBoxName = 'currentUser';
 const tokenBoxName = 'tokenBox';
 
 class CurrentUserStore {
-  final User initUser = User(
-    id: 0,
-    name: "UNREGISTERED USER",
-    phone: "012 345 678",
-    email: "",
-    emailVerifiedAt: DateTime.now(),
-    address: "",
-    position: "",
-    skill: "",
-    salary: "",
-    status: "",
-    password: "",
-    role: "",
-    rate: "",
-    createdAt: DateTime.now(),
-    updatedAt: DateTime.now(),
-  );
+  // final User initUser = User(
+  //   id: 0,
+  //   name: "UNREGISTERED USER",
+  //   phone: "012 345 678",
+  //   email: "",
+  //   emailVerifiedAt: DateTime.now(),
+  //   address: "",
+  //   position: "",
+  //   skill: "",
+  //   salary: "",
+  //   status: "",
+  //   password: "",
+  //   role: "",
+  //   rate: "",
+  //   createdAt: DateTime.now(),
+  //   updatedAt: DateTime.now(),
+  // );
 
   init() async {
     //initialize hive
@@ -40,6 +40,9 @@ class CurrentUserStore {
 
     final userBox = Hive.box<User>(currentUserBoxName);
     final tokenBox = Hive.box<String>(tokenBoxName);
+
+    await userBox.delete(currentUserBoxName);
+    await tokenBox.delete(tokenBoxName);
 
     /// fetch logged in user's information
     try {

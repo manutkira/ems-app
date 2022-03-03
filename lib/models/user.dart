@@ -1,81 +1,166 @@
-import 'dart:convert';
-
-import 'package:ems/utils/services/exceptions/user.dart';
+import 'package:ems/services/models/bank.dart';
+import 'package:ems/services/models/loan_record.dart';
+import 'package:ems/services/models/position.dart';
 import 'package:hive/hive.dart';
+
+import '../../utils/utils.dart';
 
 part 'user.g.dart';
 
-List<User> usersFromJson(List<dynamic> list) {
-  return List<User>.from(list.map((x) => User.fromJson(x)));
-}
+List<User> usersFromJson(List<dynamic>? list) {
+  if (list == null) return [];
 
-String usersToJson(List<User> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-class UserImageType {
-  static String get profile => "image";
-  static String get id => "image_id";
+  return list.map((json) => User.fromJson(json)).toList();
 }
 
 @HiveType(typeId: 0)
 class User {
-  User({
-    this.id,
-    this.name,
-    this.phone,
-    this.email,
-    this.emailVerifiedAt,
-    this.address,
-    this.password,
-    this.position,
-    this.skill,
-    this.salary,
-    this.role,
-    this.background,
-    this.status,
-    this.rate,
-    this.image,
-    this.imageId,
-    this.createdAt,
-    this.updatedAt,
-  });
-
   @HiveField(0)
   int? id;
   @HiveField(1)
   String? name;
   @HiveField(2)
-  String? phone;
+  String? khmer;
   @HiveField(3)
-  String? email;
+  String? phone;
   @HiveField(4)
-  DateTime? emailVerifiedAt;
-  @HiveField(5)
-  String? address;
-  @HiveField(6)
   String? password;
+  @HiveField(5)
+  String? email;
+  @HiveField(6)
+  String? address;
   @HiveField(7)
-  String? position;
-  @HiveField(8)
-  String? skill;
-  @HiveField(9)
-  String? salary;
-  @HiveField(10)
   String? role;
-  @HiveField(11)
-  String? background;
-  @HiveField(12)
+  @HiveField(8)
   String? status;
-  @HiveField(13)
-  String? rate;
-  @HiveField(14)
-  DateTime? createdAt;
-  @HiveField(15)
-  DateTime? updatedAt;
-  @HiveField(16)
+  @HiveField(9)
+  String? background;
+  @HiveField(10)
+  double? salary;
+  @HiveField(11)
   String? image;
-  @HiveField(17)
+  @HiveField(12)
   String? imageId;
+  List<Position>? positions;
+  List<Bank>? banks;
+  List<LoanRecord>? loans;
+
+  User({
+    this.id,
+    this.name,
+    this.khmer,
+    this.phone,
+    this.email,
+    this.password,
+    this.salary,
+    this.status,
+    this.address,
+    this.background,
+    this.positions,
+    this.role,
+    this.image,
+    this.imageId,
+    this.banks,
+    this.loans,
+  });
+
+  factory User.fromJson(Map<String, dynamic>? json) {
+    return User(
+      id: intParse(json?['id']),
+      name: json?['name'],
+      khmer: json?['khmer'],
+      email: json?['email'],
+      phone: json?['phone'],
+      salary: doubleParse(json?['salary']),
+      password: json?['password'],
+      address: json?['address'],
+      background: json?['background'],
+      role: json?['role'],
+      status: json?['status'],
+      image: json?['image'],
+      imageId: json?['image_id'],
+      positions: positionsFromJson(json?['positions']),
+      banks: banksFromJson(json?['bank']),
+      loans: loanRecordsFromJson(json?['loan_records']),
+    );
+  }
+
+  User copyWith({
+    int? id,
+    String? name,
+    String? khmer,
+    String? phone,
+    String? password,
+    String? email,
+    String? address,
+    String? role,
+    String? status,
+    String? background,
+    double? salary,
+    String? image,
+    String? imageId,
+    List<Position>? positions,
+    List<Bank>? banks,
+    List<LoanRecord>? loans,
+  }) =>
+      User(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        khmer: khmer ?? this.khmer,
+        phone: phone ?? this.phone,
+        password: password ?? this.password,
+        email: email ?? this.email,
+        address: address ?? this.address,
+        role: role ?? this.role,
+        status: status ?? this.status,
+        background: background ?? this.background,
+        salary: salary ?? this.salary,
+        image: image ?? this.image,
+        imageId: imageId ?? this.imageId,
+        positions: positions ?? this.positions,
+        banks: banks ?? this.banks,
+        loans: loans ?? this.loans,
+      );
+
+  Map<String, dynamic> buildCleanJson() {
+    Map<String, dynamic> json = toJson();
+    json.removeWhere((key, value) => value == null);
+    return json;
+  }
+
+  Map<String, dynamic> toCleanJson() {
+    var obj = toJson();
+    obj.removeWhere((key, value) {
+      if ((key == "id" ||
+              key == 'name' ||
+              key == 'phone' ||
+              key == 'email' ||
+              key == 'password' ||
+              key == 'role') &&
+          (value == null || value == 'null' || value.toString().isEmpty)) {
+        return true;
+      }
+      return false;
+    });
+    return obj;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "name": name,
+      "khmer": khmer,
+      "phone": phone,
+      "email": email,
+      "password": password,
+      "address": address,
+      "background": background,
+      "role": role,
+      "status": status,
+      "image": image,
+      "image_id": imageId,
+    };
+  }
 
   bool get isEmpty {
     return id == null ||
@@ -88,118 +173,5 @@ class User {
 
   bool get isNotEmpty {
     return !isEmpty;
-  }
-
-  factory User.fromRawJson(String str) => User.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    User? user;
-
-    try {
-      user = User(
-        id: json["id"],
-        name: json["name"],
-        phone: json["phone"],
-        email: json["email"],
-        emailVerifiedAt: json["email_verified_at"] == null
-            ? null
-            : DateTime.parse(json["email_verified_at"]),
-        address: json["address"],
-        image: json["image"],
-        imageId: json["image_id"],
-        position: json["position"],
-        skill: json["skill"],
-        salary: json["salary"],
-        role: json["role"],
-        background: json["background"],
-        status: json["status"],
-        rate: json["rate"],
-        createdAt: json["created_at"] == null
-            ? null
-            : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null
-            ? null
-            : DateTime.parse(json["updated_at"]),
-      );
-      return user;
-    } catch (e) {
-      throw UserException(code: 1);
-    }
-  }
-
-  User copyWith({
-    int? id,
-    String? name,
-    String? phone,
-    String? email,
-    String? password,
-    DateTime? emailVerifiedAt,
-    String? address,
-    String? position,
-    String? skill,
-    String? salary,
-    String? role,
-    String? background,
-    String? status,
-    String? rate,
-    String? image,
-    String? imageId,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) =>
-      User(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        phone: phone ?? this.phone,
-        email: email ?? this.email,
-        password: password ?? this.password,
-        emailVerifiedAt: emailVerifiedAt ?? this.emailVerifiedAt,
-        address: address ?? this.address,
-        position: position ?? this.position,
-        skill: skill ?? this.skill,
-        salary: salary ?? this.salary,
-        role: role ?? this.role,
-        background: background ?? this.background,
-        status: status ?? this.status,
-        rate: rate ?? this.rate,
-        image: image ?? this.image,
-        imageId: imageId ?? this.imageId,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-      );
-
-  Map<String, dynamic> buildCleanJson() {
-    Map<String, dynamic> json = toJson();
-    json.removeWhere((key, value) => value == null);
-    return json;
-  }
-
-  Map<String, dynamic> toJson() {
-    if (name == null || name!.isEmpty || phone == null) {
-      throw UserException(code: 2);
-    }
-
-    return {
-      "id": id,
-      "name": name,
-      "phone": phone,
-      "email": email,
-      "email_verified_at": emailVerifiedAt?.toIso8601String(),
-      "password": password,
-      "address": address,
-      "position": position,
-      "skill": skill,
-      "salary": salary,
-      "role": role,
-      "background": background,
-      "status": status,
-      "rate": rate,
-      "image": image,
-      "image_id": imageId,
-      "created_at": createdAt?.toIso8601String(),
-      "updated_at": updatedAt?.toIso8601String(),
-    };
   }
 }

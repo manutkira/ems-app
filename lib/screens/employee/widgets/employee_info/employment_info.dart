@@ -152,12 +152,13 @@ class EmploymentInfo extends StatelessWidget {
                                           userDisplay[0].name.toString(),
                                           userDisplay[0].phone.toString(),
                                           userDisplay[0].id as int,
-                                          userDisplay[0].position.toString(),
-                                          userDisplay[0].skill.toString(),
+                                          // TODO: CHANGE THIS
+                                          "userDisplay[0].position.toString()",
+                                          "userDisplay[0].skill.toString()",
                                           userDisplay[0].salary.toString(),
                                           userDisplay[0].role.toString(),
                                           userDisplay[0].status.toString(),
-                                          userDisplay[0].rate.toString(),
+                                          "userDisplay[0].rate.toString()",
                                         )));
                             user = [];
                             userDisplay = [];

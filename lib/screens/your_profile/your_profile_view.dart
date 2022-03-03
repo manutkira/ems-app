@@ -200,40 +200,40 @@ class YourProfileViewScreen extends ConsumerWidget {
                     style: _sectionTitleStyle,
                   ),
                   _buildSpacer(context),
-                  BaselineRow(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "${local?.position}",
-                          style: _labelStyle,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          _currentUser.position ?? notAvailable,
-                          style: kParagraph,
-                        ),
-                      ),
-                    ],
-                  ),
-                  _buildSpacer(context),
-                  BaselineRow(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "${local?.skill}",
-                          style: _labelStyle,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          _currentUser.skill ?? notAvailable,
-                          style: kParagraph,
-                        ),
-                      ),
-                    ],
-                  ),
-                  _buildSpacer(context),
+                  // BaselineRow(
+                  //   children: [
+                  //     Expanded(
+                  //       child: Text(
+                  //         "${local?.position}",
+                  //         style: _labelStyle,
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: Text(
+                  //         _currentUser.position ?? notAvailable,
+                  //         style: kParagraph,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // _buildSpacer(context),
+                  // BaselineRow(
+                  //   children: [
+                  //     Expanded(
+                  //       child: Text(
+                  //         "${local?.skill}",
+                  //         style: _labelStyle,
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: Text(
+                  //         _currentUser.skill ?? notAvailable,
+                  //         style: kParagraph,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // _buildSpacer(context),
                   BaselineRow(
                     children: [
                       Expanded(
@@ -244,30 +244,31 @@ class YourProfileViewScreen extends ConsumerWidget {
                       ),
                       Expanded(
                         child: Text(
-                          _currentUser.salary ?? notAvailable,
+                          "_currentUser.salary.toString()",
+                          // ?? notAvailable
                           style: kParagraph,
                         ),
                       ),
                     ],
                   ),
                   _buildSpacer(context),
-                  BaselineRow(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "${local?.rate}",
-                          style: _labelStyle,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          _currentUser.rate ?? notAvailable,
-                          style: kParagraph,
-                        ),
-                      ),
-                    ],
-                  ),
-                  _buildSpacer(context),
+                  // BaselineRow(
+                  //   children: [
+                  //     Expanded(
+                  //       child: Text(
+                  //         "${local?.rate}",
+                  //         style: _labelStyle,
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: Text(
+                  //         _currentUser.rate ?? notAvailable,
+                  //         style: kParagraph,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // _buildSpacer(context),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
