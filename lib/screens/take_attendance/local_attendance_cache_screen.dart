@@ -1,6 +1,6 @@
 import 'package:ems/constants.dart';
 import 'package:ems/persistence/attendances.dart';
-import 'package:ems/utils/services/attendance_service.dart';
+import 'package:ems/services/attendance.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:flutter/material.dart';

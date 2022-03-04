@@ -5,7 +5,7 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/attendance.dart';
 import 'package:ems/persistence/attendances.dart';
 import 'package:ems/screens/take_attendance/widgets/employee_confirmation.dart';
-import 'package:ems/utils/services/attendance_service.dart';
+import 'package:ems/services/attendance.dart';
 import 'package:ems/widgets/statuses/info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +76,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
         // if online
         await _attService.createOneRecord(
           userId: attendance?.userId as int,
-          datetime: attendance?.date as DateTime,
+          date: attendance?.date as DateTime,
           note: attendance?.note,
           // attendance: attendance as Attendance,
         );
@@ -91,13 +91,8 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
           },
           "user_id": userFromQR['id'],
           "time": attendance?.date?.toIso8601String(),
+          "note": attendance?.note,
         };
-
-        if (attendance?.note == null ||
-            "${attendance?.note}".isEmpty ||
-            "${attendance?.note}" == "null") {
-          att['note'] = "${attendance?.note}";
-        }
 
         await ref.read(localAttendanceCacheProvider).add(att);
       }

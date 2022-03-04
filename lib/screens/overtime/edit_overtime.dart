@@ -58,7 +58,7 @@ class _EditOvertimeState extends State<EditOvertime> {
             ),
           );
         } else {
-          await _attendanceService.createOne(
+          await _attendanceService.createOneRecord(
             userId: record.user?.id as int,
             note: _noteController.text,
             date: record.date!.copyWith(
@@ -75,7 +75,7 @@ class _EditOvertimeState extends State<EditOvertime> {
             ),
           );
         } else {
-          await _attendanceService.createOne(
+          await _attendanceService.createOneRecord(
             userId: record.user?.id as int,
             date: record.date!.copyWith(
               hour: endedTime?.hour,
