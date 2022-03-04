@@ -32,16 +32,21 @@ class ProfileAvatar extends ConsumerWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(1000),
-            child: Image.network(
-              "${_user?.image}",
-              fit: BoxFit.cover,
-              errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
-                return Image.asset(
-                  "assets/images/bigprofile.png",
-                  fit: BoxFit.cover,
-                );
-              },
-            ),
+            child: _user?.image == "null"
+                ? Image.asset(
+                    "assets/images/bigprofile.png",
+                    fit: BoxFit.cover,
+                  )
+                : Image.network(
+                    "${_user?.image}",
+                    fit: BoxFit.cover,
+                    errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
+                      return Image.asset(
+                        "assets/images/bigprofile.png",
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  ),
           ),
         );
       },

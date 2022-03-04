@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:ems/services/base.dart';
 import 'package:ems/services/models/overtime.dart';
-import 'package:ems/services/models/user.dart';
+import 'package:ems/models/user.dart';
 import '../utils/utils.dart';
 
 class OvertimeService extends BaseService {
+  static OvertimeService get instance => OvertimeService();
+
   findMany({
     DateTime? start,
     DateTime? end,
@@ -25,8 +27,7 @@ class OvertimeService extends BaseService {
       );
 
       List<OvertimesByDate> list =
-          overtimesByDatesFromJson(res.data['attendances']);
-      print(list);
+          overtimesByDatesFromJson(res.data['attendance']);
       return list;
     } catch (err) {
       if (err is DioError) {
@@ -66,7 +67,10 @@ class OvertimeService extends BaseService {
       var data = res.data['data'];
 
       if (data['attendances'].length == 0) {
-        return [];
+        return OvertimesWithTotal.fromJson(
+          data['total_hour'],
+          [],
+        );
       }
 
       User user = User.fromJson(data['users']);
@@ -78,7 +82,7 @@ class OvertimeService extends BaseService {
 
       // add user object to overtime.user
       // list.first.overtimes?.first.user?.name would return the user name
-      List<OvertimesByDate> finalList = list
+      List<OvertimesByDate> listWithUsers = list
           .map(
             // add all new overtime records
             (obd) => obd.copyWith(
@@ -93,8 +97,13 @@ class OvertimeService extends BaseService {
             ),
           )
           .toList();
-      print(finalList);
-      return finalList;
+
+      OvertimesWithTotal owt = OvertimesWithTotal.fromJson(
+        data['total_hour'],
+        listWithUsers,
+      );
+
+      return owt;
     } catch (err) {
       if (err is DioError) {
         print(err.response?.data);

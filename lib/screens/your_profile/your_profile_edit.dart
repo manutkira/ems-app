@@ -4,8 +4,8 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
-import 'package:ems/utils/services/auth_service.dart';
-import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/services/auth.dart';
+import 'package:ems/services/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:ems/widgets/textbox.dart';
@@ -38,6 +38,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   String mainError = "";
   bool isUploadingProfile = false;
   bool isUploadingID = false;
+  File? image;
+  File? imageId;
 
   late User _user;
   final AuthService _authService = AuthService.instance;
@@ -63,10 +65,17 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
     }
 
     try {
-      bool isVerified = await _authService.verifyPassword(
-          id: _user.id as int, password: oldPassword);
+      bool isVerified = await _authService.verify(
+        _user.id as int,
+        oldPassword,
+      );
+      // bool isVerified = await _authService.verify(
+      //   _user.id as int,
+      //   oldPassword,
+      // );
       return isVerified;
     } catch (err) {
+      print(err);
       setState(() {
         error = err.toString();
       });
@@ -78,9 +87,8 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   /// then setting the current user state
   Future<void> updateProfile() async {
     try {
-      User user = await _userService.updateOne(
-        user: _user.copyWith(),
-      );
+      User user = await _userService.updateOne(_user.copyWith(),
+          image: image, imageId: imageId);
       ref.read(currentUserProvider).setUser(user: user.copyWith());
     } catch (err) {
       //
@@ -140,9 +148,17 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
           }
         });
         try {
-          newUser = await _userService.uploadImage(
-              field: field, image: cropped, user: _user);
-          ref.read(currentUserProvider).setUser(user: newUser.copyWith());
+          setState(() {
+            if (field == UserImageType.profile) {
+              image = cropped;
+            }
+            if (field == UserImageType.id) {
+              imageId = cropped;
+            }
+          });
+          // newUser = await _userService.uploadImage(
+          //     field: field, image: cropped, user: _user);
+          // ref.read(currentUserProvider).setUser(user: newUser.copyWith());
         } catch (err) {
           // write error handling here
           setState(() {
@@ -193,9 +209,51 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              const Center(
-                child: ProfileAvatar(
-                  isDarkBackground: false,
+              Visibility(
+                visible: image != null,
+                child: Stack(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      height: 200,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        color: kDarkestBlue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: image == null ? Container() : Image.file(image!),
+                      ),
+                    ),
+                    Positioned(
+                      right: 4,
+                      top: 4,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(40),
+                        child: Material(
+                          shape: const CircleBorder(),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              setState(() {
+                                image = null;
+                              });
+                            },
+                            icon: const Icon(Icons.close),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: image == null,
+                child: const Center(
+                  child: ProfileAvatar(
+                    isDarkBackground: false,
+                  ),
                 ),
               ),
               _buildSpacerHeight(),
@@ -391,74 +449,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
-              Visibility(
-                visible: isAdmin,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${local?.employeeInfo}",
-                      style:
-                          kHeadingThree.copyWith(fontWeight: FontWeight.w400),
-                    ),
-                    const SizedBox(height: 20),
-                    // rowWithInput(
-                    //   size: _size,
-                    //   defaultText: _user.position,
-                    //   label: "${local?.position}",
-                    //   textHint: "${local?.position}",
-                    //   getValue: (value) {
-                    //     setState(() {
-                    //       _user.position = "$value";
-                    //     });
-                    //   },
-                    // ),
-                    // _buildSpacerHeight(),
-                    // rowWithInput(
-                    //   size: _size,
-                    //   defaultText: _user.skill,
-                    //   label: "${local?.skill}",
-                    //   textHint: "${local?.design}...",
-                    //   getValue: (value) {
-                    //     setState(() {
-                    //       _user.skill = "$value";
-                    //     });
-                    //   },
-                    // ),
-                    _buildSpacerHeight(),
-                    rowWithInput(
-                      size: _size,
-                      icon: MdiIcons.currencyUsd,
-                      defaultText: _user.salary.toString(),
-                      label: "${local?.salary}",
-                      textHint: "${local?.salary}",
-                      getValue: (value) {
-                        setState(() {
-                          _user.salary = doubleParse(value);
-                        });
-                      },
-                    ),
-                    _buildSpacerHeight(),
-                    // rowWithInput(
-                    //   size: _size,
-                    //   defaultText: _user.rate,
-                    //   label: 'Rate',
-                    //   textHint: 'Good',
-                    //   getValue: (value) {
-                    //     setState(() {
-                    //       _user.rate = "$value";
-                    //     });
-                    //   },
-                    // ),
-                    // _buildSpacerHeight(),
-                  ],
-                ),
-              ), // Employment Info
-              Visibility(
-                visible: isAdmin,
-                child: const SizedBox(height: 40),
-              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -520,20 +511,52 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
       constraints: const BoxConstraints(minHeight: 120),
       child: Stack(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network("${user.imageId}", fit: BoxFit.contain,
-                errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
-              return Visibility(
-                visible: !isUploadingID,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 40),
-                    child: Text('${local?.errorId}'),
+          Visibility(
+            visible: imageId != null,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: imageId == null ? Container() : Image.file(imageId!),
+            ),
+          ),
+          Positioned(
+            right: 4,
+            top: 4,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(40),
+              child: Container(
+                child: Material(
+                  shape: const CircleBorder(),
+                  child: IconButton(
+                    constraints: BoxConstraints(maxHeight: 30, maxWidth: 30),
+                    padding: EdgeInsets.all(2),
+                    onPressed: () {
+                      setState(() {
+                        imageId = null;
+                      });
+                    },
+                    icon: const Icon(Icons.close),
                   ),
                 ),
-              );
-            }),
+              ),
+            ),
+          ),
+          Visibility(
+            visible: imageId == null,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network("${user.imageId}", fit: BoxFit.contain,
+                  errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
+                return Visibility(
+                  visible: !isUploadingID,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 40),
+                      child: Text('${local?.errorId}'),
+                    ),
+                  ),
+                );
+              }),
+            ),
           ),
           Positioned(
             right: 5,
@@ -742,6 +765,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                         });
                       }
                       var isVerified = await confirmPassword();
+
                       if (isVerified) {
                         // update info here
                         await updateProfile();

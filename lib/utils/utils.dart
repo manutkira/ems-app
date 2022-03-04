@@ -165,11 +165,13 @@ Duration? convertStringToDuration(String? str) {
   );
 }
 
-String? convertDurationToString(Duration? duration) {
-  if (duration == null) return null;
-  String hours = "${duration.inHours}".padLeft(2, '0');
-  String minutes = "${duration.inMinutes}".padLeft(2, '0');
-  String seconds = "${duration.inSeconds}".padLeft(2, '0');
+String convertDurationToString(Duration? duration) {
+  if (duration == null) return "00:00:00";
+  var arr = duration.toString().split(":");
+
+  String hours = arr[0].padLeft(2, '0');
+  String minutes = arr[1].padLeft(2, '0');
+  String seconds = arr[2].split(".")[0].padLeft(2, '0');
   return "$hours:$minutes:$seconds";
 }
 
