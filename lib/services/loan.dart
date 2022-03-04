@@ -4,7 +4,7 @@ import 'package:ems/services/models/loan.dart';
 import 'package:ems/services/models/loan_record.dart';
 
 class LoanService extends BaseService {
-  findManyRecords(int userId) async {
+  findManyRecords(String userId) async {
     try {
       Response res = await dio.get(
         'users/$userId/loan',

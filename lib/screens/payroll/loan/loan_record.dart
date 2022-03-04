@@ -1,19 +1,14 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:convert';
-
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
-
-import 'package:ems/models/loan.dart';
-import 'package:ems/utils/services/payroll_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../../../services/loan.dart';
 import '../../../services/models/loan_record.dart' as loanRecord;
-import '../../../services/models/loan_record.dart' as record;
+import '../../../services/models/loan_record.dart' as records;
 
 import '../../../constants.dart';
 
@@ -30,11 +25,11 @@ class LoanRecord extends StatefulWidget {
 
 class _LoanRecordState extends State<LoanRecord> {
   // service
-  final PayrollService _payrollService = PayrollService.instance;
-  LoanService _loanService = LoanService();
+  // final new_service.LoanService _loanService = new_service.LoanService();
+  final LoanService _loanService = LoanService();
 
   // list laon
-  List<Loan> loanList = [];
+  List<records.LoanRecord> loanList = [];
 
   // boolean
   bool _isLoading = true;
@@ -53,17 +48,21 @@ class _LoanRecordState extends State<LoanRecord> {
   // fetch loan from api
   fetchLoanById() async {
     try {
-      List<Loan> loanDisplay =
-          await _payrollService.findManyLoanById(widget.id);
+      setState(() {
+        _isLoading = true;
+      });
+      List<records.LoanRecord> loanDisplay =
+          await _loanService.findManyRecords(widget.id);
       if (mounted) {
         setState(() {
-          _isLoading = true;
           loanList = loanDisplay;
           _isLoading = false;
         });
       }
     } catch (err) {}
   }
+
+  GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   // date picker for start date
   void _startDatePicker() {
@@ -85,233 +84,6 @@ class _LoanRecordState extends State<LoanRecord> {
     });
   }
 
-  bottomSheet(function) {
-    AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
-    return showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        builder: (_) {
-          return Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: Container(
-              height: 400,
-              decoration: const BoxDecoration(
-                color: kBlue,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(30),
-                  topLeft: Radius.circular(30),
-                ),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 25, right: 15, bottom: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Date ',
-                            style: kParagraph.copyWith(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            width: isEnglish ? 36 : 29,
-                          ),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.6),
-                            child: Flex(
-                              direction: Axis.horizontal,
-                              children: [
-                                Flexible(
-                                  child: SizedBox(
-                                    height: 50,
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.only(left: 10),
-                                        hintText: 'Enter Date',
-                                        suffixIcon: IconButton(
-                                            onPressed: () {
-                                              _startDatePicker();
-                                            },
-                                            icon: const Icon(
-                                              MdiIcons.calendar,
-                                              color: Colors.white,
-                                            )),
-                                        errorStyle: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      controller: dateController,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 25, right: 15, bottom: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Amount',
-                            style: kParagraph.copyWith(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            width: isEnglish ? 52 : 48,
-                          ),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.6),
-                            child: Flex(
-                              direction: Axis.horizontal,
-                              children: [
-                                Flexible(
-                                  child: SizedBox(
-                                    height: 50,
-                                    child: TextFormField(
-                                      keyboardType: TextInputType.number,
-                                      textInputAction: TextInputAction.next,
-                                      decoration: const InputDecoration(
-                                        contentPadding:
-                                            EdgeInsets.only(left: 10),
-                                        hintText: 'Enter Amount',
-                                        errorStyle: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      controller: amountController,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 25, right: 15, bottom: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Reason',
-                            style: kParagraph.copyWith(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            width: isEnglish ? 52 : 48,
-                          ),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.6),
-                            child: Flex(
-                              direction: Axis.horizontal,
-                              children: [
-                                Flexible(
-                                  child: TextFormField(
-                                    textInputAction: TextInputAction.done,
-                                    maxLines: 5,
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.only(
-                                        left: 10,
-                                        top: 20,
-                                      ),
-                                      hintText: 'Enter Reason',
-                                      errorStyle: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    controller: reasonController,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        RaisedButton(
-                          onPressed: () => function,
-                          color: Theme.of(context).primaryColor,
-                          child: Text(
-                            '${local?.save}',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        RaisedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          color: Colors.red,
-                          child: Text(
-                            '${local?.cancel}',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -328,17 +100,22 @@ class _LoanRecordState extends State<LoanRecord> {
         title: const Text('Loan'),
         actions: [
           IconButton(
-            onPressed: () {
-              record.LoanRecord loanRecord = record.LoanRecord(
-                  amount: int.parse(amountController.text),
-                  reason: reasonController.text,
-                  date: pickStart);
-              MybottonSheet(
-                () => createOne(widget.id, loanRecord),
+            onPressed: () async {
+              await MybottonSheet(
+                () {
+                  records.LoanRecord loanRecord = records.LoanRecord(
+                      amount: int.parse(amountController.text),
+                      reason: reasonController.text,
+                      date: pickStart);
+                  createOne(widget.id, loanRecord);
+                },
                 context,
                 isEnglish,
                 local,
               );
+              amountController.text = '';
+              dateController.text = '';
+              reasonController.text = '';
             },
             icon: const Icon(Icons.add),
           ),
@@ -395,7 +172,7 @@ class _LoanRecordState extends State<LoanRecord> {
                         physics: const ClampingScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: (contexxt, index) {
-                          Loan record = loanList[index];
+                          records.LoanRecord record = loanList[index];
                           return _buildResult(
                             record,
                             context,
@@ -415,25 +192,25 @@ class _LoanRecordState extends State<LoanRecord> {
         isScrollControlled: true,
         context: context,
         builder: (_) {
-          return Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: Container(
-              height: 400,
-              decoration: const BoxDecoration(
-                color: kBlue,
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(30),
-                  topLeft: Radius.circular(30),
-                ),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 20,
+          return Form(
+            key: _key,
+            child: Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: Container(
+                height: 500,
+                decoration: const BoxDecoration(
+                  color: kBlue,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(30),
+                    topLeft: Radius.circular(30),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Padding(
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
                       padding: const EdgeInsets.only(
                           left: 25, right: 15, bottom: 15),
                       child: Row(
@@ -455,29 +232,30 @@ class _LoanRecordState extends State<LoanRecord> {
                               direction: Axis.horizontal,
                               children: [
                                 Flexible(
-                                  child: SizedBox(
-                                    height: 50,
-                                    child: TextFormField(
-                                      readOnly: true,
-                                      decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.only(left: 10),
-                                        hintText: 'Enter Date',
-                                        suffixIcon: IconButton(
-                                            onPressed: () {
-                                              _startDatePicker();
-                                            },
-                                            icon: const Icon(
-                                              MdiIcons.calendar,
-                                              color: Colors.white,
-                                            )),
-                                        errorStyle: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                  child: TextFormField(
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'required';
+                                      }
+                                      return null;
+                                    },
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter Date',
+                                      suffixIcon: IconButton(
+                                          onPressed: () {
+                                            _startDatePicker();
+                                          },
+                                          icon: const Icon(
+                                            MdiIcons.calendar,
+                                            color: Colors.white,
+                                          )),
+                                      errorStyle: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      controller: dateController,
                                     ),
+                                    controller: dateController,
                                   ),
                                 ),
                               ],
@@ -486,13 +264,10 @@ class _LoanRecordState extends State<LoanRecord> {
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Padding(
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
                       padding: const EdgeInsets.only(
                           left: 25, right: 15, bottom: 15),
                       child: Row(
@@ -514,73 +289,26 @@ class _LoanRecordState extends State<LoanRecord> {
                               direction: Axis.horizontal,
                               children: [
                                 Flexible(
-                                  child: SizedBox(
-                                    height: 50,
-                                    child: TextFormField(
-                                      keyboardType: TextInputType.number,
-                                      textInputAction: TextInputAction.next,
-                                      decoration: const InputDecoration(
-                                        contentPadding:
-                                            EdgeInsets.only(left: 10),
-                                        hintText: 'Enter Amount',
-                                        errorStyle: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      controller: amountController,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 25, right: 15, bottom: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Reason',
-                            style: kParagraph.copyWith(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            width: isEnglish ? 52 : 48,
-                          ),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.6),
-                            child: Flex(
-                              direction: Axis.horizontal,
-                              children: [
-                                Flexible(
                                   child: TextFormField(
-                                    textInputAction: TextInputAction.done,
-                                    maxLines: 5,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Required';
+                                      }
+                                      if (!RegExp(r'[0-9]').hasMatch(value)) {
+                                        return 'Please Enter number';
+                                      }
+                                      return null;
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    textInputAction: TextInputAction.next,
                                     decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.only(
-                                        left: 10,
-                                        top: 20,
-                                      ),
-                                      hintText: 'Enter Reason',
+                                      hintText: 'Enter Amount',
                                       errorStyle: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    controller: reasonController,
+                                    controller: amountController,
                                   ),
                                 ),
                               ],
@@ -589,55 +317,111 @@ class _LoanRecordState extends State<LoanRecord> {
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        RaisedButton(
-                          onPressed: () {
-                            function();
-                          },
-                          color: Theme.of(context).primaryColor,
-                          child: Text(
-                            '${local?.save}',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        RaisedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          color: Colors.red,
-                          child: Text(
-                            '${local?.cancel}',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
+                    const SizedBox(
+                      height: 10,
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.all(0),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 25, right: 15, bottom: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Reason',
+                              style: kParagraph.copyWith(
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              width: isEnglish ? 52 : 48,
+                            ),
+                            Container(
+                              constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width * 0.6),
+                              child: Flex(
+                                direction: Axis.horizontal,
+                                children: [
+                                  Flexible(
+                                    child: TextFormField(
+                                      textInputAction: TextInputAction.done,
+                                      maxLines: 5,
+                                      decoration: const InputDecoration(
+                                        contentPadding: EdgeInsets.only(
+                                          left: 10,
+                                          top: 20,
+                                        ),
+                                        hintText: 'Enter Reason',
+                                        errorStyle: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      controller: reasonController,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 30),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          RaisedButton(
+                            onPressed: () async {
+                              if (_key.currentState!.validate()) {
+                                await function();
+                                loanList = [];
+                                await fetchLoanById();
+                                Navigator.pop(context);
+                              }
+                            },
+                            color: Theme.of(context).primaryColor,
+                            child: Text(
+                              '${local?.save}',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          RaisedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            color: Colors.red,
+                            child: Text(
+                              '${local?.cancel}',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
         });
   }
 
-  Widget _buildResult(Loan record, BuildContext context) {
+  Widget _buildResult(records.LoanRecord record, BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     return ExpansionTile(
@@ -707,7 +491,7 @@ class _LoanRecordState extends State<LoanRecord> {
                     SizedBox(
                       width: 150,
                       child: Text(
-                        record.reason,
+                        record.reason.toString(),
                         textAlign: TextAlign.end,
                         style: const TextStyle(height: 1.5),
                       ),
@@ -726,19 +510,25 @@ class _LoanRecordState extends State<LoanRecord> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                       onPressed: () async {
-                        int loanId = record.id;
-                        amountController.text = record.amount;
+                        int loanId = record.id!;
+                        amountController.text = record.amount.toString();
                         dateController.text = DateFormat('dd-MM-yyyy')
                             .format(DateTime.tryParse(record.date.toString())!);
-                        reasonController.text = record.reason;
+                        reasonController.text = record.reason!;
                         pickStart = DateTime.tryParse(record.date!.toString());
 
-                        await MybottonSheet(
-                            () => editLoan(loanId), context, isEnglish, local);
-                        amountController.text = '';
-                        dateController.text = '';
-                        reasonController.text = '';
-                        fetchLoanById();
+                        await MybottonSheet(() {
+                          records.LoanRecord loanRecord = records.LoanRecord(
+                              amount: int.parse(amountController.text),
+                              reason: reasonController.text,
+                              date: pickStart,
+                              id: loanId);
+                          updateONe(loanRecord);
+                        }, context, isEnglish, local);
+                        // amountController.text = '';
+                        // dateController.text = '';
+                        // reasonController.text = '';
+                        // fetchLoanById();
                       },
                       child: Text('Edit'),
                     ),
@@ -752,7 +542,7 @@ class _LoanRecordState extends State<LoanRecord> {
                           borderRadius: BorderRadius.circular(10)),
                       child: Text('Delete'),
                       onPressed: () async {
-                        int loanId = record.id;
+                        int loanId = record.id!;
                         await showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
@@ -821,72 +611,11 @@ class _LoanRecordState extends State<LoanRecord> {
     }
   }
 
-  editLoan(int loanId) async {
-    var aAmount = amountController.text;
-    var aReason = reasonController.text;
-    DateTime aDate = pickStart!;
-
-    var request = await http.MultipartRequest(
-        'POST',
-        Uri.parse(
-            "http://rest-api-laravel-flutter.herokuapp.com/api/loan/$loanId?_method=PUT"));
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Content": "charset-UTF-8",
-    };
-
-    request.files.add(http.MultipartFile.fromString('amount', aAmount));
-    request.files.add(http.MultipartFile.fromString('reasons', aReason));
-
-    if (pickStart != null) {
-      DateTime aStartDate = pickStart as DateTime;
-      request.files
-          .add(http.MultipartFile.fromString('date', aDate.toString()));
-    }
-
-    request.headers.addAll(headers);
-
-    var res = await request.send();
-    print(res.statusCode);
-    if (res.statusCode == 200) {
-      Navigator.pop(context);
-    }
-    res.stream.transform(utf8.decoder).listen((event) {});
+  updateONe(loanRecord.LoanRecord record) {
+    _loanService.updateOneRecord(record);
   }
 
   createOne(String id, loanRecord.LoanRecord record) {
     _loanService.createOneRecord(id, record);
-  }
-
-  addLoan() async {
-    var aAmount = amountController.text;
-    var aReason = reasonController.text;
-
-    var request = await http.MultipartRequest(
-        'POST', Uri.parse("$urlUser/${widget.id}/loan"));
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Content": "charset-UTF-8",
-    };
-    if (pickStart != null) {
-      request.files.add(http.MultipartFile.fromString('amount', aAmount));
-      request.files.add(http.MultipartFile.fromString('reason', aReason));
-      DateTime aDate = pickStart!;
-      request.files
-          .add(http.MultipartFile.fromString('date', aDate.toString()));
-    }
-
-    request.headers.addAll(headers);
-
-    var res = await request.send();
-    print(res.statusCode);
-    if (res.statusCode == 201) {
-      Navigator.of(context).pop();
-      amountController.text = '';
-      dateController.text = '';
-      reasonController.text = '';
-      fetchLoanById();
-    }
-    res.stream.transform(utf8.decoder).listen((event) {});
   }
 }

@@ -2,11 +2,11 @@
 
 import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
-
-import 'package:ems/models/payroll.dart';
-import 'package:ems/utils/services/payroll_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+
+import '../../services/payroll.dart' as new_service;
+import '../../services/models/payroll.dart' as new_model;
 
 class ViewPayrollScreen extends StatefulWidget {
   int paymentId;
@@ -21,10 +21,11 @@ class ViewPayrollScreen extends StatefulWidget {
 
 class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
   // service
-  final PayrollService _payrollService = PayrollService.instance;
+  final new_service.PayrollService _payrollService =
+      new_service.PayrollService();
 
   //  payroll
-  Payroll? payroll;
+  new_model.Payroll? payroll;
 
   // boolean
   bool _isLoading = true;
@@ -35,12 +36,14 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
   String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
   fetchPayrollById() async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
-      Payroll payrollDisplay =
-          await _payrollService.findOnePayroll(paymentId: widget.paymentId);
+      new_model.Payroll payrollDisplay =
+          await _payrollService.findOne(widget.paymentId);
       if (mounted) {
         setState(() {
-          _isLoading = true;
           payroll = payrollDisplay;
           _isLoading = false;
         });
@@ -52,7 +55,7 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
 
   updateStatus() async {
     try {
-      await _payrollService.updateStatus(widget.paymentId);
+      await _payrollService.markAsPaid(widget.paymentId);
     } catch (err) {
       rethrow;
     }
@@ -114,7 +117,7 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                'From ${DateFormat('dd-MM-yyyy').format(payroll!.dateFrom)}',
+                                'From ${DateFormat('dd-MM-yyyy').format(payroll!.dateFrom!)}',
                                 style: const TextStyle(
                                   fontSize: 15,
                                 ),
@@ -123,7 +126,7 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                                 height: 10,
                               ),
                               Text(
-                                'To ${DateFormat('dd-MM-yyyy').format(payroll!.dateTo)}',
+                                'To ${DateFormat('dd-MM-yyyy').format(payroll!.dateTo!)}',
                                 style: const TextStyle(
                                   fontSize: 16,
                                 ),
@@ -150,9 +153,9 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                             ),
                           ),
                           Text(
-                            !payroll!.status ? 'Pending' : 'Paid',
+                            !payroll!.status! ? 'Pending' : 'Paid',
                             style: TextStyle(
-                              color: !payroll!.status
+                              color: !payroll!.status!
                                   ? Colors.orange
                                   : Colors.green,
                               fontSize: 16,
@@ -311,9 +314,10 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                                   content: const Text('Do you want to pay?'),
                                   actions: [
                                     OutlineButton(
-                                      onPressed: () {
+                                      onPressed: () async {
+                                        await updateStatus();
                                         Navigator.of(context).pop();
-                                        updateStatus();
+                                        fetchPayrollById();
                                       },
                                       child: Text('${local?.yes}'),
                                       borderSide:

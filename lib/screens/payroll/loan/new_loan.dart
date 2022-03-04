@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/services/loan.dart';
@@ -8,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:http/http.dart' as http;
 
 import '../../../constants.dart';
 import '../../../utils/utils.dart';
@@ -232,6 +229,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                             children: [
                               Flexible(
                                 child: TextFormField(
+                                  keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                     hintText: '${local?.enterPhone} ',
                                     errorStyle: const TextStyle(
@@ -321,12 +319,20 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                       children: [
                         RaisedButton(
                           onPressed: () {
-                            record.LoanRecord loanRecord = record.LoanRecord(
-                                amount: int.parse(amountController.text),
-                                reason: reasonController.text,
-                                date: pickStart);
                             if (_key.currentState!.validate()) {
+                              record.LoanRecord loanRecord = record.LoanRecord(
+                                  amount: int.parse(amountController.text),
+                                  reason: reasonController.text,
+                                  date: pickStart);
                               createLoan(_mySelection!, loanRecord);
+                              amountController.text = '';
+                              dateController.text = '';
+                              reasonController.text = '';
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          LoanRecord(id: _mySelection!)));
                             }
                             // addLoan(_mySelection!);
                           },
@@ -366,37 +372,5 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
 
   createLoan(String id, record.LoanRecord record) async {
     _loanService.createOneRecord(id, record);
-  }
-
-  addLoan(String id) async {
-    var aAmount = amountController.text;
-    var aReason = reasonController.text;
-
-    var request =
-        await http.MultipartRequest('POST', Uri.parse("$urlUser/$id/loan"));
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Content": "charset-UTF-8",
-    };
-    if (pickStart != null) {
-      request.files.add(http.MultipartFile.fromString('amount', aAmount));
-      request.files.add(http.MultipartFile.fromString('reason', aReason));
-      DateTime aDate = pickStart!;
-      request.files
-          .add(http.MultipartFile.fromString('date', aDate.toString()));
-    }
-
-    request.headers.addAll(headers);
-
-    var res = await request.send();
-    print(res.statusCode);
-    if (res.statusCode == 201) {
-      amountController.text = '';
-      dateController.text = '';
-      reasonController.text = '';
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (_) => LoanRecord(id: _mySelection!)));
-    }
-    res.stream.transform(utf8.decoder).listen((event) {});
   }
 }

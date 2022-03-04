@@ -1,16 +1,13 @@
 import 'package:ems/constants.dart';
-import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
 import 'package:ems/screens/payroll/loan/new_loan.dart';
-import 'package:ems/services/loan.dart';
-import 'package:ems/utils/services/loan_service.dart' as loanService;
-// import 'package:ems/utils/services/loan_service.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../services/models/loan.dart';
 import '../../../utils/utils.dart';
+import '../../../services/loan.dart' as newService;
 
 class LoanAll extends StatefulWidget {
   const LoanAll({Key? key}) : super(key: key);
@@ -21,7 +18,7 @@ class LoanAll extends StatefulWidget {
 
 class _LoanAllState extends State<LoanAll> {
   // service
-  LoanService _loanService = LoanService();
+  final newService.LoanService _loanService = newService.LoanService();
 
   // loan all list
   List<Loan> loanAllList = [];
@@ -39,7 +36,9 @@ class _LoanAllState extends State<LoanAll> {
 
   // fetch loan all from api
   fetchLoanAll() async {
-    _isloading = true;
+    setState(() {
+      _isloading = true;
+    });
     try {
       List<Loan> loanAllDIsplay = await _loanService.findManyLoans();
       setState(() {
@@ -65,13 +64,15 @@ class _LoanAllState extends State<LoanAll> {
         title: const Text('Loan'),
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => NewLoanScreen(),
                 ),
               );
+              loanAllList = [];
+              fetchLoanAll();
             },
             icon: Icon(Icons.add),
           ),
@@ -270,6 +271,8 @@ class _LoanAllState extends State<LoanAll> {
                                                             LoanTotalIndividual(
                                                               id: id,
                                                             )));
+                                                loanAllList = [];
+                                                fetchLoanAll();
                                               }
                                             },
                                             itemBuilder: (_) => [
@@ -332,7 +335,7 @@ class _LoanAllState extends State<LoanAll> {
                         onPressed: () {
                           setState(() {
                             clearText();
-                            loan = loanAllList.where((user) {
+                            loanAllList = loan.where((user) {
                               var userName = user.user!.name!.toLowerCase();
                               return userName.contains(_controller.text);
                             }).toList();

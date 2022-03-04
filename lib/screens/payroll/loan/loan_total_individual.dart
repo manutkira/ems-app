@@ -1,13 +1,14 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:ems/models/loan.dart';
+// import 'package:ems/models/loan.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
-import 'package:ems/utils/services/loan_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../constants.dart';
 import '../../../utils/utils.dart';
+import '../../../services/loan.dart' as new_service;
+import '../../../services/models/loan.dart';
 
 class LoanTotalIndividual extends StatefulWidget {
   int id;
@@ -22,19 +23,21 @@ class LoanTotalIndividual extends StatefulWidget {
 
 class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
   // service
-  LoanService _loanService = LoanService.instance;
+  final new_service.LoanService _loanService = new_service.LoanService();
 
   // loan
-  LoanALl? loan;
+  Loan? loan;
 
   // boolean
   bool _isloading = true;
 
   // fetch loan from api
   fetchOneLoan() async {
-    _isloading = true;
+    setState(() {
+      _isloading = true;
+    });
     try {
-      LoanALl loanDIsplay = await _loanService.findOneLoan(userId: widget.id);
+      Loan loanDIsplay = await _loanService.findOneLoanByUserId(widget.id);
       setState(() {
         loan = loanDIsplay;
         _isloading = false;
@@ -233,14 +236,15 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            onPressed: () {
-                              Navigator.push(
+                            onPressed: () async {
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) =>
                                       LoanRecord(id: loan!.user!.id.toString()),
                                 ),
                               );
+                              fetchOneLoan();
                             },
                             child: const Text(
                               'View Record',
