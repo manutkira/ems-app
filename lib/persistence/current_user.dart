@@ -46,9 +46,9 @@ class CurrentUserStore {
 
     /// fetch logged in user's information
     try {
-      var token = tokenBox.get('token');
+      var token = tokenBox.get(tokenBoxName);
       if (token == null || token.isEmpty) {
-        await tokenBox.delete('token');
+        await tokenBox.delete(tokenBoxName);
         await userBox.delete(currentUserBoxName);
       }
 
@@ -71,7 +71,7 @@ class CurrentUserStore {
         // throw Exception('Not connected to the internet');
       }
     } catch (err) {
-      await tokenBox.delete('token');
+      await tokenBox.delete(tokenBoxName);
       await userBox.delete(currentUserBoxName);
     }
   }
