@@ -1,7 +1,34 @@
-import 'package:ems/services/models/user.dart';
+import 'package:ems/models/user.dart';
+import 'package:ems/services/models/attendance.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/utils.dart';
+
+class OvertimesWithTotal {
+  Duration? total;
+  List<Overtime>? overtimes;
+
+  OvertimesWithTotal({this.total, this.overtimes});
+
+  factory OvertimesWithTotal.fromJson(
+      String? total, List<OvertimesByDate> overtimesByDates) {
+    List<Overtime> overtimes = [];
+    overtimesByDates
+        .map(
+          (obd) => obd.overtimes
+              ?.map(
+                (ot) => overtimes.add(ot),
+              )
+              .toList(),
+        )
+        .toList();
+
+    return OvertimesWithTotal(
+      total: convertStringToDuration(total),
+      overtimes: overtimes,
+    );
+  }
+}
 
 List<OvertimesByDate> overtimesByDatesFromJson(Map<String, dynamic>? json) {
   if (json == null) return [];
@@ -47,7 +74,7 @@ class Overtime {
   int? userId;
   User? user;
   DateTime? date;
-  TimeOfDay? overtime;
+  Duration? overtime;
   AttendanceRecord? checkIn;
   AttendanceRecord? checkOut;
 
@@ -67,7 +94,7 @@ class Overtime {
       userId: int.tryParse("${json?['user_id']}"),
       user: User.fromJson(json?['users']),
       date: convertStringToDateTime(json?['date']),
-      overtime: convertStringToTime(json?['overtime']),
+      overtime: convertStringToDuration(json?['overtime']),
       checkIn: AttendanceRecord.fromJson(json?['get_t5']),
       checkOut: AttendanceRecord.fromJson(json?['get_t6']),
     );
@@ -78,7 +105,7 @@ class Overtime {
     int? userId,
     User? user,
     DateTime? date,
-    TimeOfDay? overtime,
+    Duration? overtime,
     AttendanceRecord? checkIn,
     AttendanceRecord? checkOut,
   }) {
@@ -90,26 +117,6 @@ class Overtime {
       overtime: overtime ?? this.overtime,
       checkIn: checkIn ?? this.checkIn,
       checkOut: checkOut ?? this.checkOut,
-    );
-  }
-}
-
-class AttendanceRecord {
-  int? id;
-  TimeOfDay? time;
-  String? note;
-
-  AttendanceRecord({
-    this.id,
-    this.time,
-    this.note,
-  });
-
-  factory AttendanceRecord.fromJson(Map<String, dynamic>? json) {
-    return AttendanceRecord(
-      id: json?['id'],
-      time: convertStringToTime(json?['time']),
-      note: json?['note'],
     );
   }
 }

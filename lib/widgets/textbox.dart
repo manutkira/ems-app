@@ -40,7 +40,7 @@ class _TextBoxCustomState extends State<TextBoxCustom> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 36,
+      height: 42,
       child: TextField(
         cursorHeight: 14,
         controller: _controller,

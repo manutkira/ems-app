@@ -1,6 +1,7 @@
-import 'package:ems/models/overtime.dart';
+import 'package:ems/services/attendance.dart';
+import 'package:ems/services/models/attendance.dart';
+import 'package:ems/services/models/overtime.dart';
 import 'package:ems/models/user.dart';
-import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:ems/widgets/circle_avatar.dart';
@@ -13,7 +14,7 @@ import '../../constants.dart';
 
 class EditOvertime extends StatefulWidget {
   const EditOvertime({Key? key, required this.record}) : super(key: key);
-  final OvertimeRecord record;
+  final Overtime record;
 
   @override
   _EditOvertimeState createState() => _EditOvertimeState();
@@ -28,7 +29,7 @@ class _EditOvertimeState extends State<EditOvertime> {
   bool isLoading = false;
   String error = '';
 
-  late OvertimeRecord record;
+  late Overtime record;
   late User? user;
   late AttendanceRecord? checkIn;
   late AttendanceRecord? checkOut;
@@ -51,32 +52,32 @@ class _EditOvertimeState extends State<EditOvertime> {
 
         if (checkIn != null && checkIn!.id != null) {
           await _attendanceService.updateOneRecord(
-            record: checkIn!.copyWith(
+            checkIn!.copyWith(
               time: startedTime,
               note: _noteController.text,
             ),
           );
         } else {
-          await _attendanceService.createOneRecord(
+          await _attendanceService.createOne(
             userId: record.user?.id as int,
-            datetime: record.date.copyWith(
+            note: _noteController.text,
+            date: record.date!.copyWith(
               hour: startedTime?.hour,
               minute: startedTime?.minute,
             ),
-            note: _noteController.text,
           );
         }
         if (checkOut != null && checkOut!.id != null) {
           await _attendanceService.updateOneRecord(
-            record: checkOut!.copyWith(
+            checkOut!.copyWith(
               time: endedTime,
               note: _noteController.text,
             ),
           );
         } else {
-          await _attendanceService.createOneRecord(
+          await _attendanceService.createOne(
             userId: record.user?.id as int,
-            datetime: record.date.copyWith(
+            date: record.date!.copyWith(
               hour: endedTime?.hour,
               minute: endedTime?.minute,
             ),
@@ -130,32 +131,34 @@ class _EditOvertimeState extends State<EditOvertime> {
       checkOut = record.checkOut;
 
       // hour and minute
-      int checkInHour = checkIn == null
-          ? checkOut == null
-              ? 0
-              : checkOut?.time?.hour as int
-          : checkIn?.time?.hour as int;
-      int checkInMinute = checkIn == null
-          ? checkOut == null
-              ? 0
-              : checkOut?.time?.minute as int
-          : checkIn?.time?.minute as int;
-      int checkOutHour = checkOut == null
-          ? checkIn == null
-              ? 0
-              : checkIn?.time?.hour as int
-          : checkOut?.time?.hour as int;
-      int checkOutMinute = checkOut == null
-          ? checkIn == null
-              ? 0
-              : checkIn?.time?.minute as int
-          : checkOut?.time?.minute as int;
+      // int checkInHour = checkIn == null
+      //     ? checkOut == null
+      //         ? 0
+      //         : checkOut?.time?.hour as int
+      //     : checkIn?.time?.hour as int;
+      // int checkInMinute = checkIn == null
+      //     ? checkOut == null
+      //         ? 0
+      //         : checkOut?.time?.minute as int
+      //     : checkIn?.time?.minute as int;
+      // int checkOutHour = checkOut == null
+      //     ? checkIn == null
+      //         ? 0
+      //         : checkIn?.time?.hour as int
+      //     : checkOut?.time?.hour as int;
+      // int checkOutMinute = checkOut == null
+      //     ? checkIn == null
+      //         ? 0
+      //         : checkIn?.time?.minute as int
+      //     : checkOut?.time?.minute as int;
 
-      selectedDate = record.date;
+      selectedDate = record.date as DateTime;
 
       // timeOfDay
-      startedTime = TimeOfDay(hour: checkInHour, minute: checkInMinute);
-      endedTime = TimeOfDay(hour: checkOutHour, minute: checkOutMinute);
+      startedTime = checkIn?.time;
+      endedTime = checkOut?.time;
+      // startedTime = TimeOfDay(hour: checkInHour, minute: checkInMinute);
+      // endedTime = TimeOfDay(hour: checkOutHour, minute: checkOutMinute);
       _noteController.text = "${checkIn?.note}";
     });
   }
@@ -183,7 +186,7 @@ class _EditOvertimeState extends State<EditOvertime> {
     bool isEnglish = isInEnglish(context);
 
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.65,
+      height: MediaQuery.of(context).size.height * 0.70,
       child: Scaffold(
         body: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),

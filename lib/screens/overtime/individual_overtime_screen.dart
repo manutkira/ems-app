@@ -1,5 +1,4 @@
 import 'package:ems/constants.dart';
-import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/overtime/delete_overtime.dart';
@@ -8,7 +7,9 @@ import 'package:ems/screens/overtime/view_overtime.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/screens/overtime/widgets/drop_down_menu.dart';
 import 'package:ems/screens/overtime/widgets/more_menu_item.dart';
-import 'package:ems/utils/services/overtime_service.dart';
+import 'package:ems/services/models/attendance.dart';
+import 'package:ems/services/models/overtime.dart';
+import 'package:ems/services/overtime.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:ems/widgets/circle_avatar.dart';
@@ -22,6 +23,7 @@ class IndividualOvertimeScreen extends ConsumerStatefulWidget {
   const IndividualOvertimeScreen({Key? key, required this.user})
       : super(key: key);
   final User user;
+
   @override
   ConsumerState createState() => _IndividualOvertimeScreenState();
 }
@@ -36,7 +38,7 @@ class _IndividualOvertimeScreenState
   List<String> options = [];
   List<String> dropdownItems = [];
 
-  List<OvertimeRecord> overtimeRecords = [];
+  List<Overtime>? overtimeRecords = [];
   bool isFetching = false;
   bool isFilterExpanded = false;
 
@@ -44,7 +46,7 @@ class _IndividualOvertimeScreenState
   DateTime endDate = DateTime.now();
 
   /// more menu
-  void handleMoreMenu(String value, OvertimeRecord record) async {
+  void handleMoreMenu(String value, Overtime record) async {
     AppLocalizations? local = AppLocalizations.of(context);
     if (value == local?.optionView) {
       await modalBottomSheetBuilder(
@@ -88,7 +90,8 @@ class _IndividualOvertimeScreenState
       total = '00:00:00';
       overtimeRecords = [];
     });
-    OvertimeListWithTotal records;
+    // List<Overtime> records;
+    OvertimesWithTotal records;
     try {
       if (sortByValue == "${local?.optionDay}") {
         records = await _overtimeService.findManyByUserId(
@@ -107,10 +110,12 @@ class _IndividualOvertimeScreenState
       }
 
       setStateIfMounted(() {
-        total = records.total;
-        overtimeRecords = records.listOfOvertime;
-        if (overtimeRecords.isNotEmpty) {
-          user = overtimeRecords[0].user as User;
+        // total = records.total;
+        total = convertDurationToString(records.total);
+        // overtimeRecords = records.listOfOvertime;
+        overtimeRecords = records.overtimes;
+        if (overtimeRecords != null && overtimeRecords!.isNotEmpty) {
+          user = overtimeRecords?[0].user as User;
         }
         isFetching = false;
       });
@@ -133,15 +138,17 @@ class _IndividualOvertimeScreenState
       total = '00:00:00';
       overtimeRecords = [];
     });
-    OvertimeListWithTotal records;
+    OvertimesWithTotal records;
     try {
       records = await _overtimeService.findManyByUserId(userId: userId);
 
       setStateIfMounted(() {
-        total = records.total;
-        overtimeRecords = records.listOfOvertime;
-        if (overtimeRecords.isNotEmpty) {
-          user = overtimeRecords[0].user as User;
+        // total = records.total;
+        total = convertDurationToString(records.total);
+        // overtimeRecords = records.listOfOvertime;
+        overtimeRecords = records.overtimes;
+        if (overtimeRecords != null && overtimeRecords!.isNotEmpty) {
+          user = overtimeRecords?[0].user as User;
         }
         isFetching = false;
       });
@@ -508,7 +515,9 @@ class _IndividualOvertimeScreenState
               ),
               // no record
               Visibility(
-                visible: overtimeRecords.isEmpty && !isFetching,
+                visible: overtimeRecords != null &&
+                    overtimeRecords!.isEmpty &&
+                    !isFetching,
                 child: _noRecord,
               ),
               // results
@@ -522,7 +531,7 @@ class _IndividualOvertimeScreenState
                   displacement: 3 + 0,
                   color: kWhite,
                   child: ListView.builder(
-                    itemCount: overtimeRecords.length,
+                    itemCount: overtimeRecords?.length,
                     itemBuilder: (context, i) {
                       return _buildListItem(i);
                     },
@@ -555,10 +564,10 @@ class _IndividualOvertimeScreenState
 
   /// result widget
   Widget _buildListItem(int i) {
-    OvertimeRecord record = overtimeRecords[i];
-    AttendanceRecord? checkIn = record.checkIn;
-    AttendanceRecord? checkout = record.checkOut;
-    TimeOfDay _time = getTimeOfDayFromString(record.duration);
+    Overtime? record = overtimeRecords?[i];
+    AttendanceRecord? checkIn = record?.checkIn;
+    AttendanceRecord? checkout = record?.checkOut;
+    Duration? _time = record?.overtime;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -573,7 +582,7 @@ class _IndividualOvertimeScreenState
             children: [
               const SizedBox(width: 20),
               Text(
-                getDateStringFromDateTime(record.date),
+                "${convertDateToddMMy(record?.date)}",
                 style: kSubtitle,
               ),
             ],
@@ -592,7 +601,7 @@ class _IndividualOvertimeScreenState
                   borderRadius: BorderRadius.circular(3),
                 ),
                 child: Text(
-                  '${_time.hour}h ${_time.minute}mn',
+                  convertDurationToString(_time),
                   style: kSubtitle.copyWith(color: kGreenText),
                 ),
               ),
@@ -608,7 +617,8 @@ class _IndividualOvertimeScreenState
                 itemBuilder: (BuildContext context) => options.map((option) {
                   return buildMoreMenu(option);
                 }).toList(),
-                onSelected: (selected) => handleMoreMenu(selected, record),
+                onSelected: (selected) =>
+                    handleMoreMenu(selected, record as Overtime),
               ),
             ],
           )

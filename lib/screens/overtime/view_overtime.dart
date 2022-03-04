@@ -1,4 +1,6 @@
-import 'package:ems/models/overtime.dart';
+
+import 'package:ems/services/models/attendance.dart';
+import 'package:ems/services/models/overtime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -20,7 +22,7 @@ import '../../constants.dart';
 
 class ViewOvertime extends StatefulWidget {
   const ViewOvertime({Key? key, required this.record}) : super(key: key);
-  final OvertimeRecord record;
+  final Overtime record;
 
   @override
   _ViewOvertimeState createState() => _ViewOvertimeState();
@@ -57,10 +59,10 @@ class _ViewOvertimeState extends State<ViewOvertime> {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     Size _size = MediaQuery.of(context).size;
-    OvertimeRecord record = widget.record;
+    Overtime record = widget.record;
     AttendanceRecord? checkIn = record.checkIn;
     AttendanceRecord? checkOut = record.checkOut;
-    TimeOfDay _time = getTimeOfDayFromString(record.duration);
+    Duration? _time = record.overtime;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -109,7 +111,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                 width: 20,
               ),
               Text(
-                getDateStringFromDateTime(record.date),
+                "${convertDateToddMMy(record.date)}",
                 style: kParagraph,
               ),
             ],
@@ -154,7 +156,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                 style: kParagraph.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(width: 20),
-              Text("${_time.hour}h ${_time.minute}mn", style: kParagraph),
+              Text("${convertDurationToString(_time)}", style: kParagraph),
             ],
           ),
           _buildSpacer(),
@@ -188,7 +190,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
 
   Widget _buildUserInfo(Size _size) {
     AppLocalizations? local = AppLocalizations.of(context);
-    OvertimeRecord record = widget.record;
+    Overtime record = widget.record;
     User? user = record.user;
 
     return Container(

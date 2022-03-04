@@ -48,6 +48,19 @@ class AuthService extends BaseService {
     }
   }
 
+  findMe() async {
+    try {
+      Response res = await dio.get(
+        'me',
+        options: Options(validateStatus: (status) => status == 200),
+      );
+      var user = User.fromJson(res.data);
+      return user;
+    } catch (err) {
+      return null;
+    }
+  }
+
   logout() async {
     try {
       await dio.post(
@@ -66,6 +79,7 @@ class AuthService extends BaseService {
   }
 
   Future<bool> verify(int id, String password) async {
+
     try {
       await dio.get(
         'verify/$id?password=$password',

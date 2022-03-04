@@ -10,6 +10,8 @@ import '../utils/utils.dart';
 import '../models/attendance.dart';
 
 class AttendanceService extends BaseService {
+  static AttendanceService get instance => AttendanceService();
+
   findMany({
     DateTime? start,
     DateTime? end,
@@ -127,7 +129,7 @@ class AttendanceService extends BaseService {
 
   deleteOneRecord(int id) async {
     try {
-      await dio.put(
+      await dio.delete(
         'attendance_record/$id',
         options: Options(validateStatus: (status) => status == 200),
       );

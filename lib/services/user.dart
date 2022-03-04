@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
-import 'package:ems/services/models/user.dart';
+import 'package:ems/models/user.dart';
+import 'package:path/path.dart';
 
 import 'base.dart';
 
 class UserService extends BaseService {
+  static UserService get instance => UserService();
+
   findOne(int id) async {
     try {
       Response res = await dio.get(
@@ -20,6 +25,7 @@ class UserService extends BaseService {
       print(err);
     }
   }
+
   findMany() async {
     try {
       Response res = await dio.get(
@@ -36,12 +42,32 @@ class UserService extends BaseService {
       print(err);
     }
   }
-  createOne(User user) async {
+
+  createOne(User user, {File? image, File? imageId}) async {
     var data = user.toCleanJson();
+    var upload = {};
+    if (image != null) {
+      upload['image'] = await MultipartFile.fromFile(
+        image.path,
+        filename: basename(image.path),
+      );
+    }
+
+    if (imageId != null) {
+      upload['image_id'] = await MultipartFile.fromFile(
+        imageId.path,
+        filename: basename(imageId.path),
+      );
+    }
+
+    var payload = FormData.fromMap({
+      ...data,
+      ...upload,
+    });
     try {
       Response res = await dio.post(
         'users',
-        data: data,
+        data: payload,
         options: Options(validateStatus: (status) => status == 201),
       );
       User user = User.fromJson(res.data);
@@ -53,12 +79,32 @@ class UserService extends BaseService {
       print(err);
     }
   }
-  updateOne(User user) async {
+
+  updateOne(User user, {File? image, File? imageId}) async {
     var data = user.toCleanJson();
+    var upload = {};
+    if (image != null) {
+      upload['image'] = await MultipartFile.fromFile(
+        image.path,
+        filename: basename(image.path),
+      );
+    }
+
+    if (imageId != null) {
+      upload['image_id'] = await MultipartFile.fromFile(
+        imageId.path,
+        filename: basename(imageId.path),
+      );
+    }
+
+    var payload = FormData.fromMap({
+      ...data,
+      ...upload,
+    });
     try {
-      Response res = await dio.put(
-        'users/${user.id}',
-        data: data,
+      Response res = await dio.post(
+        'users/${user.id}?_method=put',
+        data: payload,
         options: Options(validateStatus: (status) => status == 200),
       );
       print(res.data);
@@ -71,7 +117,8 @@ class UserService extends BaseService {
       print(err);
     }
   }
-  deleteOne(int id)async {
+
+  deleteOne(int id) async {
     try {
       Response res = await dio.delete(
         'users/$id',
