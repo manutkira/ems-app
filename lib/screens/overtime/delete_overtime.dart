@@ -1,5 +1,6 @@
-import 'package:ems/models/overtime.dart';
-import 'package:ems/utils/services/attendance_service.dart';
+
+import 'package:ems/services/attendance.dart';
+import 'package:ems/services/models/overtime.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:ems/widgets/statuses/error.dart';
@@ -9,18 +10,10 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 import '../../constants.dart';
 
-class Overtime {
-  static get uid => 1;
-  static get name => "Kim Song";
-  static get date => DateTime.now();
-  static get startedTime => TimeOfDay.now();
-  static get endedTime => TimeOfDay.now();
-  static get note => "finish the project";
-}
 
 class DeleteOvertime extends StatefulWidget {
   const DeleteOvertime({Key? key, required this.record}) : super(key: key);
-  final OvertimeRecord record;
+  final Overtime record;
 
   @override
   _DeleteOvertimeState createState() => _DeleteOvertimeState();
@@ -31,7 +24,7 @@ class _DeleteOvertimeState extends State<DeleteOvertime> {
   bool hasError = false;
   String error = "";
   final AttendanceService _attendanceService = AttendanceService.instance;
-  late OvertimeRecord record;
+  late Overtime record;
 
   void deleteOvertime() async {
     setState(() {

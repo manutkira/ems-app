@@ -1,11 +1,11 @@
 import 'package:ems/constants.dart';
-import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/overtime/view_overtime.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/screens/overtime/widgets/drop_down_menu.dart';
 import 'package:ems/screens/overtime/widgets/more_menu_item.dart';
-import 'package:ems/utils/services/overtime_service.dart';
+import 'package:ems/services/models/overtime.dart';
+import 'package:ems/services/overtime.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/circle_avatar.dart';
 import 'package:ems/widgets/statuses/error.dart';
@@ -25,8 +25,9 @@ class OvertimeScreen extends StatefulWidget {
 }
 
 class _OvertimeScreenState extends State<OvertimeScreen> {
+  // final OvertimeService _overtimeService = OvertimeService.instance;
   final OvertimeService _overtimeService = OvertimeService.instance;
-  List<OvertimeRecordsByDays> overtimeRecords = [];
+  List<OvertimesByDate> overtimeRecords = [];
   String sortByValue = '';
   List<String> dropdownItems = [];
   List<String> options = [];
@@ -86,7 +87,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
       // reset error
       error = '';
     });
-    List<OvertimeRecordsByDays> records = [];
+    List<OvertimesByDate> records = [];
     try {
       // reads the sort filter condition
       if (sortByValue == "${local?.optionDay}") {
@@ -135,7 +136,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
       // reset error
       error = '';
     });
-    List<OvertimeRecordsByDays> records = [];
+    List<OvertimesByDate> records = [];
     try {
       records = await _overtimeService.findMany();
 
@@ -167,12 +168,12 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
   }
 
   /// more menu
-  void moreMenu(String value, OvertimeRecord record) async {
+  void moreMenu(String value, Overtime record) async {
     AppLocalizations? local = AppLocalizations.of(context);
     if (value == local?.optionView) {
       await modalBottomSheetBuilder(
         context: context,
-        maxHeight: MediaQuery.of(context).size.height * 0.55,
+        maxHeight: MediaQuery.of(context).size.height * 0.60,
         minHeight: MediaQuery.of(context).size.height * 0.4,
         child: ViewOvertime(
           record: record,
@@ -181,8 +182,9 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
     }
     if (value == local?.optionEdit) {
       await modalBottomSheetBuilder(
+        isScrollControlled: false,
         context: context,
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        maxHeight: MediaQuery.of(context).size.height * 0.75,
         minHeight: MediaQuery.of(context).size.height * 0.6,
         isDismissible: false,
         child: EditOvertime(record: record),
@@ -506,7 +508,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                     child: ListView.builder(
                       itemCount: overtimeRecords.length,
                       itemBuilder: (context, i) {
-                        OvertimeRecordsByDays record = overtimeRecords[i];
+                        OvertimesByDate record = overtimeRecords[i];
                         // title date
                         return _buildResult(record);
                       },
@@ -522,13 +524,13 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
   }
 
   /// result
-  Widget _buildResult(OvertimeRecordsByDays record) {
+  Widget _buildResult(OvertimesByDate record) {
     return ExpansionTile(
       textColor: Colors.white,
       iconColor: Colors.white,
       initiallyExpanded: true,
       title: Text(
-        getDateStringFromDateTime(record.date),
+        convertDateToddMMy(record.date),
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
@@ -538,14 +540,15 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
         ListView.builder(
           shrinkWrap: true,
           physics: const ClampingScrollPhysics(),
-          itemCount: record.records.length,
+          itemCount: record.overtimes?.length,
           itemBuilder: (context, i) {
-            OvertimeRecord overtime = record.records[i];
-            User? user = overtime.user;
+            Overtime? overtime = record.overtimes?[i];
+            User? user = overtime?.user;
 
-            TimeOfDay overtimeTotal = getTimeOfDayFromString(
-              overtime.duration,
-            );
+            Duration? overtimeTotal = overtime?.overtime;
+            // TimeOfDay overtimeTotal = getTimeOfDayFromString(
+            //   overtime.overtime,
+            // );
 
             // list of overtime
             return Container(
@@ -600,7 +603,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                           borderRadius: BorderRadius.circular(3),
                         ),
                         child: Text(
-                          '${overtimeTotal.hour}h ${overtimeTotal.minute}mn',
+                          "${convertDurationToString(overtime?.overtime)}",
                           style: kSubtitle.copyWith(
                             fontSize: 12,
                             color: kGreenText,
@@ -621,7 +624,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                             return buildMoreMenu(option);
                           }).toList();
                         },
-                        onSelected: (value) => moreMenu(value, overtime),
+                        onSelected: (value) => moreMenu(value, overtime as Overtime),
                       ),
                     ],
                   )
