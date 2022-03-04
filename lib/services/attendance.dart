@@ -141,7 +141,7 @@ class AttendanceService extends BaseService {
     }
   }
 
-  createOne({
+  createOneRecord({
     required int userId,
     required DateTime date,
     String? note,
@@ -179,6 +179,7 @@ class AttendanceService extends BaseService {
       return att;
     }).toList();
 
+    print(clean);
     try {
       await dio.post(
         'attendances/mass',
