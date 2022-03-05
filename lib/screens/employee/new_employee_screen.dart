@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:ems/models/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/image_input/new_emp_id_img.dart';
 import 'package:ems/widgets/image_input/new_emp_profile_img.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../constants.dart';
+import '../../services/user.dart';
 
 class NewEmployeeScreen extends StatefulWidget {
   @override
@@ -15,6 +17,9 @@ class NewEmployeeScreen extends StatefulWidget {
 }
 
 class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
+  // service
+  UserService _userService = UserService();
+
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/image";
   String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
@@ -440,7 +445,54 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                                   return Navigator.of(context)
                                                       .pop();
                                                 }
-                                                addNewEmployee();
+                                                String checkRole() {
+                                                  if (dropDownValue1 ==
+                                                      local?.employee) {
+                                                    return 'employee';
+                                                  }
+                                                  if (dropDownValue1 ==
+                                                      local?.admin) {
+                                                    return 'admin';
+                                                  } else {
+                                                    return '';
+                                                  }
+                                                }
+
+                                                String checkStatus() {
+                                                  if (dropDownValue ==
+                                                      local?.active) {
+                                                    return 'active';
+                                                  }
+                                                  if (dropDownValue ==
+                                                      local?.inactive) {
+                                                    return 'inactive';
+                                                  }
+                                                  if (dropDownValue ==
+                                                      local?.resigned) {
+                                                    return 'resigned';
+                                                  }
+                                                  if (dropDownValue ==
+                                                      local?.fired) {
+                                                    return 'fired';
+                                                  } else {
+                                                    return '';
+                                                  }
+                                                }
+
+                                                User user = User(
+                                                  image: pickedImg.toString(),
+                                                  imageId: pickedId.toString(),
+                                                  name: name.text,
+                                                  phone: phone.text,
+                                                  email: email.text,
+                                                  password: password.text,
+                                                  address: address.text,
+                                                  background: background.text,
+                                                  status: checkStatus(),
+                                                  role: checkRole(),
+                                                );
+                                                createOne(user);
+                                                // addNewEmployee();
                                                 Navigator.of(context).pop();
                                                 showDialog(
                                                     context: context,
@@ -531,6 +583,10 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
             ),
           )),
     );
+  }
+
+  createOne(User user) {
+    _userService.createOne(user);
   }
 
   addNewEmployee() async {

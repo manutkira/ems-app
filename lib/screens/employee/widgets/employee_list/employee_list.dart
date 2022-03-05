@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:ems/constants.dart';
-import 'package:ems/models/user.dart';
 import 'package:ems/screens/employee/employee_edit_screen.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
 import 'package:ems/screens/employee/employee_work_rate.dart';
@@ -9,9 +8,12 @@ import 'package:ems/screens/employee/new_employee_screen.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../../models/user.dart';
+import '../../../../services/user.dart' as new_service;
+import '../../../../services/models/user.dart' as new_model;
 
 class EmployeeList extends StatefulWidget {
   @override
@@ -20,7 +22,7 @@ class EmployeeList extends StatefulWidget {
 
 class _EmployeeListState extends State<EmployeeList> {
   // services
-  final UserService _userService = UserService.instance;
+  final new_service.UserService _userService = new_service.UserService();
 
   // list user
   List<User> userDisplay = [];
@@ -40,26 +42,23 @@ class _EmployeeListState extends State<EmployeeList> {
 
   // fetch user from api
   fetchData() async {
-    setState(() {
-      userDisplay = [];
-      user = [];
-    });
     try {
-      _isLoading = true;
-      _userService.findMany().then((usersFromServer) {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-            user.addAll(usersFromServer);
-            userDisplay = user;
-
-            userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
-          });
-        }
+      setState(() {
+        userDisplay = [];
+        user = [];
+        _isLoading = true;
       });
-    } catch (err) {
-      rethrow;
-    }
+      List<User> userList = await _userService.findMany();
+      if (mounted) {
+        setState(() {
+          user = userList;
+          userDisplay = user;
+
+          userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
+          _isLoading = false;
+        });
+      }
+    } catch (err) {}
   }
 
   // delete user from api

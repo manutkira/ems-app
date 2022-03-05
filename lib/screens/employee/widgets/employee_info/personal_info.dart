@@ -11,11 +11,13 @@ import 'package:ems/widgets/baseline_row.dart';
 
 import '../../../../constants.dart';
 import '../../employee_edit_screen.dart';
+import '../../../../services/models/bank.dart' as model_bank;
+import '../../../../services/bank.dart' as service_bank;
 
 class PersonalInfo extends StatelessWidget {
   List<User> userDisplay;
   List<User> user;
-  List<Bank> bankDisplay;
+  List<model_bank.Bank> bankDisplay;
   final Function fetchUserById;
   final Function fetchBankData;
   BuildContext contextt;
@@ -31,6 +33,8 @@ class PersonalInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // service
+    service_bank.BankService _bankService = service_bank.BankService();
     // text contorller
     TextEditingController bankNameController = TextEditingController();
     TextEditingController accountNumberController = TextEditingController();
@@ -40,33 +44,15 @@ class PersonalInfo extends StatelessWidget {
     String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
     // add new bank info to api
-    addBankList() async {
-      var aBankName = bankNameController.text;
-      var aAccountNumber = accountNumberController.text;
-      var aAccountName = accountNameController.text;
-      var request = await http.MultipartRequest(
-          'POST', Uri.parse("$urlUser/${userDisplay[0].id}/bank"));
-      Map<String, String> headers = {
-        "Accept": "application/json",
-        "Content": "charset-UTF-8",
-      };
-      request.files.add(http.MultipartFile.fromString('bank_name', aBankName));
-      request.files
-          .add(http.MultipartFile.fromString('account_number', aAccountNumber));
-      request.files
-          .add(http.MultipartFile.fromString('account_name', aAccountName));
-
-      request.headers.addAll(headers);
-
-      var res = await request.send();
-      print(res.statusCode);
-      if (res.statusCode == 201) {
-        Navigator.of(context).pop();
-      }
-      res.stream.transform(utf8.decoder).listen((event) {});
+    createOneBank(model_bank.Bank bank) {
+      _bankService.createOne(bank);
     }
 
     // edit bank info in api
+    updateOneBank(model_bank.Bank bank) {
+      _bankService.updateOne(bank);
+    }
+
     editBank() async {
       var aBankName = bankNameController.text;
       var aAccountNumber = accountNumberController.text;
@@ -532,9 +518,21 @@ class PersonalInfo extends StatelessWidget {
                                             children: [
                                               // ignore: deprecated_member_use
                                               RaisedButton(
-                                                onPressed: () {
-                                                  addBankList();
-                                                  // Navigator.pop(context);
+                                                onPressed: () async {
+                                                  model_bank.Bank bank =
+                                                      model_bank.Bank(
+                                                    name:
+                                                        bankNameController.text,
+                                                    accountName:
+                                                        accountNameController
+                                                            .text,
+                                                    accountNumber:
+                                                        accountNumberController
+                                                            .text,
+                                                    userId: userDisplay[0].id,
+                                                  );
+                                                  await createOneBank(bank);
+                                                  Navigator.pop(context);
                                                   bankNameController.text = '';
                                                   accountNumberController.text =
                                                       '';
@@ -601,7 +599,7 @@ class PersonalInfo extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(13.0),
                                   child: Text(
-                                    e.bankName.toString(),
+                                    e.name.toString(),
                                     textAlign: TextAlign.center,
                                   ),
                                 )),
@@ -648,7 +646,7 @@ class PersonalInfo extends StatelessWidget {
                                             Text(
                                               '${local?.accountNumber}: ',
                                             ),
-                                            Text(e.accoutNumber.toString()),
+                                            Text(e.accountNumber.toString()),
                                           ],
                                         ),
                                       ],
@@ -668,12 +666,11 @@ class PersonalInfo extends StatelessWidget {
                                 onSelected: (int selectedValue) async {
                                   if (selectedValue == 0) {
                                     bankId = e.id;
-                                    bankNameController.text =
-                                        e.bankName.toString();
+                                    bankNameController.text = e.name.toString();
                                     accountNameController.text =
                                         e.accountName.toString();
                                     accountNumberController.text =
-                                        e.accoutNumber.toString();
+                                        e.accountNumber.toString();
                                     await showModalBottomSheet(
                                         isScrollControlled: true,
                                         context: contextt,
@@ -885,8 +882,25 @@ class PersonalInfo extends StatelessWidget {
                                                       children: [
                                                         // ignore: deprecated_member_use
                                                         RaisedButton(
-                                                          onPressed: () {
-                                                            editBank();
+                                                          onPressed: () async {
+                                                            model_bank.Bank
+                                                                bank =
+                                                                model_bank.Bank(
+                                                              name:
+                                                                  bankNameController
+                                                                      .text,
+                                                              accountName:
+                                                                  accountNameController
+                                                                      .text,
+                                                              accountNumber:
+                                                                  accountNumberController
+                                                                      .text,
+                                                              id: bankId,
+                                                            );
+                                                            await updateOneBank(
+                                                                bank);
+                                                            Navigator.pop(
+                                                                context);
                                                           },
                                                           color:
                                                               Theme.of(context)

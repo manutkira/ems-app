@@ -33,7 +33,7 @@ class UserService extends BaseService {
         options: Options(validateStatus: (status) => status == 200),
       );
       List<User> users = usersFromJson(res.data);
-      print(users.first.name);
+      print(users);
       return users;
     } catch (err) {
       if (err is DioError) {

@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:ems/services/base.dart';
 import 'package:ems/services/models/bank.dart';
@@ -63,7 +62,7 @@ class BankService extends BaseService {
       return false;
     });
     try {
-      Response res = await dio.post(
+      Response res = await dio.put(
         'bank/${bank.id}',
         data: payload,
         options: Options(validateStatus: (status) => status == 200),

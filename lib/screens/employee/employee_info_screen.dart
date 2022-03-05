@@ -19,6 +19,8 @@ import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 
 import '../../constants.dart';
+import '../../services/bank.dart' as service_bank;
+import '../../services/models/bank.dart' as model_bank;
 
 class EmployeeInfoScreen extends StatefulWidget {
   final int id;
@@ -40,7 +42,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
   // services
   final UserService _userService = UserService.instance;
   final RateServices _rateServices = RateServices.instance;
-  final BankService _bankService = BankService.instance;
+  final service_bank.BankService _bankService = service_bank.BankService();
   final PositionService _positionService = PositionService.instance;
 
   // list user
@@ -51,7 +53,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
   List positionDisplay = [];
 
   // list bank
-  List<Bank> bankDisplay = [];
+  List<model_bank.Bank> bankDisplay = [];
 
   // list rate
   final List<Rate> rateList = [];
@@ -117,7 +119,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
   // fetch bank info from api
   fetchBankData() {
     try {
-      _bankService.findOne(widget.id).then((usersFromServer) {
+      _bankService.findAllByUserId(widget.id).then((usersFromServer) {
         if (mounted) {
           setState(() {
             bankDisplay = [];
@@ -527,7 +529,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                   checkRole: checkRole,
                                   checkSatus: checkSatus,
                                   // checkRate: checkRate,
-                                  checkRate: (){},
+                                  checkRate: () {},
                                   addRateList: addRate,
                                   deleteRateItem: deleteRateItem,
                                   rateNameController: rateNameController,
