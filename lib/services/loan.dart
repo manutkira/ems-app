@@ -4,7 +4,7 @@ import 'package:ems/services/models/loan.dart';
 import 'package:ems/services/models/loan_record.dart';
 
 class LoanService extends BaseService {
-  findManyRecords(String userId) async {
+  Future<List<LoanRecord>> findManyRecords(String userId) async {
     try {
       Response res = await dio.get(
         'users/$userId/loan',
@@ -21,7 +21,7 @@ class LoanService extends BaseService {
     }
   }
 
-  findOneRecord(int recordId) async {
+  Future<Loan> findOneRecord(int recordId) async {
     try {
       Response res = await dio.get(
         'loan/$recordId',
@@ -37,7 +37,7 @@ class LoanService extends BaseService {
     }
   }
 
-  deleteOneRecord(int recordId) async {
+  Future<void> deleteOneRecord(int recordId) async {
     try {
       await dio.delete(
         'loan/$recordId',
@@ -51,7 +51,7 @@ class LoanService extends BaseService {
     }
   }
 
-  createOneRecord(String userId, LoanRecord record) async {
+  Future<Loan> createOneRecord(String userId, LoanRecord record) async {
     var payload = record.toJson();
     // removes unnecessary things
     payload.removeWhere((key, value) {
@@ -76,7 +76,7 @@ class LoanService extends BaseService {
     }
   }
 
-  updateOneRecord(LoanRecord record) async {
+  Future<Loan> updateOneRecord(LoanRecord record) async {
     var payload = record.toJson();
     // removes unnecessary things
     payload.removeWhere((key, value) {
@@ -101,7 +101,7 @@ class LoanService extends BaseService {
     }
   }
 
-  findOneLoanByUserId(int userId) async {
+  Future<Loan> findOneLoanByUserId(int userId) async {
     try {
       Response res = await dio.get(
         'users/$userId/loan-employees',
@@ -109,7 +109,6 @@ class LoanService extends BaseService {
       );
       var data = res.data;
       var loan = Loan.fromJson(data[0]);
-      print(loan.user?.name);
       return loan;
     } catch (err) {
       if (err is DioError) {
@@ -119,7 +118,7 @@ class LoanService extends BaseService {
     }
   }
 
-  findOneLoan(int loanId) async {
+  Future<Loan> findOneLoan(int loanId) async {
     try {
       Response res = await dio.get(
         'loan-employees/$loanId',
@@ -127,7 +126,6 @@ class LoanService extends BaseService {
       );
       var data = res.data[0];
       var loan = Loan.fromJson(data);
-      print(loan.user?.name);
       return loan;
     } catch (err) {
       if (err is DioError) {
@@ -137,7 +135,7 @@ class LoanService extends BaseService {
     }
   }
 
-  findManyLoans() async {
+  Future<List<Loan>> findManyLoans() async {
     try {
       Response res = await dio.get(
         'loan-employees',

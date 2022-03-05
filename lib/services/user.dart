@@ -9,14 +9,13 @@ import 'base.dart';
 class UserService extends BaseService {
   static UserService get instance => UserService();
 
-  findOne(int id) async {
+  Future<User> findOne(int id) async {
     try {
       Response res = await dio.get(
         'users/$id',
         options: Options(validateStatus: (status) => status == 200),
       );
       User user = User.fromJson(res.data);
-      print(user.toCleanJson());
       return user;
     } catch (err) {
       if (err is DioError) {
@@ -26,7 +25,7 @@ class UserService extends BaseService {
     }
   }
 
-  findMany() async {
+  Future<List<User>> findMany() async {
     try {
       Response res = await dio.get(
         'users',
@@ -43,7 +42,7 @@ class UserService extends BaseService {
     }
   }
 
-  createOne(User user, {File? image, File? imageId}) async {
+  Future<User> createOne(User user, {File? image, File? imageId}) async {
     var data = user.toCleanJson();
     var upload = {};
     if (image != null) {
@@ -80,7 +79,7 @@ class UserService extends BaseService {
     }
   }
 
-  updateOne(User user, {File? image, File? imageId}) async {
+  Future<User> updateOne(User user, {File? image, File? imageId}) async {
     var data = user.toCleanJson();
     var upload = {};
     if (image != null) {
@@ -118,13 +117,12 @@ class UserService extends BaseService {
     }
   }
 
-  deleteOne(int id) async {
+  Future<void> deleteOne(int id) async {
     try {
-      Response res = await dio.delete(
+      await dio.delete(
         'users/$id',
         options: Options(validateStatus: (status) => status == 200),
       );
-      print(res.data);
     } catch (err) {
       if (err is DioError) {
         throw Exception(err.response?.data['message']);

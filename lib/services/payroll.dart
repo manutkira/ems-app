@@ -4,7 +4,7 @@ import 'package:ems/services/models/payment.dart';
 import 'package:ems/services/models/payroll.dart';
 
 class PayrollService extends BaseService {
-  findOne(int paymentId) async {
+  Future<Payroll> findOne(int paymentId) async {
     try {
       Response res = await dio.get(
         'payment/$paymentId/payroll',
@@ -14,14 +14,14 @@ class PayrollService extends BaseService {
       var payroll = Payroll.fromJson(data);
       return payroll;
     } catch (err) {
-       if (err is DioError) {
+      if (err is DioError) {
         throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());
     }
   }
 
-  markAsPaid(int paymentId) async {
+  Future<Payment> markAsPaid(int paymentId) async {
     try {
       Response res = await dio.get(
         'payment/$paymentId/change-status',
@@ -32,14 +32,14 @@ class PayrollService extends BaseService {
       var payment = Payment.fromJson(data['payment']);
       return payment;
     } catch (err) {
-       if (err is DioError) {
+      if (err is DioError) {
         throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());
     }
   }
 
-  createOnePayment(
+  Future<Payment> createOnePayment(
     int userId, {
     required DateTime dateFrom,
     required DateTime dateTo,
@@ -55,14 +55,14 @@ class PayrollService extends BaseService {
       );
       return Payment.fromJson(res.data);
     } catch (err) {
-       if (err is DioError) {
+      if (err is DioError) {
         throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());
     }
   }
 
-  findManyPayments() async {
+  Future<List<Payment>> findManyPayments() async {
     try {
       Response res = await dio.get(
         'payments',
@@ -70,14 +70,14 @@ class PayrollService extends BaseService {
       );
       return paymentsFromJson(res.data);
     } catch (err) {
-       if (err is DioError) {
+      if (err is DioError) {
         throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());
     }
   }
 
-  updateOnePayment(Payment payment) async {
+  Future<Payment> updateOnePayment(Payment payment) async {
     // payment object clean
     var payload = payment.toJson();
     payload.removeWhere((key, value) {
@@ -94,29 +94,28 @@ class PayrollService extends BaseService {
       );
       return Payment.fromJson(res.data);
     } catch (err) {
-       if (err is DioError) {
+      if (err is DioError) {
         throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());
     }
   }
 
-  deleteOnePayment(int paymentId) async {
+  Future<void> deleteOnePayment(int paymentId) async {
     try {
-      Response res = await dio.delete(
+      await dio.delete(
         'payment/$paymentId',
         options: Options(validateStatus: (status) => status == 200),
       );
-      print(res.data);
     } catch (err) {
-       if (err is DioError) {
+      if (err is DioError) {
         throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());
     }
   }
 
-  findManyPaymentsByUserId(int userId) async {
+  Future<List<Payment>> findManyPaymentsByUserId(int userId) async {
     try {
       Response res = await dio.get(
         'users/$userId/payment',
@@ -126,7 +125,7 @@ class PayrollService extends BaseService {
       var payments = paymentsFromJson(data['payments']);
       return payments;
     } catch (err) {
-       if (err is DioError) {
+      if (err is DioError) {
         throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());

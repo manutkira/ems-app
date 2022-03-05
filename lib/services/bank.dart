@@ -1,10 +1,9 @@
-
 import 'package:dio/dio.dart';
 import 'package:ems/services/base.dart';
 import 'package:ems/services/models/bank.dart';
 
 class BankService extends BaseService {
-  findAllByUserId(int userId) async {
+  Future<List<Bank>> findAllByUserId(int userId) async {
     try {
       Response res = await dio.get(
         '/users/$userId/bank',
@@ -12,14 +11,14 @@ class BankService extends BaseService {
       );
       return banksFromJson(res.data['banks']);
     } catch (err) {
-        if (err is DioError) {
+      if (err is DioError) {
         throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());
     }
   }
 
-  findOne(int bankId) async {
+  Future<Bank> findOne(int bankId) async {
     try {
       Response res = await dio.get(
         'bank/$bankId',
@@ -34,7 +33,7 @@ class BankService extends BaseService {
     }
   }
 
-  createOne(Bank bank) async {
+  Future<Bank> createOne(Bank bank) async {
     var payload = bank.createBankJson();
     try {
       Response res = await dio.post(
@@ -44,16 +43,16 @@ class BankService extends BaseService {
       );
       return Bank.fromJson(res.data);
     } catch (err) {
-        if (err is DioError) {
+      if (err is DioError) {
         throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());
     }
   }
 
-  updateOne(Bank bank) async {
+  Future<Bank> updateOne(Bank bank) async {
     // throw an error
-    // if(bank.id==null) return;
+    if (bank.id == null) throw Exception("Data provided is corrupted.");
 
     var payload = bank.createBankJson();
     payload.removeWhere((key, value) {
@@ -63,21 +62,21 @@ class BankService extends BaseService {
       return false;
     });
     try {
-      Response res = await dio.post(
+      Response res = await dio.put(
         'bank/${bank.id}',
         data: payload,
         options: Options(validateStatus: (status) => status == 200),
       );
       return Bank.fromJson(res.data);
     } catch (err) {
-        if (err is DioError) {
+      if (err is DioError) {
         throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());
     }
   }
 
-  deleteOne(int bankId) async {
+  Future<void> deleteOne(int bankId) async {
     try {
       await dio.delete(
         'bank/$bankId',

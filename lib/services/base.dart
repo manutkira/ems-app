@@ -14,7 +14,7 @@ class BaseService {
   BaseService() {
     dio.options.baseUrl = _baseUrl;
     dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
-      // TODO: FETCH TOKEN FROM LOCAL STORAGE
+
       String? token = tokenBox.get(tokenBoxName);
       if (token != null) {
         options.headers['Authorization'] = "Bearer $token";
