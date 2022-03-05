@@ -7,7 +7,6 @@ import 'package:ems/services/models/attendance.dart';
 import '../models/attendance_count.dart';
 import '../models/user.dart';
 import '../utils/utils.dart';
-import '../models/attendance.dart';
 
 class AttendanceService extends BaseService {
   static AttendanceService get instance => AttendanceService();
@@ -37,7 +36,7 @@ class AttendanceService extends BaseService {
     }
   }
 
-  findManyByUserId(
+  Future<List<AttendancesByDate>> findManyByUserId(
     int userId, {
     DateTime? start,
     DateTime? end,
@@ -91,6 +90,7 @@ class AttendanceService extends BaseService {
       if (err is DioError) {
         print(err.response?.data);
       }
+      throw Exception(err.toString());
       print(err);
     }
   }

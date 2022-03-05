@@ -1,6 +1,8 @@
-import 'package:ems/models/attendance.dart';
+import 'dart:developer';
+
+import 'package:ems/services/models/attendance.dart';
 import 'package:ems/persistence/current_user.dart';
-import 'package:ems/utils/services/attendance_service.dart';
+import 'package:ems/services/attendance.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,7 +28,7 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
 
   void getStatus() async {
     if (!widget.isOnline) {
-      print('offline from check status');
+      log('offline from check status');
       return;
     }
 
@@ -38,42 +40,35 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
 
     AttendanceService attService = AttendanceService.instance;
     int userId = ref.read(currentUserProvider).user.id as int;
-    List<AttendanceWithDate> listOfAttendance = [];
-    listOfAttendance = await attService.findManyByUserId(
-      userId: userId,
+    // List<AttendancesByDate> listOfAttendance = [];
+    List<AttendancesByDate> listOfAttendance =
+        await attService.findManyByUserId(
+      userId,
       start: DateTime.now(),
       end: DateTime.now(),
     );
+
     if (!mounted) return;
-    if (listOfAttendance.isNotEmpty) {
-      listOfAttendance[0].list.map((e) {
-        switch (e.code) {
-          case 'cin1':
-            {
-              return setState(() {
-                isMorningCheckIn = true;
-              });
-            }
-          case 'cout1':
-            {
-              return setState(() {
-                isMorningCheckOut = true;
-              });
-            }
-          case 'cin2':
-            {
-              return setState(() {
-                isAfternoonCheckIn = true;
-              });
-            }
-          case 'cout2':
-            {
-              return setState(() {
-                isAfternoonCheckOut = true;
-              });
-            }
-        }
-      }).toList();
+    Attendance? att = listOfAttendance.first.attendances?.first;
+    if (att?.t1 != null) {
+      setState(() {
+        isMorningCheckIn = true;
+      });
+    }
+    if (att?.t2 != null) {
+      setState(() {
+        isMorningCheckOut = true;
+      });
+    }
+    if (att?.t3 != null) {
+      setState(() {
+        isAfternoonCheckIn = true;
+      });
+    }
+    if (att?.t4 != null) {
+      setState(() {
+        isAfternoonCheckOut = true;
+      });
     }
     setState(() {
       isFetchingStatus = false;
@@ -83,9 +78,7 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
   @override
   void initState() {
     super.initState();
-    if (widget.isOnline) {
-      getStatus();
-    }
+    getStatus();
   }
 
   @override

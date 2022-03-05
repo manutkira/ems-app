@@ -78,12 +78,24 @@ class Attendance {
         overtime: convertStringToDuration(json?['overtime']),
         total: doubleParse(json?['t']),
         user: User.fromJson(json?['users']),
-        t1: AttendanceRecord.fromJson(json?['get_t1']),
-        t2: AttendanceRecord.fromJson(json?['get_t2']),
-        t3: AttendanceRecord.fromJson(json?['get_t3']),
-        t4: AttendanceRecord.fromJson(json?['get_t4']),
-        t5: AttendanceRecord.fromJson(json?['get_t5']),
-        t6: AttendanceRecord.fromJson(json?['get_t6']),
+        t1: json?['get_t1'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t1']),
+        t2: json?['get_t2'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t2']),
+        t3: json?['get_t3'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t3']),
+        t4: json?['get_t4'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t4']),
+        t5: json?['get_t5'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t5']),
+        t6: json?['get_t6'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t6']),
       );
 
   Map<String, dynamic> toJson() {
