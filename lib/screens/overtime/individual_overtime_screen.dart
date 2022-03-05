@@ -46,12 +46,13 @@ class _IndividualOvertimeScreenState
   DateTime endDate = DateTime.now();
 
   /// more menu
-  void handleMoreMenu(String value, Overtime record) async {
+  /// more menu
+  void moreMenu(String value, Overtime record) async {
     AppLocalizations? local = AppLocalizations.of(context);
     if (value == local?.optionView) {
       await modalBottomSheetBuilder(
         context: context,
-        maxHeight: MediaQuery.of(context).size.height * 0.55,
+        maxHeight: MediaQuery.of(context).size.height * 0.60,
         minHeight: MediaQuery.of(context).size.height * 0.4,
         child: ViewOvertime(
           record: record,
@@ -60,8 +61,9 @@ class _IndividualOvertimeScreenState
     }
     if (value == local?.optionEdit) {
       await modalBottomSheetBuilder(
+        isScrollControlled: false,
         context: context,
-        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        maxHeight: MediaQuery.of(context).size.height * 0.75,
         minHeight: MediaQuery.of(context).size.height * 0.6,
         isDismissible: false,
         child: EditOvertime(record: record),
@@ -618,7 +620,7 @@ class _IndividualOvertimeScreenState
                   return buildMoreMenu(option);
                 }).toList(),
                 onSelected: (selected) =>
-                    handleMoreMenu(selected, record as Overtime),
+                    moreMenu(selected, record as Overtime),
               ),
             ],
           )

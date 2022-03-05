@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
@@ -7,9 +5,7 @@ import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
 import 'package:ems/screens/overtime/overtime_screen.dart';
 import 'package:ems/screens/payroll/loan/loan_all.dart';
-import 'package:ems/screens/payroll/loan/new_loan.dart';
 import 'package:ems/screens/payroll/payroll_list_screen.dart';
-import 'package:ems/screens/payroll/payroll_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/qr_code_scan.dart';
 import 'package:ems/utils/utils.dart';
@@ -22,8 +18,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:intl/intl.dart';
 
 import 'attendances_api/attendance_info.dart';
 import 'overtime/individual_overtime_screen.dart';
@@ -31,26 +25,13 @@ import 'overtime/individual_overtime_screen.dart';
 class HomeScreenAdmin extends ConsumerStatefulWidget {
   HomeScreenAdmin({Key? key, required this.isOnline}) : super(key: key);
   bool isOnline;
+
   @override
   ConsumerState createState() => _HomeScreenAdminState();
 }
 
 class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  var time = 'calculating';
-  late Timer _timer;
-
-  bool isConnected = false;
-
-  getTime() async {
-    if (mounted) {
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        setState(() {
-          time = DateFormat('jm').format(DateTime.now());
-        });
-      });
-    }
-  }
 
   showOfflineSnackbar() {
     AppLocalizations? local = AppLocalizations.of(context);
@@ -143,24 +124,14 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
     super.didChangeDependencies();
   }
 
-  checkInternet() async {
-    bool status = await InternetConnectionChecker().hasConnection;
-    return status;
-  }
-
   @override
   void initState() {
     super.initState();
-    getTime();
-
-    // checkConnection();
-    // isConnected = ref.watch(connectionStatusProvider);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _timer.cancel();
   }
 
   @override
@@ -182,9 +153,8 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             /// top
             Stack(
               children: [
-                Container(
-                  padding: const EdgeInsets.only(top: 25),
-                  height: 200,
+                SizedBox(
+                  height: 160,
                   width: _size.width,
                   child: SvgPicture.asset(
                     'assets/images/graph.svg',
@@ -196,49 +166,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20, left: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ValueListenableBuilder(
-                            valueListenable: ref
-                                .watch(currentUserProvider)
-                                .currentUserListenable,
-                            builder: (_, Box<User> box, __) {
-                              final listFromBox = box.values.toList();
-                              final currentUser = listFromBox.isNotEmpty
-                                  ? listFromBox[0]
-                                  : null;
-
-                              return Text(
-                                "${local?.hello("${currentUser?.name}")}",
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  height: 1,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              );
-                            },
-                          ),
-                          Visibility(
-                            visible: isEnglish,
-                            child: const SizedBox(height: 5),
-                          ),
-                          Text(
-                            "${local?.timeText(
-                              time,
-                              getDateStringFromDateTime(
-                                DateTime.now(),
-                              ),
-                            )}",
-                            style: kSubtitleTwo,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: isEnglish ? 30 : 25),
+                    const SizedBox(height: 30),
                     CheckStatus(isOnline: widget.isOnline),
                   ],
                 ),
@@ -296,7 +224,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             InkWell(
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => PayrollListScreen()));
+                    MaterialPageRoute(builder: (_) => const PayrollListScreen()));
               },
               child: _buildTitle(
                 '${local?.attendance}',
@@ -352,7 +280,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => LoanAll(),
+                  builder: (_) => const LoanAll(),
                 ),
               ),
               child: _buildTitle('${local?.overtime}'),

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
@@ -8,13 +6,11 @@ import 'package:ems/screens/test_attendances.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/appbar.dart';
 import 'package:ems/widgets/check_status.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
 
 import 'attendances_api/attendance_info.dart';
 import 'overtime/individual_overtime_screen.dart';
@@ -22,24 +18,13 @@ import 'overtime/individual_overtime_screen.dart';
 class HomeScreenEmployee extends ConsumerStatefulWidget {
   HomeScreenEmployee({Key? key, required this.isOnline}) : super(key: key);
   bool isOnline;
+
   @override
   ConsumerState createState() => _HomeScreenEmployeeState();
 }
 
 class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  var time = 'calculating';
-  late Timer _timer;
-
-  getTime() async {
-    if (mounted) {
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        setState(() {
-          time = DateFormat('jm').format(DateTime.now());
-        });
-      });
-    }
-  }
 
   showOfflineSnackbar() {
     AppLocalizations? local = AppLocalizations.of(context);
@@ -87,13 +72,11 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
   @override
   void initState() {
     super.initState();
-    getTime();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _timer.cancel();
   }
 
   @override
@@ -115,9 +98,8 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             /// top
             Stack(
               children: [
-                Container(
-                  padding: const EdgeInsets.only(top: 25),
-                  height: 200,
+                SizedBox(
+                  height: 160,
                   width: _size.width,
                   child: SvgPicture.asset(
                     'assets/images/graph.svg',
@@ -129,49 +111,71 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20, left: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ValueListenableBuilder(
-                            valueListenable: ref
-                                .watch(currentUserProvider)
-                                .currentUserListenable,
-                            builder: (_, Box<User> box, __) {
-                              final listFromBox = box.values.toList();
-                              final currentUser = listFromBox.isNotEmpty
-                                  ? listFromBox[0]
-                                  : null;
-
-                              return Text(
-                                "${local?.hello("${currentUser?.name}")}",
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  height: 1,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              );
-                            },
-                          ),
-                          Visibility(
-                            visible: isEnglish,
-                            child: const SizedBox(height: 5),
-                          ),
-                          Text(
-                            "${local?.timeText(time, getDateStringFromDateTime(DateTime.now()))}",
-                            style: kSubtitleTwo,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: isEnglish ? 30 : 25),
+                    const SizedBox(height: 30),
                     CheckStatus(isOnline: widget.isOnline),
                   ],
                 ),
               ],
             ),
+            // Stack(
+            //   children: [
+            //     Container(
+            //       padding: const EdgeInsets.only(top: 25),
+            //       height: 200,
+            //       width: _size.width,
+            //       child: SvgPicture.asset(
+            //         'assets/images/graph.svg',
+            //         semanticsLabel: "menu",
+            //         fit: BoxFit.cover,
+            //       ),
+            //     ),
+            //     Column(
+            //       mainAxisAlignment: MainAxisAlignment.start,
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         Padding(
+            //           padding: const EdgeInsets.only(top: 20, left: 15),
+            //           child: Column(
+            //             mainAxisAlignment: MainAxisAlignment.start,
+            //             crossAxisAlignment: CrossAxisAlignment.start,
+            //             children: [
+            //               ValueListenableBuilder(
+            //                 valueListenable: ref
+            //                     .watch(currentUserProvider)
+            //                     .currentUserListenable,
+            //                 builder: (_, Box<User> box, __) {
+            //                   final listFromBox = box.values.toList();
+            //                   final currentUser = listFromBox.isNotEmpty
+            //                       ? listFromBox[0]
+            //                       : null;
+            //
+            //                   return Text(
+            //                     "${local?.hello("${currentUser?.name}")}",
+            //                     style: const TextStyle(
+            //                       fontSize: 16,
+            //                       height: 1,
+            //                       fontWeight: FontWeight.w700,
+            //                     ),
+            //                   );
+            //                 },
+            //               ),
+            //               Visibility(
+            //                 visible: isEnglish,
+            //                 child: const SizedBox(height: 5),
+            //               ),
+            //               Text(
+            //                 "${local?.timeText(time, getDateStringFromDateTime(DateTime.now()))}",
+            //                 style: kSubtitleTwo,
+            //               ),
+            //             ],
+            //           ),
+            //         ),
+            //         SizedBox(height: isEnglish ? 30 : 25),
+            //         CheckStatus(isOnline: widget.isOnline),
+            //       ],
+            //     ),
+            //   ],
+            // ),
             _buildSpacerVertical,
 
             /// current user attendance
