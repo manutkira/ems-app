@@ -691,7 +691,7 @@ class _IndividualOvertimeScreenState
           ],
         ),
         const SizedBox(width: 10),
-        Text('${_time.hour}h ${_time.minute}mn'),
+        Text(total),
       ],
     );
   }
