@@ -129,29 +129,6 @@ class _EditOvertimeState extends State<EditOvertime> {
       user = record.user;
       checkIn = record.checkIn;
       checkOut = record.checkOut;
-
-      // hour and minute
-      // int checkInHour = checkIn == null
-      //     ? checkOut == null
-      //         ? 0
-      //         : checkOut?.time?.hour as int
-      //     : checkIn?.time?.hour as int;
-      // int checkInMinute = checkIn == null
-      //     ? checkOut == null
-      //         ? 0
-      //         : checkOut?.time?.minute as int
-      //     : checkIn?.time?.minute as int;
-      // int checkOutHour = checkOut == null
-      //     ? checkIn == null
-      //         ? 0
-      //         : checkIn?.time?.hour as int
-      //     : checkOut?.time?.hour as int;
-      // int checkOutMinute = checkOut == null
-      //     ? checkIn == null
-      //         ? 0
-      //         : checkIn?.time?.minute as int
-      //     : checkOut?.time?.minute as int;
-
       selectedDate = record.date as DateTime;
 
       // timeOfDay
