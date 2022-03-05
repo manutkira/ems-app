@@ -30,10 +30,10 @@ class OvertimeService extends BaseService {
           overtimesByDatesFromJson(res.data['attendance']);
       return list;
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+       if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -105,10 +105,10 @@ class OvertimeService extends BaseService {
 
       return owt;
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+       if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 }

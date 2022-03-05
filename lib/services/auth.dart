@@ -42,9 +42,9 @@ class AuthService extends BaseService {
       await tokenBox.put(tokenBoxName, _token);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -71,10 +71,9 @@ class AuthService extends BaseService {
       await tokenBox.delete(tokenBoxName);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-
-      print(err);
+      throw Exception(err.toString());
     }
   }
 

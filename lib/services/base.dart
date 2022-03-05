@@ -14,7 +14,6 @@ class BaseService {
   BaseService() {
     dio.options.baseUrl = _baseUrl;
     dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
-      // final box = GetStorage();
       // TODO: FETCH TOKEN FROM LOCAL STORAGE
       String? token = tokenBox.get(tokenBoxName);
       if (token != null) {

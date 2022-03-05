@@ -15,9 +15,9 @@ class LoanService extends BaseService {
       return loans;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -31,9 +31,9 @@ class LoanService extends BaseService {
       return Loan.fromJson(data);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -45,9 +45,9 @@ class LoanService extends BaseService {
       );
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -70,9 +70,9 @@ class LoanService extends BaseService {
       return Loan.fromJson(data);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -95,9 +95,9 @@ class LoanService extends BaseService {
       return Loan.fromJson(data);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -113,9 +113,9 @@ class LoanService extends BaseService {
       return loan;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -131,9 +131,9 @@ class LoanService extends BaseService {
       return loan;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -148,9 +148,9 @@ class LoanService extends BaseService {
       return loans;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 }

@@ -14,10 +14,10 @@ class PayrollService extends BaseService {
       var payroll = Payroll.fromJson(data);
       return payroll;
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+       if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -32,10 +32,10 @@ class PayrollService extends BaseService {
       var payment = Payment.fromJson(data['payment']);
       return payment;
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+       if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -55,10 +55,10 @@ class PayrollService extends BaseService {
       );
       return Payment.fromJson(res.data);
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+       if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -70,10 +70,10 @@ class PayrollService extends BaseService {
       );
       return paymentsFromJson(res.data);
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+       if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -94,10 +94,10 @@ class PayrollService extends BaseService {
       );
       return Payment.fromJson(res.data);
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+       if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -109,10 +109,10 @@ class PayrollService extends BaseService {
       );
       print(res.data);
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+       if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -126,10 +126,10 @@ class PayrollService extends BaseService {
       var payments = paymentsFromJson(data['payments']);
       return payments;
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+       if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 }

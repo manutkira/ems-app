@@ -11,7 +11,7 @@ import '../utils/utils.dart';
 class AttendanceService extends BaseService {
   static AttendanceService get instance => AttendanceService();
 
-  findMany({
+  Future<List<AttendancesByDate>> findMany({
     DateTime? start,
     DateTime? end,
   }) async {
@@ -30,9 +30,9 @@ class AttendanceService extends BaseService {
       return list;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -88,10 +88,9 @@ class AttendanceService extends BaseService {
       return finalList;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());
-      print(err);
     }
   }
 
@@ -103,10 +102,10 @@ class AttendanceService extends BaseService {
       );
       return AttendanceRecord.fromJson(res.data);
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+        if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -120,10 +119,10 @@ class AttendanceService extends BaseService {
       );
       return AttendanceRecord.fromJson(res.data);
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+        if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -134,10 +133,10 @@ class AttendanceService extends BaseService {
         options: Options(validateStatus: (status) => status == 200),
       );
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+        if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -160,10 +159,10 @@ class AttendanceService extends BaseService {
         options: Options(validateStatus: (status) => status == 200),
       );
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+        if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -189,10 +188,10 @@ class AttendanceService extends BaseService {
         options: Options(validateStatus: (status) => status == 200),
       );
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+        if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -213,10 +212,10 @@ class AttendanceService extends BaseService {
       );
       return AttendanceCount.fromJson(res.data);
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+        if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 }

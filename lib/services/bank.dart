@@ -12,10 +12,10 @@ class BankService extends BaseService {
       );
       return banksFromJson(res.data['banks']);
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+        if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -28,9 +28,9 @@ class BankService extends BaseService {
       return Bank.fromJson(res.data);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      // print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -44,10 +44,10 @@ class BankService extends BaseService {
       );
       return Bank.fromJson(res.data);
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+        if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -70,10 +70,10 @@ class BankService extends BaseService {
       );
       return Bank.fromJson(res.data);
     } catch (err) {
-      if (err is DioError) {
-        print(err.response?.data);
+        if (err is DioError) {
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -85,9 +85,9 @@ class BankService extends BaseService {
       );
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      // print(err);
+      throw Exception(err.toString());
     }
   }
 }
