@@ -11,7 +11,7 @@ class AuthService extends BaseService {
   static AuthService get instance => AuthService();
 
   // login(String phone, String password) async {
-  login({
+  Future<void> login({
     required String phone,
     required String password,
   }) async {
@@ -42,13 +42,13 @@ class AuthService extends BaseService {
       await tokenBox.put(tokenBoxName, _token);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
-  findMe() async {
+  Future<User?> findMe() async {
     try {
       Response res = await dio.get(
         'me',
@@ -61,7 +61,7 @@ class AuthService extends BaseService {
     }
   }
 
-  logout() async {
+  Future<void> logout() async {
     try {
       await dio.post(
         'logout',
@@ -71,15 +71,13 @@ class AuthService extends BaseService {
       await tokenBox.delete(tokenBoxName);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
   Future<bool> verify(int id, String password) async {
-
     try {
       await dio.get(
         'verify/$id?password=$password',

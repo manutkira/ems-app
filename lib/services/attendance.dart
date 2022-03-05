@@ -11,7 +11,7 @@ import '../utils/utils.dart';
 class AttendanceService extends BaseService {
   static AttendanceService get instance => AttendanceService();
 
-  findMany({
+  Future<List<AttendancesByDate>> findMany({
     DateTime? start,
     DateTime? end,
   }) async {
@@ -30,9 +30,9 @@ class AttendanceService extends BaseService {
       return list;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -88,14 +88,13 @@ class AttendanceService extends BaseService {
       return finalList;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
       throw Exception(err.toString());
-      print(err);
     }
   }
 
-  findOneRecord(int id) async {
+  Future<AttendanceRecord> findOneRecord(int id) async {
     try {
       Response res = await dio.get(
         'attendance_record/$id',
@@ -104,13 +103,13 @@ class AttendanceService extends BaseService {
       return AttendanceRecord.fromJson(res.data);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
-  updateOneRecord(AttendanceRecord record) async {
+  Future<AttendanceRecord> updateOneRecord(AttendanceRecord record) async {
     try {
       var payload = record.toJson();
       Response res = await dio.put(
@@ -121,13 +120,13 @@ class AttendanceService extends BaseService {
       return AttendanceRecord.fromJson(res.data);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
-  deleteOneRecord(int id) async {
+  Future<void> deleteOneRecord(int id) async {
     try {
       await dio.delete(
         'attendance_record/$id',
@@ -135,13 +134,13 @@ class AttendanceService extends BaseService {
       );
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
-  createOneRecord({
+  Future<void> createOneRecord({
     required int userId,
     required DateTime date,
     String? note,
@@ -161,9 +160,9 @@ class AttendanceService extends BaseService {
       );
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
@@ -179,7 +178,6 @@ class AttendanceService extends BaseService {
       return att;
     }).toList();
 
-    print(clean);
     try {
       await dio.post(
         'attendances/mass',
@@ -190,13 +188,14 @@ class AttendanceService extends BaseService {
       );
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
-  countAttendance(int userId, {DateTime? start, DateTime? end}) async {
+  Future<AttendanceCount> countAttendance(int userId,
+      {DateTime? start, DateTime? end}) async {
     String startDate = "${convertDateTimeToString(start)}";
     String endDate = "${convertDateTimeToString(end)}";
 
@@ -214,9 +213,9 @@ class AttendanceService extends BaseService {
       return AttendanceCount.fromJson(res.data);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 }

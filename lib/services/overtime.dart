@@ -7,7 +7,7 @@ import '../utils/utils.dart';
 class OvertimeService extends BaseService {
   static OvertimeService get instance => OvertimeService();
 
-  findMany({
+  Future<List<OvertimesByDate>> findMany({
     DateTime? start,
     DateTime? end,
   }) async {
@@ -31,13 +31,13 @@ class OvertimeService extends BaseService {
       return list;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
-  findManyByUserId({
+  Future<OvertimesWithTotal> findManyByUserId({
     required int userId,
     DateTime? start,
     DateTime? end,
@@ -106,9 +106,9 @@ class OvertimeService extends BaseService {
       return owt;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 }

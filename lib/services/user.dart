@@ -9,24 +9,23 @@ import 'base.dart';
 class UserService extends BaseService {
   static UserService get instance => UserService();
 
-  findOne(int id) async {
+  Future<User> findOne(int id) async {
     try {
       Response res = await dio.get(
         'users/$id',
         options: Options(validateStatus: (status) => status == 200),
       );
       User user = User.fromJson(res.data);
-      print(user.toCleanJson());
       return user;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
-  findMany() async {
+  Future<List<User>> findMany() async {
     try {
       Response res = await dio.get(
         'users',
@@ -37,13 +36,13 @@ class UserService extends BaseService {
       return users;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
-  createOne(User user, {File? image, File? imageId}) async {
+  Future<User> createOne(User user, {File? image, File? imageId}) async {
     var data = user.toCleanJson();
     var upload = {};
     if (image != null) {
@@ -74,13 +73,13 @@ class UserService extends BaseService {
       return user;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
-  updateOne(User user, {File? image, File? imageId}) async {
+  Future<User> updateOne(User user, {File? image, File? imageId}) async {
     var data = user.toCleanJson();
     var upload = {};
     if (image != null) {
@@ -112,24 +111,23 @@ class UserService extends BaseService {
       return newUser;
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 
-  deleteOne(int id) async {
+  Future<void> deleteOne(int id) async {
     try {
-      Response res = await dio.delete(
+      await dio.delete(
         'users/$id',
         options: Options(validateStatus: (status) => status == 200),
       );
-      print(res.data);
     } catch (err) {
       if (err is DioError) {
-        print(err.response?.data);
+        throw Exception(err.response?.data['message']);
       }
-      print(err);
+      throw Exception(err.toString());
     }
   }
 }
