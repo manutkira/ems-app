@@ -82,7 +82,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
     AppLocalizations? local = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment & Loan'),
+        title: Text('${local?.payment}'),
       ),
       body: Container(
         width: double.infinity,
@@ -305,7 +305,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
               width: 10,
             ),
             SizedBox(
-              width: 295,
+              width: 255,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -374,7 +374,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
                     itemBuilder: (_) => [
                       PopupMenuItem(
                         child: Text(
-                          'Generate Payroll',
+                          '${local?.generatePayment}',
                           style: TextStyle(
                             fontSize: isEnglish ? 15 : 16,
                           ),

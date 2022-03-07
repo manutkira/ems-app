@@ -1018,6 +1018,78 @@
   "@reason": {
     "description": "payroll"
   },
+  "payment": "Payment",
+  "@payment": {
+    "description": "payment"
+  },
+  "generatePayment": "Generate Payment",
+  "@generatePayment": {
+    "description": "payment"
+  },
+  "generateNew": "Generate New",
+  "@generateNew": {
+    "description": "payment"
+  },
+  "pending": "Pending",
+  "@pending": {
+    "description": "payment"
+  },
+  "paid": "Paid",
+  "@paid": {
+    "description": "payment"
+  },
+  "payrollDate": "Date",
+  "@payrollDate": {
+    "description": "payment"
+  },
+  "dayOfWork": "Days of work",
+  "@dayOfWork": {
+    "description": "payment"
+  },
+  "day": "Day",
+  "@day": {
+    "description": "payment"
+  },
+  "basicSalary": "Basic Salary",
+  "@basicSalary": {
+    "description": "payment"
+  },
+  "loan": "Loan",
+  "@loan": {
+    "description": "payment"
+  },
+  "netSalary": "Net Salary",
+  "@netSalary": {
+    "description": "payment"
+  },
+  "input": "Input",
+  "@input": {
+    "description": "payment"
+  },
+  "pay": "Pay",
+  "@pay": {
+    "description": "payment"
+  },
+  "username": "username",
+  "@username": {
+    "description": "payment"
+  },
+  "select": "select",
+  "@select": {
+    "description": "payment"
+  },
+  "enterReason": "Enter Reason",
+  "@enterReason": {
+    "description": "payment"
+  },
+  "enterAmount": "Enter Amount",
+  "@enterAmount": {
+    "description": "payment"
+  },
+  "enterDate": "Enter Date",
+  "@enterDate": {
+    "description": "payment"
+  },
   "calendarAttendance": "Calendar",
   "@calendarAttendance": {
     "description": "take attendance"

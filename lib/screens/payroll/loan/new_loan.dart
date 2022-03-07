@@ -118,9 +118,9 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Username'),
+                        Text('${local?.username}'),
                         SizedBox(
-                          width: 255,
+                          width: 235,
                           child: DropdownButtonFormField(
                             validator: (value) {
                               if (value == null) {
@@ -134,7 +134,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                 value: item.id.toString(),
                               );
                             }).toList(),
-                            hint: Text('select'),
+                            hint: Text('${local?.select}'),
                             onChanged: (newVal) {
                               setState(() {
                                 _mySelection = newVal.toString();
@@ -156,7 +156,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Date ',
+                          '${local?.payrollDate} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
@@ -180,7 +180,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                   },
                                   readOnly: true,
                                   decoration: InputDecoration(
-                                    hintText: 'Enter Date',
+                                    hintText: '${local?.enterDate}',
                                     suffixIcon: IconButton(
                                         onPressed: () {
                                           _startDatePicker();
@@ -213,7 +213,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'amount ',
+                          '${local?.amount} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
@@ -231,7 +231,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                 child: TextFormField(
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
-                                    hintText: '${local?.enterPhone} ',
+                                    hintText: '${local?.enterAmount} ',
                                     errorStyle: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
@@ -270,7 +270,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Reason',
+                            '${local?.reason}',
                             style: kParagraph.copyWith(
                                 fontWeight: FontWeight.bold),
                           ),
@@ -288,13 +288,13 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                   child: TextFormField(
                                     textInputAction: TextInputAction.done,
                                     maxLines: 5,
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.only(
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.only(
                                         left: 10,
                                         top: 20,
                                       ),
-                                      hintText: 'Enter Reason',
-                                      errorStyle: TextStyle(
+                                      hintText: '${local?.enterReason}',
+                                      errorStyle: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                       ),

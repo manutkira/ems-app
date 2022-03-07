@@ -103,10 +103,10 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    // bool isEnglish = isInEnglish(context);
+    bool isEnglish = isInEnglish(context);
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Payroll'),
+          title: Text('${local?.payment}'),
         ),
         body: _isLoading
             ? Container(
@@ -136,11 +136,13 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              'Payroll List',
-                              style: TextStyle(
+                              isEnglish
+                                  ? '${local?.payment} ${local?.list}'
+                                  : '${local?.list} ${local?.payment}',
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -153,8 +155,8 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
                               color: kBlack,
-                              child: const Text(
-                                'Generate New',
+                              child: Text(
+                                '${local?.generateNew}',
                                 style: TextStyle(),
                               ),
                               onPressed: () {
@@ -260,7 +262,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
             child: Padding(
               padding: const EdgeInsets.all(2.8),
               child: Text(
-                record.status == false ? 'Pending' : 'Paid',
+                record.status == false ? '${local?.pending}' : '${local?.paid}',
                 style: const TextStyle(
                   fontSize: 11,
                   color: Colors.black,
@@ -295,7 +297,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('From'),
+                    Text('${local?.from}'),
                     Text(
                       DateFormat('dd-MM-yyyy')
                           .format(record.dateFrom as DateTime),
@@ -308,7 +310,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('To'),
+                    Text('${local?.to}'),
                     Text(
                       DateFormat('dd-MM-yyyy')
                           .format(record.dateTo as DateTime),
@@ -337,15 +339,15 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                         payrollList = [];
                         fetchPaymentById();
                       },
-                      child: const Text(
-                        'View',
+                      child: Text(
+                        '${local?.optionView}',
                       ),
                     ),
                     SizedBox(
                       width: 10,
                     ),
                     RaisedButton(
-                      child: Text('Delete'),
+                      child: Text('${local?.delete}'),
                       elevation: 10,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),

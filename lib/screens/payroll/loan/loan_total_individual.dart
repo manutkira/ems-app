@@ -105,52 +105,47 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                         width: 20,
                       ),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            width: 270,
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Name: ',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                          Row(
+                            children: [
+                              Text(
+                                'Name: ',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                                SizedBox(
-                                  width: 17,
+                              ),
+                              SizedBox(
+                                width: 17,
+                              ),
+                              Text(
+                                loan!.user!.name.toString(),
+                                style: TextStyle(
+                                  fontSize: 14,
                                 ),
-                                Text(
-                                  loan!.user!.name.toString(),
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          SizedBox(
-                            width: 270,
-                            child: Row(
-                              children: [
-                                Text(
-                                  'ID:',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                          Row(
+                            children: [
+                              Text(
+                                'ID:',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                                SizedBox(
-                                  width: 45,
+                              ),
+                              SizedBox(
+                                width: 45,
+                              ),
+                              Text(
+                                loan!.user!.id.toString(),
+                                style: TextStyle(
+                                  fontSize: 14,
                                 ),
-                                Text(
-                                  loan!.user!.id.toString(),
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           )
                         ],
                       ),
