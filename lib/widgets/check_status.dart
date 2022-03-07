@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:ems/services/models/attendance.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/services/attendance.dart';
+import 'package:ems/services/models/attendance.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -40,15 +40,18 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
 
     AttendanceService attService = AttendanceService.instance;
     int userId = ref.read(currentUserProvider).user.id as int;
-    // List<AttendancesByDate> listOfAttendance = [];
     List<AttendancesByDate> listOfAttendance =
         await attService.findManyByUserId(
       userId,
       start: DateTime.now(),
       end: DateTime.now(),
     );
-
-    if (!mounted) return;
+    if (!mounted || listOfAttendance.isEmpty) {
+      setState(() {
+        isFetchingStatus = false;
+      });
+      return;
+    }
     Attendance? att = listOfAttendance.first.attendances?.first;
     if (att?.t1 != null) {
       setState(() {
@@ -102,24 +105,20 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
               children: [
                 Row(
                   children: [
-                    const Expanded(
-                        child: Text(
-                      '',
-                      style: TextStyle(
-                        color: kBlack,
-                      ),
-                      textAlign: TextAlign.center,
-                    )),
                     Expanded(
-                        child: Text(
-                      "${local?.checkin}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                        color: kBlack,
+                      child: Container(),
+                    ),
+                    Expanded(
+                      child: Text(
+                        "${local?.checkin}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                          color: kBlack,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    )),
+                    ),
                     Expanded(
                         child: Text(
                       "${local?.checkout}",
@@ -206,18 +205,8 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
                       textAlign: TextAlign.center,
                     )),
                     Expanded(
-                        child: Text(
-                      isFetchingStatus
-                          ? '${local?.loading}...'
-                          : isAfternoonCheckOut
-                              ? '✔'
-                              : '--',
-                      style: const TextStyle(
-                        color: kBlack,
-                        fontSize: 12,
-                      ),
-                      textAlign: TextAlign.center,
-                    )),
+                      child: _buildStatusText(isAfternoonCheckOut),
+                    ),
                   ],
                 ),
               ],
@@ -255,6 +244,22 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStatusText(bool status) {
+    AppLocalizations? local = AppLocalizations.of(context);
+    return Text(
+      isFetchingStatus
+          ? '${local?.loading}...'
+          : status
+              ? '✔'
+              : '--',
+      style: const TextStyle(
+        color: kBlack,
+        fontSize: 12,
+      ),
+      textAlign: TextAlign.center,
     );
   }
 }

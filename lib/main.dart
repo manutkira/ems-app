@@ -56,15 +56,11 @@ class _MyAppState extends ConsumerState<MyApp> {
   final navigatorKey = GlobalKey<NavigatorState>();
   late StreamSubscription listener;
   bool isOnline = false;
-  //
-  // checkConnection() async {
-  //   isOnline = await isConnected();
-  // }
 
   @override
   void initState() {
     super.initState();
-    // checkConnection();
+    // check for internet connection;
     listener = InternetConnectionChecker().onStatusChange.listen((status) {
       log('CONNECTION STATUS: $status ${status == InternetConnectionStatus.connected}');
 
