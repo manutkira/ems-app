@@ -9,24 +9,6 @@ const currentUserBoxName = 'currentUser';
 const tokenBoxName = 'tokenBox';
 
 class CurrentUserStore {
-  // final User initUser = User(
-  //   id: 0,
-  //   name: "UNREGISTERED USER",
-  //   phone: "012 345 678",
-  //   email: "",
-  //   emailVerifiedAt: DateTime.now(),
-  //   address: "",
-  //   position: "",
-  //   skill: "",
-  //   salary: "",
-  //   status: "",
-  //   password: "",
-  //   role: "",
-  //   rate: "",
-  //   createdAt: DateTime.now(),
-  //   updatedAt: DateTime.now(),
-  // );
-
   init() async {
     //initialize hive
     await Hive.initFlutter();
@@ -48,8 +30,8 @@ class CurrentUserStore {
     try {
       var token = tokenBox.get(tokenBoxName);
       if (token == null || token.isEmpty) {
-        await tokenBox.delete(tokenBoxName);
-        await userBox.delete(currentUserBoxName);
+        _reset();
+        return;
       }
 
       bool isOnline = await isConnected();
@@ -60,6 +42,7 @@ class CurrentUserStore {
         User? user = await _authService.findMe();
 
         if (user == null) {
+          _reset();
           return;
         }
 
@@ -70,9 +53,15 @@ class CurrentUserStore {
         // throw Exception('Not connected to the internet');
       }
     } catch (err) {
-      await tokenBox.delete(tokenBoxName);
-      await userBox.delete(currentUserBoxName);
+      _reset();
     }
+  }
+
+  void _reset() async {
+    final userBox = Hive.box<User>(currentUserBoxName);
+    final tokenBox = Hive.box<String>(tokenBoxName);
+    await tokenBox.delete(tokenBoxName);
+    await userBox.delete(currentUserBoxName);
   }
 
   /// returns the current user

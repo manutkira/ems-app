@@ -1,5 +1,3 @@
-
-
 import '../../utils/utils.dart';
 
 List<Position> positionsFromJson(List<dynamic>? list) {
@@ -40,4 +38,19 @@ class Position {
       "end_date": endDate?.toIso8601String(),
     };
   }
+
+  Position copyWith({
+    int? id,
+    int? userId,
+    String? name, // title
+    DateTime? startDate,
+    DateTime? endDate,
+  }) =>
+      Position(
+        id: id ?? this.id,
+        userId: userId ?? this.userId,
+        name: name ?? this.name,
+        startDate: startDate ?? this.startDate,
+        endDate: endDate ?? this.endDate,
+      );
 }
