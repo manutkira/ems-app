@@ -1,6 +1,7 @@
 import 'package:ems/services/models/bank.dart';
 import 'package:ems/services/models/loan_record.dart';
 import 'package:ems/services/models/position.dart';
+import 'package:ems/services/models/rating.dart';
 import 'package:hive/hive.dart';
 
 import '../../utils/utils.dart';
@@ -44,6 +45,7 @@ class User {
   List<Position>? positions;
   List<Bank>? banks;
   List<LoanRecord>? loans;
+  List<Rating>? ratings;
 
   User({
     this.id,
@@ -62,6 +64,7 @@ class User {
     this.imageId,
     this.banks,
     this.loans,
+    this.ratings,
   });
 
   factory User.fromJson(Map<String, dynamic>? json) {
@@ -82,6 +85,7 @@ class User {
       positions: positionsFromJson(json?['positions']),
       banks: banksFromJson(json?['bank']),
       loans: loanRecordsFromJson(json?['loan_records']),
+      ratings: ratingsFromJson(json?['rateworks']),
     );
   }
 
@@ -102,6 +106,7 @@ class User {
     List<Position>? positions,
     List<Bank>? banks,
     List<LoanRecord>? loans,
+    List<Rating>? ratings,
   }) =>
       User(
         id: id ?? this.id,
@@ -120,6 +125,7 @@ class User {
         positions: positions ?? this.positions,
         banks: banks ?? this.banks,
         loans: loans ?? this.loans,
+        ratings: ratings ?? this.ratings,
       );
 
   Map<String, dynamic> buildCleanJson() {
