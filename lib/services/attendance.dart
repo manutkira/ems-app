@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:ems/services/base.dart';
 import 'package:ems/services/models/attendance.dart';
+import 'package:ems/services/models/attendance_count.dart';
 
-import '../models/attendance_count.dart';
 import '../models/user.dart';
 import '../utils/utils.dart';
 

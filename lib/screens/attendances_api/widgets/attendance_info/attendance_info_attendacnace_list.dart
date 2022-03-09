@@ -1,3 +1,4 @@
+import 'package:ems/services/models/attendance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,11 +16,11 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
   final bool isOneDay;
   final bool alltime;
   final bool now;
-  List<AttendancesWithDate> attendanceList;
-  List<AttendancesWithDate> onedayList;
+  List<AttendancesByDate> attendanceList;
+  List<AttendancesByDate> onedayList;
   List attendanceListAll;
-  List<AttendancesWithDate> attendancesByIdDisplay;
-  List<AttendancesWithDate> attendanceAll;
+  List<AttendancesByDate> attendancesByIdDisplay;
+  List<AttendancesByDate> attendanceAll;
 
   final Function fetchAttedancesById;
   final Function fetchAllAttendance;
@@ -95,24 +96,24 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                           ? attendanceListAll.length
                           : attendancesByIdDisplay.length,
               itemBuilder: (context, index) {
-                late AttendancesWithDate all;
-                late AttendancesWithDate todayAttendance;
-                late AttendancesWithDate onedayAttendance;
-                late AttendancesWithDate multidayAttendance;
+                late AttendancesByDate all;
+                late AttendancesByDate todayAttendance;
+                late AttendancesByDate onedayAttendance;
+                late AttendancesByDate multidayAttendance;
                 if (alltime) {
-                  AttendancesWithDate allRecord = attendanceAll[index];
+                  AttendancesByDate allRecord = attendanceAll[index];
                   all = allRecord;
                 }
                 if (now) {
-                  AttendancesWithDate nowRecord = attendanceList[index];
+                  AttendancesByDate nowRecord = attendanceList[index];
                   todayAttendance = nowRecord;
                 }
                 if (isOneDay) {
-                  AttendancesWithDate oneday = onedayList[index];
+                  AttendancesByDate oneday = onedayList[index];
                   onedayAttendance = oneday;
                 }
                 if (multiday) {
-                  AttendancesWithDate multiday = attendanceList[index];
+                  AttendancesByDate multiday = attendanceList[index];
 
                   multidayAttendance = multiday;
                 }
@@ -130,16 +131,16 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           );
   }
 
-  checkPresent(AttendancesWithDate element) {
-    if (element.list[0].getT1?.note != 'absent' &&
-        element.list[0].getT1?.note != 'permission') {
-      if (element.list[0].getT1!.time.hour == 7) {
-        if (element.list[0].getT1!.time.minute <= 15) {
+  checkPresent(AttendancesByDate element) {
+    if (element.attendances?[0].t1?.note != 'absent' &&
+        element.attendances?[0].t1?.note != 'permission') {
+      if (element.attendances?[0].t1!.time!.hour == 7) {
+        if (element.attendances![0].t1!.time!.minute <= 15) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT1!.time.hour < 7) {
+      } else if (element.attendances![0].t1!.time!.hour < 7) {
         return true;
       } else {
         return false;
@@ -149,16 +150,16 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     }
   }
 
-  checkPresengetT2(AttendancesWithDate element) {
-    if (element.list[0].getT3?.note != 'absent' &&
-        element.list[0].getT3?.note != 'permission') {
-      if (element.list[0].getT3!.time.hour == 13) {
-        if (element.list[0].getT3!.time.minute <= 15) {
+  checkPresengetT2(AttendancesByDate element) {
+    if (element.attendances?[0].t3?.note != 'absent' &&
+        element.attendances?[0].t3?.note != 'permission') {
+      if (element.attendances?[0].t3!.time!.hour == 13) {
+        if (element.attendances![0].t3!.time!.minute <= 15) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT3!.time.hour < 13) {
+      } else if (element.attendances![0].t3!.time!.hour < 13) {
         return true;
       } else {
         return false;
@@ -168,16 +169,16 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     }
   }
 
-  checkLate1(AttendancesWithDate element) {
-    if (element.list[0].getT1!.note != 'absent' &&
-        element.list[0].getT1?.note != 'permission') {
-      if (element.list[0].getT1!.time.hour == 7) {
-        if (element.list[0].getT1!.time.minute >= 16) {
+  checkLate1(AttendancesByDate element) {
+    if (element.attendances?[0].t1!.note != 'absent' &&
+        element.attendances?[0].t1?.note != 'permission') {
+      if (element.attendances?[0].t1!.time!.hour == 7) {
+        if (element.attendances![0].t1!.time!.minute >= 16) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT1!.time.hour > 7) {
+      } else if (element.attendances![0].t1!.time!.hour > 7) {
         return true;
       } else {
         return false;
@@ -187,15 +188,15 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     }
   }
 
-  checkLate2(AttendancesWithDate element) {
-    if (element.list[0].getT3!.note != 'absent') {
-      if (element.list[0].getT3!.time.hour == 13) {
-        if (element.list[0].getT3!.time.minute >= 16) {
+  checkLate2(AttendancesByDate element) {
+    if (element.attendances?[0].t3!.note != 'absent') {
+      if (element.attendances?[0].t3!.time!.hour == 13) {
+        if (element.attendances![0].t3!.time!.minute >= 16) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT3!.time.hour > 13) {
+      } else if (element.attendances![0].t3!.time!.hour > 13) {
         return true;
       } else {
         return false;
@@ -205,23 +206,23 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     }
   }
 
-  checkAbsengetT1(AttendancesWithDate element) {
-    if (element.list[0].getT1!.note == 'absent') {
+  checkAbsengetT1(AttendancesByDate element) {
+    if (element.attendances?[0].t1!.note == 'absent') {
       return true;
     } else {
       return false;
     }
   }
 
-  checkAbsengetT2(AttendancesWithDate element) {
-    if (element.list[0].getT2!.note == 'absent') {
+  checkAbsengetT2(AttendancesByDate element) {
+    if (element.attendances?[0].t2!.note == 'absent') {
       return true;
     } else {
       return false;
     }
   }
 
-  popUp1(AttendancesWithDate record, BuildContext context, bool isAdmin) {
+  popUp1(AttendancesByDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
     return PopupMenuButton(
       color: Colors.black,
@@ -229,10 +230,10 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           borderRadius: BorderRadius.all(Radius.circular(10))),
       onSelected: (int selectedValue) async {
         if (selectedValue == 0) {
-          final int id = record.list[0].getT1!.id as int;
-          final DateTime date = record.list[0].date as DateTime;
-          final String? note = record.list[0].getT1!.note;
-          final TimeOfDay time = record.list[0].getT1!.time;
+          final int id = record.attendances?[0].t1!.id as int;
+          final DateTime date = record.attendances?[0].t1 as DateTime;
+          final String? note = record.attendances?[0].t1!.note;
+          final TimeOfDay time = record.attendances![0].t1!.time!;
           await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (ctx) => AttedancesEdit(
@@ -259,7 +260,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    deleteData(record.list[0].getT1!.id);
+                    deleteData(record.attendances?[0].t1!.id);
                   },
                   child: Text('Yes'),
                   borderSide: const BorderSide(color: Colors.green),
@@ -277,14 +278,14 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           );
         }
         if (selectedValue == 2) {
-          final int attendanceId = record.list[0].id;
-          final int id = record.list[0].getT1!.id;
-          final DateTime date = record.list[0].date;
-          final TimeOfDay time = record.list[0].getT1!.time;
-          final String? note = record.list[0].getT1!.note;
-          final String userName = record.list[0].user!.name.toString();
-          final String image = record.list[0].user!.image.toString();
-          final int userId = record.list[0].user!.id!;
+          final int attendanceId = record.attendances![0].id!;
+          final int id = record.attendances![0].t1!.id!;
+          final DateTime date = record.attendances![0].date!;
+          final TimeOfDay time = record.attendances![0].t1!.time!;
+          final String? note = record.attendances![0].t1!.note;
+          final String userName = record.attendances![0].user!.name.toString();
+          final String image = record.attendances![0].user!.image.toString();
+          final int userId = record.attendances![0].user!.id!;
           await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (ctx) => ViewAttendanceScreen(
@@ -323,7 +324,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     );
   }
 
-  popUp2(AttendancesWithDate record, BuildContext context, bool isAdmin) {
+  popUp2(AttendancesByDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return PopupMenuButton(
@@ -332,10 +333,10 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           borderRadius: BorderRadius.all(Radius.circular(10))),
       onSelected: (int selectedValue) async {
         if (selectedValue == 0) {
-          final int id = record.list[0].getT2!.id;
-          final DateTime date = record.list[0].date;
-          final String? note = record.list[0].getT2!.note;
-          final TimeOfDay time = record.list[0].getT2!.time;
+          final int id = record.attendances![0].t2!.id!;
+          final DateTime date = record.attendances![0].date!;
+          final String? note = record.attendances?[0].t2!.note;
+          final TimeOfDay time = record.attendances![0].t2!.time!;
           await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (ctx) => AttedancesEdit(
@@ -362,7 +363,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    deleteData(record.list[0].getT2!.id);
+                    deleteData(record.attendances?[0].t2!.id);
                   },
                   child: const Text('Yes'),
                   borderSide: const BorderSide(color: Colors.green),
@@ -380,13 +381,13 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           );
         }
         if (selectedValue == 2) {
-          final int id = record.list[0].id;
-          final DateTime date = record.list[0].date;
-          final TimeOfDay time = record.list[0].getT2!.time;
-          final String? note = record.list[0].getT2!.note;
-          final String userName = record.list[0].user!.name.toString();
-          final String image = record.list[0].user!.image.toString();
-          final int userId = record.list[0].user!.id!;
+          final int id = record.attendances![0].id!;
+          final DateTime date = record.attendances![0].date!;
+          final TimeOfDay time = record.attendances![0].t2!.time!;
+          final String? note = record.attendances![0].t2!.note!;
+          final String userName = record.attendances![0].user!.name.toString();
+          final String image = record.attendances![0].user!.image.toString();
+          final int userId = record.attendances![0].user!.id!;
           await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (ctx) => ViewAttendanceScreen(
@@ -425,7 +426,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     );
   }
 
-  popUp3(AttendancesWithDate record, BuildContext context, bool isAdmin) {
+  popUp3(AttendancesByDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
     return PopupMenuButton(
       color: Colors.black,
@@ -433,10 +434,10 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           borderRadius: BorderRadius.all(Radius.circular(10))),
       onSelected: (int selectedValue) async {
         if (selectedValue == 0) {
-          final int id = record.list[0].getT3!.id;
-          final DateTime date = record.list[0].date;
-          final String? note = record.list[0].getT3!.note;
-          final TimeOfDay time = record.list[0].getT3!.time;
+          final int id = record.attendances![0].t3!.id!;
+          final DateTime date = record.attendances![0].date!;
+          final String? note = record.attendances![0].t3!.note;
+          final TimeOfDay time = record.attendances![0].t3!.time!;
           await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (ctx) => AttedancesEdit(
@@ -463,7 +464,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    deleteData(record.list[0].getT3!.id);
+                    deleteData(record.attendances?[0].t3!.id);
                   },
                   child: const Text('Yes'),
                   borderSide: const BorderSide(color: Colors.green),
@@ -481,13 +482,13 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           );
         }
         if (selectedValue == 2) {
-          final int id = record.list[0].getT3!.id;
-          final DateTime date = record.list[0].date;
-          final TimeOfDay time = record.list[0].getT3!.time;
-          final String? note = record.list[0].getT3!.note;
-          final String userName = record.list[0].user!.name.toString();
-          final String image = record.list[0].user!.image.toString();
-          final int userId = record.list[0].user!.id!;
+          final int id = record.attendances![0].t3!.id!;
+          final DateTime date = record.attendances![0].date!;
+          final TimeOfDay time = record.attendances![0].t3!.time!;
+          final String? note = record.attendances![0].t3!.note;
+          final String userName = record.attendances![0].user!.name.toString();
+          final String image = record.attendances![0].user!.image.toString();
+          final int userId = record.attendances![0].user!.id!;
           await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (ctx) => ViewAttendanceScreen(
@@ -526,7 +527,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     );
   }
 
-  popUp4(AttendancesWithDate record, BuildContext context, bool isAdmin) {
+  popUp4(AttendancesByDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
     return PopupMenuButton(
       color: Colors.black,
@@ -534,10 +535,10 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           borderRadius: BorderRadius.all(Radius.circular(10))),
       onSelected: (int selectedValue) async {
         if (selectedValue == 0) {
-          final int id = record.list[0].getT4!.id;
-          final DateTime date = record.list[0].date;
-          final String? note = record.list[0].getT4!.note;
-          final TimeOfDay time = record.list[0].getT4!.time;
+          final int id = record.attendances![0].t4!.id!;
+          final DateTime date = record.attendances![0].date!;
+          final String? note = record.attendances![0].t4!.note;
+          final TimeOfDay time = record.attendances![0].t4!.time!;
           await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (ctx) => AttedancesEdit(
@@ -564,7 +565,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                 OutlineButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    deleteData(record.list[0].getT4!.id);
+                    deleteData(record.attendances![0].t4!.id);
                   },
                   child: const Text('Yes'),
                   borderSide: const BorderSide(color: Colors.green),
@@ -582,13 +583,13 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           );
         }
         if (selectedValue == 2) {
-          final int id = record.list[0].getT3!.id;
-          final DateTime date = record.list[0].date;
-          final TimeOfDay time = record.list[0].getT4!.time;
-          final String? note = record.list[0].getT4!.note;
-          final String userName = record.list[0].user!.name.toString();
-          final String image = record.list[0].user!.image.toString();
-          final int userId = record.list[0].user!.id!;
+          final int id = record.attendances![0].t4!.id!;
+          final DateTime date = record.attendances![0].date!;
+          final TimeOfDay time = record.attendances![0].t4!.time!;
+          final String? note = record.attendances![0].t4!.note;
+          final String userName = record.attendances![0].user!.name.toString();
+          final String image = record.attendances![0].user!.image.toString();
+          final int userId = record.attendances![0].user!.id!;
           await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (ctx) => ViewAttendanceScreen(
@@ -628,7 +629,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
   }
 
   Widget _buildAllResult(
-      AttendancesWithDate record, BuildContext context, bool isAdmin) {
+      AttendancesByDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
@@ -657,28 +658,28 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('1- ${local!.checkIn}'),
-                    record.list[0].getT1 == null
+                    record.attendances?[0].t1 == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT1?.time.hour == null
+                                record.attendances?[0].t1?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT1!.time.hour
+                                    : record.attendances![0].t1!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT1?.time.minute == null
+                                record.attendances?[0].t1?.time!.minute == null
                                     ? 'null'
-                                    : ':${record.list[0].getT1!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances?[0].t1!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(
                                 width: 10,
                               ),
-                              Text(record.list[0].getT1 == null
+                              Text(record.attendances?[0].t1 == null
                                   ? 'null'
                                   : checkPresent(record)
                                       ? '( ${local.present} )'
@@ -704,22 +705,22 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('1- ${local.checkOut}'),
-                    record.list[0].getT2 == null
+                    record.attendances?[0].t2 == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT2?.time.hour == null
+                                record.attendances?[0].t2?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT2!.time.hour
+                                    : record.attendances![0].t2!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT2?.time.minute == null
+                                record.attendances?[0].t2?.time!.minute == null
                                     ? 'null'
-                                    : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances?[0].t2!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               popUp2(record, context, isAdmin)
@@ -739,28 +740,28 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('2- ${local.checkIn}'),
-                    record.list[0].getT3 == null
+                    record.attendances?[0].t3 == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT3?.time.hour == null
+                                record.attendances?[0].t3?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT3!.time.hour
+                                    : record.attendances![0].t3!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT3?.time.hour == null
+                                record.attendances?[0].t3?.time!.hour == null
                                     ? 'null'
-                                    : ':${record.list[0].getT3!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances?[0].t3!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(
                                 width: 10,
                               ),
-                              Text(record.list[0].getT3?.time == null
+                              Text(record.attendances?[0].t3?.time == null
                                   ? 'null'
                                   : checkPresengetT2(record)
                                       ? '( ${local.present} )'
@@ -786,22 +787,22 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('2- ${local.checkOut}'),
-                    record.list[0].getT4 == null
+                    record.attendances?[0].t4 == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT4?.time.hour == null
+                                record.attendances?[0].t4?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT4!.time.hour
+                                    : record.attendances![0].t4!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT4?.time.hour == null
+                                record.attendances?[0].t4?.time!.hour == null
                                     ? 'null'
-                                    : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances?[0].t4!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               popUp4(record, context, isAdmin)
@@ -818,7 +819,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
   }
 
   Widget _buildNowResult(
-      AttendancesWithDate record, BuildContext context, bool isAdmin) {
+      AttendancesByDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
@@ -847,28 +848,28 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('1- ${local!.checkIn}'),
-                    record.list[0].getT1?.time.hour == null
+                    record.attendances?[0].t1?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT1?.time.hour == null
+                                record.attendances![0].t1?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT1!.time.hour
+                                    : record.attendances![0].t1!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT1?.time.minute == null
+                                record.attendances![0].t1?.time!.minute == null
                                     ? 'null'
-                                    : ':${record.list[0].getT1!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t1!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(
                                 width: 10,
                               ),
-                              Text(record.list[0].getT1?.time == null
+                              Text(record.attendances![0].t1?.time == null
                                   ? 'null'
                                   : checkPresent(record)
                                       ? '( ${local.present} )'
@@ -894,22 +895,22 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('1- ${local.checkOut}'),
-                    record.list[0].getT2?.time.hour == null
+                    record.attendances![0].t2?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT2?.time.hour == null
+                                record.attendances![0].t2?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT2!.time.hour
+                                    : record.attendances![0].t2!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT2?.time.hour == null
+                                record.attendances![0].t2?.time!.hour == null
                                     ? 'null'
-                                    : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t2!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               popUp2(record, context, isAdmin)
@@ -929,28 +930,28 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('2- ${local.checkIn}'),
-                    record.list[0].getT3?.time.hour == null
+                    record.attendances![0].t3?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT3?.time.hour == null
+                                record.attendances![0].t3?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT3!.time.hour
+                                    : record.attendances![0].t3!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT3?.time.hour == null
+                                record.attendances![0].t3?.time!.hour == null
                                     ? 'null'
-                                    : ':${record.list[0].getT3!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t3!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(
                                 width: 10,
                               ),
-                              Text(record.list[0].getT3?.time == null
+                              Text(record.attendances![0].t3?.time! == null
                                   ? 'null'
                                   : checkPresengetT2(record)
                                       ? '( ${local.present} )'
@@ -976,22 +977,22 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('2- ${local.checkOut}'),
-                    record.list[0].getT4?.time.hour == null
+                    record.attendances![0].t4?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT4?.time.hour == null
+                                record.attendances![0].t4?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT4!.time.hour
+                                    : record.attendances![0].t4!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT4?.time.hour == null
+                                record.attendances![0].t4?.time!.hour == null
                                     ? 'null'
-                                    : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t4!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               popUp4(record, context, isAdmin)
@@ -1008,7 +1009,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
   }
 
   Widget _buildOnedayResult(
-      AttendancesWithDate record, BuildContext context, bool isAdmin) {
+      AttendancesByDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
 
@@ -1038,28 +1039,28 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('1- ${local!.checkIn}'),
-                    record.list[0].getT1?.time.hour == null
+                    record.attendances![0].t1?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT1?.time.hour == null
+                                record.attendances![0].t1?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT1!.time.hour
+                                    : record.attendances![0].t1!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT1?.time.minute == null
+                                record.attendances![0].t1?.time!.minute == null
                                     ? 'null'
-                                    : ':${record.list[0].getT1!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t1!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               SizedBox(
                                 width: 10,
                               ),
-                              Text(record.list[0].getT1?.time == null
+                              Text(record.attendances![0].t1?.time! == null
                                   ? 'null'
                                   : checkPresent(record)
                                       ? '( ${local.present} )'
@@ -1085,22 +1086,22 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('1- ${local.checkOut}'),
-                    record.list[0].getT2?.time.hour == null
+                    record.attendances![0].t2?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT2?.time.hour == null
+                                record.attendances![0].t2?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT2!.time.hour
+                                    : record.attendances![0].t2!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT2?.time.hour == null
+                                record.attendances![0].t2?.time!.hour == null
                                     ? 'null'
-                                    : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t2!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               popUp2(record, context, isAdmin)
@@ -1120,28 +1121,28 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('2- ${local.checkIn}'),
-                    record.list[0].getT3?.time.hour == null
+                    record.attendances![0].t3?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT3?.time.hour == null
+                                record.attendances![0].t3?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT3!.time.hour
+                                    : record.attendances![0].t3!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT3?.time.hour == null
+                                record.attendances![0].t3?.time!.hour == null
                                     ? 'null'
-                                    : ':${record.list[0].getT3!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t3!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               SizedBox(
                                 width: 10,
                               ),
-                              Text(record.list[0].getT3?.time == null
+                              Text(record.attendances![0].t3?.time! == null
                                   ? 'null'
                                   : checkPresengetT2(record)
                                       ? '( ${local.present} )'
@@ -1167,22 +1168,22 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('2- ${local.checkOut}'),
-                    record.list[0].getT4?.time.hour == null
+                    record.attendances![0].t4?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT4?.time.hour == null
+                                record.attendances![0].t4?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT4!.time.hour
+                                    : record.attendances![0].t4!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT4?.time.hour == null
+                                record.attendances![0].t4?.time!.hour == null
                                     ? 'null'
-                                    : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t4!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               popUp4(record, context, isAdmin)
@@ -1199,7 +1200,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
   }
 
   Widget _buildMultipleResult(
-      AttendancesWithDate record, BuildContext context, bool isAdmin) {
+      AttendancesByDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
@@ -1228,28 +1229,28 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('1- ${local!.checkIn}'),
-                    record.list[0].getT1?.time.hour == null
+                    record.attendances?[0].t1?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT1?.time.hour == null
+                                record.attendances?[0].t1?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT1!.time.hour
+                                    : record.attendances![0].t1!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT1?.time.minute == null
+                                record.attendances![0].t1?.time!.minute == null
                                     ? 'null'
-                                    : ':${record.list[0].getT1!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t1!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(
                                 width: 10,
                               ),
-                              Text(record.list[0].getT1?.time == null
+                              Text(record.attendances![0].t1?.time == null
                                   ? 'null'
                                   : checkPresent(record)
                                       ? '( ${local.present} )'
@@ -1275,22 +1276,22 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('1- ${local.checkOut}'),
-                    record.list[0].getT2?.time.hour == null
+                    record.attendances![0].t2?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT2?.time.hour == null
+                                record.attendances![0].t2?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT2!.time.hour
+                                    : record.attendances![0].t2!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT2?.time.hour == null
+                                record.attendances![0].t2?.time!.hour == null
                                     ? 'null'
-                                    : ':${record.list[0].getT2!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t2!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               popUp2(record, context, isAdmin)
@@ -1310,28 +1311,28 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('2- ${local.checkIn}'),
-                    record.list[0].getT3?.time.hour == null
+                    record.attendances![0].t3?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT3?.time.hour == null
+                                record.attendances![0].t3?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT3!.time.hour
+                                    : record.attendances![0].t3!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT3?.time.hour == null
+                                record.attendances![0].t3?.time!.hour == null
                                     ? 'null'
-                                    : ':${record.list[0].getT3!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t3!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(
                                 width: 10,
                               ),
-                              Text(record.list[0].getT3?.time == null
+                              Text(record.attendances![0].t3?.time! == null
                                   ? 'null'
                                   : checkPresengetT2(record)
                                       ? '( ${local.present} )'
@@ -1357,22 +1358,22 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('2- ${local.checkOut}'),
-                    record.list[0].getT4?.time.hour == null
+                    record.attendances![0].t4?.time!.hour == null
                         ? Text('${local.noData}')
                         : Row(
                             children: [
                               Text(
-                                record.list[0].getT4?.time.hour == null
+                                record.attendances![0].t4?.time!.hour == null
                                     ? 'null'
-                                    : record.list[0].getT4!.time.hour
+                                    : record.attendances![0].t4!.time!.hour
                                         .toString()
                                         .padLeft(2, '0'),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                record.list[0].getT4?.time.hour == null
+                                record.attendances![0].t4?.time!.hour == null
                                     ? 'null'
-                                    : ':${record.list[0].getT4!.time.minute.toString().padLeft(2, '0')}',
+                                    : ':${record.attendances![0].t4!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
                               popUp4(record, context, isAdmin)

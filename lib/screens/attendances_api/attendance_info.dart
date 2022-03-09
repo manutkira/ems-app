@@ -1,4 +1,5 @@
 import 'package:ems/models/attendance_count.dart';
+import 'package:ems/services/models/attendance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +21,9 @@ import 'package:ems/utils/utils.dart';
 import '../../constants.dart';
 import '../../models/attendance.dart';
 import '../../utils/services/attendance_service.dart';
+import '../../services/attendance.dart' as service_new;
+import '../../services/models/attendance_count.dart' as model_count;
+import '../../services/models/attendance.dart' as model_new;
 
 class AttendancesInfoScreen extends ConsumerStatefulWidget {
   static const routeName = '/attendances-info';
@@ -35,28 +39,28 @@ class AttendancesInfoScreen extends ConsumerStatefulWidget {
 
 class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
   // services
-  final AttendanceService _attendanceNoDateService = AttendanceService.instance;
-  final AttendanceService _attendanceService = AttendanceService.instance;
+  final service_new.AttendanceService _attendanceService =
+      service_new.AttendanceService();
   final UserService _userService = UserService.instance;
 
   // list attendance
-  List<Attendance> attendanceDisplay = [];
-  List<Attendance> attendanceAllDisplay = [];
+  List<model_new.Attendance> attendanceDisplay = [];
+  List<model_new.Attendance> attendanceAllDisplay = [];
 
   // list attendances with date
-  List<Attendances> attendancesDisplay = [];
-  List<AttendanceWithDate> _attendanceNoDateDisplay = [];
-  List<AttendancesWithDate> attendancesByIdDisplay = [];
-  List<AttendancesWithDate> attendanceList = [];
-  List<AttendancesWithDate> _attendanceAll = [];
-  List<AttendancesWithDate> onedayList = [];
+  List<model_new.Attendance> attendancesDisplay = [];
+  List<AttendancesByDate> _attendanceNoDateDisplay = [];
+  List<AttendancesByDate> attendancesByIdDisplay = [];
+  List<AttendancesByDate> attendanceList = [];
+  List<AttendancesByDate> _attendanceAll = [];
+  List<AttendancesByDate> onedayList = [];
 
   // list user
   List<User> userDisplay = [];
   List<User> user = [];
 
   // list dynamic
-  List attendanceListAll = [];
+  List<model_new.Attendance> attendanceListAll = [];
   List isToday = [];
   List<String> dropdownItems = [];
   List isTodayNoon = [];
@@ -65,8 +69,8 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
   List attendanceListNoon = [];
 
   // attendance count
-  AttendanceCount? attendanceCount;
-  AttendanceCount? attendanceCountAll;
+  model_count.AttendanceCount? attendanceCount;
+  model_count.AttendanceCount? attendanceCountAll;
 
   // boolean
   bool now = true;
@@ -136,11 +140,11 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
   fetchAttendanceCount() async {
     try {
       _isLoadingCount = true;
-      AttendanceCount attendanceCountDisplay =
-          await _attendanceService.findAttendanceCount(
-        id: widget.id,
+      model_count.AttendanceCount attendanceCountDisplay =
+          await _attendanceService.countAttendance(
+        widget.id,
         start: startDate,
-        end: endDate,
+        end: !isOneDay ? endDate : startDate,
       );
       if (mounted) {
         setState(() {
@@ -156,19 +160,18 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
   fetchAttendanceCountAll() async {
     try {
       _isLoadingCountAll = true;
-      AttendanceCount attendanceCountDisplay =
-          await _attendanceService.findAttendanceCount(
-        id: widget.id,
+      model_count.AttendanceCount attendanceCountDisplay =
+          await _attendanceService.countAttendance(
+        widget.id,
       );
       if (mounted) {
         setState(() {
           attendanceCountAll = attendanceCountDisplay;
+          print('attendanceCountAll: ${attendanceCountAll}');
           _isLoadingCountAll = false;
         });
       }
-    } catch (err) {
-      rethrow;
-    }
+    } catch (err) {}
   }
 
   fetchUserById() async {
@@ -193,30 +196,34 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
   fetchAllAttendance() async {
     _isLoadingAll = true;
     try {
-      List<AttendancesWithDate> attendanceDisplay =
-          await _attendanceService.findManyAttendancesById(userId: widget.id);
+      List<AttendancesByDate> attendanceDisplay =
+          await _attendanceService.findManyByUserId(widget.id);
       setState(() {
         _attendanceAll = attendanceDisplay;
         _isLoadingAll = false;
       });
-      List flat = _attendanceAll.expand((element) => element.list).toList();
+      List<model_new.Attendance> flat = _attendanceAll
+          .expand((element) => element.attendances!)
+          .toList() as List<model_new.Attendance>;
       attendanceListAll = flat.toList();
 
       int absentAllMorning = attendanceDisplay
           .where((element) =>
-              element.list[0].getT1 != null && checkAbsengetT1(element))
+              element.attendances![0].t1 != null && checkAbsengetT1(element))
           .length;
       int absentAllAfternoon = attendanceDisplay
           .where((element) =>
-              element.list[0].getT3 != null && checkAbsengetT2(element))
+              element.attendances?[0].t3 != null && checkAbsengetT2(element))
           .length;
       int permissionAllMorning = attendanceDisplay
           .where((element) =>
-              element.list[0].getT1 != null && checkPermissiongetT1(element))
+              element.attendances?[0].t1 != null &&
+              checkPermissiongetT1(element))
           .length;
       int permissionAllAfternoon = attendanceDisplay
           .where((element) =>
-              element.list[0].getT3 != null && checkPermissiongetT2(element))
+              element.attendances?[0].t3 != null &&
+              checkPermissiongetT2(element))
           .length;
       absentAll = absentAllMorning + absentAllAfternoon;
       permissionAll = permissionAllMorning + permissionAllAfternoon;
@@ -226,9 +233,9 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
   fetchAttedancesById() async {
     _isLoadingById = true;
     try {
-      List<AttendancesWithDate> attendanceDisplay =
-          await _attendanceService.findManyAttendancesById(
-        userId: widget.id,
+      List<AttendancesByDate> attendanceDisplay =
+          await _attendanceService.findManyByUserId(
+        widget.id,
         start: startDate,
         end: endDate,
       );
@@ -238,26 +245,28 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
 
         absentMorning = attendanceDisplay
             .where((element) =>
-                element.list[0].getT1 != null && checkAbsengetT1(element))
+                element.attendances?[0].t1 != null && checkAbsengetT1(element))
             .length;
         absentAfternoon = attendanceDisplay
             .where((element) =>
-                element.list[0].getT3 != null && checkAbsengetT2(element))
+                element.attendances?[0].t3 != null && checkAbsengetT2(element))
             .length;
 
         permissionMorning = attendanceDisplay
             .where((element) =>
-                element.list[0].getT1 != null && checkPermissiongetT1(element))
+                element.attendances?[0].t1 != null &&
+                checkPermissiongetT1(element))
             .length;
         permissionAfternoon = attendanceDisplay
             .where((element) =>
-                element.list[0].getT3 != null && checkPermissiongetT2(element))
+                element.attendances?[0].t3 != null &&
+                checkPermissiongetT2(element))
             .length;
         var now = DateTime.now();
         var today = attendancesByIdDisplay.where((element) =>
-            element.date.day == now.day &&
-            element.date.month == now.month &&
-            element.date.year == now.year);
+            element.date?.day == now.day &&
+            element.date?.month == now.month &&
+            element.date?.year == now.year);
 
         isToday = today.toList();
         todayPresent = isToday
@@ -294,25 +303,27 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
             .length;
 
         var oneDay = attendanceDisplay.where((element) =>
-            element.date.day == startDate.day &&
-            element.date.month == startDate.month &&
-            element.date.year == startDate.year);
+            element.date?.day == startDate.day &&
+            element.date?.month == startDate.month &&
+            element.date?.year == startDate.year);
         onedayList = oneDay.toList();
         onedayAbsent = oneDay
             .where((element) =>
-                element.list[0].getT1 != null && checkAbsengetT1(element))
+                element.attendances?[0].t1 != null && checkAbsengetT1(element))
             .length;
         onedayAbsentNoon = oneDay
             .where((element) =>
-                element.list[0].getT3 != null && checkAbsengetT2(element))
+                element.attendances?[0].t3 != null && checkAbsengetT2(element))
             .length;
         onedayPermission = oneDay
             .where((element) =>
-                element.list[0].getT1 != null && checkPermissiongetT1(element))
+                element.attendances?[0].t1 != null &&
+                checkPermissiongetT1(element))
             .length;
         onedayPermissionNoon = oneDay
             .where((element) =>
-                element.list[0].getT3 != null && checkPermissiongetT2(element))
+                element.attendances?[0].t3 != null &&
+                checkPermissiongetT2(element))
             .length;
         attendanceList = attendancesByIdDisplay;
       });
@@ -320,16 +331,16 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
   }
 
   // check attendance status
-  checkPresent(AttendancesWithDate element) {
-    if (element.list[0].getT1?.note != 'absent' &&
-        element.list[0].getT1?.note != 'permission') {
-      if (element.list[0].getT1!.time.hour == 7) {
-        if (element.list[0].getT1!.time.minute <= 15) {
+  checkPresent(AttendancesByDate element) {
+    if (element.attendances?[0].t1?.note != 'absent' &&
+        element.attendances?[0].t1?.note != 'permission') {
+      if (element.attendances?[0].t1!.time?.hour == 7) {
+        if (element.attendances![0].t1!.time!.minute <= 15) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT1!.time.hour < 7) {
+      } else if (element.attendances![0].t1!.time!.hour < 7) {
         return true;
       } else {
         return false;
@@ -339,16 +350,16 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
     }
   }
 
-  checkPresengetT2(AttendancesWithDate element) {
-    if (element.list[0].getT3?.note != 'absent' &&
-        element.list[0].getT3?.note != 'permission') {
-      if (element.list[0].getT3!.time.hour == 13) {
-        if (element.list[0].getT3!.time.minute <= 15) {
+  checkPresengetT2(AttendancesByDate element) {
+    if (element.attendances?[0].t3?.note != 'absent' &&
+        element.attendances?[0].t3?.note != 'permission') {
+      if (element.attendances?[0].t3!.time!.hour == 13) {
+        if (element.attendances![0].t3!.time!.minute <= 15) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT3!.time.hour < 13) {
+      } else if (element.attendances![0].t3!.time!.hour < 13) {
         return true;
       } else {
         return false;
@@ -358,16 +369,16 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
     }
   }
 
-  checkLate1(AttendancesWithDate element) {
-    if (element.list[0].getT1?.note != 'absent' &&
-        element.list[0].getT1?.note != 'permission') {
-      if (element.list[0].getT1!.time.hour == 7) {
-        if (element.list[0].getT1!.time.minute >= 16) {
+  checkLate1(AttendancesByDate element) {
+    if (element.attendances?[0].t1?.note != 'absent' &&
+        element.attendances?[0].t1?.note != 'permission') {
+      if (element.attendances?[0].t1!.time!.hour == 7) {
+        if (element.attendances![0].t1!.time!.minute >= 16) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT1!.time.hour > 7) {
+      } else if (element.attendances![0].t1!.time!.hour > 7) {
         return true;
       } else {
         return false;
@@ -377,16 +388,16 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
     }
   }
 
-  checkLate2(AttendancesWithDate element) {
-    if (element.list[0].getT3?.note != 'absent' &&
-        element.list[0].getT3?.note != 'permission') {
-      if (element.list[0].getT3!.time.hour == 13) {
-        if (element.list[0].getT3!.time.minute >= 16) {
+  checkLate2(AttendancesByDate element) {
+    if (element.attendances?[0].t3?.note != 'absent' &&
+        element.attendances?[0].t3?.note != 'permission') {
+      if (element.attendances?[0].t3!.time!.hour == 13) {
+        if (element.attendances![0].t3!.time!.minute >= 16) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT3!.time.hour > 13) {
+      } else if (element.attendances![0].t3!.time!.hour > 13) {
         return true;
       } else {
         return false;
@@ -396,32 +407,32 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
     }
   }
 
-  checkAbsengetT1(AttendancesWithDate element) {
-    if (element.list[0].getT1!.note == 'absent') {
+  checkAbsengetT1(AttendancesByDate element) {
+    if (element.attendances?[0].t1!.note == 'absent') {
       return true;
     } else {
       return false;
     }
   }
 
-  checkAbsengetT2(AttendancesWithDate element) {
-    if (element.list[0].getT3!.note == 'absent') {
+  checkAbsengetT2(AttendancesByDate element) {
+    if (element.attendances?[0].t3!.note == 'absent') {
       return true;
     } else {
       return false;
     }
   }
 
-  checkPermissiongetT1(AttendancesWithDate element) {
-    if (element.list[0].getT1!.note == 'permission') {
+  checkPermissiongetT1(AttendancesByDate element) {
+    if (element.attendances?[0].t1!.note == 'permission') {
       return true;
     } else {
       return false;
     }
   }
 
-  checkPermissiongetT2(AttendancesWithDate element) {
-    if (element.list[0].getT3!.note == 'permission') {
+  checkPermissiongetT2(AttendancesByDate element) {
+    if (element.attendances?[0].t3!.note == 'permission') {
       return true;
     } else {
       return false;
@@ -791,6 +802,7 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
                                           fetchAttedancesById();
                                           fetchAllAttendance();
                                           fetchAttendanceCountAll();
+                                          fetchAttendanceCount();
                                         }
                                         if (sortByValue ==
                                             '${local?.optionAllTime}') {
@@ -875,25 +887,25 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
                             backgroundColor: kGreenBackground,
                             now: now,
                             todayMorning:
-                                attendanceCount!.morning.present.toString(),
+                                attendanceCount!.morningPresent.toString(),
                             todayAfternoon:
-                                attendanceCount!.afternoon.present.toString(),
+                                attendanceCount!.afternoonPresent.toString(),
                             isLoading: _isLoading,
                             isOneday: isOneDay,
                             onedayMorning:
-                                attendanceCount!.morning.present.toString(),
+                                attendanceCount!.morningPresent.toString(),
                             onedayAfternoon:
-                                attendanceCount!.afternoon.present.toString(),
+                                attendanceCount!.afternoonPresent.toString(),
                             presentAll:
-                                attendanceCountAll!.total.present.toString(),
+                                attendanceCountAll!.totalPresent.toString(),
                             alltime: alltime,
                             text: '${local?.present} ',
                             afternoon: afternoon,
                             multipleDay: multiday,
                             presentAfternoon:
-                                attendanceCount!.afternoon.present.toString(),
+                                attendanceCount!.afternoonPresent.toString(),
                             presentMorning:
-                                attendanceCount!.morning.present.toString(),
+                                attendanceCount!.morningPresent.toString(),
                           ),
                           AttendanceInfoPresent(
                             total: total,
@@ -928,25 +940,25 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
                             backgroundColor: kYellowBackground,
                             now: now,
                             todayMorning:
-                                attendanceCount!.morning.late.toString(),
+                                attendanceCount!.morningLate.toString(),
                             todayAfternoon:
-                                attendanceCount!.afternoon.late.toString(),
+                                attendanceCount!.afternoonLate.toString(),
                             isLoading: _isLoading,
                             isOneday: isOneDay,
                             onedayMorning:
-                                attendanceCount!.morning.late.toString(),
+                                attendanceCount!.morningLate.toString(),
                             onedayAfternoon:
-                                attendanceCount!.afternoon.late.toString(),
+                                attendanceCount!.afternoonLate.toString(),
                             presentAll:
-                                attendanceCountAll!.total.late.toString(),
+                                attendanceCountAll!.totalLate.toString(),
                             alltime: alltime,
                             text: '${local?.late} ',
                             afternoon: afternoon,
                             multipleDay: multiday,
                             presentAfternoon:
-                                attendanceCount!.afternoon.late.toString(),
+                                attendanceCount!.afternoonLate.toString(),
                             presentMorning:
-                                attendanceCount!.morning.late.toString(),
+                                attendanceCount!.morningLate.toString(),
                           ),
                           AttendanceInfoPresent(
                             total: total,
