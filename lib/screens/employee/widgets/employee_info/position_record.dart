@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:ems/models/position.dart';
 import 'package:http/http.dart' as http;
-import 'package:ems/utils/services/position_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../../constants.dart';
+import '../../../../services/position.dart';
+import '../../../../services/models/position.dart';
 
 class TestPosition extends StatefulWidget {
   final String imageUrl;
@@ -32,7 +32,7 @@ class TestPosition extends StatefulWidget {
 class _TestPositionState extends State<TestPosition> {
   // services
   final PositionService _rateService = PositionService.instance;
-  final PositionServices _positionServices = PositionServices.instance;
+  final PositionService _positionServices = PositionService();
 
   // list posotion
   List<Position> positionsDisplay = [];
@@ -101,26 +101,10 @@ class _TestPositionState extends State<TestPosition> {
   }
 
   // fetch position from api
-  fetchPosition() {
-    try {
-      _isLoading = true;
-      _rateService.findOne(widget.id).then((usersFromServer) {
-        if (mounted) {
-          setState(() {
-            positionDisplay = [];
-            positionDisplay.add(usersFromServer);
-            _isLoading = false;
-          });
-        }
-      });
-    } catch (err) {}
-  }
-
-  // fetch position from api
   fetchPositions() {
     try {
       _isLoading = true;
-      _positionServices.findOne(widget.id).then((usersFromServer) {
+      _positionServices.findAllByUserId(widget.id).then((usersFromServer) {
         if (mounted) {
           setState(() {
             positionsDisplay = [];
@@ -162,9 +146,8 @@ class _TestPositionState extends State<TestPosition> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    fetchPosition();
+    // fetchPosition();
     fetchPositions();
   }
 
@@ -216,7 +199,7 @@ class _TestPositionState extends State<TestPosition> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(
-                                        width: isEnglish ? 37 : 57,
+                                        width: isEnglish ? 37 : 45,
                                       ),
                                       Container(
                                         constraints: BoxConstraints(
@@ -375,9 +358,15 @@ class _TestPositionState extends State<TestPosition> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   RaisedButton(
-                                    onPressed: () {
-                                      addPosition();
-                                      // Navigator.pop(context);
+                                    onPressed: () async {
+                                      Position position = Position(
+                                        userId: widget.id,
+                                        name: positionName.text,
+                                        startDate: pickStart,
+                                        endDate: pickEnd,
+                                      );
+                                      await createOne(position);
+                                      Navigator.pop(context);
                                       positionName.text = '';
                                       startDateController.text = '';
                                       endDateController.text = '';
@@ -564,8 +553,8 @@ class _TestPositionState extends State<TestPosition> {
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         itemBuilder: (BuildContext contexxt, int index) {
-                          startDate =
-                              DateTime.parse(positionsDisplay[index].startDate);
+                          startDate = DateTime.parse(
+                              positionsDisplay[index].startDate.toString());
                           endDate = DateTime.tryParse(
                               positionsDisplay[index].endDate.toString());
                           return Stack(
@@ -582,12 +571,15 @@ class _TestPositionState extends State<TestPosition> {
                                     if (selectedValue == 0) {
                                       positionId = positionsDisplay[index].id;
                                       positionName.text =
-                                          positionsDisplay[index].positionName;
+                                          positionsDisplay[index]
+                                              .name
+                                              .toString();
                                       startDateController.text =
                                           DateFormat('dd-MM-yyyy').format(
                                               DateTime.tryParse(
                                                   positionsDisplay[index]
-                                                      .startDate)!);
+                                                      .startDate
+                                                      .toString())!);
                                       endDateController.text =
                                           positionsDisplay[index].endDate ==
                                                   null
@@ -598,7 +590,9 @@ class _TestPositionState extends State<TestPosition> {
                                                           .endDate
                                                           .toString())!);
                                       pickStart = DateTime.tryParse(
-                                          positionsDisplay[index].startDate);
+                                          positionsDisplay[index]
+                                              .startDate
+                                              .toString());
                                       if (positionsDisplay[index].endDate !=
                                           null) {
                                         pickEnd = DateTime.tryParse(
@@ -876,8 +870,26 @@ class _TestPositionState extends State<TestPosition> {
                                                                 .end,
                                                         children: [
                                                           RaisedButton(
-                                                            onPressed: () {
-                                                              editPosition();
+                                                            onPressed:
+                                                                () async {
+                                                              Position
+                                                                  position =
+                                                                  Position(
+                                                                id: positionId,
+                                                                userId:
+                                                                    widget.id,
+                                                                name:
+                                                                    positionName
+                                                                        .text,
+                                                                startDate:
+                                                                    pickStart,
+                                                                endDate:
+                                                                    pickEnd,
+                                                              );
+                                                              await updateOne(
+                                                                  position);
+                                                              Navigator.pop(
+                                                                  context);
                                                             },
                                                             color: Theme.of(
                                                                     context)
@@ -955,7 +967,7 @@ class _TestPositionState extends State<TestPosition> {
                                           ],
                                         ),
                                       );
-                                      fetchPosition();
+                                      fetchPositions();
                                     }
                                   },
                                   itemBuilder: (_) => [
@@ -1006,7 +1018,8 @@ class _TestPositionState extends State<TestPosition> {
                                         children: [
                                           Text(
                                             positionsDisplay[index]
-                                                .positionName,
+                                                .name
+                                                .toString(),
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -1118,7 +1131,7 @@ class _TestPositionState extends State<TestPosition> {
                           border:
                               TableBorder.all(width: 1, color: Colors.white),
                           children: positionsDisplay.map<TableRow>((e) {
-                            startDate = DateTime.parse(e.startDate);
+                            startDate = DateTime.parse(e.startDate.toString());
                             endDate = DateTime.tryParse(e.endDate.toString());
                             return TableRow(children: [
                               TableCell(
@@ -1127,7 +1140,7 @@ class _TestPositionState extends State<TestPosition> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(13.0),
                                     child: Text(
-                                      e.positionName,
+                                      e.name.toString(),
                                       textAlign: TextAlign.center,
                                     ),
                                   )),
@@ -1191,17 +1204,18 @@ class _TestPositionState extends State<TestPosition> {
                                   onSelected: (int selectedValue) async {
                                     if (selectedValue == 0) {
                                       positionId = e.id;
-                                      positionName.text = e.positionName;
+                                      positionName.text = e.name.toString();
                                       startDateController.text =
                                           DateFormat('dd-MM-yyyy').format(
-                                              DateTime.tryParse(e.startDate)!);
+                                              DateTime.tryParse(
+                                                  e.startDate.toString())!);
                                       endDateController.text = e.endDate == null
                                           ? 'Null'
                                           : DateFormat('dd-MM-yyyy').format(
                                               DateTime.tryParse(
                                                   e.endDate.toString())!);
-                                      pickStart =
-                                          DateTime.tryParse(e.startDate);
+                                      pickStart = DateTime.tryParse(
+                                          e.startDate.toString());
                                       if (e.endDate != null) {
                                         pickEnd = DateTime.tryParse(
                                             e.endDate.toString());
@@ -1471,8 +1485,21 @@ class _TestPositionState extends State<TestPosition> {
                                                           MainAxisAlignment.end,
                                                       children: [
                                                         RaisedButton(
-                                                          onPressed: () {
-                                                            editPosition();
+                                                          onPressed: () async {
+                                                            Position position =
+                                                                Position(
+                                                              id: positionId,
+                                                              userId: widget.id,
+                                                              name: positionName
+                                                                  .text,
+                                                              startDate:
+                                                                  pickStart,
+                                                              endDate: pickEnd,
+                                                            );
+                                                            await updateOne(
+                                                                position);
+                                                            Navigator.pop(
+                                                                context);
                                                           },
                                                           color:
                                                               Theme.of(context)
@@ -1549,7 +1576,7 @@ class _TestPositionState extends State<TestPosition> {
                                           ],
                                         ),
                                       );
-                                      fetchPosition();
+                                      fetchPositions();
                                     }
                                   },
                                   itemBuilder: (_) => [
@@ -1583,69 +1610,11 @@ class _TestPositionState extends State<TestPosition> {
     );
   }
 
-  addPosition() async {
-    var aPositionName = positionName.text;
-    DateTime aStartDate = pickStart!;
-
-    var request = await http.MultipartRequest(
-        'POST', Uri.parse("$urlUser/${widget.id}/position"));
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Content": "charset-UTF-8",
-    };
-    request.files
-        .add(http.MultipartFile.fromString('position_name', aPositionName));
-    request.files.add(
-        http.MultipartFile.fromString('start_date', aStartDate.toString()));
-    if (pickEnd != null) {
-      DateTime aEndDate = pickEnd!;
-      request.files
-          .add(http.MultipartFile.fromString('end_date', aEndDate.toString()));
-    }
-
-    request.headers.addAll(headers);
-
-    var res = await request.send();
-    print(res.statusCode);
-    if (res.statusCode == 201) {
-      Navigator.of(context).pop();
-    }
-    res.stream.transform(utf8.decoder).listen((event) {});
+  createOne(Position position) async {
+    await _positionServices.createOne(position);
   }
 
-  editPosition() async {
-    var aPositionName = positionName.text;
-
-    var request = await http.MultipartRequest(
-        'POST',
-        Uri.parse(
-            "http://rest-api-laravel-flutter.herokuapp.com/api/position/${positionId}?_method=PUT"));
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Content": "charset-UTF-8",
-    };
-
-    request.files
-        .add(http.MultipartFile.fromString('position_name', aPositionName));
-
-    if (pickStart != null) {
-      DateTime aStartDate = pickStart as DateTime;
-      request.files.add(
-          http.MultipartFile.fromString('start_date', aStartDate.toString()));
-    }
-    if (pickEnd != null) {
-      var aEndDate = pickEnd as DateTime;
-      request.files
-          .add(http.MultipartFile.fromString('end_date', aEndDate.toString()));
-    }
-
-    request.headers.addAll(headers);
-
-    var res = await request.send();
-    print(res.statusCode);
-    if (res.statusCode == 200) {
-      Navigator.pop(context);
-    }
-    res.stream.transform(utf8.decoder).listen((event) {});
+  updateOne(Position position) async {
+    await _positionServices.updateOne(position);
   }
 }

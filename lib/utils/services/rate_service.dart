@@ -13,14 +13,14 @@ class RateServices extends BaseService {
 
   Future<List<Rate>> findOne(int id) async {
     try {
-      Response response = await get(Uri.parse('$baseUrl/users/$id/ratework'));
+      Response response = await get(Uri.parse('$baseUrl/users/$id/rating'));
 
       if (response.statusCode != 200) {
         _code = response.statusCode;
         throw 'error';
       }
       Map<String, dynamic> jsondata = json.decode(response.body);
-      List data = jsondata['rateworks'];
+      List data = jsondata['rating'];
       return data.map((e) => Rate.fromJson(e)).toList();
     } catch (e) {
       throw e;

@@ -41,46 +41,19 @@ class PersonalInfo extends StatelessWidget {
     TextEditingController accountNameController = TextEditingController();
     int? bankId;
 
+    // key
+    GlobalKey<FormState> _key = GlobalKey<FormState>();
+
     String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
     // add new bank info to api
-    createOneBank(model_bank.Bank bank) {
-      _bankService.createOne(bank);
+    createOneBank(model_bank.Bank bank) async {
+      await _bankService.createOne(bank);
     }
 
     // edit bank info in api
-    updateOneBank(model_bank.Bank bank) {
-      _bankService.updateOne(bank);
-    }
-
-    editBank() async {
-      var aBankName = bankNameController.text;
-      var aAccountNumber = accountNumberController.text;
-      var aAccountName = accountNameController.text;
-
-      var request = await http.MultipartRequest(
-          'POST',
-          Uri.parse(
-              "http://rest-api-laravel-flutter.herokuapp.com/api/bank/$bankId?_method=PUT"));
-      Map<String, String> headers = {
-        "Accept": "application/json",
-        "Content": "charset-UTF-8",
-      };
-
-      request.files.add(http.MultipartFile.fromString('bank_name', aBankName));
-      request.files
-          .add(http.MultipartFile.fromString('account_number', aAccountNumber));
-      request.files
-          .add(http.MultipartFile.fromString('account_name', aAccountName));
-
-      request.headers.addAll(headers);
-
-      var res = await request.send();
-
-      if (res.statusCode == 200) {
-        Navigator.pop(context);
-      }
-      res.stream.transform(utf8.decoder).listen((event) {});
+    updateOneBank(model_bank.Bank bank) async {
+      await _bankService.updateOne(bank);
     }
 
     void showInSnackBar(String value) {
@@ -353,46 +326,53 @@ class PersonalInfo extends StatelessWidget {
                               isScrollControlled: true,
                               context: contextt,
                               builder: (_) {
-                                return Padding(
-                                  padding: MediaQuery.of(context).viewInsets,
-                                  child: Container(
-                                    height: 340,
-                                    decoration: const BoxDecoration(
-                                      color: kBlue,
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(30),
-                                        topLeft: Radius.circular(30),
-                                      ),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(
-                                          height: 15,
+                                return Form(
+                                  key: _key,
+                                  child: Padding(
+                                    padding: MediaQuery.of(context).viewInsets,
+                                    child: Container(
+                                      height: 400,
+                                      decoration: const BoxDecoration(
+                                        color: kBlue,
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(30),
+                                          topLeft: Radius.circular(30),
                                         ),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 10),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 3,
-                                                child: Text(
-                                                  '${local?.bankName} ',
-                                                  style: kParagraph.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 10),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 3,
+                                                  child: Text(
+                                                    '${local?.bankName} ',
+                                                    style: kParagraph.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: isEnglish ? 32 : 20,
-                                              ),
-                                              Expanded(
-                                                flex: 4,
-                                                child: SizedBox(
-                                                  height: 35,
+                                                SizedBox(
+                                                  width: isEnglish ? 32 : 20,
+                                                ),
+                                                Expanded(
+                                                  flex: 4,
                                                   child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value!.isEmpty) {
+                                                        return 'required';
+                                                      }
+                                                      return null;
+                                                    },
                                                     decoration: InputDecoration(
                                                       contentPadding:
                                                           const EdgeInsets.only(
@@ -409,35 +389,39 @@ class PersonalInfo extends StatelessWidget {
                                                     controller:
                                                         bankNameController,
                                                   ),
-                                                ),
-                                              )
-                                            ],
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 10),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 3,
-                                                child: Text(
-                                                  '${local?.accountBankName} ',
-                                                  style: kParagraph.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 10),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 3,
+                                                  child: Text(
+                                                    '${local?.accountBankName} ',
+                                                    style: kParagraph.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: isEnglish ? 32 : 20,
-                                              ),
-                                              Expanded(
-                                                flex: 4,
-                                                child: SizedBox(
-                                                  height: 35,
+                                                SizedBox(
+                                                  width: isEnglish ? 32 : 20,
+                                                ),
+                                                Expanded(
+                                                  flex: 4,
                                                   child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value!.isEmpty) {
+                                                        return 'required';
+                                                      }
+                                                      return null;
+                                                    },
                                                     decoration: InputDecoration(
                                                       contentPadding:
                                                           const EdgeInsets.only(
@@ -454,35 +438,39 @@ class PersonalInfo extends StatelessWidget {
                                                     controller:
                                                         accountNameController,
                                                   ),
-                                                ),
-                                              )
-                                            ],
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 10),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 3,
-                                                child: Text(
-                                                  '${local?.accountBankNumber} ',
-                                                  style: kParagraph.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 10),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 3,
+                                                  child: Text(
+                                                    '${local?.accountBankNumber} ',
+                                                    style: kParagraph.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: isEnglish ? 32 : 20,
-                                              ),
-                                              Expanded(
-                                                flex: 4,
-                                                child: SizedBox(
-                                                  height: 35,
+                                                SizedBox(
+                                                  width: isEnglish ? 32 : 20,
+                                                ),
+                                                Expanded(
+                                                  flex: 4,
                                                   child: TextFormField(
+                                                    validator: (value) {
+                                                      if (value!.isEmpty) {
+                                                        return 'required';
+                                                      }
+                                                      return null;
+                                                    },
                                                     keyboardType:
                                                         TextInputType.number,
                                                     decoration: InputDecoration(
@@ -501,75 +489,82 @@ class PersonalInfo extends StatelessWidget {
                                                     controller:
                                                         accountNumberController,
                                                   ),
-                                                ),
-                                              )
-                                            ],
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        const SizedBox(
-                                          height: 50,
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 30),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              // ignore: deprecated_member_use
-                                              RaisedButton(
-                                                onPressed: () async {
-                                                  model_bank.Bank bank =
-                                                      model_bank.Bank(
-                                                    name:
-                                                        bankNameController.text,
-                                                    accountName:
-                                                        accountNameController
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 30),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                // ignore: deprecated_member_use
+                                                RaisedButton(
+                                                  onPressed: () async {
+                                                    if (_key.currentState!
+                                                        .validate()) {
+                                                      model_bank.Bank bank =
+                                                          model_bank.Bank(
+                                                        name: bankNameController
                                                             .text,
-                                                    accountNumber:
-                                                        accountNumberController
-                                                            .text,
-                                                    userId: userDisplay[0].id,
-                                                  );
-                                                  await createOneBank(bank);
-                                                  Navigator.pop(context);
-                                                  bankNameController.text = '';
-                                                  accountNumberController.text =
-                                                      '';
-                                                  accountNameController.text =
-                                                      '';
-                                                },
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                                child: Text(
-                                                  '${local?.save}',
-                                                  style: const TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.bold,
+                                                        accountName:
+                                                            accountNameController
+                                                                .text,
+                                                        accountNumber:
+                                                            accountNumberController
+                                                                .text,
+                                                        userId:
+                                                            userDisplay[0].id,
+                                                      );
+                                                      await createOneBank(bank);
+                                                      Navigator.pop(context);
+                                                      bankNameController.text =
+                                                          '';
+                                                      accountNumberController
+                                                          .text = '';
+                                                      accountNameController
+                                                          .text = '';
+                                                    }
+                                                  },
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                  child: Text(
+                                                    '${local?.save}',
+                                                    style: const TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              const SizedBox(
-                                                width: 15,
-                                              ),
-                                              // ignore: deprecated_member_use
-                                              RaisedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                color: Colors.red,
-                                                child: Text(
-                                                  '${local?.cancel}',
-                                                  style: const TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.bold,
+                                                const SizedBox(
+                                                  width: 15,
+                                                ),
+                                                // ignore: deprecated_member_use
+                                                RaisedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  color: Colors.red,
+                                                  child: Text(
+                                                    '${local?.cancel}',
+                                                    style: const TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );
@@ -675,56 +670,66 @@ class PersonalInfo extends StatelessWidget {
                                         isScrollControlled: true,
                                         context: contextt,
                                         builder: (_) {
-                                          return Padding(
-                                            padding: MediaQuery.of(context)
-                                                .viewInsets,
-                                            child: Container(
-                                              height: 340,
-                                              decoration: const BoxDecoration(
-                                                color: kBlue,
-                                                borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(30),
-                                                  topLeft: Radius.circular(30),
-                                                ),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  const SizedBox(
-                                                    height: 20,
+                                          return Form(
+                                            key: _key,
+                                            child: Padding(
+                                              padding: MediaQuery.of(context)
+                                                  .viewInsets,
+                                              child: Container(
+                                                height: 400,
+                                                decoration: const BoxDecoration(
+                                                  color: kBlue,
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(30),
+                                                    topLeft:
+                                                        Radius.circular(30),
                                                   ),
-                                                  Container(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 20,
-                                                        vertical: 10),
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          flex: 3,
-                                                          child: Text(
-                                                            '${local?.bankName} ',
-                                                            style: kParagraph
-                                                                .copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 10),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 3,
+                                                            child: Text(
+                                                              '${local?.bankName} ',
+                                                              style: kParagraph.copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: isEnglish
-                                                              ? 52
-                                                              : 20,
-                                                        ),
-                                                        Expanded(
-                                                          flex: 4,
-                                                          child: SizedBox(
-                                                            height: 35,
+                                                          SizedBox(
+                                                            width: isEnglish
+                                                                ? 52
+                                                                : 20,
+                                                          ),
+                                                          Expanded(
+                                                            flex: 4,
                                                             child:
                                                                 TextFormField(
+                                                              validator:
+                                                                  (value) {
+                                                                if (value!
+                                                                    .isEmpty) {
+                                                                  return 'required';
+                                                                }
+                                                                return null;
+                                                              },
                                                               decoration:
                                                                   InputDecoration(
                                                                 contentPadding:
@@ -745,44 +750,48 @@ class PersonalInfo extends StatelessWidget {
                                                               controller:
                                                                   bankNameController,
                                                             ),
-                                                          ),
-                                                        )
-                                                      ],
+                                                          )
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Container(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 20,
-                                                        vertical: 10),
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          flex: 3,
-                                                          child: Text(
-                                                            '${local?.accountBankName} ',
-                                                            style: kParagraph
-                                                                .copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 10),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 3,
+                                                            child: Text(
+                                                              '${local?.accountBankName} ',
+                                                              style: kParagraph.copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: isEnglish
-                                                              ? 52
-                                                              : 20,
-                                                        ),
-                                                        Expanded(
-                                                          flex: 4,
-                                                          child: SizedBox(
-                                                            height: 35,
+                                                          SizedBox(
+                                                            width: isEnglish
+                                                                ? 52
+                                                                : 20,
+                                                          ),
+                                                          Expanded(
+                                                            flex: 4,
                                                             child:
                                                                 TextFormField(
+                                                              validator:
+                                                                  (value) {
+                                                                if (value!
+                                                                    .isEmpty) {
+                                                                  return 'required';
+                                                                }
+                                                                return null;
+                                                              },
                                                               decoration:
                                                                   InputDecoration(
                                                                 contentPadding:
@@ -803,44 +812,48 @@ class PersonalInfo extends StatelessWidget {
                                                               controller:
                                                                   accountNameController,
                                                             ),
-                                                          ),
-                                                        )
-                                                      ],
+                                                          )
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Container(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 20,
-                                                        vertical: 10),
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          flex: 3,
-                                                          child: Text(
-                                                            '${local?.accountBankNumber} ',
-                                                            style: kParagraph
-                                                                .copyWith(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 10),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 3,
+                                                            child: Text(
+                                                              '${local?.accountBankNumber} ',
+                                                              style: kParagraph.copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: isEnglish
-                                                              ? 52
-                                                              : 20,
-                                                        ),
-                                                        Expanded(
-                                                          flex: 4,
-                                                          child: SizedBox(
-                                                            height: 35,
+                                                          SizedBox(
+                                                            width: isEnglish
+                                                                ? 52
+                                                                : 20,
+                                                          ),
+                                                          Expanded(
+                                                            flex: 4,
                                                             child:
                                                                 TextFormField(
+                                                              validator:
+                                                                  (value) {
+                                                                if (value!
+                                                                    .isEmpty) {
+                                                                  return 'required';
+                                                                }
+                                                                return null;
+                                                              },
                                                               keyboardType:
                                                                   TextInputType
                                                                       .number,
@@ -864,83 +877,90 @@ class PersonalInfo extends StatelessWidget {
                                                               controller:
                                                                   accountNumberController,
                                                             ),
-                                                          ),
-                                                        )
-                                                      ],
+                                                          )
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 50,
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 30),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        // ignore: deprecated_member_use
-                                                        RaisedButton(
-                                                          onPressed: () async {
-                                                            model_bank.Bank
-                                                                bank =
-                                                                model_bank.Bank(
-                                                              name:
-                                                                  bankNameController
-                                                                      .text,
-                                                              accountName:
-                                                                  accountNameController
-                                                                      .text,
-                                                              accountNumber:
-                                                                  accountNumberController
-                                                                      .text,
-                                                              id: bankId,
-                                                            );
-                                                            await updateOneBank(
-                                                                bank);
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .primaryColor,
-                                                          child: Text(
-                                                            '${local?.save}',
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 30),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          // ignore: deprecated_member_use
+                                                          RaisedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              if (_key
+                                                                  .currentState!
+                                                                  .validate()) {
+                                                                model_bank.Bank
+                                                                    bank =
+                                                                    model_bank
+                                                                        .Bank(
+                                                                  name:
+                                                                      bankNameController
+                                                                          .text,
+                                                                  accountName:
+                                                                      accountNameController
+                                                                          .text,
+                                                                  accountNumber:
+                                                                      accountNumberController
+                                                                          .text,
+                                                                  id: bankId,
+                                                                );
+                                                                await updateOneBank(
+                                                                    bank);
+                                                                Navigator.pop(
+                                                                    context);
+                                                              }
+                                                            },
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                            child: Text(
+                                                              '${local?.save}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 15,
-                                                        ),
-                                                        // ignore: deprecated_member_use
-                                                        RaisedButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          color: Colors.red,
-                                                          child: Text(
-                                                            '${local?.cancel}',
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
+                                                          const SizedBox(
+                                                            width: 15,
+                                                          ),
+                                                          // ignore: deprecated_member_use
+                                                          RaisedButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            color: Colors.red,
+                                                            child: Text(
+                                                              '${local?.cancel}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           );

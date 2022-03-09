@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ems/models/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -7,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../constants.dart';
+import '../../services/user.dart';
 
 class EmployeeEditEmployment extends StatefulWidget {
   final String name;
@@ -36,6 +38,9 @@ class EmployeeEditEmployment extends StatefulWidget {
 
 class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
+
+  // service
+  final UserService _userService = UserService();
 
   // text controller
   TextEditingController nameController = TextEditingController();
@@ -306,13 +311,13 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                             borderSide: const BorderSide(
                                                 color: Colors.green),
                                             child: Text('${local?.yes}'),
-                                            onPressed: () {
+                                            onPressed: () async {
                                               if (!_form.currentState!
                                                   .validate()) {
                                                 return Navigator.of(context)
                                                     .pop();
                                               }
-                                              updateEmployee();
+                                              await updateEmployment();
                                               Navigator.of(context).pop();
                                               showDialog(
                                                 context: context,
@@ -400,6 +405,45 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
         ),
       ),
     );
+  }
+
+  updateEmployment() async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    String checkRole() {
+      if (role == local?.employee) {
+        return 'employee';
+      }
+      if (role == local?.admin) {
+        return 'admin';
+      } else {
+        return '';
+      }
+    }
+
+    String checkStatus() {
+      if (status == local?.active) {
+        return 'active';
+      }
+      if (status == local?.inactive) {
+        return 'inactive';
+      }
+      if (status == local?.resigned) {
+        return 'resigned';
+      }
+      if (status == local?.fired) {
+        return 'fired';
+      } else {
+        return '';
+      }
+    }
+
+    User user = User(
+      salary: double.parse(salaryController.text),
+      role: checkRole(),
+      status: checkStatus(),
+      id: widget.id,
+    );
+    await _userService.updateOne(user);
   }
 
   updateEmployee() async {
