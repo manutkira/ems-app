@@ -14,11 +14,11 @@ class AttendanceCount {
     this.user,
   });
 
-  factory AttendanceCount.fromJson(Map<String, dynamic> json) =>
+  factory AttendanceCount.fromJson(Map<String, dynamic>? json) =>
       AttendanceCount(
-        morning: MAT.fromJson(json["morning"]),
-        afternoon: MAT.fromJson(json["afternoon"]),
-        total: MAT.fromJson(json["total"]),
+        morning: MAT.fromJson(json?["morning"]),
+        afternoon: MAT.fromJson(json?["afternoon"]),
+        total: MAT.fromJson(json?["total"]),
       );
 
   AttendanceCount copyWith({

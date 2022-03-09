@@ -118,23 +118,33 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Username'),
+                        Text(
+                          '${local?.username}',
+                          style:
+                              kParagraph.copyWith(fontWeight: FontWeight.bold),
+                        ),
                         SizedBox(
-                          width: 255,
+                          width: 235,
                           child: DropdownButtonFormField(
                             validator: (value) {
                               if (value == null) {
-                                return 'required';
+                                return '${local?.plsSelectName}';
                               }
                               return null;
                             },
+                            decoration: InputDecoration(
+                              errorStyle: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             items: userList.map((item) {
                               return DropdownMenuItem(
                                 child: Text(item.name.toString()),
                                 value: item.id.toString(),
                               );
                             }).toList(),
-                            hint: Text('select'),
+                            hint: Text('${local?.select}'),
                             onChanged: (newVal) {
                               setState(() {
                                 _mySelection = newVal.toString();
@@ -156,7 +166,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Date ',
+                          '${local?.payrollDate} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
@@ -174,13 +184,13 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                 child: TextFormField(
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return 'Required';
+                                      return '${local?.plsEnterDate}';
                                     }
                                     return null;
                                   },
                                   readOnly: true,
                                   decoration: InputDecoration(
-                                    hintText: 'Enter Date',
+                                    hintText: '${local?.enterDate}',
                                     suffixIcon: IconButton(
                                         onPressed: () {
                                           _startDatePicker();
@@ -213,7 +223,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'amount ',
+                          '${local?.amount} ',
                           style:
                               kParagraph.copyWith(fontWeight: FontWeight.bold),
                         ),
@@ -231,7 +241,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                 child: TextFormField(
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
-                                    hintText: '${local?.enterPhone} ',
+                                    hintText: '${local?.enterAmount} ',
                                     errorStyle: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
@@ -241,7 +251,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                   textInputAction: TextInputAction.next,
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return 'Required';
+                                      return '${local?.plsEnterAmount}';
                                     }
                                     if (!RegExp(
                                             r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$')
@@ -270,7 +280,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Reason',
+                            '${local?.reason}',
                             style: kParagraph.copyWith(
                                 fontWeight: FontWeight.bold),
                           ),
@@ -288,13 +298,13 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                   child: TextFormField(
                                     textInputAction: TextInputAction.done,
                                     maxLines: 5,
-                                    decoration: const InputDecoration(
-                                      contentPadding: EdgeInsets.only(
+                                    decoration: InputDecoration(
+                                      contentPadding: const EdgeInsets.only(
                                         left: 10,
                                         top: 20,
                                       ),
-                                      hintText: 'Enter Reason',
-                                      errorStyle: TextStyle(
+                                      hintText: '${local?.enterReason}',
+                                      errorStyle: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                       ),

@@ -61,7 +61,7 @@ class _LoanAllState extends State<LoanAll> {
     bool isEnglish = isInEnglish(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Loan'),
+        title: Text('${local?.loan}'),
         actions: [
           IconButton(
             onPressed: () async {
@@ -165,80 +165,71 @@ class _LoanAllState extends State<LoanAll> {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                          SizedBox(
-                                            width: 185,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    BaselineRow(
-                                                      children: [
-                                                        Text(
-                                                          '${local?.name}: ',
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  BaselineRow(
+                                                    children: [
+                                                      Text(
+                                                        '${local?.name}: ',
+                                                        style: TextStyle(
+                                                          fontSize: isEnglish
+                                                              ? 15
+                                                              : 15,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width:
+                                                            isEnglish ? 2 : 4,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 140,
+                                                        child: Text(
+                                                          loanAllList[index]
+                                                              .user!
+                                                              .name
+                                                              .toString(),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: isEnglish ? 10 : 0,
+                                                  ),
+                                                  BaselineRow(
+                                                    children: [
+                                                      Text('${local?.id}: ',
                                                           style: TextStyle(
                                                             fontSize: isEnglish
                                                                 ? 15
                                                                 : 15,
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          width:
-                                                              isEnglish ? 2 : 4,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 140,
-                                                          child: Text(
-                                                            loanAllList[index]
-                                                                .user!
-                                                                .name
-                                                                .toString(),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height:
-                                                          isEnglish ? 10 : 0,
-                                                    ),
-                                                    BaselineRow(
-                                                      children: [
-                                                        Text('${local?.id}: ',
-                                                            style: TextStyle(
-                                                              fontSize:
-                                                                  isEnglish
-                                                                      ? 15
-                                                                      : 15,
-                                                            )),
-                                                        const SizedBox(
-                                                          width: 1,
-                                                        ),
-                                                        Text(loanAllList[index]
-                                                            .user!
-                                                            .id
-                                                            .toString()),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
+                                                          )),
+                                                      const SizedBox(
+                                                        width: 1,
+                                                      ),
+                                                      Text(loanAllList[index]
+                                                          .user!
+                                                          .id
+                                                          .toString()),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
                                       Row(
                                         children: [
                                           SizedBox(
-                                            width: 85,
+                                            width: 40,
                                             child: Row(
                                               children: [
-                                                Text(
-                                                  'Total: ',
-                                                ),
                                                 Text(
                                                   '\$${loanAllList[index].amountTotal!.toStringAsFixed(0)}',
                                                 ),
@@ -278,7 +269,7 @@ class _LoanAllState extends State<LoanAll> {
                                             itemBuilder: (_) => [
                                               PopupMenuItem(
                                                 child: Text(
-                                                  'Detail',
+                                                  '${local?.info}',
                                                   style: TextStyle(
                                                     fontSize:
                                                         isEnglish ? 15 : 16,

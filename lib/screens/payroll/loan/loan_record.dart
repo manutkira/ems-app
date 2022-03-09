@@ -97,7 +97,7 @@ class _LoanRecordState extends State<LoanRecord> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Loan'),
+        title: Text('${local?.loan}'),
         actions: [
           IconButton(
             onPressed: () async {
@@ -159,10 +159,10 @@ class _LoanRecordState extends State<LoanRecord> {
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Row(
-                        children: const [
+                        children: [
                           Text(
-                            'Loan Record',
-                            style: kHeadingTwo,
+                            '${local?.loanRecord}',
+                            style: isEnglish ? kHeadingTwo : kHeadingFour,
                           ),
                         ],
                       ),
@@ -217,7 +217,7 @@ class _LoanRecordState extends State<LoanRecord> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Date ',
+                            '${local?.payrollDate} ',
                             style: kParagraph.copyWith(
                                 fontWeight: FontWeight.bold),
                           ),
@@ -235,13 +235,13 @@ class _LoanRecordState extends State<LoanRecord> {
                                   child: TextFormField(
                                     validator: (value) {
                                       if (value!.isEmpty) {
-                                        return 'required';
+                                        return '${local?.plsEnterDate}';
                                       }
                                       return null;
                                     },
                                     readOnly: true,
                                     decoration: InputDecoration(
-                                      hintText: 'Enter Date',
+                                      hintText: '${local?.enterDate}',
                                       suffixIcon: IconButton(
                                           onPressed: () {
                                             _startDatePicker();
@@ -274,12 +274,12 @@ class _LoanRecordState extends State<LoanRecord> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Amount',
+                            '${local?.amount}',
                             style: kParagraph.copyWith(
                                 fontWeight: FontWeight.bold),
                           ),
                           SizedBox(
-                            width: isEnglish ? 52 : 48,
+                            width: isEnglish ? 52 : 35,
                           ),
                           Container(
                             constraints: BoxConstraints(
@@ -292,17 +292,17 @@ class _LoanRecordState extends State<LoanRecord> {
                                   child: TextFormField(
                                     validator: (value) {
                                       if (value!.isEmpty) {
-                                        return 'Required';
+                                        return '${local?.plsEnterAmount}';
                                       }
                                       if (!RegExp(r'[0-9]').hasMatch(value)) {
-                                        return 'Please Enter number';
+                                        return '${local?.enterNumber}';
                                       }
                                       return null;
                                     },
                                     keyboardType: TextInputType.number,
                                     textInputAction: TextInputAction.next,
-                                    decoration: const InputDecoration(
-                                      hintText: 'Enter Amount',
+                                    decoration: InputDecoration(
+                                      hintText: '${local?.enterAmount}',
                                       errorStyle: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
@@ -329,7 +329,7 @@ class _LoanRecordState extends State<LoanRecord> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Reason',
+                              '${local?.reason}',
                               style: kParagraph.copyWith(
                                   fontWeight: FontWeight.bold),
                             ),
@@ -347,12 +347,12 @@ class _LoanRecordState extends State<LoanRecord> {
                                     child: TextFormField(
                                       textInputAction: TextInputAction.done,
                                       maxLines: 5,
-                                      decoration: const InputDecoration(
+                                      decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
                                           left: 10,
                                           top: 20,
                                         ),
-                                        hintText: 'Enter Reason',
+                                        hintText: '${local?.enterReason}',
                                         errorStyle: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
@@ -452,8 +452,8 @@ class _LoanRecordState extends State<LoanRecord> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'ID',
+                    Text(
+                      '${local?.id}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
@@ -467,8 +467,8 @@ class _LoanRecordState extends State<LoanRecord> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Amount',
+                    Text(
+                      '${local?.amount}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
@@ -482,8 +482,8 @@ class _LoanRecordState extends State<LoanRecord> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Reason',
+                    Text(
+                      '${local?.reason}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
@@ -514,7 +514,7 @@ class _LoanRecordState extends State<LoanRecord> {
                         amountController.text = record.amount.toString();
                         dateController.text = DateFormat('dd-MM-yyyy')
                             .format(DateTime.tryParse(record.date.toString())!);
-                        reasonController.text = record.reason!;
+                        reasonController.text = record.reason.toString();
                         pickStart = DateTime.tryParse(record.date!.toString());
 
                         await MybottonSheet(() {
@@ -530,7 +530,7 @@ class _LoanRecordState extends State<LoanRecord> {
                         // reasonController.text = '';
                         // fetchLoanById();
                       },
-                      child: Text('Edit'),
+                      child: Text('${local?.edit}'),
                     ),
                     SizedBox(
                       width: 10,
@@ -540,7 +540,7 @@ class _LoanRecordState extends State<LoanRecord> {
                       color: Colors.red,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
-                      child: Text('Delete'),
+                      child: Text('${local?.delete}'),
                       onPressed: () async {
                         int loanId = record.id!;
                         await showDialog(

@@ -74,7 +74,7 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Payroll'),
+        title: Text('${local?.payment}'),
       ),
       body: Column(
         children: [
@@ -106,8 +106,8 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Date',
+                          Text(
+                            '${local?.payrollDate}',
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
@@ -117,7 +117,7 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                'From ${DateFormat('dd-MM-yyyy').format(payroll!.dateFrom!)}',
+                                '${local?.from} ${DateFormat('dd-MM-yyyy').format(payroll!.dateFrom!)}',
                                 style: const TextStyle(
                                   fontSize: 15,
                                 ),
@@ -126,7 +126,7 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                                 height: 10,
                               ),
                               Text(
-                                'To ${DateFormat('dd-MM-yyyy').format(payroll!.dateTo!)}',
+                                '${local?.to} ${DateFormat('dd-MM-yyyy').format(payroll!.dateTo!)}',
                                 style: const TextStyle(
                                   fontSize: 16,
                                 ),
@@ -145,15 +145,17 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Status',
+                          Text(
+                            '${local?.status}',
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           Text(
-                            !payroll!.status! ? 'Pending' : 'Paid',
+                            !payroll!.status!
+                                ? '${local?.pending}'
+                                : '${local?.paid}',
                             style: TextStyle(
                               color: !payroll!.status!
                                   ? Colors.orange
@@ -173,15 +175,15 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Day of works',
+                          Text(
+                            '${local?.dayOfWork}',
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           Text(
-                            '${payroll?.dayOfWork} days',
+                            '${payroll?.dayOfWork} ${local?.day}',
                             style: const TextStyle(
                               fontSize: 16,
                             ),
@@ -198,15 +200,15 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Basic salary',
+                          Text(
+                            '${local?.basicSalary}',
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           Text(
-                            '\$${payroll?.salary}/day',
+                            '\$${payroll?.salary}/${local?.day}',
                             style: const TextStyle(
                               fontSize: 16,
                             ),
@@ -223,8 +225,8 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Loan',
+                          Text(
+                            '${local?.loan}',
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
@@ -250,7 +252,7 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                                         });
                                       },
                                       child: Text(
-                                        'Input',
+                                        '${local?.input}',
                                         style: TextStyle(
                                           color: kWhite,
                                         ),
@@ -284,8 +286,8 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Net Salary',
+                          Text(
+                            '${local?.netSalary}',
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
@@ -336,7 +338,7 @@ class _ViewPayrollScreenState extends State<ViewPayrollScreen> {
                               );
                               fetchPayrollById();
                             },
-                            child: const Text('Pay'),
+                            child: Text('${local?.pay}'),
                           )
                         ],
                       ),
