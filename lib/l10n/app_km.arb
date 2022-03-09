@@ -266,5 +266,14 @@
   "enterReason": "បញ្ចូលហេតុផល",
   "enterAmount": "បញ្ចូលចំនួនទឹកប្រាក់",
   "enterDate": "បញ្ចូលកាលបរិច្ឆេទ",
+  "totalAmount": "ចំនួនសរុប",
+  "repay": "សងរួច",
+  "remain": "នៅសល់",
+  "viewRecord": "មើលកំណត់ត្រា",
+  "loanRecord": "កំណត់ត្រាប្រាក់កម្ចី",
+  "enterNumber": "សូមបញ្ចូលលេខ",
+  "plsEnterDate": "សូមបញ្ចូលកាលបរិច្ឆេទ",
+  "plsEnterAmount": "សូមបញ្ចូលចំនួនទឹកប្រាក់",
+  "plsSelectName": "សូមជ្រើសរើសឈ្មោះ",
   "calendarAttendance": "ប្រតិទិន"
 }

@@ -2,6 +2,7 @@
 
 // import 'package:ems/models/loan.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
+import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -57,7 +58,7 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
     bool isEnglish = isInEnglish(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Loan'),
+        title: Text('${local?.loan}'),
       ),
       body: _isloading
           ? Center(
@@ -107,17 +108,16 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          BaselineRow(
                             children: [
                               Text(
-                                'Name: ',
+                                '${local?.name}: ',
                                 style: TextStyle(
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                               SizedBox(
-                                width: 17,
+                                width: 14,
                               ),
                               Text(
                                 loan!.user!.name.toString(),
@@ -127,17 +127,16 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                               ),
                             ],
                           ),
-                          Row(
+                          BaselineRow(
                             children: [
                               Text(
-                                'ID:',
+                                '${local?.id}:',
                                 style: TextStyle(
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                               SizedBox(
-                                width: 45,
+                                width: isEnglish ? 45 : 10,
                               ),
                               Text(
                                 loan!.user!.id.toString(),
@@ -163,7 +162,7 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Total Amount',
+                            '${local?.totalAmount}',
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
@@ -184,7 +183,7 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Repay',
+                            '${local?.repay}',
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
@@ -205,7 +204,7 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Remain',
+                            '${local?.remain}',
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
@@ -241,8 +240,8 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                               );
                               fetchOneLoan();
                             },
-                            child: const Text(
-                              'View Record',
+                            child: Text(
+                              '${local?.viewRecord}',
                             ),
                           )
                         ],

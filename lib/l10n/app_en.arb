@@ -1090,6 +1090,42 @@
   "@enterDate": {
     "description": "payment"
   },
+  "totalAmount": "Total Amount",
+  "@totalAmount": {
+    "description": "payment"
+  },
+  "repay": "Repay",
+  "@repay": {
+    "description": "payment"
+  },
+  "remain": "Remain",
+  "@remain": {
+    "description": "payment"
+  },
+  "viewRecord": "View Record",
+  "@viewRecord": {
+    "description": "payment"
+  },
+  "loanRecord": "Loan Record",
+  "@loanRecord": {
+    "description": "payment"
+  },
+  "enterNumber": "Please Enter number",
+  "@enterNumber": {
+    "description": "payment"
+  },
+  "plsEnterDate": "Please Enter Date",
+  "@plsEnterDate": {
+    "description": "payment"
+  },
+  "plsEnterAmount": "Please Enter Amount",
+  "@plsEnterAmount": {
+    "description": "payment"
+  },
+  "plsSelectName": "Please Select Name",
+  "@plsSelectName": {
+    "description": "payment"
+  },
   "calendarAttendance": "Calendar",
   "@calendarAttendance": {
     "description": "take attendance"

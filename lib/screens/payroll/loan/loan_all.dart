@@ -269,7 +269,7 @@ class _LoanAllState extends State<LoanAll> {
                                             itemBuilder: (_) => [
                                               PopupMenuItem(
                                                 child: Text(
-                                                  'Detail',
+                                                  '${local?.info}',
                                                   style: TextStyle(
                                                     fontSize:
                                                         isEnglish ? 15 : 16,

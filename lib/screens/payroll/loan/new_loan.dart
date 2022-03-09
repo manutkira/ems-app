@@ -118,16 +118,26 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${local?.username}'),
+                        Text(
+                          '${local?.username}',
+                          style:
+                              kParagraph.copyWith(fontWeight: FontWeight.bold),
+                        ),
                         SizedBox(
                           width: 235,
                           child: DropdownButtonFormField(
                             validator: (value) {
                               if (value == null) {
-                                return 'required';
+                                return '${local?.plsSelectName}';
                               }
                               return null;
                             },
+                            decoration: InputDecoration(
+                              errorStyle: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             items: userList.map((item) {
                               return DropdownMenuItem(
                                 child: Text(item.name.toString()),
@@ -174,7 +184,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                 child: TextFormField(
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return 'Required';
+                                      return '${local?.plsEnterDate}';
                                     }
                                     return null;
                                   },
@@ -241,7 +251,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                   textInputAction: TextInputAction.next,
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return 'Required';
+                                      return '${local?.plsEnterAmount}';
                                     }
                                     if (!RegExp(
                                             r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$')
