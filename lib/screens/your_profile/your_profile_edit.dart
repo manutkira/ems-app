@@ -6,7 +6,6 @@ import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/your_profile/widgets/profile_avatar.dart';
 import 'package:ems/services/auth.dart';
 import 'package:ems/services/user.dart';
-import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/statuses/error.dart';
 import 'package:ems/widgets/textbox.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,7 +36,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   String error = "";
   String mainError = "";
   bool isUploadingProfile = false;
-  bool isUploadingID = false;
   File? image;
   File? imageId;
 
@@ -143,9 +141,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
           if (field == UserImageType.profile) {
             isUploadingProfile = true;
           }
-          if (field == UserImageType.id) {
-            isUploadingID = true;
-          }
         });
         try {
           setState(() {
@@ -169,7 +164,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
     }
     setState(() {
       isUploadingProfile = false;
-      isUploadingID = false;
     });
   }
 
@@ -432,17 +426,16 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                             builder: (BuildContext context, Box<User> box,
                                 Widget? child) {
                               User _user = box.values.toList()[0];
-                              bool isImageIDNotEmpty = _user.imageId == null ||
-                                      _user.imageId!.isEmpty ||
-                                      _user.imageId.runtimeType != String
-                                  ? false
-                                  : true;
-
-                              return isImageIDNotEmpty
-                                  ? _buildDisplayID(_user)
-                                  : isUploadingID
-                                      ? _buildUploadID
-                                      : _buildNoID;
+                              // bool isImageIDNotEmpty = _user.imageId == null ||
+                              //     _user.imageId!.isEmpty;
+                              // ? false
+                              bool isImageIDNotEmpty = true;
+                              if (imageId != null ||
+                                  _user.imageId != null ||
+                                  _user.imageId!.isNotEmpty) {
+                                return _buildDisplayID(_user);
+                              }
+                              return _buildNoID;
                             }),
                       ),
                     ],
@@ -518,17 +511,19 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
               child: imageId == null ? Container() : Image.file(imageId!),
             ),
           ),
-          Positioned(
-            right: 4,
-            top: 4,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(40),
-              child: Container(
+          Visibility(
+            visible: imageId != null,
+            child: Positioned(
+              right: 4,
+              top: 4,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(40),
                 child: Material(
                   shape: const CircleBorder(),
                   child: IconButton(
-                    constraints: BoxConstraints(maxHeight: 30, maxWidth: 30),
-                    padding: EdgeInsets.all(2),
+                    constraints:
+                        const BoxConstraints(maxHeight: 30, maxWidth: 30),
+                    padding: const EdgeInsets.all(2),
                     onPressed: () {
                       setState(() {
                         imageId = null;
@@ -546,13 +541,10 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
               borderRadius: BorderRadius.circular(10),
               child: Image.network("${user.imageId}", fit: BoxFit.contain,
                   errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
-                return Visibility(
-                  visible: !isUploadingID,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 40),
-                      child: Text('${local?.errorId}'),
-                    ),
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Text('${local?.errorId}'),
                   ),
                 );
               }),
@@ -561,38 +553,29 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
           Positioned(
             right: 5,
             bottom: 5,
-            child: isUploadingID
-                ? const SizedBox(
-                    height: 16,
-                    width: 16,
-                    child: CircularProgressIndicator(
-                      color: kWhite,
-                      strokeWidth: 2,
-                    ),
-                  )
-                : Row(
-                    children: [
-                      customIconButton(
-                        onTap: () {
-                          uploadPicture(
-                            field: UserImageType.id,
-                            type: 'camera',
-                          );
-                        },
-                        icon: MdiIcons.cameraOutline,
-                      ),
-                      const SizedBox(width: 5),
-                      customIconButton(
-                        onTap: () {
-                          uploadPicture(
-                            field: UserImageType.id,
-                            type: 'gallery',
-                          );
-                        },
-                        icon: MdiIcons.image,
-                      ),
-                    ],
-                  ),
+            child: Row(
+              children: [
+                customIconButton(
+                  onTap: () {
+                    uploadPicture(
+                      field: UserImageType.id,
+                      type: 'camera',
+                    );
+                  },
+                  icon: MdiIcons.cameraOutline,
+                ),
+                const SizedBox(width: 5),
+                customIconButton(
+                  onTap: () {
+                    uploadPicture(
+                      field: UserImageType.id,
+                      type: 'gallery',
+                    );
+                  },
+                  icon: MdiIcons.image,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -618,27 +601,16 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
     );
   }
 
-  /// loading circle when national ID is uploading
-  Widget get _buildUploadID {
-    return const SizedBox(
-      height: 16,
-      width: 16,
-      child: CircularProgressIndicator(
-        color: kWhite,
-        strokeWidth: 3,
-      ),
-    );
-  }
-
   /// generate No ID with buttons to upload ID images
   Widget get _buildNoID {
     AppLocalizations? local = AppLocalizations.of(context);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       children: [
         Text('${local?.noId}', style: kParagraph),
+        const SizedBox(height: 12),
         Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             GestureDetector(
               onTap: () {

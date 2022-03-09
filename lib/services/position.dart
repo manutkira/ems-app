@@ -1,17 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:ems/services/base.dart';
-import 'package:ems/services/models/bank.dart';
+import 'package:ems/services/models/position.dart';
 
-class BankService extends BaseService {
-  static BankService get instance => BankService();
+class PositionService extends BaseService {
+  static PositionService get instance => PositionService();
 
-  Future<List<Bank>> findAllByUserId(int userId) async {
+  Future<List<Position>> findAllByUserId(int userId) async {
     try {
       Response res = await dio.get(
-        '/users/$userId/bank',
+        '/users/$userId/position',
         options: Options(validateStatus: (status) => status == 200),
       );
-      return banksFromJson(res.data['banks']);
+      return positionsFromJson(res.data['positions']);
     } catch (err) {
       if (err is DioError) {
         throw Exception(err.response?.data['message']);
@@ -20,30 +20,21 @@ class BankService extends BaseService {
     }
   }
 
-  Future<Bank> findOne(int bankId) async {
-    try {
-      Response res = await dio.get(
-        'bank/$bankId',
-        options: Options(validateStatus: (status) => status == 200),
-      );
-      return Bank.fromJson(res.data);
-    } catch (err) {
-      if (err is DioError) {
-        throw Exception(err.response?.data['message']);
+  Future<Position> createOne(Position position) async {
+    var payload = position.toJson();
+    payload.removeWhere((key, value) {
+      if ((key == "position_name" || key == "start_date") && value == null) {
+        return true;
       }
-      throw Exception(err.toString());
-    }
-  }
-
-  Future<Bank> createOne(Bank bank) async {
-    var payload = bank.createBankJson();
+      return false;
+    });
     try {
       Response res = await dio.post(
-        '/users/${bank.userId}/bank',
+        '/users/${position.userId}/position',
         data: payload,
         options: Options(validateStatus: (status) => status == 201),
       );
-      return Bank.fromJson(res.data);
+      return Position.fromJson(res.data);
     } catch (err) {
       if (err is DioError) {
         throw Exception(err.response?.data['message']);
@@ -52,24 +43,22 @@ class BankService extends BaseService {
     }
   }
 
-  Future<Bank> updateOne(Bank bank) async {
-    // throw an error
-    if (bank.id == null) throw Exception("Data provided is corrupted.");
-
-    var payload = bank.createBankJson();
+  Future<Position> updateOne(Position position) async {
+    if (position.id == null) throw Exception("Data provided is corrupted.");
+    var payload = position.toJson();
     payload.removeWhere((key, value) {
-      if (key == 'id' || key == 'user_id' || value == null) {
+      if ((key == "position_name" || key == "start_date") && value == null) {
         return true;
       }
       return false;
     });
     try {
       Response res = await dio.put(
-        'bank/${bank.id}',
+        'position/${position.id}',
         data: payload,
         options: Options(validateStatus: (status) => status == 200),
       );
-      return Bank.fromJson(res.data);
+      return Position.fromJson(res.data);
     } catch (err) {
       if (err is DioError) {
         throw Exception(err.response?.data['message']);
@@ -78,10 +67,10 @@ class BankService extends BaseService {
     }
   }
 
-  Future<void> deleteOne(int bankId) async {
+  Future<void> deleteOne(int positionId) async {
     try {
       await dio.delete(
-        'bank/$bankId',
+        'position/$positionId',
         options: Options(validateStatus: (status) => status == 200),
       );
     } catch (err) {
