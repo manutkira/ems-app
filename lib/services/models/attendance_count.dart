@@ -1,6 +1,4 @@
-
-
-import 'package:ems/services/models/user.dart';
+import 'package:ems/models/user.dart';
 
 import '../../utils/utils.dart';
 

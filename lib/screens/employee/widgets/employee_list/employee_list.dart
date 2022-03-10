@@ -7,13 +7,12 @@ import 'package:ems/screens/employee/employee_work_rate.dart';
 import 'package:ems/screens/employee/new_employee_screen.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../models/user.dart';
 import '../../../../services/user.dart' as new_service;
-import '../../../../services/models/user.dart' as new_model;
 
 class EmployeeList extends StatefulWidget {
   @override

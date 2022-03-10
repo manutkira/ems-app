@@ -1,9 +1,8 @@
 import 'dart:core';
 
-import 'package:ems/services/models/user.dart';
+import 'package:ems/models/user.dart';
 
 import '../../utils/utils.dart';
-
 
 List<Loan> loansFromJson(List<dynamic>? list) {
   if (list == null) return [];
