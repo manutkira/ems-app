@@ -542,57 +542,80 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
       }
     }
 
-    User user = User(
-      name: name.text,
-      phone: phone.text,
-      email: email.text,
-      password: password.text,
-      address: address.text,
-      background: background.text,
-      status: checkStatus(),
-      role: checkRole(),
-    );
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text('${local?.adding}'),
-              content: Flex(
-                direction: Axis.horizontal,
-                children: const [
-                  Flexible(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 100),
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ));
-
-    User newUser = await _userService.createOne(
-      user,
-      image: pickedImg,
-      imageId: pickedId,
-    );
-    if (newUser.isNotEmpty) {
-      Navigator.of(context).pop();
+    try {
+      User user = User(
+        name: name.text,
+        phone: phone.text,
+        email: email.text,
+        password: password.text,
+        address: address.text,
+        background: background.text,
+        status: checkStatus(),
+        role: checkRole(),
+      );
+      Navigator.pop(context);
       showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-                title: Text('${local?.success}'),
-                content: Text('${local?.newEmpAdded}'),
+                title: Text('${local?.adding}'),
+                content: Flex(
+                  direction: Axis.horizontal,
+                  children: const [
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 100),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ));
+
+      User newUser = await _userService.createOne(
+        user,
+        image: pickedImg,
+        imageId: pickedId,
+      );
+      if (newUser.isNotEmpty) {
+        Navigator.of(context).pop();
+        showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text('${local?.success}'),
+                  content: Text('${local?.newEmpAdded}'),
+                  actions: [
+                    // ignore: deprecated_member_use
+                    OutlineButton(
+                      borderSide: const BorderSide(color: Colors.green),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        // Navigator.pop(context);
+                      },
+                      child: Text('${local?.done}'),
+                    ),
+                  ],
+                ));
+      }
+    } catch (err) {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.failed}',
+                    style: const TextStyle(color: Colors.red)),
+                content: Text('${local?.addFail}'),
                 actions: [
                   // ignore: deprecated_member_use
                   OutlineButton(
-                    borderSide: const BorderSide(color: Colors.green),
+                    borderSide: const BorderSide(color: Colors.red),
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
                     },
-                    child: Text('${local?.done}'),
+                    child: Text('${local?.back}',
+                        style: const TextStyle(color: Colors.red)),
                   ),
                 ],
               ));

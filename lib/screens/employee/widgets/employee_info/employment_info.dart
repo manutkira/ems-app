@@ -577,7 +577,7 @@ class EmploymentInfo extends StatelessWidget {
                                                 key: _key,
                                                 child: Padding(
                                                   padding:
-                                                      MediaQuery.of(context)
+                                                      MediaQuery.of(contextt)
                                                           .viewInsets,
                                                   child: Container(
                                                     height: 340,
@@ -711,6 +711,7 @@ class EmploymentInfo extends StatelessWidget {
                                                                           Flexible(
                                                                             child:
                                                                                 TextFormField(
+                                                                              keyboardType: TextInputType.number,
                                                                               validator: (value) {
                                                                                 if (value!.isEmpty) {
                                                                                   return 'required';

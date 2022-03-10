@@ -219,43 +219,65 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
 
   updatePersonal() async {
     AppLocalizations? local = AppLocalizations.of(context);
-    User user = User(
-      name: nameController.text,
-      phone: phoneController.text,
-      email: emailController.text,
-      address: addressController.text,
-      background: backgroundController.text,
-      id: widget.id,
-    );
-    User updatedUser =
-        await _userService.updateOne(user, image: pickedImg, imageId: pickedId);
+    try {
+      User user = User(
+        name: nameController.text,
+        phone: phoneController.text,
+        email: emailController.text,
+        address: addressController.text,
+        background: backgroundController.text,
+        id: widget.id,
+      );
+      User updatedUser = await _userService.updateOne(user,
+          image: pickedImg, imageId: pickedId);
 
-    Navigator.pop(context);
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text('${local?.success}'),
-              content: Text('${local?.edited}'),
-              actions: [
-                // ignore: deprecated_member_use
-                OutlineButton(
-                  borderSide: const BorderSide(color: Colors.grey),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('${local?.done}'),
-                ),
-                // ignore: deprecated_member_use
-                OutlineButton(
-                  borderSide: const BorderSide(color: Colors.green),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  },
-                  child: Text('${local?.back}'),
-                ),
-              ],
-            ));
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.success}'),
+                content: Text('${local?.edited}'),
+                actions: [
+                  // ignore: deprecated_member_use
+                  OutlineButton(
+                    borderSide: const BorderSide(color: Colors.grey),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.done}'),
+                  ),
+                  // ignore: deprecated_member_use
+                  OutlineButton(
+                    borderSide: const BorderSide(color: Colors.green),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.back}'),
+                  ),
+                ],
+              ));
+    } catch (err) {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.failed}',
+                    style: const TextStyle(color: Colors.red)),
+                content: Text('${local?.addFail}'),
+                actions: [
+                  // ignore: deprecated_member_use
+                  OutlineButton(
+                    borderSide: const BorderSide(color: Colors.red),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.back}',
+                        style: const TextStyle(color: Colors.red)),
+                  ),
+                ],
+              ));
+    }
   }
 
   updateEmployee() async {

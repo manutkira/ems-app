@@ -409,6 +409,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
 
   updateEmployment() async {
     AppLocalizations? local = AppLocalizations.of(context);
+
     String checkRole() {
       if (role == local?.employee) {
         return 'employee';
@@ -437,40 +438,62 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
       }
     }
 
-    User user = User(
-      salary: double.parse(salaryController.text),
-      role: checkRole(),
-      status: checkStatus(),
-      id: widget.id,
-    );
+    try {
+      User user = User(
+        salary: double.parse(salaryController.text),
+        role: checkRole(),
+        status: checkStatus(),
+        id: widget.id,
+      );
 
-    User updatedUser = await _userService.updateOne(user);
-    Navigator.pop(context);
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text('${local?.success}'),
-              content: Text('${local?.edited}'),
-              actions: [
-                // ignore: deprecated_member_use
-                OutlineButton(
-                  borderSide: const BorderSide(color: Colors.grey),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('${local?.done}'),
-                ),
-                // ignore: deprecated_member_use
-                OutlineButton(
-                  borderSide: const BorderSide(color: Colors.green),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  },
-                  child: Text('${local?.back}'),
-                ),
-              ],
-            ));
+      User updatedUser = await _userService.updateOne(user);
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.success}'),
+                content: Text('${local?.edited}'),
+                actions: [
+                  // ignore: deprecated_member_use
+                  OutlineButton(
+                    borderSide: const BorderSide(color: Colors.grey),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.done}'),
+                  ),
+                  // ignore: deprecated_member_use
+                  OutlineButton(
+                    borderSide: const BorderSide(color: Colors.green),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.back}'),
+                  ),
+                ],
+              ));
+    } catch (err) {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.failed}',
+                    style: const TextStyle(color: Colors.red)),
+                content: Text('${local?.addFail}'),
+                actions: [
+                  // ignore: deprecated_member_use
+                  OutlineButton(
+                    borderSide: const BorderSide(color: Colors.red),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.back}',
+                        style: const TextStyle(color: Colors.red)),
+                  ),
+                ],
+              ));
+    }
   }
 
   updateEmployee() async {
