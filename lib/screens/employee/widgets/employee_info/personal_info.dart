@@ -535,6 +535,10 @@ class PersonalInfo extends StatelessWidget {
                                             RaisedButton(
                                               onPressed: () {
                                                 Navigator.pop(context);
+                                                bankNameController.text = '';
+                                                accountNumberController.text =
+                                                    '';
+                                                accountNameController.text = '';
                                               },
                                               color: Colors.red,
                                               child: Text(
@@ -554,6 +558,9 @@ class PersonalInfo extends StatelessWidget {
                               ),
                             );
                           });
+                      bankNameController.text = '';
+                      accountNumberController.text = '';
+                      accountNameController.text = '';
                       fetchBankData();
                     },
                     icon: const Icon(Icons.add),

@@ -386,6 +386,9 @@ class _TestPositionState extends State<TestPosition> {
                                   RaisedButton(
                                     onPressed: () {
                                       Navigator.pop(context);
+                                      positionName.text = '';
+                                      startDateController.text = '';
+                                      endDateController.text = '';
                                     },
                                     color: Colors.red,
                                     child: Text(
@@ -404,6 +407,9 @@ class _TestPositionState extends State<TestPosition> {
                       ),
                     );
                   });
+              positionName.text = '';
+              startDateController.text = '';
+              endDateController.text = '';
               fetchPositions();
             },
             icon: const Icon(

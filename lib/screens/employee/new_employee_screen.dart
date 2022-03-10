@@ -7,6 +7,7 @@ import 'package:ems/widgets/image_input/new_emp_profile_img.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../constants.dart';
 import '../../services/user.dart';
@@ -43,6 +44,9 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   String dropDownValue2 = '';
 
   final _form = GlobalKey<FormState>();
+
+  // boolean
+  bool _passwordVisible = true;
 
   // files
   File? pickedImg;
@@ -312,7 +316,22 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                             children: [
                               Flexible(
                                 child: TextFormField(
+                                  obscureText: _passwordVisible,
                                   decoration: InputDecoration(
+                                    suffixIcon: IconButton(
+                                      splashColor: Colors.transparent,
+                                      icon: Icon(
+                                        _passwordVisible
+                                            ? MdiIcons.eye
+                                            : MdiIcons.eyeOff,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _passwordVisible = !_passwordVisible;
+                                        });
+                                      },
+                                    ),
                                     hintText: '${local?.enterPassword} ',
                                     errorStyle: const TextStyle(
                                       fontSize: 13,

@@ -525,10 +525,10 @@ class _LoanRecordState extends State<LoanRecord> {
                               id: loanId);
                           updateONe(loanRecord);
                         }, context, isEnglish, local);
-                        // amountController.text = '';
-                        // dateController.text = '';
-                        // reasonController.text = '';
-                        // fetchLoanById();
+                        amountController.text = '';
+                        dateController.text = '';
+                        reasonController.text = '';
+                        fetchLoanById();
                       },
                       child: Text('${local?.edit}'),
                     ),
@@ -611,11 +611,11 @@ class _LoanRecordState extends State<LoanRecord> {
     }
   }
 
-  updateONe(loanRecord.LoanRecord record) {
-    _loanService.updateOneRecord(record);
+  updateONe(loanRecord.LoanRecord record) async {
+    await _loanService.updateOneRecord(record);
   }
 
-  createOne(String id, loanRecord.LoanRecord record) {
-    _loanService.createOneRecord(id, record);
+  createOne(String id, loanRecord.LoanRecord record) async {
+    await _loanService.createOneRecord(id, record);
   }
 }

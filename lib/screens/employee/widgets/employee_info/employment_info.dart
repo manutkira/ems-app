@@ -502,6 +502,9 @@ class EmploymentInfo extends StatelessWidget {
                                               RaisedButton(
                                                 onPressed: () {
                                                   Navigator.pop(context);
+                                                  rateNameController.text = '';
+                                                  rateScoreController.text = '';
+                                                  idController.text = '';
                                                 },
                                                 color: Colors.red,
                                                 child: Text(
@@ -521,6 +524,9 @@ class EmploymentInfo extends StatelessWidget {
                                 ),
                               );
                             });
+                        rateNameController.text = '';
+                        rateScoreController.text = '';
+                        idController.text = '';
                         fetchRateDate();
                       },
                       icon: const Icon(Icons.add))
@@ -830,6 +836,9 @@ class EmploymentInfo extends StatelessWidget {
                                                 ),
                                               );
                                             });
+                                        rateNameController.text = '';
+                                        rateScoreController.text = '';
+                                        idController.text = '';
                                         fetchRateDate();
                                       },
                                       icon: const Icon(
