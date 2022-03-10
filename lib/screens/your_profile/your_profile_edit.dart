@@ -73,7 +73,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
       // );
       return isVerified;
     } catch (err) {
-      print(err);
       setState(() {
         error = err.toString();
       });
@@ -89,7 +88,9 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
           image: image, imageId: imageId);
       ref.read(currentUserProvider).setUser(user: user.copyWith());
     } catch (err) {
-      //
+      setState(() {
+        error = err.toString();
+      });
     }
   }
 
@@ -135,7 +136,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
       File? cropped = await cropImage(filePath: img.path, field: field);
 
       if (cropped != null) {
-        User newUser = _user.copyWith();
         setState(() {
           error = '';
           if (field == UserImageType.profile) {
@@ -151,11 +151,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
               imageId = cropped;
             }
           });
-          // newUser = await _userService.uploadImage(
-          //     field: field, image: cropped, user: _user);
-          // ref.read(currentUserProvider).setUser(user: newUser.copyWith());
         } catch (err) {
-          // write error handling here
           setState(() {
             mainError = err.toString();
           });
@@ -177,8 +173,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isAdmin = _user.role?.toLowerCase() == 'admin';
-
     return Scaffold(
       appBar: AppBar(
         title: Text(

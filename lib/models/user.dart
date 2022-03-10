@@ -134,6 +134,11 @@ class User {
     return json;
   }
 
+  bool get isAdmin {
+    return role?.toLowerCase() == 'admin' ||
+        role?.toLowerCase() == 'superadmin';
+  }
+
   Map<String, dynamic> toCleanJson() {
     var obj = toJson();
     obj.removeWhere((key, value) {

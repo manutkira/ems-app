@@ -171,7 +171,7 @@ class AttendanceService extends BaseService {
       return;
     }
     // removes unnecessary user object
-    // decoding the encoded object to actually copy the object.
+    // decoding the encoded object to actually clone the object.
     // with other methods, the local cache got modified.
     var clean = json.decode(json.encode(cache)).map((att) {
       att.removeWhere((key, value) => key == 'user');

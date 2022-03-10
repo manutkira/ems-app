@@ -41,7 +41,8 @@ class UserService extends BaseService {
     }
   }
 
-  Future<User> createOne(User user, {File? image, File? imageId}) async {
+  Future<FormData> _preparePayload(User user,
+      {File? image, File? imageId}) async {
     var data = user.toCleanJson();
     var upload = {};
     if (image != null) {
@@ -58,10 +59,14 @@ class UserService extends BaseService {
       );
     }
 
-    var payload = FormData.fromMap({
+    return FormData.fromMap({
       ...data,
       ...upload,
     });
+  }
+
+  Future<User> createOne(User user, {File? image, File? imageId}) async {
+    var payload = await _preparePayload(user, image: image, imageId: imageId);
     try {
       Response res = await dio.post(
         'users',
@@ -79,26 +84,7 @@ class UserService extends BaseService {
   }
 
   Future<User> updateOne(User user, {File? image, File? imageId}) async {
-    var data = user.toCleanJson();
-    var upload = {};
-    if (image != null) {
-      upload['image'] = await MultipartFile.fromFile(
-        image.path,
-        filename: basename(image.path),
-      );
-    }
-
-    if (imageId != null) {
-      upload['image_id'] = await MultipartFile.fromFile(
-        imageId.path,
-        filename: basename(imageId.path),
-      );
-    }
-
-    var payload = FormData.fromMap({
-      ...data,
-      ...upload,
-    });
+    var payload = await _preparePayload(user, image: image, imageId: imageId);
     try {
       Response res = await dio.post(
         'users/${user.id}?_method=put',
