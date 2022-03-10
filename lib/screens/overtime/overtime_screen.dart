@@ -545,11 +545,6 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
             Overtime? overtime = record.overtimes?[i];
             User? user = overtime?.user;
 
-            Duration? overtimeTotal = overtime?.overtime;
-            // TimeOfDay overtimeTotal = getTimeOfDayFromString(
-            //   overtime.overtime,
-            // );
-
             // list of overtime
             return Container(
               padding: const EdgeInsets.symmetric(
@@ -603,7 +598,7 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                           borderRadius: BorderRadius.circular(3),
                         ),
                         child: Text(
-                          "${convertDurationToString(overtime?.overtime)}",
+                          convertDurationToString(overtime?.overtime),
                           style: kSubtitle.copyWith(
                             fontSize: 12,
                             color: kGreenText,
@@ -624,7 +619,8 @@ class _OvertimeScreenState extends State<OvertimeScreen> {
                             return buildMoreMenu(option);
                           }).toList();
                         },
-                        onSelected: (value) => moreMenu(value, overtime as Overtime),
+                        onSelected: (value) =>
+                            moreMenu(value, overtime as Overtime),
                       ),
                     ],
                   )

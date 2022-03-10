@@ -205,7 +205,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                       padding: const EdgeInsets.all(10),
                       height: 200,
                       width: 200,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: kDarkestBlue,
                         shape: BoxShape.circle,
                       ),
@@ -420,10 +420,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                             builder: (BuildContext context, Box<User> box,
                                 Widget? child) {
                               User _user = box.values.toList()[0];
-                              // bool isImageIDNotEmpty = _user.imageId == null ||
-                              //     _user.imageId!.isEmpty;
-                              // ? false
-                              bool isImageIDNotEmpty = true;
                               if (imageId != null ||
                                   _user.imageId != null ||
                                   _user.imageId.toString().isEmpty) {

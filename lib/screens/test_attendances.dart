@@ -3,14 +3,11 @@ import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/attendance_service.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../constants.dart';
-import 'attendances_api/widgets/attendance_info/attendance_info_present.dart';
 
 class TestAttendances extends StatefulWidget {
   @override
@@ -18,7 +15,7 @@ class TestAttendances extends StatefulWidget {
 }
 
 class _TestAttendancesState extends State<TestAttendances> {
-  AttendanceService _attendanceService = AttendanceService.instance;
+  final AttendanceService _attendanceService = AttendanceService.instance;
   List<Attendances> attendancesDisplay = [];
   List<AttendancesWithDate> attendancesByIdDisplay = [];
   List<AttendancesWithDate> attendanceList = [];
