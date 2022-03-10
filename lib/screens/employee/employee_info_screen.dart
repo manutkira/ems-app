@@ -1,23 +1,19 @@
 import 'dart:convert';
 
-import 'package:ems/models/bank.dart';
-import 'package:ems/models/rate.dart';
 import 'package:ems/screens/employee/widgets/employee_info/employment_info.dart';
 import 'package:ems/screens/employee/widgets/employee_info/personal_info.dart';
-import 'package:ems/utils/services/bank_service.dart';
 import 'package:ems/utils/services/position_service.dart';
-import 'package:ems/utils/services/rate_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:ems/models/user.dart';
-import 'package:ems/screens/card/card.screen.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 
+import '../../services/rating.dart';
+import '../../services/models/rating.dart';
 import '../../constants.dart';
 import '../../services/bank.dart' as service_bank;
 import '../../services/models/bank.dart' as model_bank;
@@ -41,7 +37,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
 
   // services
   final UserService _userService = UserService.instance;
-  final RateServices _rateServices = RateServices.instance;
+  final RatingService _rateServices = RatingService();
   final service_bank.BankService _bankService = service_bank.BankService();
   final PositionService _positionService = PositionService.instance;
 
@@ -56,9 +52,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
   List<model_bank.Bank> bankDisplay = [];
 
   // list rate
-  final List<Rate> rateList = [];
+  final List<Rating> rateList = [];
   List rateDisplay = [];
-  List<Rate> ratesDisplay = [];
+  List<Rating> ratesDisplay = [];
 
   // text controller
   final rateNameController = TextEditingController();
@@ -105,7 +101,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
   // fetch rate from api
   fetchRateData() {
     try {
-      _rateServices.findOne(widget.id).then((usersFromServer) {
+      _rateServices.findAllByUserId(widget.id).then((usersFromServer) {
         if (mounted) {
           setState(() {
             ratesDisplay = [];
@@ -530,7 +526,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                   checkSatus: checkSatus,
                                   // checkRate: checkRate,
                                   checkRate: () {},
-                                  addRateList: addRate,
+                                  addRateList: createRate,
                                   deleteRateItem: deleteRateItem,
                                   rateNameController: rateNameController,
                                   rateScoreController: rateScoreController,
@@ -545,26 +541,12 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
     );
   }
 
-  addRate() async {
-    AppLocalizations? local = AppLocalizations.of(context);
-    var aName = rateNameController.text;
-    var aScore = rateScoreController.text;
-    var request = await http.MultipartRequest(
-        'POST', Uri.parse("$urlUser/${widget.id}/ratework"));
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Content": "charset-UTF-8",
-    };
-    request.files.add(http.MultipartFile.fromString('skill_name', aName));
-    request.files.add(http.MultipartFile.fromString('score', aScore));
-
-    request.headers.addAll(headers);
-
-    var res = await request.send();
-    print(res.statusCode);
-    if (res.statusCode == 201) {
-      Navigator.of(context).pop();
-    }
-    res.stream.transform(utf8.decoder).listen((event) {});
+  createRate() async {
+    Rating rate = Rating(
+      skillName: rateNameController.text,
+      score: int.parse(rateScoreController.text),
+      userId: widget.id,
+    );
+    await _rateServices.createOne(rate);
   }
 }

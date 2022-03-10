@@ -439,87 +439,14 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                             OutlineButton(
                                               borderSide: const BorderSide(
                                                   color: Colors.green),
-                                              onPressed: () {
+                                              onPressed: () async {
                                                 if (!_form.currentState!
                                                     .validate()) {
                                                   return Navigator.of(context)
                                                       .pop();
                                                 }
-                                                String checkRole() {
-                                                  if (dropDownValue1 ==
-                                                      local?.employee) {
-                                                    return 'employee';
-                                                  }
-                                                  if (dropDownValue1 ==
-                                                      local?.admin) {
-                                                    return 'admin';
-                                                  } else {
-                                                    return '';
-                                                  }
-                                                }
 
-                                                String checkStatus() {
-                                                  if (dropDownValue ==
-                                                      local?.active) {
-                                                    return 'active';
-                                                  }
-                                                  if (dropDownValue ==
-                                                      local?.inactive) {
-                                                    return 'inactive';
-                                                  }
-                                                  if (dropDownValue ==
-                                                      local?.resigned) {
-                                                    return 'resigned';
-                                                  }
-                                                  if (dropDownValue ==
-                                                      local?.fired) {
-                                                    return 'fired';
-                                                  } else {
-                                                    return '';
-                                                  }
-                                                }
-
-                                                User user = User(
-                                                  image: pickedImg.toString(),
-                                                  imageId: pickedId.toString(),
-                                                  name: name.text,
-                                                  phone: phone.text,
-                                                  email: email.text,
-                                                  password: password.text,
-                                                  address: address.text,
-                                                  background: background.text,
-                                                  status: checkStatus(),
-                                                  role: checkRole(),
-                                                );
-                                                createOne(user);
-                                                // addNewEmployee();
-                                                Navigator.of(context).pop();
-                                                showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (ctx) => AlertDialog(
-                                                              title: Text(
-                                                                  '${local?.adding}'),
-                                                              content: Flex(
-                                                                direction: Axis
-                                                                    .horizontal,
-                                                                children: const [
-                                                                  Flexible(
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: EdgeInsets.only(
-                                                                          left:
-                                                                              100),
-                                                                      child:
-                                                                          CircularProgressIndicator(
-                                                                        color: Colors
-                                                                            .white,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ));
+                                                await createOne();
                                               },
                                               child: Text('${local?.yes}'),
                                             ),
@@ -585,8 +512,91 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     );
   }
 
-  createOne(User user) {
-    _userService.createOne(user);
+  createOne() async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    String checkRole() {
+      if (dropDownValue1 == local?.employee) {
+        return 'employee';
+      }
+      if (dropDownValue1 == local?.admin) {
+        return 'admin';
+      } else {
+        return '';
+      }
+    }
+
+    String checkStatus() {
+      if (dropDownValue == local?.active) {
+        return 'active';
+      }
+      if (dropDownValue == local?.inactive) {
+        return 'inactive';
+      }
+      if (dropDownValue == local?.resigned) {
+        return 'resigned';
+      }
+      if (dropDownValue == local?.fired) {
+        return 'fired';
+      } else {
+        return '';
+      }
+    }
+
+    User user = User(
+      name: name.text,
+      phone: phone.text,
+      email: email.text,
+      password: password.text,
+      address: address.text,
+      background: background.text,
+      status: checkStatus(),
+      role: checkRole(),
+    );
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text('${local?.adding}'),
+              content: Flex(
+                direction: Axis.horizontal,
+                children: const [
+                  Flexible(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 100),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ));
+
+    User newUser = await _userService.createOne(
+      user,
+      image: pickedImg,
+      imageId: pickedId,
+    );
+    if (newUser.isNotEmpty) {
+      Navigator.of(context).pop();
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.success}'),
+                content: Text('${local?.newEmpAdded}'),
+                actions: [
+                  // ignore: deprecated_member_use
+                  OutlineButton(
+                    borderSide: const BorderSide(color: Colors.green),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    child: Text('${local?.done}'),
+                  ),
+                ],
+              ));
+    }
   }
 
   addNewEmployee() async {

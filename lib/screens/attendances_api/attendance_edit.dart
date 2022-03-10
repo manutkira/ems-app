@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ems/models/attendance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +10,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ems/utils/utils.dart';
 
 import '../../constants.dart';
+import '../../services/attendance.dart';
+import '../../services/models/attendance.dart';
 
 class AttedancesEdit extends StatefulWidget {
   final int id;
@@ -28,6 +31,9 @@ class AttedancesEdit extends StatefulWidget {
 }
 
 class _AttedancesEditState extends State<AttedancesEdit> {
+  // service
+  AttendanceService _attendanceService = AttendanceService();
+
   String url =
       "http://rest-api-laravel-flutter.herokuapp.com/api/attendance_record";
 
@@ -294,33 +300,11 @@ class _AttedancesEditState extends State<AttedancesEdit> {
                                         borderSide: const BorderSide(
                                             color: Colors.green),
                                         child: Text('${local?.yes}'),
-                                        onPressed: () {
-                                          uploadImage();
+                                        onPressed: () async {
+                                          await updateOne();
                                           Navigator.pop(context);
-                                          showDialog(
-                                              context: context,
-                                              builder: (ctx) => AlertDialog(
-                                                    title: Text(
-                                                        '${local?.editing}'),
-                                                    content: Flex(
-                                                      direction:
-                                                          Axis.horizontal,
-                                                      children: const [
-                                                        Flexible(
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    left: 100),
-                                                            child:
-                                                                CircularProgressIndicator(
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ));
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
                                         },
                                       ),
                                       // ignore: deprecated_member_use
@@ -355,6 +339,34 @@ class _AttedancesEditState extends State<AttedancesEdit> {
         ),
       ),
     );
+  }
+
+  updateOne() async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    AttendanceRecord attendance = AttendanceRecord(
+      note: _noteController?.text,
+      time: selectedTime,
+      id: widget.id,
+    );
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text('${local?.editing}'),
+              content: Flex(
+                direction: Axis.horizontal,
+                children: const [
+                  Flexible(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 100),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ));
+    await _attendanceService.updateOneRecord(attendance);
   }
 
   uploadImage() async {

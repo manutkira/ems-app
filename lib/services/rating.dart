@@ -11,7 +11,7 @@ class RatingService extends BaseService {
         '/users/$userId/rating',
         options: Options(validateStatus: (status) => status == 200),
       );
-      return ratingsFromJson(res.data['rateworks']);
+      return ratingsFromJson(res.data['rating']);
     } catch (err) {
       if (err is DioError) {
         throw Exception(err.response?.data['message']);

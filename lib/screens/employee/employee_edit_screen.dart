@@ -6,6 +6,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+import '../../services/user.dart';
+import '../../models/user.dart';
+
 class EmployeeEditScreen extends StatefulWidget {
   final int id;
   final String name;
@@ -45,6 +48,9 @@ class EmployeeEditScreen extends StatefulWidget {
 }
 
 class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
+  // service
+  final UserService _userService = UserService();
+
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
   // text controller
@@ -199,7 +205,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                 form: _form,
                 selectImageId: _selectImageId,
                 selectImage: _selectImage,
-                updateEmployee: updateEmployee,
+                updateEmployee: updatePersonal,
                 imageUrl: imageUrl.toString(),
                 idUrl: idUrl.toString(),
                 nameController: nameController,
@@ -209,6 +215,47 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                 backgroundController: backgroundController)),
       ),
     );
+  }
+
+  updatePersonal() async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    User user = User(
+      name: nameController.text,
+      phone: phoneController.text,
+      email: emailController.text,
+      address: addressController.text,
+      background: backgroundController.text,
+      id: widget.id,
+    );
+    User updatedUser =
+        await _userService.updateOne(user, image: pickedImg, imageId: pickedId);
+
+    Navigator.pop(context);
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text('${local?.success}'),
+              content: Text('${local?.edited}'),
+              actions: [
+                // ignore: deprecated_member_use
+                OutlineButton(
+                  borderSide: const BorderSide(color: Colors.grey),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('${local?.done}'),
+                ),
+                // ignore: deprecated_member_use
+                OutlineButton(
+                  borderSide: const BorderSide(color: Colors.green),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  child: Text('${local?.back}'),
+                ),
+              ],
+            ));
   }
 
   updateEmployee() async {

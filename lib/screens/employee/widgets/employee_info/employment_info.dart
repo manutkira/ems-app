@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:ems/models/rate.dart';
+import 'package:ems/services/models/rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
@@ -10,15 +10,15 @@ import 'package:ems/models/user.dart';
 import 'package:ems/screens/employee/widgets/employee_info/position_record.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
-import 'package:path/path.dart';
 
 import '../../../../constants.dart';
 import '../../employee_edit_employment.dart';
+import '../../../../services/rating.dart';
 
 class EmploymentInfo extends StatelessWidget {
   List<User> userDisplay;
   List<User> user;
-  List<Rate> rateDisplay;
+  List<Rating> rateDisplay;
   List rateList;
   List positionDisplay;
   final Function fetchUserById;
@@ -60,6 +60,9 @@ class EmploymentInfo extends StatelessWidget {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
 
+    // service
+    RatingService _rateService = RatingService();
+
     // text controller
     TextEditingController skillNameController = TextEditingController();
     TextEditingController scoreController = TextEditingController();
@@ -67,31 +70,12 @@ class EmploymentInfo extends StatelessWidget {
     int? rateId;
 
     // edit rate from api
-    editRate() async {
-      var aName = skillNameController.text;
-      var aScore = scoreController.text;
-
-      var request = await http.MultipartRequest(
-          'POST',
-          Uri.parse(
-              "http://rest-api-laravel-flutter.herokuapp.com/api/ratework/${rateId}?_method=PUT"));
-      Map<String, String> headers = {
-        "Accept": "application/json",
-        "Content": "charset-UTF-8",
-      };
-
-      request.files.add(http.MultipartFile.fromString('skill_name', aName));
-      request.files.add(http.MultipartFile.fromString('score', aScore));
-
-      request.headers.addAll(headers);
-
-      var res = await request.send();
-
-      if (res.statusCode == 200) {
-        Navigator.pop(context);
-      }
-      res.stream.transform(utf8.decoder).listen((event) {});
+    updateRate(Rating rate) async {
+      await _rateService.updateOne(rate);
+      print(rate.score);
     }
+
+    GlobalKey<FormState> _key = GlobalKey<FormState>();
 
     void showInSnackBar(String value) {
       Scaffold.of(context).showSnackBar(
@@ -111,7 +95,7 @@ class EmploymentInfo extends StatelessWidget {
     Future deleteData(int id) async {
       AppLocalizations? local = AppLocalizations.of(context);
       final response = await http.delete(Uri.parse(
-          "http://rest-api-laravel-flutter.herokuapp.com/api/ratework/$id"));
+          "http://rest-api-laravel-flutter.herokuapp.com/api/rating/$id"));
       showInSnackBar("${local?.deletingSkill}");
       if (response.statusCode == 200) {
         fetchRateDate();
@@ -313,52 +297,62 @@ class EmploymentInfo extends StatelessWidget {
                             isScrollControlled: true,
                             context: contextt,
                             builder: (_) {
-                              return Padding(
-                                padding: MediaQuery.of(contextt).viewInsets,
-                                child: Container(
-                                  height: 340,
-                                  decoration: const BoxDecoration(
-                                    color: kBlue,
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(30),
-                                      topLeft: Radius.circular(30),
+                              return Form(
+                                key: _key,
+                                child: Padding(
+                                  padding: MediaQuery.of(contextt).viewInsets,
+                                  child: Container(
+                                    height: 340,
+                                    decoration: const BoxDecoration(
+                                      color: kBlue,
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(30),
+                                        topLeft: Radius.circular(30),
+                                      ),
                                     ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  '${local?.skill} ',
-                                                  style: kParagraph.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                SizedBox(
-                                                  width: isEnglish ? 52 : 50,
-                                                ),
-                                                Container(
-                                                  constraints: BoxConstraints(
-                                                      maxWidth:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.6),
-                                                  child: Flex(
-                                                    direction: Axis.horizontal,
-                                                    children: [
-                                                      Flexible(
-                                                        // ignore: sized_box_for_whitespace
-                                                        child: Container(
-                                                          height: 35,
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(20.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    '${local?.skill} ',
+                                                    style: kParagraph.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  SizedBox(
+                                                    width: isEnglish ? 52 : 50,
+                                                  ),
+                                                  Container(
+                                                    constraints: BoxConstraints(
+                                                        maxWidth: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.6),
+                                                    child: Flex(
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      children: [
+                                                        Flexible(
+                                                          // ignore: sized_box_for_whitespace
                                                           child: TextFormField(
+                                                            validator: (value) {
+                                                              if (value!
+                                                                  .isEmpty) {
+                                                                return 'required';
+                                                              }
+
+                                                              return null;
+                                                            },
                                                             decoration:
                                                                 InputDecoration(
                                                               contentPadding:
@@ -379,50 +373,63 @@ class EmploymentInfo extends StatelessWidget {
                                                                 rateNameController,
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 20,
-                                                right: 20,
-                                                bottom: 15),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  '${local?.score} ',
-                                                  style: kParagraph.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                SizedBox(
-                                                  width: isEnglish ? 40 : 70,
-                                                ),
-                                                Container(
-                                                  constraints: BoxConstraints(
-                                                      maxWidth:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.6),
-                                                  child: Flex(
-                                                    direction: Axis.horizontal,
-                                                    children: [
-                                                      Flexible(
-                                                        child: SizedBox(
-                                                          height: 35,
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20,
+                                                  right: 20,
+                                                  bottom: 15),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    '${local?.score} ',
+                                                    style: kParagraph.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  SizedBox(
+                                                    width: isEnglish ? 40 : 70,
+                                                  ),
+                                                  Container(
+                                                    constraints: BoxConstraints(
+                                                        maxWidth: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.6),
+                                                    child: Flex(
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      children: [
+                                                        Flexible(
                                                           child: TextFormField(
+                                                            validator: (value) {
+                                                              if (value!
+                                                                  .isEmpty) {
+                                                                return 'required';
+                                                              }
+                                                              if (int.parse(
+                                                                          value) <
+                                                                      1 ||
+                                                                  int.parse(
+                                                                          value) >
+                                                                      10) {
+                                                                return 'Please enter between 1-10';
+                                                              }
+                                                              return null;
+                                                            },
                                                             keyboardType:
                                                                 TextInputType
                                                                     .number,
@@ -446,65 +453,70 @@ class EmploymentInfo extends StatelessWidget {
                                                                 rateScoreController,
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 30),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            // ignore: deprecated_member_use
-                                            RaisedButton(
-                                              onPressed: () {
-                                                addRateList();
-                                                // Navigator.pop(context);
-                                                rateNameController.text = '';
-                                                rateScoreController.text = '';
-                                                idController.text = '';
-                                              },
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              child: Text(
-                                                '${local?.save}',
-                                                style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 15,
-                                            ),
-                                            // ignore: deprecated_member_use
-                                            RaisedButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              color: Colors.red,
-                                              child: Text(
-                                                '${local?.cancel}',
-                                                style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                                ],
                                               ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 30),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              // ignore: deprecated_member_use
+                                              RaisedButton(
+                                                onPressed: () async {
+                                                  if (_key.currentState!
+                                                      .validate()) {
+                                                    await addRateList();
+                                                    Navigator.pop(context);
+                                                    rateNameController.text =
+                                                        '';
+                                                    rateScoreController.text =
+                                                        '';
+                                                    idController.text = '';
+                                                  }
+                                                },
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                child: Text(
+                                                  '${local?.save}',
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 15,
+                                              ),
+                                              // ignore: deprecated_member_use
+                                              RaisedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                color: Colors.red,
+                                                child: Text(
+                                                  '${local?.cancel}',
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               );
@@ -540,7 +552,7 @@ class EmploymentInfo extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(rateDisplay[index].rateName),
+                                Text(rateDisplay[index].skillName.toString()),
                                 Row(
                                   children: [
                                     Text(
@@ -552,81 +564,89 @@ class EmploymentInfo extends StatelessWidget {
                                       onPressed: () async {
                                         rateId = rateDisplay[index].id;
                                         skillNameController.text =
-                                            rateDisplay[index].rateName;
+                                            rateDisplay[index]
+                                                .skillName
+                                                .toString();
                                         scoreController.text =
-                                            rateDisplay[index].score;
+                                            rateDisplay[index].score.toString();
                                         await showModalBottomSheet(
                                             isScrollControlled: true,
                                             context: contextt,
                                             builder: (_) {
-                                              return Padding(
-                                                padding: MediaQuery.of(context)
-                                                    .viewInsets,
-                                                child: Container(
-                                                  height: 340,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: kBlue,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topRight:
-                                                          Radius.circular(30),
-                                                      topLeft:
-                                                          Radius.circular(30),
-                                                    ),
-                                                  ),
-                                                  child: Column(
-                                                    children: [
-                                                      const SizedBox(
-                                                        height: 20,
+                                              return Form(
+                                                key: _key,
+                                                child: Padding(
+                                                  padding:
+                                                      MediaQuery.of(context)
+                                                          .viewInsets,
+                                                  child: Container(
+                                                    height: 340,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      color: kBlue,
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                        topRight:
+                                                            Radius.circular(30),
+                                                        topLeft:
+                                                            Radius.circular(30),
                                                       ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Row(
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left: 20,
-                                                                      right: 20,
-                                                                      bottom:
-                                                                          15),
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                    '${local?.skill} ',
-                                                                    style: kParagraph.copyWith(
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width:
-                                                                        isEnglish
-                                                                            ? 52
-                                                                            : 50,
-                                                                  ),
-                                                                  Container(
-                                                                    constraints:
-                                                                        BoxConstraints(
-                                                                            maxWidth:
-                                                                                MediaQuery.of(context).size.width * 0.6),
-                                                                    child: Flex(
-                                                                      direction:
-                                                                          Axis.horizontal,
-                                                                      children: [
-                                                                        Flexible(
-                                                                          child:
-                                                                              SizedBox(
-                                                                            height:
-                                                                                35,
+                                                    ),
+                                                    child: Column(
+                                                      children: [
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Row(
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            20,
+                                                                        right:
+                                                                            20,
+                                                                        bottom:
+                                                                            15),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Text(
+                                                                      '${local?.skill} ',
+                                                                      style: kParagraph.copyWith(
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: isEnglish
+                                                                          ? 52
+                                                                          : 50,
+                                                                    ),
+                                                                    Container(
+                                                                      constraints:
+                                                                          BoxConstraints(
+                                                                              maxWidth: MediaQuery.of(context).size.width * 0.6),
+                                                                      child:
+                                                                          Flex(
+                                                                        direction:
+                                                                            Axis.horizontal,
+                                                                        children: [
+                                                                          Flexible(
                                                                             child:
                                                                                 TextFormField(
+                                                                              validator: (value) {
+                                                                                if (value!.isEmpty) {
+                                                                                  return 'required';
+                                                                                }
+                                                                                return null;
+                                                                              },
                                                                               decoration: InputDecoration(
                                                                                 contentPadding: const EdgeInsets.only(left: 10),
                                                                                 hintText: '${local?.enterSkill}',
@@ -636,69 +656,70 @@ class EmploymentInfo extends StatelessWidget {
                                                                                 ),
                                                                               ),
                                                                               controller: skillNameController,
-                                                                              // initialValue:
-                                                                              //     rateDisplay[0][index]['skill_name'].toString(),
-                                                                              // controller:
-                                                                              //     rateNameController,
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      ],
+                                                                        ],
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                ],
+                                                                  ],
+                                                                ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Row(
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left: 20,
-                                                                      right: 20,
-                                                                      bottom:
-                                                                          15),
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                    '${local?.score} ',
-                                                                    style: kParagraph.copyWith(
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width:
-                                                                        isEnglish
-                                                                            ? 40
-                                                                            : 70,
-                                                                  ),
-                                                                  Container(
-                                                                    constraints:
-                                                                        BoxConstraints(
-                                                                            maxWidth:
-                                                                                MediaQuery.of(context).size.width * 0.6),
-                                                                    child: Flex(
-                                                                      direction:
-                                                                          Axis.horizontal,
-                                                                      children: [
-                                                                        Flexible(
-                                                                          child:
-                                                                              SizedBox(
-                                                                            height:
-                                                                                35,
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Row(
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            20,
+                                                                        right:
+                                                                            20,
+                                                                        bottom:
+                                                                            15),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Text(
+                                                                      '${local?.score} ',
+                                                                      style: kParagraph.copyWith(
+                                                                          fontWeight:
+                                                                              FontWeight.bold),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: isEnglish
+                                                                          ? 40
+                                                                          : 70,
+                                                                    ),
+                                                                    Container(
+                                                                      constraints:
+                                                                          BoxConstraints(
+                                                                              maxWidth: MediaQuery.of(context).size.width * 0.6),
+                                                                      child:
+                                                                          Flex(
+                                                                        direction:
+                                                                            Axis.horizontal,
+                                                                        children: [
+                                                                          Flexible(
                                                                             child:
                                                                                 TextFormField(
+                                                                              validator: (value) {
+                                                                                if (value!.isEmpty) {
+                                                                                  return 'required';
+                                                                                }
+                                                                                if (int.parse(value) < 1 || int.parse(value) > 10) {
+                                                                                  return 'Please enter between 1-10';
+                                                                                }
+                                                                                return null;
+                                                                              },
                                                                               decoration: InputDecoration(
                                                                                 contentPadding: const EdgeInsets.only(left: 10),
                                                                                 hintText: '${local?.enterScore}',
@@ -712,73 +733,98 @@ class EmploymentInfo extends StatelessWidget {
                                                                               //     rateDisplay[0][index]['score'].toString(),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      ],
+                                                                        ],
+                                                                      ),
                                                                     ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 30),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              // ignore: deprecated_member_use
+                                                              RaisedButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  if (_key
+                                                                      .currentState!
+                                                                      .validate()) {
+                                                                    Rating
+                                                                        rate =
+                                                                        Rating(
+                                                                      id: rateId,
+                                                                      skillName:
+                                                                          skillNameController
+                                                                              .text,
+                                                                      score: int
+                                                                          .tryParse(
+                                                                        scoreController
+                                                                            .text,
+                                                                      ),
+                                                                    );
+
+                                                                    await updateRate(
+                                                                        rate);
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  }
+                                                                },
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .primaryColor,
+                                                                child: Text(
+                                                                  '${local?.save}',
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontSize:
+                                                                        15,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                right: 30),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .end,
-                                                          children: [
-                                                            // ignore: deprecated_member_use
-                                                            RaisedButton(
-                                                              onPressed: () {
-                                                                editRate();
-                                                              },
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .primaryColor,
-                                                              child: Text(
-                                                                '${local?.save}',
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
                                                                 ),
                                                               ),
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 15,
-                                                            ),
-                                                            // ignore: deprecated_member_use
-                                                            RaisedButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                              color: Colors.red,
-                                                              child: Text(
-                                                                '${local?.cancel}',
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                              const SizedBox(
+                                                                width: 15,
+                                                              ),
+                                                              // ignore: deprecated_member_use
+                                                              RaisedButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                color:
+                                                                    Colors.red,
+                                                                child: Text(
+                                                                  '${local?.cancel}',
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontSize:
+                                                                        15,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               );
@@ -807,7 +853,8 @@ class EmploymentInfo extends StatelessWidget {
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
                                                     deleteData(
-                                                        rateDisplay[index].id);
+                                                        rateDisplay[index].id
+                                                            as int);
                                                   },
                                                   child: Text('${local?.yes}'),
                                                   borderSide: const BorderSide(
