@@ -1,5 +1,3 @@
-
-
 import '../../utils/utils.dart';
 
 List<Payment> paymentsFromJson(List<dynamic>? list) {
@@ -27,7 +25,7 @@ class Payment {
     this.datePaid,
   });
 
-  factory Payment.fromJson(Map<String, dynamic>? json){
+  factory Payment.fromJson(Map<String, dynamic>? json) {
     return Payment(
       id: int.tryParse("${json?['id']}"),
       userId: int.tryParse("${json?['user_id']}"),
@@ -40,8 +38,7 @@ class Payment {
   }
 
   Map<String, dynamic> toJson() {
-
-    var json = {
+    return {
       "id": id,
       "user_id": userId,
       "ref_no": refNo,
@@ -50,7 +47,6 @@ class Payment {
       "date_to": convertDateTimeToString(dateTo),
       "date_paid": convertDateTimeToString(datePaid),
     };
-    return json;
   }
 
   Payment copyWith({

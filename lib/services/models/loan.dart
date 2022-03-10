@@ -27,6 +27,34 @@ class Loan {
     this.user,
   });
 
+  Loan copyWith({
+    int? id,
+    int? userId,
+    double? amountTotal,
+    double? repay,
+    double? remain,
+    User? user,
+  }) =>
+      Loan(
+        id: id ?? this.id,
+        userId: userId ?? this.userId,
+        amountTotal: amountTotal ?? this.amountTotal,
+        repay: repay ?? this.repay,
+        remain: remain ?? this.remain,
+        user: user ?? this.user,
+      );
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "user_id": userId,
+      "amount_total": amountTotal,
+      "repay": repay,
+      "remain": remain,
+      "user": user?.toJson(),
+    };
+  }
+
   factory Loan.fromJson(Map<String, dynamic>? json) => Loan(
         id: intParse(json?['id']),
         userId: intParse(json?['user_id']),

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../../utils/utils.dart';
 
 class Payroll {
@@ -10,7 +8,7 @@ class Payroll {
   DateTime? dateTo;
   bool? status;
   double? dayOfWork;
-  TimeOfDay? overtime;
+  Duration? overtime;
   double? salary;
   double? loan;
   double? netSalary;
@@ -29,18 +27,60 @@ class Payroll {
     this.netSalary,
   });
 
-  factory Payroll.fromJson(Map<String, dynamic>?  json)=>Payroll(
-    paymentId: int.tryParse("${json?['payment_id']}"),
-    userId: int.tryParse("${json?['user_id']}"),
-    name: json?['name'],
-    dateFrom: convertStringToDateTime(json?['date_from']),
-    dateTo: convertStringToDateTime(json?['date_to']),
-    status: json?['status'],
-    dayOfWork: double.tryParse(json?['day_of_work']),
-    overtime: convertStringToTime(json?['overtime']),
-    salary: double.tryParse(json?['salary']),
-    loan: double.tryParse(json?['loan']),
-    netSalary: double.tryParse(json?['netsalary']),
-  );
+  Payroll copyWith({
+    int? paymentId,
+    int? userId,
+    String? name,
+    DateTime? dateFrom,
+    DateTime? dateTo,
+    bool? status,
+    double? dayOfWork,
+    Duration? overtime,
+    double? salary,
+    double? loan,
+    double? netSalary,
+  }) =>
+      Payroll(
+        paymentId: paymentId ?? this.paymentId,
+        userId: userId ?? this.userId,
+        name: name ?? this.name,
+        dateFrom: dateFrom ?? this.dateFrom,
+        dateTo: dateTo ?? this.dateTo,
+        status: status ?? this.status,
+        dayOfWork: dayOfWork ?? this.dayOfWork,
+        overtime: overtime ?? this.overtime,
+        salary: salary ?? this.salary,
+        loan: loan ?? this.loan,
+        netSalary: netSalary ?? this.netSalary,
+      );
 
+  factory Payroll.fromJson(Map<String, dynamic>? json) => Payroll(
+        paymentId: int.tryParse("${json?['payment_id']}"),
+        userId: int.tryParse("${json?['user_id']}"),
+        name: json?['name'],
+        dateFrom: convertStringToDateTime(json?['date_from']),
+        dateTo: convertStringToDateTime(json?['date_to']),
+        status: json?['status'],
+        dayOfWork: double.tryParse(json?['day_of_work']),
+        overtime: convertStringToDuration(json?['overtime']),
+        salary: double.tryParse(json?['salary']),
+        loan: double.tryParse(json?['loan']),
+        netSalary: double.tryParse(json?['netsalary']),
+      );
+
+  Map<String, dynamic> toJson() {
+    return {
+      "payment_id": paymentId,
+      "user_id": userId,
+      "name": name,
+      "date_from": dateFrom,
+      "date_to": dateTo,
+      "status": status,
+      "day_of_work": dayOfWork,
+      "overtime": convertDurationToString(overtime),
+      "salary": salary,
+      "loan": loan,
+      "netsalary": netSalary,
+    };
+  }
 }
