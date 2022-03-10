@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
@@ -11,13 +14,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import 'attendances_api/attendance_info.dart';
 import 'overtime/individual_overtime_screen.dart';
 
 class HomeScreenEmployee extends ConsumerStatefulWidget {
-  HomeScreenEmployee({Key? key, required this.isOnline}) : super(key: key);
-  bool isOnline;
+  const HomeScreenEmployee({Key? key}) : super(key: key);
 
   @override
   ConsumerState createState() => _HomeScreenEmployeeState();
@@ -25,6 +28,8 @@ class HomeScreenEmployee extends ConsumerStatefulWidget {
 
 class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isOnline = false;
+  late StreamSubscription listener;
 
   showOfflineSnackbar() {
     AppLocalizations? local = AppLocalizations.of(context);
@@ -42,7 +47,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
   }
 
   void _goToMyAttendance(int userId) {
-    if (!widget.isOnline) {
+    if (!isOnline) {
       showOfflineSnackbar();
       return;
     }
@@ -56,7 +61,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
   }
 
   void _goToMyOvertime(User? currentUser) {
-    if (!widget.isOnline) {
+    if (!isOnline) {
       showOfflineSnackbar();
       return;
     }
@@ -72,11 +77,19 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
   @override
   void initState() {
     super.initState();
+    listener = InternetConnectionChecker().onStatusChange.listen((status) {
+      // log('CONNECTION STATUS: $status ${status == InternetConnectionStatus.connected}');
+
+      setState(() {
+        isOnline = status == InternetConnectionStatus.connected;
+      });
+    });
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     super.dispose();
+    await listener.cancel();
   }
 
   @override
@@ -90,7 +103,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
       appBar: EMSAppBar(
         openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
       ),
-      drawer: MenuDrawer(isOnline: widget.isOnline),
+      drawer: MenuDrawer(),
       body: SafeArea(
         bottom: false,
         child: ListView(
@@ -110,9 +123,9 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 30),
-                    CheckStatus(isOnline: widget.isOnline),
+                  children: const [
+                    SizedBox(height: 30),
+                    CheckStatus(),
                   ],
                 ),
               ],
@@ -171,7 +184,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             //           ),
             //         ),
             //         SizedBox(height: isEnglish ? 30 : 25),
-            //         CheckStatus(isOnline: widget.isOnline),
+            //         CheckStatus(isOnline: isOnline),
             //       ],
             //     ),
             //   ],

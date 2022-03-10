@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/services/attendance.dart';
 import 'package:ems/services/models/attendance.dart';
@@ -7,13 +5,13 @@ import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../constants.dart';
 
 class CheckStatus extends ConsumerStatefulWidget {
-  CheckStatus({Key? key, required this.isOnline}) : super(key: key);
-  bool isOnline;
+  const CheckStatus({Key? key}) : super(key: key);
 
   @override
   ConsumerState createState() => _CheckStatusState();
@@ -27,8 +25,9 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
   bool isAfternoonCheckOut = false;
 
   void getStatus() async {
-    if (!widget.isOnline) {
-      log('offline from check status');
+    bool isOnline = await InternetConnectionChecker().hasConnection;
+    if (isOnline == false) {
+      // log('offline from check status');
       return;
     }
 

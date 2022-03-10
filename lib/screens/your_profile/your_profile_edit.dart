@@ -73,7 +73,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
       // );
       return isVerified;
     } catch (err) {
-      print(err);
       setState(() {
         error = err.toString();
       });
@@ -89,7 +88,9 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
           image: image, imageId: imageId);
       ref.read(currentUserProvider).setUser(user: user.copyWith());
     } catch (err) {
-      //
+      setState(() {
+        error = err.toString();
+      });
     }
   }
 
@@ -135,7 +136,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
       File? cropped = await cropImage(filePath: img.path, field: field);
 
       if (cropped != null) {
-        User newUser = _user.copyWith();
         setState(() {
           error = '';
           if (field == UserImageType.profile) {
@@ -151,11 +151,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
               imageId = cropped;
             }
           });
-          // newUser = await _userService.uploadImage(
-          //     field: field, image: cropped, user: _user);
-          // ref.read(currentUserProvider).setUser(user: newUser.copyWith());
         } catch (err) {
-          // write error handling here
           setState(() {
             mainError = err.toString();
           });
@@ -177,8 +173,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isAdmin = _user.role?.toLowerCase() == 'admin';
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -211,7 +205,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                       padding: const EdgeInsets.all(10),
                       height: 200,
                       width: 200,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: kDarkestBlue,
                         shape: BoxShape.circle,
                       ),
@@ -426,13 +420,9 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                             builder: (BuildContext context, Box<User> box,
                                 Widget? child) {
                               User _user = box.values.toList()[0];
-                              // bool isImageIDNotEmpty = _user.imageId == null ||
-                              //     _user.imageId!.isEmpty;
-                              // ? false
-                              bool isImageIDNotEmpty = true;
                               if (imageId != null ||
                                   _user.imageId != null ||
-                                  _user.imageId!.isNotEmpty) {
+                                  _user.imageId.toString().isEmpty) {
                                 return _buildDisplayID(_user);
                               }
                               return _buildNoID;
@@ -605,55 +595,64 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   Widget get _buildNoID {
     AppLocalizations? local = AppLocalizations.of(context);
 
-    return Column(
-      children: [
-        Text('${local?.noId}', style: kParagraph),
-        const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            GestureDetector(
-              onTap: () {
-                uploadPicture(
-                  field: UserImageType.id,
-                  type: 'camera',
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: kDarkestBlue,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  MdiIcons.cameraOutline,
-                  size: 24,
-                ),
-              ),
-            ),
-            const SizedBox(width: 5),
-            GestureDetector(
-              onTap: () {
-                uploadPicture(
-                  field: UserImageType.id,
-                  type: 'gallery',
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: kDarkestBlue,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  MdiIcons.image,
-                  size: 24,
+    return Container(
+      height: 120,
+      decoration: BoxDecoration(
+        color: kDarkestBlue,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${local?.noId}', style: kParagraph),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  uploadPicture(
+                    field: UserImageType.id,
+                    type: 'camera',
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: kBlue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    MdiIcons.cameraOutline,
+                    size: 24,
+                  ),
                 ),
               ),
-            ),
-          ],
-        )
-      ],
+              const SizedBox(width: 5),
+              GestureDetector(
+                onTap: () {
+                  uploadPicture(
+                    field: UserImageType.id,
+                    type: 'gallery',
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: kBlue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    MdiIcons.image,
+                    size: 24,
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 

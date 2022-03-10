@@ -119,11 +119,10 @@ Future<bool> isConnected() async {
     } else {
       return false;
     }
-  } on SocketException catch (err) {
+  } on SocketException {
     return false;
   }
 }
-
 
 DateTime? convertStringToDateTime(String? str) {
   if (str == null) return null;
@@ -136,8 +135,9 @@ String? convertDateTimeToString(DateTime? datetime) {
 }
 
 convertDateToddMMy(DateTime? datetime) {
-  if(datetime==null) return "00-00-0000";
-  return DateFormat('dd-MM-y').format(DateTime.parse(datetime.toIso8601String()));
+  if (datetime == null) return "00-00-0000";
+  return DateFormat('dd-MM-y')
+      .format(DateTime.parse(datetime.toIso8601String()));
 }
 
 TimeOfDay? convertStringToTime(String? str) {

@@ -1,6 +1,5 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/services/models/attendance.dart';
-import 'package:flutter/material.dart';
 
 import '../../utils/utils.dart';
 
@@ -98,6 +97,18 @@ class Overtime {
       checkIn: AttendanceRecord.fromJson(json?['get_t5']),
       checkOut: AttendanceRecord.fromJson(json?['get_t6']),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "user_id": userId,
+      "user": user?.toJson(),
+      "date": convertDateTimeToString(date),
+      "overtime": convertDurationToString(overtime),
+      "t5": checkIn?.id,
+      "t6": checkOut?.id,
+    };
   }
 
   Overtime copyWith({

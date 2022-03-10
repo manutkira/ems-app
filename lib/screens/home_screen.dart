@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
@@ -18,13 +20,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import 'attendances_api/attendance_info.dart';
 import 'overtime/individual_overtime_screen.dart';
 
 class HomeScreenAdmin extends ConsumerStatefulWidget {
-  HomeScreenAdmin({Key? key, required this.isOnline}) : super(key: key);
-  bool isOnline;
+  const HomeScreenAdmin({Key? key}) : super(key: key);
 
   @override
   ConsumerState createState() => _HomeScreenAdminState();
@@ -32,6 +34,8 @@ class HomeScreenAdmin extends ConsumerStatefulWidget {
 
 class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late StreamSubscription listener;
+  bool isOnline = false;
 
   showOfflineSnackbar() {
     AppLocalizations? local = AppLocalizations.of(context);
@@ -49,7 +53,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   void _goToMyAttendance(int userId) {
-    if (!widget.isOnline) {
+    if (!isOnline) {
       showOfflineSnackbar();
       return;
     }
@@ -62,7 +66,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   void _goToMyOvertime(User? currentUser) {
-    if (!widget.isOnline) {
+    if (!isOnline) {
       showOfflineSnackbar();
       return;
     }
@@ -78,13 +82,13 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   void _goToCheckInScreen() {
     Navigator.of(context).push(
       CupertinoPageRoute(
-        builder: (context) => TakeAttendanceScreen(isOnline: widget.isOnline),
+        builder: (context) => TakeAttendanceScreen(isOnline: isOnline),
       ),
     );
   }
 
   void _goToAttendanceScreen() {
-    if (!widget.isOnline) {
+    if (!isOnline) {
       showOfflineSnackbar();
       return;
     }
@@ -96,7 +100,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   void _goToOvertimeScreen() {
-    if (!widget.isOnline) {
+    if (!isOnline) {
       showOfflineSnackbar();
       return;
     }
@@ -108,7 +112,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   }
 
   void _goToEmployeeManager() {
-    if (!widget.isOnline) {
+    if (!isOnline) {
       showOfflineSnackbar();
       return;
     }
@@ -127,11 +131,19 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   @override
   void initState() {
     super.initState();
+    listener = InternetConnectionChecker().onStatusChange.listen((status) {
+      // log('CONNECTION STATUS: $status ${status == InternetConnectionStatus.connected}');
+
+      setState(() {
+        isOnline = status == InternetConnectionStatus.connected;
+      });
+    });
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     super.dispose();
+    await listener.cancel();
   }
 
   @override
@@ -145,7 +157,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
       appBar: EMSAppBar(
         openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
       ),
-      drawer: MenuDrawer(isOnline: widget.isOnline),
+      drawer: MenuDrawer(),
       body: SafeArea(
         bottom: false,
         child: ListView(
@@ -165,9 +177,9 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 30),
-                    CheckStatus(isOnline: widget.isOnline),
+                  children: const [
+                    SizedBox(height: 30),
+                    CheckStatus(),
                   ],
                 ),
               ],
@@ -223,8 +235,10 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             /// current user attendance
             InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const PayrollListScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const PayrollListScreen()));
               },
               child: _buildTitle(
                 '${local?.attendance}',

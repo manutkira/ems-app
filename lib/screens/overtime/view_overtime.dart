@@ -1,7 +1,6 @@
-
+import 'package:ems/models/user.dart';
 import 'package:ems/services/models/attendance.dart';
 import 'package:ems/services/models/overtime.dart';
-import 'package:ems/models/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:ems/widgets/circle_avatar.dart';
@@ -36,7 +35,6 @@ class _ViewOvertimeState extends State<ViewOvertime> {
   }
 
   String formatTime(TimeOfDay? time) {
-    AppLocalizations? local = AppLocalizations.of(context);
     if (time != null) {
       return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
     } else {
@@ -156,7 +154,7 @@ class _ViewOvertimeState extends State<ViewOvertime> {
                 style: kParagraph.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(width: 20),
-              Text("${convertDurationToString(_time)}", style: kParagraph),
+              Text(convertDurationToString(_time), style: kParagraph),
             ],
           ),
           _buildSpacer(),

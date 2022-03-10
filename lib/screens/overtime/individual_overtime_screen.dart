@@ -7,7 +7,6 @@ import 'package:ems/screens/overtime/view_overtime.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/screens/overtime/widgets/drop_down_menu.dart';
 import 'package:ems/screens/overtime/widgets/more_menu_item.dart';
-import 'package:ems/services/models/attendance.dart';
 import 'package:ems/services/models/overtime.dart';
 import 'package:ems/services/overtime.dart';
 import 'package:ems/utils/utils.dart';
@@ -567,8 +566,6 @@ class _IndividualOvertimeScreenState
   /// result widget
   Widget _buildListItem(int i) {
     Overtime? record = overtimeRecords?[i];
-    AttendanceRecord? checkIn = record?.checkIn;
-    AttendanceRecord? checkout = record?.checkOut;
     Duration? _time = record?.overtime;
 
     return Container(

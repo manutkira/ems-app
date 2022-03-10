@@ -115,6 +115,7 @@ class Attendance {
   }
 
   Attendance copyWith({
+    int? id,
     int? userId,
     DateTime? date,
     double? total,
