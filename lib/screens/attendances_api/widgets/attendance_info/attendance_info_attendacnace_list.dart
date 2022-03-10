@@ -231,7 +231,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
       onSelected: (int selectedValue) async {
         if (selectedValue == 0) {
           final int id = record.attendances?[0].t1!.id as int;
-          final DateTime date = record.attendances?[0].t1 as DateTime;
+          final DateTime date = record.attendances![0].date!;
           final String? note = record.attendances?[0].t1!.note;
           final TimeOfDay time = record.attendances![0].t1!.time!;
           await Navigator.of(context).push(

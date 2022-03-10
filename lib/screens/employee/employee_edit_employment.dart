@@ -317,7 +317,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                                                 return Navigator.of(context)
                                                     .pop();
                                               }
-                                              await updateEmployment();
+                                              updateEmployment();
                                               Navigator.of(context).pop();
                                               showDialog(
                                                 context: context,
@@ -443,7 +443,34 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
       status: checkStatus(),
       id: widget.id,
     );
-    await _userService.updateOne(user);
+
+    User updatedUser = await _userService.updateOne(user);
+    Navigator.pop(context);
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text('${local?.success}'),
+              content: Text('${local?.edited}'),
+              actions: [
+                // ignore: deprecated_member_use
+                OutlineButton(
+                  borderSide: const BorderSide(color: Colors.grey),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('${local?.done}'),
+                ),
+                // ignore: deprecated_member_use
+                OutlineButton(
+                  borderSide: const BorderSide(color: Colors.green),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  child: Text('${local?.back}'),
+                ),
+              ],
+            ));
   }
 
   updateEmployee() async {

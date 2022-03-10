@@ -167,11 +167,12 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
       if (mounted) {
         setState(() {
           attendanceCountAll = attendanceCountDisplay;
-          print('attendanceCountAll: ${attendanceCountAll}');
           _isLoadingCountAll = false;
         });
       }
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   fetchUserById() async {
