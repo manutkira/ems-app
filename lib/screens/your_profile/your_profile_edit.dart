@@ -432,7 +432,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                               bool isImageIDNotEmpty = true;
                               if (imageId != null ||
                                   _user.imageId != null ||
-                                  _user.imageId!.isNotEmpty) {
+                                  _user.imageId.toString().isEmpty) {
                                 return _buildDisplayID(_user);
                               }
                               return _buildNoID;
@@ -605,55 +605,64 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
   Widget get _buildNoID {
     AppLocalizations? local = AppLocalizations.of(context);
 
-    return Column(
-      children: [
-        Text('${local?.noId}', style: kParagraph),
-        const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            GestureDetector(
-              onTap: () {
-                uploadPicture(
-                  field: UserImageType.id,
-                  type: 'camera',
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: kDarkestBlue,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  MdiIcons.cameraOutline,
-                  size: 24,
-                ),
-              ),
-            ),
-            const SizedBox(width: 5),
-            GestureDetector(
-              onTap: () {
-                uploadPicture(
-                  field: UserImageType.id,
-                  type: 'gallery',
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: kDarkestBlue,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  MdiIcons.image,
-                  size: 24,
+    return Container(
+      height: 120,
+      decoration: BoxDecoration(
+        color: kDarkestBlue,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${local?.noId}', style: kParagraph),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  uploadPicture(
+                    field: UserImageType.id,
+                    type: 'camera',
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: kBlue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    MdiIcons.cameraOutline,
+                    size: 24,
+                  ),
                 ),
               ),
-            ),
-          ],
-        )
-      ],
+              const SizedBox(width: 5),
+              GestureDetector(
+                onTap: () {
+                  uploadPicture(
+                    field: UserImageType.id,
+                    type: 'gallery',
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: kBlue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    MdiIcons.image,
+                    size: 24,
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 
