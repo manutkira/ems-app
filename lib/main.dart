@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:developer';
-
 import 'package:ems/persistence/attendances.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/persistence/setting.dart';
@@ -14,7 +11,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import './constants.dart';
 import './screens/employee/employee_list_screen.dart';
@@ -54,25 +50,14 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   final navigatorKey = GlobalKey<NavigatorState>();
-  late StreamSubscription listener;
-  bool isOnline = false;
 
   @override
   void initState() {
     super.initState();
-    // check for internet connection;
-    listener = InternetConnectionChecker().onStatusChange.listen((status) {
-      log('CONNECTION STATUS: $status ${status == InternetConnectionStatus.connected}');
-
-      setState(() {
-        isOnline = status == InternetConnectionStatus.connected;
-      });
-    });
   }
 
   @override
   void dispose() {
-    listener.cancel();
     super.dispose();
   }
 
@@ -106,9 +91,9 @@ class _MyAppState extends ConsumerState<MyApp> {
                   return const LoginScreen();
                 }
                 if (ref.read(currentUserProvider).isAdmin) {
-                  return HomeScreenAdmin(isOnline: isOnline);
+                  return const HomeScreenAdmin();
                 } else {
-                  return HomeScreenEmployee(isOnline: isOnline);
+                  return const HomeScreenEmployee();
                 }
               },
             ),

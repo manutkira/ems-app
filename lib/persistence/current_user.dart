@@ -1,9 +1,9 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/services/auth.dart';
-import 'package:ems/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 const currentUserBoxName = 'currentUser';
 const tokenBoxName = 'tokenBox';
@@ -34,7 +34,7 @@ class CurrentUserStore {
         return;
       }
 
-      bool isOnline = await isConnected();
+      bool isOnline = await InternetConnectionChecker().hasConnection;
       if (isOnline) {
         /// fetch user via api route /me
         /// token will be sent through headers of the request

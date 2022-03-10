@@ -14,16 +14,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../constants.dart';
 
 class MenuDrawer extends ConsumerStatefulWidget {
-  MenuDrawer({
-    Key? key,
-    required this.isOnline,
-  }) : super(key: key);
-  bool isOnline;
+  MenuDrawer({Key? key}) : super(key: key);
 
   @override
   ConsumerState createState() => _MenuDrawerState();
@@ -31,10 +28,26 @@ class MenuDrawer extends ConsumerStatefulWidget {
 
 class _MenuDrawerState extends ConsumerState<MenuDrawer> {
   final AuthService _auth = AuthService.instance;
+  bool isOnline = false;
+
+  setOnline() async {
+    bool status = await InternetConnectionChecker().hasConnection;
+    if (mounted) {
+      setState(() {
+        isOnline = status;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    setOnline();
+  }
+
+  @override
+  void dispose() async {
+    super.dispose();
   }
 
   @override
@@ -117,7 +130,7 @@ class _MenuDrawerState extends ConsumerState<MenuDrawer> {
 
                   //Edit Profile button
                   Visibility(
-                    visible: widget.isOnline,
+                    visible: isOnline,
                     child: Material(
                       type: MaterialType.transparency,
                       child: ListTile(
@@ -141,7 +154,7 @@ class _MenuDrawerState extends ConsumerState<MenuDrawer> {
 
                   //Change password button
                   Visibility(
-                    visible: widget.isOnline,
+                    visible: isOnline,
                     child: Material(
                       type: MaterialType.transparency,
                       child: ListTile(
@@ -165,7 +178,7 @@ class _MenuDrawerState extends ConsumerState<MenuDrawer> {
 
                   //Logout button
                   Visibility(
-                    visible: widget.isOnline,
+                    visible: isOnline,
                     child: Material(
                       type: MaterialType.transparency,
                       child: ListTile(
