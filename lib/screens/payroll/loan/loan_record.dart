@@ -104,7 +104,7 @@ class _LoanRecordState extends State<LoanRecord> {
               await MybottonSheet(
                 () {
                   records.LoanRecord loanRecord = records.LoanRecord(
-                      amount: int.parse(amountController.text),
+                      amount: doubleParse(amountController.text),
                       reason: reasonController.text,
                       date: pickStart);
                   createOne(widget.id, loanRecord);
@@ -519,7 +519,7 @@ class _LoanRecordState extends State<LoanRecord> {
 
                         await MybottonSheet(() {
                           records.LoanRecord loanRecord = records.LoanRecord(
-                              amount: int.parse(amountController.text),
+                              amount: doubleParse(amountController.text),
                               reason: reasonController.text,
                               date: pickStart,
                               id: loanId);

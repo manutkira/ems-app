@@ -349,7 +349,7 @@ class _LoanAllState extends State<LoanAll> {
               onChanged: (text) {
                 text = text.toLowerCase();
                 setState(() {
-                  loan = loanAllList.where((user) {
+                  loanAllList = loan.where((user) {
                     var userName = user.user!.name!.toLowerCase();
                     return userName.contains(text);
                   }).toList();

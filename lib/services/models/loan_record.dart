@@ -10,7 +10,7 @@ class LoanRecord {
   int? id;
   int? userId;
   DateTime? date;
-  int? amount;
+  double? amount;
   String? reason;
   String? remain;
 
@@ -27,7 +27,7 @@ class LoanRecord {
         id: int.tryParse("${json?['id']}"),
         userId: int.tryParse("${json?['user_id']}"),
         date: convertStringToDateTime(json?['date']),
-        amount: int.tryParse("${json?['amount']}"),
+        amount: doubleParse("${json?['amount']}"),
         reason: json?['reasons'],
         remain: json?['remain'],
       );
@@ -47,7 +47,7 @@ class LoanRecord {
     int? id,
     int? userId,
     DateTime? date,
-    int? amount,
+    double? amount,
     String? reason,
     String? remain,
   ) =>
