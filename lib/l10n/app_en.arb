@@ -1129,5 +1129,9 @@
   "calendarAttendance": "Calendar",
   "@calendarAttendance": {
     "description": "take attendance"
+  },
+  "payrollAndLoan": "Payroll and Loan",
+  "@payrollAndLoan": {
+    "description": "home screen"
   }
 }

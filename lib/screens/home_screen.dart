@@ -65,6 +65,32 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
     );
   }
 
+  void _gotoPayroll() {
+    if (!isOnline) {
+      showOfflineSnackbar();
+      return;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const PayrollListScreen(),
+      ),
+    );
+  }
+
+  void _goToLoan() {
+    if (!isOnline) {
+      showOfflineSnackbar();
+      return;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const LoanAll(),
+      ),
+    );
+  }
+
   void _goToMyOvertime(User? currentUser) {
     if (!isOnline) {
       showOfflineSnackbar();
@@ -375,6 +401,46 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                   //   ),
                   // );
                 },
+              ),
+            ),
+            _buildSpacerVertical,
+
+            /// payroll and loan
+            _buildTitle(
+              '${local?.payrollAndLoan}',
+            ),
+            Container(
+              height: 170,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 12,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: MenuItem(
+                      onTap: _gotoPayroll,
+                      illustration: Image.asset(
+                        "assets/images/payroll.png",
+                        width: MediaQuery.of(context).size.width * 0.25,
+                      ),
+                      label: "${local?.payroll}",
+                    ),
+                  ),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    flex: 1,
+                    child: MenuItem(
+                      onTap: _goToLoan,
+                      illustration: Image.asset(
+                        "assets/images/loan.png",
+                        width: MediaQuery.of(context).size.width * 0.20,
+                      ),
+                      label: "${local?.loan}",
+                    ),
+                  ),
+                ],
               ),
             ),
             _buildSpacerVertical,
