@@ -31,6 +31,7 @@ class EMSAppBar extends ConsumerWidget with PreferredSizeWidget {
           ),
         ),
       ),
+      // TODO: CHANGE NAME TO EMPLOYEE PORTAL
       title: const Text('Internal EMS'),
       actions: [
         IconButton(
