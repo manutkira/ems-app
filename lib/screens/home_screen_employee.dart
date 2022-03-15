@@ -336,7 +336,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                       listFromBox.isNotEmpty ? listFromBox[0] : null;
 
                   return GestureDetector(
-                    onTap: () => _goToMyPayroll(intParse(currentUser?.id)),
+                    onTap: () => _goToMyLoan(intParse(currentUser?.id)),
                     child: SizedBox(
                       width: _size.width,
                       child: AspectRatio(
