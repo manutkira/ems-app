@@ -5,13 +5,14 @@ import 'package:ems/screens/payroll/generate_screen.dart';
 import 'package:ems/screens/payroll/loan/loan_all.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
-import 'package:ems/utils/services/user_service.dart';
+
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
+import '../../services/user.dart';
 
 class PayrollListScreen extends StatefulWidget {
   const PayrollListScreen({Key? key}) : super(key: key);

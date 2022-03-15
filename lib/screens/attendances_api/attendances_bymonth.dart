@@ -71,16 +71,12 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     });
   }
 
-  countPresent() {
+  countAttendance() {
     List<Attendance> att = [];
     attendanceDisplay
         .map((e) => e.attendances?.map((e) => att.add(e)).toList())
         .toList();
     attsList = att;
-    print(attsList.where((element) => (element.date!.month == _selectMonth &&
-        element.t1 != null &&
-        checkAbsengetT1(element.t1) &&
-        element.date!.year == int.parse(pickedYear))));
   }
 
   void clearText() {
@@ -417,7 +413,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                               dropDownValue1;
                                                           Navigator.of(context)
                                                               .pop();
-                                                          countPresent();
+                                                          countAttendance();
                                                         });
                                                       },
                                                       child: Text(name),
