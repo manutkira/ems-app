@@ -3,6 +3,7 @@ import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/services/loan.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -239,6 +240,10 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                             children: [
                               Flexible(
                                 child: TextFormField(
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp('[0-9.,]+')),
+                                  ],
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                     hintText: '${local?.enterAmount} ',
@@ -253,11 +258,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                     if (value!.isEmpty) {
                                       return '${local?.plsEnterAmount}';
                                     }
-                                    if (!RegExp(
-                                            r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$')
-                                        .hasMatch(value)) {
-                                      return 'Please Enter number';
-                                    }
+
                                     return null;
                                   },
                                 ),
@@ -331,7 +332,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                           onPressed: () {
                             if (_key.currentState!.validate()) {
                               record.LoanRecord loanRecord = record.LoanRecord(
-                                  amount: int.parse(amountController.text),
+                                  amount: doubleParse(amountController.text),
                                   reason: reasonController.text,
                                   date: pickStart);
                               createLoan(_mySelection!, loanRecord);

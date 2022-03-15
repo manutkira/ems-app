@@ -1,4 +1,3 @@
-import 'package:ems/models/attendances.dart';
 import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/models/user.dart';
@@ -9,7 +8,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
-import '../../utils/services/attendance_service.dart';
+import '../../services/attendance.dart';
+import '../../services/models/attendance.dart';
 
 class AttendancesByMonthScreen extends StatefulWidget {
   @override
@@ -24,7 +24,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
 
   // list attendance with user
   List userDisplay = [];
-  List<AttendancesWithUser> attendanceDisplay = [];
+  List<AttendancesByDate> attendanceDisplay = [];
+  List<Attendance> attsList = [];
   List<User> users = [];
 
   // list dynamic
@@ -41,13 +42,13 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
 
   // fetch attendance from api
   fetchAttendances() async {
-    List<AttendancesWithDateWithUser> atts = [];
+    List<AttendancesByDate> atts = [];
     atts = await _attendanceService.findMany();
-    List<AttendancesWithUser> att2 =
-        attendancesWithUsesrFromAttendancesbyDay(atts);
+
     setState(() {
-      attendanceDisplay = att2;
-      attendanceDisplay.sort((a, b) => a.id.compareTo(b.id));
+      attendanceDisplay = atts.toList();
+      // attendanceDisplay.sort(
+      //     (a, b) => a.attendances![0].id!.compareTo(b.attendances![0].id!));
     });
   }
 
@@ -68,6 +69,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
       userDisplay = users;
       userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
     });
+  }
+
+  countPresent() {
+    List<Attendance> att = [];
+    attendanceDisplay
+        .map((e) => e.attendances?.map((e) => att.add(e)).toList())
+        .toList();
+    attsList = att;
+    print(attsList.where((element) => (element.date!.month == _selectMonth &&
+        element.t1 != null &&
+        checkAbsengetT1(element.t1) &&
+        element.date!.year == int.parse(pickedYear))));
   }
 
   void clearText() {
@@ -94,16 +107,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
   }
 
   // check attendance status
-  checkPresent(AttendancesWithUser element) {
-    if (element.getT1?.note != 'absent' &&
-        element.getT1?.note != 'permission') {
-      if (element.getT1!.time.hour == 7) {
-        if (element.getT1!.time.minute <= 15) {
+  checkPresent(AttendanceRecord? element) {
+    if (element == null) {
+      return false;
+    }
+    if (element.note != 'absent' && element.note != 'permission') {
+      if (element.time!.hour == 7) {
+        if (element.time!.minute <= 15) {
           return true;
         } else {
           return false;
         }
-      } else if (element.getT1!.time.hour < 7) {
+      } else if (element.time!.hour < 7) {
         return true;
       } else {
         return false;
@@ -113,16 +128,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     }
   }
 
-  checkPresengetT2(AttendancesWithUser element) {
-    if (element.getT3?.note != 'absent' &&
-        element.getT3?.note != 'permission') {
-      if (element.getT3!.time.hour == 13) {
-        if (element.getT3!.time.minute <= 15) {
+  checkPresengetT2(AttendanceRecord? element) {
+    if (element == null) {
+      return false;
+    }
+    if (element.note != 'absent' && element.note != 'permission') {
+      if (element.time!.hour == 13) {
+        if (element.time!.minute <= 15) {
           return true;
         } else {
           return false;
         }
-      } else if (element.getT3!.time.hour < 13) {
+      } else if (element.time!.hour < 13) {
         return true;
       } else {
         return false;
@@ -132,16 +149,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     }
   }
 
-  checkLate1(AttendancesWithUser element) {
-    if (element.getT1?.note != 'absent' &&
-        element.getT1?.note != 'permission') {
-      if (element.getT1!.time.hour == 7) {
-        if (element.getT1!.time.minute >= 16) {
+  checkLate1(AttendanceRecord? element) {
+    if (element == null) {
+      return false;
+    }
+    if (element.note != 'absent' && element.note != 'permission') {
+      if (element.time!.hour == 7) {
+        if (element.time!.minute >= 16) {
           return true;
         } else {
           return false;
         }
-      } else if (element.getT1!.time.hour > 7) {
+      } else if (element.time!.hour > 7) {
         return true;
       } else {
         return false;
@@ -151,16 +170,18 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     }
   }
 
-  checkLate2(AttendancesWithUser element) {
-    if (element.getT3?.note != 'absent' &&
-        element.getT3?.note != 'permission') {
-      if (element.getT3!.time.hour == 13) {
-        if (element.getT3!.time.minute >= 16) {
+  checkLate2(AttendanceRecord? element) {
+    if (element == null) {
+      return false;
+    }
+    if (element.note != 'absent' && element.note != 'permission') {
+      if (element.time!.hour == 13) {
+        if (element.time!.minute >= 16) {
           return true;
         } else {
           return false;
         }
-      } else if (element.getT3!.time.hour > 13) {
+      } else if (element.time!.hour > 13) {
         return true;
       } else {
         return false;
@@ -170,32 +191,44 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     }
   }
 
-  checkAbsengetT1(AttendancesWithUser element) {
-    if (element.getT1!.note == 'absent') {
+  checkAbsengetT1(AttendanceRecord? element) {
+    if (element == null) {
+      return false;
+    }
+    if (element.note == 'absent') {
       return true;
     } else {
       return false;
     }
   }
 
-  checkAbsengetT2(AttendancesWithUser element) {
-    if (element.getT3!.note == 'absent') {
+  checkAbsengetT2(AttendanceRecord? element) {
+    if (element == null) {
+      return false;
+    }
+    if (element.note == 'absent') {
       return true;
     } else {
       return false;
     }
   }
 
-  checkPermissiongetT1(AttendancesWithUser element) {
-    if (element.getT1!.note == 'permission') {
+  checkPermissiongetT1(AttendanceRecord? element) {
+    if (element == null) {
+      return false;
+    }
+    if (element.note == 'permission') {
       return true;
     } else {
       return false;
     }
   }
 
-  checkPermissiongetT2(AttendancesWithUser element) {
-    if (element.getT3!.note == 'permission') {
+  checkPermissiongetT2(AttendanceRecord? element) {
+    if (element == null) {
+      return false;
+    }
+    if (element.note == 'permission') {
       return true;
     } else {
       return false;
@@ -384,6 +417,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                               dropDownValue1;
                                                           Navigator.of(context)
                                                               .pop();
+                                                          countPresent();
                                                         });
                                                       },
                                                       child: Text(name),
@@ -680,57 +714,55 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                 '${local?.shortPresent}: '),
                                                           ),
                                                           total
-                                                              ? Text((attendanceDisplay
-                                                                          .where(
-                                                                              (element) {
+                                                              ? Text((attsList.where(
+                                                                          (element) {
                                                                         return element.userId == userDisplay[index].id &&
-                                                                            element.date.month ==
+                                                                            element.date!.month ==
                                                                                 _selectMonth &&
-                                                                            element.getT1 !=
+                                                                            element.t1 !=
                                                                                 null &&
-                                                                            checkPresent(
-                                                                                element) &&
-                                                                            element.date.year ==
+                                                                            checkPresent(element
+                                                                                .t1) &&
+                                                                            element.date!.year ==
                                                                                 int.parse(pickedYear);
                                                                       }).length +
-                                                                      attendanceDisplay
-                                                                          .where(
-                                                                              (element) {
+                                                                      attsList.where(
+                                                                          (element) {
                                                                         return element.userId == userDisplay[index].id &&
-                                                                            element.date.month ==
+                                                                            element.date!.month ==
                                                                                 _selectMonth &&
-                                                                            element.getT3 !=
+                                                                            element.t3 !=
                                                                                 null &&
-                                                                            checkPresengetT2(
-                                                                                element) &&
-                                                                            element.date.year ==
+                                                                            checkPresengetT2(element
+                                                                                .t3) &&
+                                                                            element.date!.year ==
                                                                                 int.parse(pickedYear);
                                                                       }).length)
                                                                   .toString())
                                                               : afternoon
-                                                                  ? Text(attendanceDisplay
+                                                                  ? Text(attsList
                                                                       .where((element) {
                                                                         return element.userId == userDisplay[index].id &&
-                                                                            element.date.month ==
+                                                                            element.date!.month ==
                                                                                 _selectMonth &&
-                                                                            element.getT3 !=
+                                                                            element.t3 !=
                                                                                 null &&
-                                                                            checkPresengetT2(
-                                                                                element) &&
-                                                                            element.date.year ==
+                                                                            checkPresengetT2(element
+                                                                                .t3) &&
+                                                                            element.date!.year ==
                                                                                 int.parse(pickedYear);
                                                                       })
                                                                       .length
                                                                       .toString())
                                                                   : Text(
-                                                                      attendanceDisplay
+                                                                      attsList
                                                                           .where(
                                                                               (element) {
                                                                             return element.userId == userDisplay[index].id &&
-                                                                                element.date.month == _selectMonth &&
-                                                                                element.getT1 != null &&
-                                                                                checkPresent(element) &&
-                                                                                element.date.year == int.parse(pickedYear);
+                                                                                element.date!.month == _selectMonth &&
+                                                                                element.t1 != null &&
+                                                                                checkPresent(element.t1) &&
+                                                                                element.date!.year == int.parse(pickedYear);
                                                                           })
                                                                           .length
                                                                           .toString(),
@@ -752,44 +784,44 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                 '${local?.shortAbsent}: '),
                                                           ),
                                                           total
-                                                              ? Text((attendanceDisplay
+                                                              ? Text((attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month ==
+                                                                              element.date!.month ==
                                                                                   _selectMonth &&
-                                                                              element.getT1 !=
+                                                                              element.t1 !=
                                                                                   null &&
-                                                                              checkAbsengetT1(
-                                                                                  element) &&
-                                                                              element.date.year ==
+                                                                              checkAbsengetT1(element
+                                                                                  .t1) &&
+                                                                              element.date!.year ==
                                                                                   int.parse(
                                                                                       pickedYear)))
                                                                           .length +
-                                                                      attendanceDisplay
+                                                                      attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              element.getT3 != null &&
-                                                                              checkAbsengetT2(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
+                                                                              element.date!.month == _selectMonth &&
+                                                                              element.t3 != null &&
+                                                                              checkAbsengetT2(element.t3) &&
+                                                                              element.date!.year == int.parse(pickedYear)))
                                                                           .length)
                                                                   .toString())
                                                               : afternoon
                                                                   ? Text(
-                                                                      attendanceDisplay
+                                                                      attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              element.getT3 != null &&
-                                                                              checkAbsengetT2(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
+                                                                              element.date!.month == _selectMonth &&
+                                                                              element.t3 != null &&
+                                                                              checkAbsengetT2(element.t3) &&
+                                                                              element.date!.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
                                                                     )
                                                                   : Text(
-                                                                      attendanceDisplay
+                                                                      attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              element.getT1 != null &&
-                                                                              checkAbsengetT1(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
+                                                                              element.date!.month == _selectMonth &&
+                                                                              element.t1 != null &&
+                                                                              checkAbsengetT1(element.t1) &&
+                                                                              element.date!.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
                                                                     ),
@@ -817,44 +849,44 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                 '${local?.shortLate}: '),
                                                           ),
                                                           total
-                                                              ? Text((attendanceDisplay
+                                                              ? Text((attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month ==
+                                                                              element.date!.month ==
                                                                                   _selectMonth &&
-                                                                              element.getT1 !=
+                                                                              element.t1 !=
                                                                                   null &&
-                                                                              checkLate1(
-                                                                                  element) &&
-                                                                              element.date.year ==
+                                                                              checkLate1(element
+                                                                                  .t1) &&
+                                                                              element.date!.year ==
                                                                                   int.parse(
                                                                                       pickedYear)))
                                                                           .length +
-                                                                      attendanceDisplay
+                                                                      attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              element.getT3 != null &&
-                                                                              checkLate2(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
+                                                                              element.date!.month == _selectMonth &&
+                                                                              element.t3 != null &&
+                                                                              checkLate2(element.t3) &&
+                                                                              element.date!.year == int.parse(pickedYear)))
                                                                           .length)
                                                                   .toString())
                                                               : afternoon
                                                                   ? Text(
-                                                                      attendanceDisplay
+                                                                      attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              element.getT3 != null &&
-                                                                              checkLate2(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
+                                                                              element.date!.month == _selectMonth &&
+                                                                              element.t3 != null &&
+                                                                              checkLate2(element.t3) &&
+                                                                              element.date!.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
                                                                     )
                                                                   : Text(
-                                                                      attendanceDisplay
+                                                                      attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              element.getT1 != null &&
-                                                                              checkLate1(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
+                                                                              element.date!.month == _selectMonth &&
+                                                                              element.t1 != null &&
+                                                                              checkLate1(element.t1) &&
+                                                                              element.date!.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
                                                                     ),
@@ -875,44 +907,44 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                                                                 '${local?.shortPermission}: '),
                                                           ),
                                                           total
-                                                              ? Text((attendanceDisplay
+                                                              ? Text((attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month ==
+                                                                              element.date!.month ==
                                                                                   _selectMonth &&
-                                                                              element.getT1 !=
+                                                                              element.t1 !=
                                                                                   null &&
-                                                                              checkPermissiongetT1(
-                                                                                  element) &&
-                                                                              element.date.year ==
+                                                                              checkPermissiongetT1(element
+                                                                                  .t1) &&
+                                                                              element.date!.year ==
                                                                                   int.parse(
                                                                                       pickedYear)))
                                                                           .length +
-                                                                      attendanceDisplay
+                                                                      attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              element.getT3 != null &&
-                                                                              checkPermissiongetT2(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
+                                                                              element.date!.month == _selectMonth &&
+                                                                              element.t3 != null &&
+                                                                              checkPermissiongetT2(element.t3) &&
+                                                                              element.date!.year == int.parse(pickedYear)))
                                                                           .length)
                                                                   .toString())
                                                               : afternoon
                                                                   ? Text(
-                                                                      attendanceDisplay
+                                                                      attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              element.getT3 != null &&
-                                                                              checkPermissiongetT2(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
+                                                                              element.date!.month == _selectMonth &&
+                                                                              element.t3 != null &&
+                                                                              checkPermissiongetT2(element.t3) &&
+                                                                              element.date!.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
                                                                     )
                                                                   : Text(
-                                                                      attendanceDisplay
+                                                                      attsList
                                                                           .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date.month == _selectMonth &&
-                                                                              element.getT1 != null &&
-                                                                              checkPermissiongetT1(element) &&
-                                                                              element.date.year == int.parse(pickedYear)))
+                                                                              element.date!.month == _selectMonth &&
+                                                                              element.t1 != null &&
+                                                                              checkPermissiongetT1(element.t1) &&
+                                                                              element.date!.year == int.parse(pickedYear)))
                                                                           .length
                                                                           .toString(),
                                                                     ),
