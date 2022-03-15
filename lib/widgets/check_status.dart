@@ -53,28 +53,38 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
     }
     Attendance? att = listOfAttendance.first.attendances?.first;
     if (att?.t1 != null) {
-      setState(() {
-        isMorningCheckIn = true;
-      });
+      if (mounted) {
+        setState(() {
+          isMorningCheckIn = true;
+        });
+      }
     }
     if (att?.t2 != null) {
-      setState(() {
-        isMorningCheckOut = true;
-      });
+      if (mounted) {
+        setState(() {
+          isMorningCheckOut = true;
+        });
+      }
     }
     if (att?.t3 != null) {
-      setState(() {
-        isAfternoonCheckIn = true;
-      });
+      if (mounted) {
+        setState(() {
+          isAfternoonCheckIn = true;
+        });
+      }
     }
     if (att?.t4 != null) {
+      if (mounted) {
+        setState(() {
+          isAfternoonCheckOut = true;
+        });
+      }
+    }
+    if (mounted) {
       setState(() {
-        isAfternoonCheckOut = true;
+        isFetchingStatus = false;
       });
     }
-    setState(() {
-      isFetchingStatus = false;
-    });
   }
 
   @override

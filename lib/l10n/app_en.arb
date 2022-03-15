@@ -68,6 +68,14 @@
   "@myOvertime": {
     "description": "Home screen title"
   },
+  "myPayroll": "My Payroll",
+  "@myPayroll": {
+    "description": "Home screen title"
+  },
+  "myLoan": "My Loan",
+  "@myLoan": {
+    "description": "Home screen title"
+  },
   "myProfile": "My Profile",
   "@myProfile": {
     "description": "slide app drawer"

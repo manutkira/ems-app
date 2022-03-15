@@ -19,11 +19,11 @@ class BaseService {
       options.headers["Content-Type"] = 'application/json';
       options.headers["Accept"] = 'application/json';
 
-      return handler.next(options); //continue
+      return handler.next(options);
     }, onResponse: (response, handler) {
-      return handler.next(response); // continue
+      return handler.next(response);
     }, onError: (DioError e, handler) {
-      return handler.next(e); //continue
+      return handler.next(e);
     }));
   }
 }
