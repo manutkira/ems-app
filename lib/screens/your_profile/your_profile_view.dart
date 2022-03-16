@@ -98,12 +98,13 @@ class YourProfileViewScreen extends ConsumerWidget {
                   const SizedBox(
                     height: 40,
                   ),
-                  // basic info
+                  // basic info heading
                   Text(
                     "${local?.basicInfo}",
                     style: _sectionTitleStyle,
                   ),
                   _buildSpacer(context),
+                  // name
                   BaselineRow(
                     children: [
                       Expanded(
@@ -121,6 +122,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
+                  // phone number
                   BaselineRow(
                     children: [
                       Expanded(
@@ -138,6 +140,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
+                  // email
                   BaselineRow(
                     children: [
                       Expanded(
@@ -160,6 +163,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
+                  // address
                   BaselineRow(
                     children: [
                       Expanded(
@@ -177,6 +181,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
+                  // account type (role)
                   BaselineRow(
                     children: [
                       Expanded(
@@ -193,47 +198,35 @@ class YourProfileViewScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
+                  _buildSpacer(context),
+                  // national id
+                  Text(
+                    "${local?.nationalId}",
+                    style: _labelStyle,
+                  ),
+                  _buildSpacer(context),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      "${_currentUser.imageId}",
+                      width: MediaQuery.of(context).size.width,
+                      errorBuilder: (BuildContext context, Object exception,
+                          StackTrace? stackTrace) {
+                        return Center(
+                          child: Text('${local?.noId}', style: kParagraph),
+                        );
+                      },
+                    ),
+                  ),
                   const SizedBox(height: 30),
-                  // employee info
+
+                  // employee info heading
                   Text(
                     "${local?.employeeInfo}",
                     style: _sectionTitleStyle,
                   ),
                   _buildSpacer(context),
-                  // BaselineRow(
-                  //   children: [
-                  //     Expanded(
-                  //       child: Text(
-                  //         "${local?.position}",
-                  //         style: _labelStyle,
-                  //       ),
-                  //     ),
-                  //     Expanded(
-                  //       child: Text(
-                  //         _currentUser.position ?? notAvailable,
-                  //         style: kParagraph,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // _buildSpacer(context),
-                  // BaselineRow(
-                  //   children: [
-                  //     Expanded(
-                  //       child: Text(
-                  //         "${local?.skill}",
-                  //         style: _labelStyle,
-                  //       ),
-                  //     ),
-                  //     Expanded(
-                  //       child: Text(
-                  //         _currentUser.skill ?? notAvailable,
-                  //         style: kParagraph,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // _buildSpacer(context),
+                  // salary
                   BaselineRow(
                     children: [
                       Expanded(
@@ -244,7 +237,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                       ),
                       Expanded(
                         child: Text(
-                          "\$ ${_currentUser.salary?.toInt()}",
+                          "\$ ${_currentUser.salary ?? 0}",
                           // ?? notAvailable
                           style: kParagraph,
                         ),
@@ -252,23 +245,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
-                  // BaselineRow(
-                  //   children: [
-                  //     Expanded(
-                  //       child: Text(
-                  //         "${local?.rate}",
-                  //         style: _labelStyle,
-                  //       ),
-                  //     ),
-                  //     Expanded(
-                  //       child: Text(
-                  //         _currentUser.rate ?? notAvailable,
-                  //         style: kParagraph,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // _buildSpacer(context),
+                  // work background
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
