@@ -1,4 +1,5 @@
-import 'package:ems/models/attendance_count.dart';
+// ignore_for_file: deprecated_member_use
+
 import 'package:ems/services/models/attendance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -7,20 +8,16 @@ import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/attendances_api/calendar_attendance.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_attendacnace_list.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
-import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_no_attendance.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_no_data.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_present.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
 
 import '../../constants.dart';
-import '../../models/attendance.dart';
-import '../../utils/services/attendance_service.dart';
 import '../../services/attendance.dart' as service_new;
 import '../../services/models/attendance_count.dart' as model_count;
 import '../../services/models/attendance.dart' as model_new;
@@ -49,7 +46,6 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
 
   // list attendances with date
   List<model_new.Attendance> attendancesDisplay = [];
-  List<AttendancesByDate> _attendanceNoDateDisplay = [];
   List<AttendancesByDate> attendancesByIdDisplay = [];
   List<AttendancesByDate> attendanceList = [];
   List<AttendancesByDate> _attendanceAll = [];
@@ -190,7 +186,9 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
           });
         }
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // fetch attendance from api
@@ -203,9 +201,8 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
         _attendanceAll = attendanceDisplay;
         _isLoadingAll = false;
       });
-      List<model_new.Attendance> flat = _attendanceAll
-          .expand((element) => element.attendances!)
-          .toList() as List<model_new.Attendance>;
+      List<model_new.Attendance> flat =
+          _attendanceAll.expand((element) => element.attendances!).toList();
       attendanceListAll = flat.toList();
 
       int absentAllMorning = attendanceDisplay
@@ -228,7 +225,9 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
           .length;
       absentAll = absentAllMorning + absentAllAfternoon;
       permissionAll = permissionAllMorning + permissionAllAfternoon;
-    } catch (e) {}
+    } catch (e) {
+      rethrow;
+    }
   }
 
   fetchAttedancesById() async {
@@ -330,7 +329,9 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
             .length;
         attendanceList = attendancesByIdDisplay;
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // check attendance status
@@ -448,7 +449,6 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
   Future deleteData(int id) async {
     AppLocalizations? local = AppLocalizations.of(context);
     final response = await http.delete(Uri.parse("$url/$id"));
-    print(response.statusCode);
     showInSnackBar("${local?.deletingAttendance}");
     if (response.statusCode == 200) {
       attendanceAllDisplay = [];
@@ -494,7 +494,9 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
       fetchAttedancesById();
       fetchAllAttendance();
       fetchUserById();
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
@@ -530,8 +532,8 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
                             builder: (_) =>
                                 AttendanceCalendar(id: userDisplay[0].id!)));
                   },
-                  icon: Icon(Icons.calendar_today))
-              : Text(''),
+                  icon: const Icon(Icons.calendar_today))
+              : const Text(''),
         ],
       ),
       body: _isLoadingCount || _loadingUser || _isLoadingCountAll
@@ -1093,10 +1095,10 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
                       ),
                       (isToday.isEmpty && now && isTodayNoon.isEmpty) ||
                               (multiday && attendanceList.isEmpty)
-                          ? AttendanceInfoNoData()
+                          ? const AttendanceInfoNoData()
                           : _isLoading && _isLoadingAll || _isLoadingById
                               ? Container(
-                                  padding: EdgeInsets.only(top: 150),
+                                  padding: const EdgeInsets.only(top: 150),
                                   child: Column(
                                     children: [
                                       Text('${local?.fetchData}'),

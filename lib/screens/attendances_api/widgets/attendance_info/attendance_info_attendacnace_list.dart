@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:ems/models/attendances.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/screens/attendances_api/view_attendance.dart';
@@ -262,7 +261,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                     Navigator.of(context).pop();
                     deleteData(record.attendances?[0].t1!.id);
                   },
-                  child: Text('Yes'),
+                  child: Text('${local?.yes}'),
                   borderSide: const BorderSide(color: Colors.green),
                 ),
                 // ignore: deprecated_member_use
@@ -271,14 +270,13 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                     Navigator.of(context).pop();
                   },
                   borderSide: const BorderSide(color: Colors.red),
-                  child: const Text('No'),
+                  child: Text('${local?.no}'),
                 )
               ],
             ),
           );
         }
         if (selectedValue == 2) {
-          final int attendanceId = record.attendances![0].id!;
           final int id = record.attendances![0].t1!.id!;
           final DateTime date = record.attendances![0].date!;
           final TimeOfDay time = record.attendances![0].t1!.time!;
@@ -633,7 +631,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
-      collapsedBackgroundColor: Color(0xff254973),
+      collapsedBackgroundColor: const Color(0xff254973),
       backgroundColor: const Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
@@ -659,7 +657,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('1- ${local!.checkIn}'),
                     record.attendances?[0].t1 == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -706,7 +704,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('1- ${local.checkOut}'),
                     record.attendances?[0].t2 == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -741,7 +739,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('2- ${local.checkIn}'),
                     record.attendances?[0].t3 == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -788,7 +786,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('2- ${local.checkOut}'),
                     record.attendances?[0].t4 == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -823,8 +821,8 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
-      collapsedBackgroundColor: Color(0xff254973),
-      backgroundColor: Color(0xff254973),
+      collapsedBackgroundColor: const Color(0xff254973),
+      backgroundColor: const Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
       initiallyExpanded: true,
@@ -849,7 +847,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('1- ${local!.checkIn}'),
                     record.attendances?[0].t1?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -896,7 +894,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('1- ${local.checkOut}'),
                     record.attendances![0].t2?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -931,7 +929,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('2- ${local.checkIn}'),
                     record.attendances![0].t3?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -978,7 +976,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('2- ${local.checkOut}'),
                     record.attendances![0].t4?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -1011,11 +1009,11 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
   Widget _buildOnedayResult(
       AttendancesByDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
+    // bool isEnglish = isInEnglish(context);
 
     return ExpansionTile(
-      collapsedBackgroundColor: Color(0xff254973),
-      backgroundColor: Color(0xff254973),
+      collapsedBackgroundColor: const Color(0xff254973),
+      backgroundColor: const Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
       initiallyExpanded: true,
@@ -1040,7 +1038,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('1- ${local!.checkIn}'),
                     record.attendances![0].t1?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -1057,7 +1055,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                                     : ':${record.attendances![0].t1!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Text(record.attendances![0].t1?.time! == null
@@ -1087,7 +1085,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('1- ${local.checkOut}'),
                     record.attendances![0].t2?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -1122,7 +1120,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('2- ${local.checkIn}'),
                     record.attendances![0].t3?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -1139,7 +1137,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                                     : ':${record.attendances![0].t3!.time!.minute.toString().padLeft(2, '0')}',
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Text(record.attendances![0].t3?.time! == null
@@ -1169,7 +1167,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('2- ${local.checkOut}'),
                     record.attendances![0].t4?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -1230,7 +1228,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('1- ${local!.checkIn}'),
                     record.attendances?[0].t1?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -1277,7 +1275,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('1- ${local.checkOut}'),
                     record.attendances![0].t2?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -1312,7 +1310,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('2- ${local.checkIn}'),
                     record.attendances![0].t3?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(
@@ -1359,7 +1357,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                   children: [
                     Text('2- ${local.checkOut}'),
                     record.attendances![0].t4?.time!.hour == null
-                        ? Text('${local.noData}')
+                        ? Text(local.noData)
                         : Row(
                             children: [
                               Text(

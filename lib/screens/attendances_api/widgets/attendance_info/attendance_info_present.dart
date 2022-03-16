@@ -116,7 +116,7 @@ class AttendanceInfoPresent extends StatelessWidget {
         Text(
           text,
           style: isEnglish
-              ? TextStyle(
+              ? const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                 )

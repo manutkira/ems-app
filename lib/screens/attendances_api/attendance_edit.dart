@@ -1,9 +1,5 @@
-import 'dart:convert';
-
-import 'package:ems/models/attendance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -32,7 +28,7 @@ class AttedancesEdit extends StatefulWidget {
 
 class _AttedancesEditState extends State<AttedancesEdit> {
   // service
-  AttendanceService _attendanceService = AttendanceService();
+  final AttendanceService _attendanceService = AttendanceService();
 
   String url =
       "http://rest-api-laravel-flutter.herokuapp.com/api/attendance_record";
@@ -42,14 +38,14 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   TextEditingController id = TextEditingController();
   TextEditingController typeController = TextEditingController();
   TextEditingController dateController = TextEditingController();
-  TextEditingController _timeController = TextEditingController();
-  TextEditingController? _noteController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
+  final TextEditingController? _noteController = TextEditingController();
 
   // boolean
   bool pick = false;
 
   // variables
-  TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
+  TimeOfDay selectedTime = const TimeOfDay(hour: 00, minute: 00);
   String? _hour, _minute, _time;
   DateTime? dateTime;
   String type = '';
@@ -367,60 +363,5 @@ class _AttedancesEditState extends State<AttedancesEdit> {
               ),
             ));
     await _attendanceService.updateOneRecord(attendance);
-  }
-
-  uploadImage() async {
-    AppLocalizations? local = AppLocalizations.of(context);
-    var aNote = _noteController?.text;
-    var aTime = _time;
-
-    var request = await http.MultipartRequest(
-        'POST', Uri.parse("$url/${widget.id}?_method=PUT"));
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Content": "charset-UTF-8",
-    };
-    if (aNote!.isNotEmpty) {
-      request.files
-          .add(http.MultipartFile.fromString('note', aNote.toString()));
-    }
-    if (aTime != null) {
-      request.files
-          .add(http.MultipartFile.fromString('time', aTime.toString()));
-    }
-
-    request.headers.addAll(headers);
-
-    var res = await request.send();
-    print(res.statusCode);
-    if (res.statusCode == 200) {
-      Navigator.pop(context);
-      showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text('${local?.success}'),
-                content: Text('${local?.edited}'),
-                actions: [
-                  // ignore: deprecated_member_use
-                  OutlineButton(
-                    borderSide: const BorderSide(color: Colors.grey),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('${local?.done}'),
-                  ),
-                  // ignore: deprecated_member_use
-                  OutlineButton(
-                    borderSide: const BorderSide(color: Colors.green),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                    child: Text('${local?.back}'),
-                  ),
-                ],
-              ));
-    }
-    res.stream.transform(utf8.decoder).listen((event) {});
   }
 }

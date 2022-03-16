@@ -1,9 +1,10 @@
 import 'package:ems/constants.dart';
-import 'package:ems/models/attendances.dart';
-import 'package:ems/utils/services/attendance_service.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../services/attendance.dart';
+import '../../services/models/attendance.dart';
 
 class AttendanceCalendar extends StatefulWidget {
   final int id;
@@ -19,40 +20,38 @@ class AttendanceCalendar extends StatefulWidget {
 class _AttendanceCalendarState extends State<AttendanceCalendar> {
   bool _isLoadingById = true;
 
-  // calendar
-  List<Appointment>? _appointments;
-  CalendarDataSource? _dataSource;
-
   // fetch attendance
   final AttendanceService _attendanceService = AttendanceService.instance;
-  List<AttendancesWithDate> attendancesByIdDisplay = [];
+  List<AttendancesByDate> attendancesByIdDisplay = [];
   fetchAttedancesById() async {
     _isLoadingById = true;
     try {
       _isLoadingById = true;
-      List<AttendancesWithDate> attendanceDisplay =
-          await _attendanceService.findManyAttendancesById(
-        userId: widget.id,
+      List<AttendancesByDate> attendanceDisplay =
+          await _attendanceService.findManyByUserId(
+        widget.id,
       );
       setState(() {
         attendancesByIdDisplay = attendanceDisplay;
 
         _isLoadingById = false;
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // check attendance status
-  checkPresent(AttendancesWithDate element) {
-    if (element.list[0].getT1?.note != 'absent' &&
-        element.list[0].getT1?.note != 'permission') {
-      if (element.list[0].getT1!.time.hour == 7) {
-        if (element.list[0].getT1!.time.minute <= 15) {
+  checkPresent(AttendancesByDate element) {
+    if (element.attendances![0].t1?.note != 'absent' &&
+        element.attendances![0].t1?.note != 'permission') {
+      if (element.attendances![0].t1!.time!.hour == 7) {
+        if (element.attendances![0].t1!.time!.minute <= 15) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT1!.time.hour < 7) {
+      } else if (element.attendances![0].t1!.time!.hour < 7) {
         return true;
       } else {
         return false;
@@ -62,16 +61,16 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
     }
   }
 
-  checkPresengetT2(AttendancesWithDate element) {
-    if (element.list[0].getT3?.note != 'absent' &&
-        element.list[0].getT3?.note != 'permission') {
-      if (element.list[0].getT3!.time.hour == 13) {
-        if (element.list[0].getT3!.time.minute <= 15) {
+  checkPresengetT2(AttendancesByDate element) {
+    if (element.attendances![0].t3?.note != 'absent' &&
+        element.attendances![0].t3?.note != 'permission') {
+      if (element.attendances![0].t3!.time!.hour == 13) {
+        if (element.attendances![0].t3!.time!.minute <= 15) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT3!.time.hour < 13) {
+      } else if (element.attendances![0].t3!.time!.hour < 13) {
         return true;
       } else {
         return false;
@@ -81,16 +80,16 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
     }
   }
 
-  checkLate1(AttendancesWithDate element) {
-    if (element.list[0].getT1?.note != 'absent' &&
-        element.list[0].getT1?.note != 'permission') {
-      if (element.list[0].getT1!.time.hour == 7) {
-        if (element.list[0].getT1!.time.minute >= 16) {
+  checkLate1(AttendancesByDate element) {
+    if (element.attendances![0].t1?.note != 'absent' &&
+        element.attendances![0].t1?.note != 'permission') {
+      if (element.attendances![0].t1!.time!.hour == 7) {
+        if (element.attendances![0].t1!.time!.minute >= 16) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT1!.time.hour > 7) {
+      } else if (element.attendances![0].t1!.time!.hour > 7) {
         return true;
       } else {
         return false;
@@ -100,16 +99,16 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
     }
   }
 
-  checkLate2(AttendancesWithDate element) {
-    if (element.list[0].getT3?.note != 'absent' &&
-        element.list[0].getT3?.note != 'permission') {
-      if (element.list[0].getT3!.time.hour == 13) {
-        if (element.list[0].getT3!.time.minute >= 16) {
+  checkLate2(AttendancesByDate element) {
+    if (element.attendances![0].t3?.note != 'absent' &&
+        element.attendances![0].t3?.note != 'permission') {
+      if (element.attendances![0].t3!.time!.hour == 13) {
+        if (element.attendances![0].t3!.time!.minute >= 16) {
           return true;
         } else {
           return false;
         }
-      } else if (element.list[0].getT3!.time.hour > 13) {
+      } else if (element.attendances![0].t3!.time!.hour > 13) {
         return true;
       } else {
         return false;
@@ -122,29 +121,29 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
   // attendance event list
   List<Appointment> getAppointments() {
     List<Appointment> meetings = <Appointment>[];
-    List<AttendancesWithDate> attendancesDisplay = attendancesByIdDisplay
-        .where((element) => element.list[0].getT1 != null)
+    List<AttendancesByDate> attendancesDisplay = attendancesByIdDisplay
+        .where((element) => element.attendances![0].t1 != null)
         .toList();
-    print(attendancesDisplay[0].list[0].getT1!.time);
+
     attendancesDisplay.forEach((element) {
-      final DateTime date = element.date;
+      final DateTime date = element.date!;
       final DateTime startTime = DateTime(
         date.year,
         date.month,
         date.day,
-        element.list[0].getT1?.time.hour as int,
-        element.list[0].getT1?.time.minute as int,
+        element.attendances![0].t1?.time!.hour as int,
+        element.attendances![0].t1?.time!.minute as int,
       );
       final DateTime endTime = DateTime(
         date.year,
         date.month,
         date.day,
-        element.list[0].getT2?.time.hour == null
-            ? element.list[0].getT1?.time.hour as int
-            : element.list[0].getT2?.time.hour as int,
-        element.list[0].getT2?.time.minute == null
-            ? element.list[0].getT1?.time.minute as int
-            : element.list[0].getT2?.time.minute as int,
+        element.attendances![0].t2?.time!.hour == null
+            ? element.attendances![0].t1?.time!.hour as int
+            : element.attendances![0].t2?.time!.hour as int,
+        element.attendances![0].t2?.time!.minute == null
+            ? element.attendances![0].t1?.time!.minute as int
+            : element.attendances![0].t2?.time!.minute as int,
       );
       meetings.add(
         Appointment(
@@ -159,29 +158,29 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
       );
     });
 
-    List<AttendancesWithDate> attendancesDisplay2 = attendancesByIdDisplay
-        .where((element) => element.list[0].getT3 != null)
+    List<AttendancesByDate> attendancesDisplay2 = attendancesByIdDisplay
+        .where((element) => element.attendances![0].t3 != null)
         .toList();
 
     attendancesDisplay2.forEach((element) {
-      final DateTime date = element.date;
+      final DateTime date = element.date!;
       final DateTime startTime = DateTime(
         date.year,
         date.month,
         date.day,
-        element.list[0].getT3?.time.hour as int,
-        element.list[0].getT3?.time.minute as int,
+        element.attendances![0].t3?.time!.hour as int,
+        element.attendances![0].t3?.time!.minute as int,
       );
       final DateTime endTime = DateTime(
         date.year,
         date.month,
         date.day,
-        element.list[0].getT4?.time.hour == null
-            ? element.list[0].getT3?.time.hour as int
-            : element.list[0].getT4?.time.hour as int,
-        element.list[0].getT4?.time.minute == null
-            ? element.list[0].getT3?.time.minute as int
-            : element.list[0].getT4?.time.minute as int,
+        element.attendances![0].t4?.time!.hour == null
+            ? element.attendances![0].t3?.time!.hour as int
+            : element.attendances![0].t4?.time!.hour as int,
+        element.attendances![0].t4?.time!.minute == null
+            ? element.attendances![0].t3?.time!.minute as int
+            : element.attendances![0].t4?.time!.minute as int,
       );
 
       meetings.add(
@@ -197,28 +196,28 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
       );
     });
 
-    List<AttendancesWithDate> attendancesDisplay3 = attendancesByIdDisplay
-        .where((element) => element.list[0].getT5 != null)
+    List<AttendancesByDate> attendancesDisplay3 = attendancesByIdDisplay
+        .where((element) => element.attendances![0].t5 != null)
         .toList();
     attendancesDisplay3.forEach((element) {
-      final DateTime date = element.date;
+      final DateTime date = element.date!;
       final DateTime startTime = DateTime(
         date.year,
         date.month,
         date.day,
-        element.list[0].getT5?.time.hour as int,
-        element.list[0].getT5?.time.minute as int,
+        element.attendances![0].t5?.time!.hour as int,
+        element.attendances![0].t5?.time!.minute as int,
       );
       final DateTime endTime = DateTime(
         date.year,
         date.month,
         date.day,
-        element.list[0].getT6?.time.hour == null
-            ? element.list[0].getT5?.time.hour as int
-            : element.list[0].getT6?.time.hour as int,
-        element.list[0].getT6?.time.minute == null
-            ? element.list[0].getT5?.time.minute as int
-            : element.list[0].getT6?.time.minute as int,
+        element.attendances![0].t6?.time!.hour == null
+            ? element.attendances![0].t5?.time!.hour as int
+            : element.attendances![0].t6?.time!.hour as int,
+        element.attendances![0].t6?.time!.minute == null
+            ? element.attendances![0].t5?.time!.minute as int
+            : element.attendances![0].t6?.time!.minute as int,
       );
 
       meetings.add(
