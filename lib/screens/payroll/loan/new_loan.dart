@@ -329,13 +329,13 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         RaisedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_key.currentState!.validate()) {
                               record.LoanRecord loanRecord = record.LoanRecord(
                                   amount: doubleParse(amountController.text),
                                   reason: reasonController.text,
                                   date: pickStart);
-                              createLoan(_mySelection!, loanRecord);
+                              await createLoan(_mySelection!, loanRecord);
                               amountController.text = '';
                               dateController.text = '';
                               reasonController.text = '';
@@ -382,6 +382,6 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
   }
 
   createLoan(String id, record.LoanRecord record) async {
-    _loanService.createOneRecord(id, record);
+    await _loanService.createOneRecord(id, record);
   }
 }

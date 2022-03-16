@@ -1138,6 +1138,10 @@
   "@calendarAttendance": {
     "description": "take attendance"
   },
+  "noPayment": "No Payment has been recorded yet",
+  "@noPayment": {
+    "description": "take attendance"
+  },
   "payrollAndLoan": "Payroll and Loan",
   "@payrollAndLoan": {
     "description": "home screen"

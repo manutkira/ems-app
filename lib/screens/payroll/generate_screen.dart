@@ -320,23 +320,27 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen> {
                   (payrollPaid.isEmpty && paid) ||
                           (payrollPending.isEmpty && !paid)
                       ? Center(
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 90,
-                              ),
-                              Text(
-                                'No loan has been recorded yet!',
-                                style: kHeadingTwo,
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                '🤷🏼',
-                                style: kHeadingTwo.copyWith(fontSize: 50),
-                              )
-                            ],
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 90,
+                                ),
+                                Text(
+                                  '${local?.noPayment}',
+                                  style:
+                                      isEnglish ? kHeadingThree : kHeadingFour,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  '🤷🏼',
+                                  style: kHeadingTwo.copyWith(fontSize: 50),
+                                )
+                              ],
+                            ),
                           ),
                         )
                       : Expanded(

@@ -231,7 +231,7 @@ class _LoanAllState extends State<LoanAll> {
                                             child: Row(
                                               children: [
                                                 Text(
-                                                  '\$${loanAllList[index].amountTotal!.toStringAsFixed(0)}',
+                                                  '\$${loanAllList[index].remain!.toStringAsFixed(0)}',
                                                 ),
                                               ],
                                             ),
