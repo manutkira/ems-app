@@ -1,18 +1,23 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:ems/models/user.dart';
+import 'package:ems/persistence/current_user.dart';
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../../../services/loan.dart';
 import '../../../services/models/loan_record.dart' as loanRecord;
 import '../../../services/models/loan_record.dart' as records;
+import '../../../services/user.dart';
 
 import '../../../constants.dart';
 
-class LoanRecord extends StatefulWidget {
+class LoanRecord extends ConsumerStatefulWidget {
   String id;
   LoanRecord({
     Key? key,
@@ -20,19 +25,22 @@ class LoanRecord extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _LoanRecordState createState() => _LoanRecordState();
+  ConsumerState createState() => _LoanRecordState();
 }
 
-class _LoanRecordState extends State<LoanRecord> {
+class _LoanRecordState extends ConsumerState<LoanRecord> {
   // service
-  // final new_service.LoanService _loanService = new_service.LoanService();
   final LoanService _loanService = LoanService();
+  final UserService _userService = UserService();
 
   // list laon
   List<records.LoanRecord> loanList = [];
+  List<User> user = [];
+  List<User> userDisplay = [];
 
   // boolean
   bool _isLoading = true;
+  bool _loadingUser = true;
 
   // datetime
   DateTime? pickStart;
@@ -44,6 +52,25 @@ class _LoanRecordState extends State<LoanRecord> {
   TextEditingController amountController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController reasonController = TextEditingController();
+
+  // fetch user from api
+  fetchUserById() async {
+    try {
+      _loadingUser = true;
+      _userService.findOne(intParse(widget.id)).then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            _loadingUser = true;
+            user = [];
+            userDisplay = [];
+            user.add(usersFromServer);
+            userDisplay = user;
+            _loadingUser = false;
+          });
+        }
+      });
+    } catch (err) {}
+  }
 
   // fetch loan from api
   fetchLoanById() async {
@@ -88,10 +115,12 @@ class _LoanRecordState extends State<LoanRecord> {
   void initState() {
     super.initState();
     fetchLoanById();
+    fetchUserById();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isAdmin = ref.read(currentUserProvider).isAdmin;
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     return Scaffold(
@@ -99,29 +128,31 @@ class _LoanRecordState extends State<LoanRecord> {
       appBar: AppBar(
         title: Text('${local?.loan}'),
         actions: [
-          IconButton(
-            onPressed: () async {
-              await MybottonSheet(
-                () {
-                  records.LoanRecord loanRecord = records.LoanRecord(
-                      amount: doubleParse(amountController.text),
-                      reason: reasonController.text,
-                      date: pickStart);
-                  createOne(widget.id, loanRecord);
-                },
-                context,
-                isEnglish,
-                local,
-              );
-              amountController.text = '';
-              dateController.text = '';
-              reasonController.text = '';
-            },
-            icon: const Icon(Icons.add),
-          ),
+          isAdmin
+              ? IconButton(
+                  onPressed: () async {
+                    await MybottonSheet(
+                      () {
+                        records.LoanRecord loanRecord = records.LoanRecord(
+                            amount: doubleParse(amountController.text),
+                            reason: reasonController.text,
+                            date: pickStart);
+                        createOne(widget.id, loanRecord);
+                      },
+                      context,
+                      isEnglish,
+                      local,
+                    );
+                    amountController.text = '';
+                    dateController.text = '';
+                    reasonController.text = '';
+                  },
+                  icon: const Icon(Icons.add),
+                )
+              : Container(),
         ],
       ),
-      body: _isLoading
+      body: _isLoading || _loadingUser
           ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -156,6 +187,19 @@ class _LoanRecordState extends State<LoanRecord> {
                 )
               : Column(
                   children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 25),
+                      padding: const EdgeInsets.all(15),
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      decoration: BoxDecoration(
+                        color: kDarkestBlue,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: AttendanceInfoNameId(
+                          name: userDisplay[0].name!,
+                          id: userDisplay[0].id.toString(),
+                          image: userDisplay[0].image.toString()),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Row(
@@ -173,10 +217,7 @@ class _LoanRecordState extends State<LoanRecord> {
                         shrinkWrap: true,
                         itemBuilder: (contexxt, index) {
                           records.LoanRecord record = loanList[index];
-                          return _buildResult(
-                            record,
-                            context,
-                          );
+                          return _buildResult(record, context, isAdmin);
                         },
                         itemCount: loanList.length,
                       ),
@@ -186,8 +227,12 @@ class _LoanRecordState extends State<LoanRecord> {
     );
   }
 
-  Future<dynamic> MybottonSheet(Function function, BuildContext context,
-      bool isEnglish, AppLocalizations? local) {
+  Future<dynamic> MybottonSheet(
+    Function function,
+    BuildContext context,
+    bool isEnglish,
+    AppLocalizations? local,
+  ) {
     return showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -421,7 +466,8 @@ class _LoanRecordState extends State<LoanRecord> {
         });
   }
 
-  Widget _buildResult(records.LoanRecord record, BuildContext context) {
+  Widget _buildResult(
+      records.LoanRecord record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     return ExpansionTile(
@@ -501,82 +547,89 @@ class _LoanRecordState extends State<LoanRecord> {
                 const SizedBox(
                   height: 10,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    RaisedButton(
-                      elevation: 10,
-                      color: Colors.black,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      onPressed: () async {
-                        int loanId = record.id!;
-                        amountController.text = record.amount.toString();
-                        dateController.text = DateFormat('dd-MM-yyyy')
-                            .format(DateTime.tryParse(record.date.toString())!);
-                        reasonController.text = record.reason.toString();
-                        pickStart = DateTime.tryParse(record.date!.toString());
+                isAdmin
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          RaisedButton(
+                            elevation: 10,
+                            color: Colors.black,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            onPressed: () async {
+                              int loanId = record.id!;
+                              amountController.text = record.amount.toString();
+                              dateController.text = DateFormat('dd-MM-yyyy')
+                                  .format(DateTime.tryParse(
+                                      record.date.toString())!);
+                              reasonController.text = record.reason.toString();
+                              pickStart =
+                                  DateTime.tryParse(record.date!.toString());
 
-                        await MybottonSheet(() {
-                          records.LoanRecord loanRecord = records.LoanRecord(
-                              amount: doubleParse(amountController.text),
-                              reason: reasonController.text,
-                              date: pickStart,
-                              id: loanId);
-                          updateONe(loanRecord);
-                        }, context, isEnglish, local);
-                        amountController.text = '';
-                        dateController.text = '';
-                        reasonController.text = '';
-                        fetchLoanById();
-                      },
-                      child: Text('${local?.edit}'),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    RaisedButton(
-                      elevation: 10,
-                      color: Colors.red,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Text('${local?.delete}'),
-                      onPressed: () async {
-                        int loanId = record.id!;
-                        await showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: Text('${local?.areYouSure}'),
-                            content: Text('${local?.cannotUndone}'),
-                            actions: [
-                              OutlineButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  deleteData(loanId, context);
-                                },
-                                child: Text('${local?.yes}'),
-                                borderSide:
-                                    const BorderSide(color: Colors.green),
-                              ),
-                              OutlineButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                borderSide: const BorderSide(color: Colors.red),
-                                child: Text('${local?.no}'),
-                              )
-                            ],
+                              await MybottonSheet(() {
+                                records.LoanRecord loanRecord =
+                                    records.LoanRecord(
+                                        amount:
+                                            doubleParse(amountController.text),
+                                        reason: reasonController.text,
+                                        date: pickStart,
+                                        id: loanId);
+                                updateONe(loanRecord);
+                              }, context, isEnglish, local);
+                              amountController.text = '';
+                              dateController.text = '';
+                              reasonController.text = '';
+                              fetchLoanById();
+                            },
+                            child: Text('${local?.edit}'),
                           ),
-                        );
-                        fetchLoanById();
-                      },
-                    ),
-                  ],
-                ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          RaisedButton(
+                            elevation: 10,
+                            color: Colors.red,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Text('${local?.delete}'),
+                            onPressed: () async {
+                              int loanId = record.id!;
+                              await showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text('${local?.areYouSure}'),
+                                  content: Text('${local?.cannotUndone}'),
+                                  actions: [
+                                    OutlineButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        deleteData(loanId, context);
+                                      },
+                                      child: Text('${local?.yes}'),
+                                      borderSide:
+                                          const BorderSide(color: Colors.green),
+                                    ),
+                                    OutlineButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      borderSide:
+                                          const BorderSide(color: Colors.red),
+                                      child: Text('${local?.no}'),
+                                    )
+                                  ],
+                                ),
+                              );
+                              fetchLoanById();
+                            },
+                          ),
+                        ],
+                      )
+                    : Container(),
               ],
             ),
           ),
-        )
+        ),
       ],
     );
   }

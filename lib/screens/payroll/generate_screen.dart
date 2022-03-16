@@ -3,10 +3,15 @@
 import 'dart:convert';
 
 import 'package:ems/models/payroll.dart';
+import 'package:ems/models/user.dart';
+import 'package:ems/persistence/current_user.dart';
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
 import 'package:ems/screens/payroll/view_payroll.dart';
+import 'package:ems/services/user.dart';
 import 'package:ems/utils/services/payroll_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,7 +21,7 @@ import '../../constants.dart';
 import '../../services/payroll.dart' as new_service;
 import '../../services/models/payment.dart' as new_model;
 
-class GeneratePaymentScreen extends StatefulWidget {
+class GeneratePaymentScreen extends ConsumerStatefulWidget {
   int id;
   GeneratePaymentScreen({
     Key? key,
@@ -24,16 +29,19 @@ class GeneratePaymentScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _GeneratePaymentScreenState createState() => _GeneratePaymentScreenState();
+  ConsumerState createState() => _GeneratePaymentScreenState();
 }
 
-class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
+class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen> {
   // service
   final new_service.PayrollService _payrollService =
       new_service.PayrollService();
+  final UserService _userService = UserService();
 
   // list payroll
   List<new_model.Payment> payrollList = [];
+  List<User> user = [];
+  List<User> userDisplay = [];
   Payroll? payroll;
 
   // datetime
@@ -44,9 +52,28 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
 
   // boolean
   bool _isLoading = true;
-
+  bool _loadingUser = true;
   // variable
   String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
+
+  // fetch user from api
+  fetchUserById() async {
+    try {
+      _loadingUser = true;
+      _userService.findOne(widget.id).then((usersFromServer) {
+        if (mounted) {
+          setState(() {
+            _loadingUser = true;
+            user = [];
+            userDisplay = [];
+            user.add(usersFromServer);
+            userDisplay = user;
+            _loadingUser = false;
+          });
+        }
+      });
+    } catch (err) {}
+  }
 
   // fetch payroll from api
   fetchPaymentById() async {
@@ -97,18 +124,20 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
   @override
   void initState() {
     super.initState();
+    fetchUserById();
     fetchPaymentById();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isAdmin = ref.read(currentUserProvider).isAdmin;
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     return Scaffold(
         appBar: AppBar(
           title: Text('${local?.payment}'),
         ),
-        body: _isLoading
+        body: _isLoading || _loadingUser
             ? Container(
                 padding: const EdgeInsets.only(top: 320),
                 alignment: Alignment.center,
@@ -131,6 +160,19 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
             : Builder(
                 builder: (context) => Column(
                   children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 25),
+                      padding: const EdgeInsets.all(15),
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      decoration: BoxDecoration(
+                        color: kDarkestBlue,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: AttendanceInfoNameId(
+                          name: userDisplay[0].name!,
+                          id: userDisplay[0].id.toString(),
+                          image: userDisplay[0].image.toString()),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(left: 10, right: 10),
                       child: Row(
@@ -148,66 +190,77 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: RaisedButton(
-                              elevation: 10,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              color: kBlack,
-                              child: Text(
-                                '${local?.generateNew}',
-                                style: TextStyle(),
-                              ),
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                    content: SizedBox(
-                                      height: 400,
-                                      width: 400,
-                                      child: SfDateRangePicker(
-                                        todayHighlightColor: kBlueBackground,
-                                        startRangeSelectionColor: Colors.green,
-                                        endRangeSelectionColor: Colors.green,
-                                        rangeSelectionColor: Colors.redAccent,
-                                        view: DateRangePickerView.month,
-                                        selectionMode:
-                                            DateRangePickerSelectionMode
-                                                .extendableRange,
-                                        showActionButtons: true,
-                                        controller: _datePickerController,
-                                        onSubmit: (p0) async {
-                                          setState(() {
-                                            startDate = _datePickerController
-                                                .selectedRange?.startDate;
-                                            endDate = _datePickerController
-                                                .selectedRange?.endDate;
-                                          });
-                                          Navigator.of(context).pop();
-                                          if (startDate != null &&
-                                              endDate != null) {
-                                            await createOne(
-                                                widget.id,
-                                                startDate as DateTime,
-                                                endDate as DateTime);
-                                          }
-                                          fetchPaymentById();
-                                          _datePickerController.selectedRange =
-                                              null;
-                                        },
-                                        onCancel: () {
-                                          Navigator.pop(context);
-                                          _datePickerController.selectedRange =
-                                              null;
-                                        },
-                                      ),
+                          isAdmin
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: RaisedButton(
+                                    elevation: 10,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    color: kBlack,
+                                    child: Text(
+                                      '${local?.generateNew}',
+                                      style: TextStyle(),
                                     ),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          content: SizedBox(
+                                            height: 400,
+                                            width: 400,
+                                            child: SfDateRangePicker(
+                                              todayHighlightColor:
+                                                  kBlueBackground,
+                                              startRangeSelectionColor:
+                                                  Colors.green,
+                                              endRangeSelectionColor:
+                                                  Colors.green,
+                                              rangeSelectionColor:
+                                                  Colors.redAccent,
+                                              view: DateRangePickerView.month,
+                                              selectionMode:
+                                                  DateRangePickerSelectionMode
+                                                      .extendableRange,
+                                              showActionButtons: true,
+                                              controller: _datePickerController,
+                                              onSubmit: (p0) async {
+                                                setState(() {
+                                                  startDate =
+                                                      _datePickerController
+                                                          .selectedRange
+                                                          ?.startDate;
+                                                  endDate =
+                                                      _datePickerController
+                                                          .selectedRange
+                                                          ?.endDate;
+                                                });
+                                                Navigator.of(context).pop();
+                                                if (startDate != null &&
+                                                    endDate != null) {
+                                                  await createOne(
+                                                      widget.id,
+                                                      startDate as DateTime,
+                                                      endDate as DateTime);
+                                                }
+                                                fetchPaymentById();
+                                                _datePickerController
+                                                    .selectedRange = null;
+                                              },
+                                              onCancel: () {
+                                                Navigator.pop(context);
+                                                _datePickerController
+                                                    .selectedRange = null;
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
-                            ),
-                          ),
+                                )
+                              : Container(),
                         ],
                       ),
                     ),
@@ -220,7 +273,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                       shrinkWrap: true,
                       itemBuilder: (context, index) {
                         new_model.Payment record = payrollList[index];
-                        return _buildPayment(context, record);
+                        return _buildPayment(context, record, isAdmin);
                       },
                       itemCount: payrollList.length,
                     )),
@@ -232,7 +285,7 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
               ));
   }
 
-  Widget _buildPayment(context, new_model.Payment record) {
+  Widget _buildPayment(context, new_model.Payment record, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
     // bool isEnglish = isInEnglish(context);
     return ExpansionTile(
@@ -320,70 +373,73 @@ class _GeneratePaymentScreenState extends State<GeneratePaymentScreen> {
                 const SizedBox(
                   height: 15,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    RaisedButton(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      color: kBlack,
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                ViewPayrollScreen(paymentId: record.id!),
+                isAdmin
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          RaisedButton(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            color: kBlack,
+                            onPressed: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      ViewPayrollScreen(paymentId: record.id!),
+                                ),
+                              );
+                              payrollList = [];
+                              fetchPaymentById();
+                            },
+                            child: Text(
+                              '${local?.optionView}',
+                            ),
                           ),
-                        );
-                        payrollList = [];
-                        fetchPaymentById();
-                      },
-                      child: Text(
-                        '${local?.optionView}',
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    RaisedButton(
-                      child: Text('${local?.delete}'),
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      color: Colors.red,
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: Text('${local?.areYouSure}'),
-                            content: Text('${local?.cannotUndone}'),
-                            actions: [
-                              OutlineButton(
-                                onPressed: () async {
-                                  await deleteData(record.id!, context);
-                                  Navigator.of(context).pop();
-                                  fetchPaymentById();
-                                },
-                                child: Text('${local?.yes}'),
-                                borderSide:
-                                    const BorderSide(color: Colors.green),
-                              ),
-                              OutlineButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                borderSide: const BorderSide(color: Colors.red),
-                                child: Text('${local?.no}'),
-                              )
-                            ],
+                          SizedBox(
+                            width: 10,
                           ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                          RaisedButton(
+                            child: Text('${local?.delete}'),
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            color: Colors.red,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text('${local?.areYouSure}'),
+                                  content: Text('${local?.cannotUndone}'),
+                                  actions: [
+                                    OutlineButton(
+                                      onPressed: () async {
+                                        await deleteData(record.id!, context);
+                                        Navigator.of(context).pop();
+                                        fetchPaymentById();
+                                      },
+                                      child: Text('${local?.yes}'),
+                                      borderSide:
+                                          const BorderSide(color: Colors.green),
+                                    ),
+                                    OutlineButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      borderSide:
+                                          const BorderSide(color: Colors.red),
+                                      child: Text('${local?.no}'),
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      )
+                    : Container(),
               ],
             ),
           ),

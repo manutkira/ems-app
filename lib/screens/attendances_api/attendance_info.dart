@@ -61,7 +61,7 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
 
   // list dynamic
   List<model_new.Attendance> attendanceListAll = [];
-  List isToday = [];
+  List<AttendancesByDate> isToday = [];
   List<String> dropdownItems = [];
   List isTodayNoon = [];
   List oneDayMorning = [];
@@ -272,35 +272,37 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
         isToday = today.toList();
         todayPresent = isToday
             .where((element) =>
-                element.list[0].getT1 != null && checkPresent(element))
+                element.attendances?[0].t1 != null && checkPresent(element))
             .length;
         todayPresentNoon = isToday
             .where((element) =>
-                element.list[0].getT3 != null && checkPresengetT2(element))
+                element.attendances?[0].t3 != null && checkPresengetT2(element))
             .length;
         todayLate = isToday
             .where((element) =>
-                element.list[0].getT1 != null && checkLate1(element))
+                element.attendances?[0].t1 != null && checkLate1(element))
             .length;
         todayLateNoon = isToday
             .where((element) =>
-                element.list[0].getT3 != null && checkLate2(element))
+                element.attendances?[0].t3 != null && checkLate2(element))
             .length;
         todayAbsent = isToday
             .where((element) =>
-                element.list[0].getT1 != null && checkAbsengetT1(element))
+                element.attendances?[0].t1 != null && checkAbsengetT1(element))
             .length;
         todayAbsentNoon = isToday
             .where((element) =>
-                element.list[0].getT3 != null && checkAbsengetT2(element))
+                element.attendances?[0].t3 != null && checkAbsengetT2(element))
             .length;
         todayPermission = isToday
             .where((element) =>
-                element.list[0].getT1 != null && checkPermissiongetT1(element))
+                element.attendances?[0].t1 != null &&
+                checkPermissiongetT1(element))
             .length;
         todayPermissionNoon = isToday
             .where((element) =>
-                element.list[0].getT3 != null && checkPermissiongetT2(element))
+                element.attendances?[0].t3 != null &&
+                checkPermissiongetT2(element))
             .length;
 
         var oneDay = attendanceDisplay.where((element) =>
