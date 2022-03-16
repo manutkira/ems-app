@@ -279,9 +279,8 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                                                             _loanController,
                                                         decoration:
                                                             InputDecoration(
-                                                          hintText: 'amount',
-                                                          hintStyle:
-                                                              TextStyle(),
+                                                          hintText:
+                                                              '${local?.amount}',
                                                           border:
                                                               InputBorder.none,
                                                         ),
@@ -337,8 +336,8 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                                             builder: (ctx) => AlertDialog(
                                               title:
                                                   Text('${local?.areYouSure}'),
-                                              content: const Text(
-                                                  'Do you want to pay?'),
+                                              content: Text(
+                                                  '${local?.doYouWantToPay}'),
                                               actions: [
                                                 OutlineButton(
                                                   onPressed: () async {

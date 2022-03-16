@@ -268,7 +268,7 @@ class PersonalInfo extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.only(top: 15),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

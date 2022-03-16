@@ -1142,6 +1142,10 @@
   "@noPayment": {
     "description": "take attendance"
   },
+  "doYouWantToPay": "Do you want to pay?",
+  "@doYouWantToPay": {
+    "description": "take attendance"
+  },
   "payrollAndLoan": "Payroll and Loan",
   "@payrollAndLoan": {
     "description": "home screen"
