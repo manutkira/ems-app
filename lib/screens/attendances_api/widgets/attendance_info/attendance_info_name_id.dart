@@ -56,8 +56,8 @@ class AttendanceInfoNameId extends StatelessWidget {
                   '${local?.name} : ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(
-                  width: 20,
+                SizedBox(
+                  width: isEnglish ? 10 : 20,
                 ),
                 Text(name),
               ],
@@ -71,8 +71,8 @@ class AttendanceInfoNameId extends StatelessWidget {
                   '${local?.id} : ',
                   style: kParagraph.copyWith(fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(
-                  width: 20,
+                SizedBox(
+                  width: isEnglish ? 40 : 20,
                 ),
                 Text(id),
               ],

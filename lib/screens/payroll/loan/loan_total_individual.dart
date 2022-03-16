@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 // import 'package:ems/models/loan.dart';
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
@@ -75,84 +76,19 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
           : Column(
               children: [
                 Container(
-                  margin: const EdgeInsets.only(top: 25),
-                  padding: const EdgeInsets.all(15),
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  decoration: BoxDecoration(
-                    color: kDarkestBlue,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 65,
-                        height: 65,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 1,
-                          ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(150),
-                          child: Image.asset(
-                            'assets/images/profile-icon-png-910.png',
-                            width: 50,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          BaselineRow(
-                            children: [
-                              Text(
-                                '${local?.name}: ',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 14,
-                              ),
-                              Text(
-                                loan!.user!.name.toString(),
-                                style: TextStyle(
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                          BaselineRow(
-                            children: [
-                              Text(
-                                '${local?.id}:',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                ),
-                              ),
-                              SizedBox(
-                                width: isEnglish ? 45 : 10,
-                              ),
-                              Text(
-                                loan!.user!.id.toString(),
-                                style: TextStyle(
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                    margin: const EdgeInsets.only(top: 25),
+                    padding: const EdgeInsets.all(15),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: BoxDecoration(
+                      color: kDarkestBlue,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: AttendanceInfoNameId(
+                        name: loan!.user!.name!,
+                        id: loan!.user!.id.toString(),
+                        image: loan!.user!.image.toString())),
                 const SizedBox(
-                  height: 20,
+                  height: 40,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 15, right: 15),
@@ -219,6 +155,9 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                         ],
                       ),
                       const SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
                         height: 20,
                       ),
                       Row(

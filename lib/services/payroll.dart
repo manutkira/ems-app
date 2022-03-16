@@ -21,10 +21,13 @@ class PayrollService extends BaseService {
     }
   }
 
-  Future<Payment> markAsPaid(int paymentId) async {
+  Future<Payment> markAsPaid(int paymentId, String loan) async {
     try {
-      Response res = await dio.get(
+      Response res = await dio.put(
         'payment/$paymentId/change-status',
+        data: {
+          'loan': loan,
+        },
         options: Options(validateStatus: (status) => status == 200),
       );
       var data = res.data;

@@ -383,7 +383,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             _buildSpacerVertical,
 
             /// payroll
-            _buildTitle('${local?.payrollAndLoan}'),
+            _buildTitle('${local?.payroll}'),
             Container(
               height: 170,
               padding: const EdgeInsets.symmetric(
@@ -430,7 +430,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             _buildSpacerVertical,
 
             /// loan
-            _buildTitle('${local?.payrollAndLoan}'),
+            _buildTitle('${local?.loan}'),
             Container(
               height: 170,
               padding: const EdgeInsets.symmetric(

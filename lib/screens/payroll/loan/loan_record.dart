@@ -200,6 +200,9 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
                           id: userDisplay[0].id.toString(),
                           image: userDisplay[0].image.toString()),
                     ),
+                    const SizedBox(
+                      height: 40,
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Row(

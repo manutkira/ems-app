@@ -2,8 +2,6 @@ import 'package:ems/models/attendance_count.dart';
 import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/generate_screen.dart';
-import 'package:ems/screens/payroll/loan/loan_all.dart';
-import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
 
 import 'package:ems/utils/utils.dart';
