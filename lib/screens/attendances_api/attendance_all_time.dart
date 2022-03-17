@@ -203,7 +203,9 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
           userDisplay.sort((a, b) => a.id!.compareTo(b.id as int));
         });
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override

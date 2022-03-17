@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'package:ems/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -120,6 +122,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
 
   // attendance event list
   List<Appointment> getAppointments() {
+    AppLocalizations? local = AppLocalizations.of(context);
     List<Appointment> meetings = <Appointment>[];
     List<AttendancesByDate> attendancesDisplay = attendancesByIdDisplay
         .where((element) => element.attendances![0].t1 != null)
@@ -149,7 +152,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
         Appointment(
             startTime: startTime,
             endTime: endTime,
-            subject: 'Morning',
+            subject: '${local?.morning}',
             color: checkPresent(element)
                 ? kGreenBackground
                 : checkLate1(element)
@@ -187,7 +190,7 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
         Appointment(
             startTime: startTime,
             endTime: endTime,
-            subject: 'Afternoon',
+            subject: '${local?.afternoon}',
             color: checkPresengetT2(element)
                 ? kGreenBackground
                 : checkLate2(element)
@@ -222,10 +225,11 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
 
       meetings.add(
         Appointment(
-            startTime: startTime,
-            endTime: endTime,
-            subject: 'Overtime',
-            color: kBlueBackground),
+          startTime: startTime,
+          endTime: endTime,
+          subject: '${local?.overtime}',
+          color: kBlueBackground,
+        ),
       );
     });
 

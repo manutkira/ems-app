@@ -3,9 +3,11 @@
 // import 'package:ems/models/loan.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
+import 'package:ems/services/models/payment.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 import '../../../constants.dart';
 import '../../../utils/utils.dart';
@@ -29,6 +31,7 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
 
   // loan
   Loan? loan;
+  List<Payment> loans = [];
 
   // boolean
   bool _isloading = true;
@@ -42,6 +45,9 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
       Loan loanDIsplay = await _loanService.findOneLoanByUserId(widget.id);
       setState(() {
         loan = loanDIsplay;
+        loans = loan!.user!.payment!
+            .where((element) => element.loan != '0')
+            .toList();
         _isloading = false;
       });
     } catch (err) {}
@@ -94,6 +100,34 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                   padding: const EdgeInsets.only(left: 15, right: 15),
                   child: Column(
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          RaisedButton(
+                            color: Colors.black,
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            onPressed: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      LoanRecord(id: loan!.user!.id.toString()),
+                                ),
+                              );
+                              fetchOneLoan();
+                            },
+                            child: Text(
+                              '${local?.viewRecord}',
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -157,37 +191,94 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                       const SizedBox(
                         height: 20,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          RaisedButton(
-                            color: Colors.black,
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            onPressed: () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      LoanRecord(id: loan!.user!.id.toString()),
-                                ),
-                              );
-                              fetchOneLoan();
-                            },
-                            child: Text(
-                              '${local?.viewRecord}',
-                            ),
-                          )
-                        ],
-                      )
                     ],
                   ),
-                )
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Repay record:',
+                        style: kHeadingFour,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Expanded(
+                    child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    return ExpansionTile(
+                      collapsedBackgroundColor: const Color(0xff254973),
+                      backgroundColor: const Color(0xff254973),
+                      textColor: Colors.white,
+                      iconColor: Colors.white,
+                      initiallyExpanded: false,
+                      title: Text(
+                        DateFormat('dd/MM/yyyy').format(loans[index].datePaid!),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      children: [
+                        Container(
+                          color: Colors.black38,
+                          padding: const EdgeInsets.only(
+                              top: 10, left: 15, right: 15, bottom: 15),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Ref no'),
+                                  Text(
+                                    loans[index].refNo.toString(),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Date Paid'),
+                                  Text(
+                                    DateFormat('dd/MM/yyyy')
+                                        .format(loans[index].datePaid!),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Repaid Amount'),
+                                  Text(
+                                    '\$${loans[index].loan!}',
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                  itemCount: loans.length,
+                ))
               ],
             ),
     );

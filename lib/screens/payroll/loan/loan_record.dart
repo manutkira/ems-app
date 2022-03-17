@@ -38,9 +38,13 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
   List<User> user = [];
   List<User> userDisplay = [];
 
+  // string
+  String dropDownValue = '';
+
   // boolean
   bool _isLoading = true;
   bool _loadingUser = true;
+  bool loanRecords = true;
 
   // datetime
   DateTime? pickStart;
@@ -123,6 +127,11 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
     bool isAdmin = ref.read(currentUserProvider).isAdmin;
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
+    setState(() {
+      if (dropDownValue.isEmpty) {
+        dropDownValue = 'loan record';
+      }
+    });
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -206,11 +215,56 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             '${local?.loanRecord}',
                             style: isEnglish ? kHeadingTwo : kHeadingFour,
                           ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: kDarkestBlue,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: DropdownButton(
+                              underline: Container(),
+                              style: kParagraph.copyWith(
+                                  fontWeight: FontWeight.bold),
+                              isDense: true,
+                              borderRadius:
+                                  const BorderRadius.all(kBorderRadius),
+                              dropdownColor: kDarkestBlue,
+                              icon: const Icon(Icons.expand_more),
+                              value: dropDownValue,
+                              onChanged: (String? newValue) {
+                                if (newValue == 'repaid record') {
+                                  setState(() {
+                                    loanRecords = false;
+                                    dropDownValue = newValue!;
+                                  });
+                                }
+                                if (newValue == 'loan record') {
+                                  setState(() {
+                                    loanRecords = true;
+                                    dropDownValue = newValue!;
+                                  });
+                                }
+                              },
+                              items: <String>[
+                                'loan record',
+                                'repaid record',
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                          )
                         ],
                       ),
                     ),

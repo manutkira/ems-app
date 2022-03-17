@@ -13,6 +13,7 @@ class Payment {
   DateTime? dateFrom;
   DateTime? dateTo;
   bool? status;
+  String? loan;
   DateTime? datePaid;
 
   Payment({
@@ -22,6 +23,7 @@ class Payment {
     this.dateFrom,
     this.dateTo,
     this.status,
+    this.loan,
     this.datePaid,
   });
 
@@ -33,6 +35,7 @@ class Payment {
       dateFrom: convertStringToDateTime(json?['date_from']),
       dateTo: convertStringToDateTime(json?['date_to']),
       status: json?['status'],
+      loan: json?['loan'],
       datePaid: convertStringToDateTime(json?['date_paid']),
     );
   }
@@ -43,6 +46,7 @@ class Payment {
       "user_id": userId,
       "ref_no": refNo,
       "status": status,
+      "loan": loan,
       "date_from": convertDateTimeToString(dateFrom),
       "date_to": convertDateTimeToString(dateTo),
       "date_paid": convertDateTimeToString(datePaid),
@@ -56,6 +60,7 @@ class Payment {
     DateTime? dateFrom,
     DateTime? dateTo,
     bool? status,
+    String? loan,
     DateTime? datePaid,
   }) =>
       Payment(
@@ -65,6 +70,7 @@ class Payment {
         dateFrom: dateFrom ?? this.dateFrom,
         dateTo: dateTo ?? this.dateTo,
         status: status ?? this.status,
+        loan: loan ?? this.loan,
         datePaid: datePaid ?? this.datePaid,
       );
 }

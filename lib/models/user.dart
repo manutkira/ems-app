@@ -2,6 +2,7 @@ import 'package:ems/services/models/bank.dart';
 import 'package:ems/services/models/loan_record.dart';
 import 'package:ems/services/models/position.dart';
 import 'package:ems/services/models/rating.dart';
+import 'package:ems/services/models/payment.dart';
 import 'package:hive/hive.dart';
 
 import '../../utils/utils.dart';
@@ -46,6 +47,7 @@ class User {
   List<Bank>? banks;
   List<LoanRecord>? loans;
   List<Rating>? ratings;
+  List<Payment>? payment;
 
   User({
     this.id,
@@ -65,28 +67,29 @@ class User {
     this.banks,
     this.loans,
     this.ratings,
+    this.payment,
   });
 
   factory User.fromJson(Map<String, dynamic>? json) {
     return User(
-      id: intParse(json?['id']),
-      name: json?['name'],
-      khmer: json?['khmer'],
-      email: json?['email'],
-      phone: json?['phone'],
-      salary: doubleParse(json?['salary']),
-      password: json?['password'],
-      address: json?['address'],
-      background: json?['background'],
-      role: json?['role'],
-      status: json?['status'],
-      image: json?['image'],
-      imageId: json?['image_id'],
-      positions: positionsFromJson(json?['positions']),
-      banks: banksFromJson(json?['bank']),
-      loans: loanRecordsFromJson(json?['loan_records']),
-      ratings: ratingsFromJson(json?['rateworks']),
-    );
+        id: intParse(json?['id']),
+        name: json?['name'],
+        khmer: json?['khmer'],
+        email: json?['email'],
+        phone: json?['phone'],
+        salary: doubleParse(json?['salary']),
+        password: json?['password'],
+        address: json?['address'],
+        background: json?['background'],
+        role: json?['role'],
+        status: json?['status'],
+        image: json?['image'],
+        imageId: json?['image_id'],
+        positions: positionsFromJson(json?['positions']),
+        banks: banksFromJson(json?['bank']),
+        loans: loanRecordsFromJson(json?['loan_records']),
+        ratings: ratingsFromJson(json?['rateworks']),
+        payment: paymentsFromJson(json?['payments']));
   }
 
   User copyWith({
@@ -107,6 +110,7 @@ class User {
     List<Bank>? banks,
     List<LoanRecord>? loans,
     List<Rating>? ratings,
+    List<Payment>? payment,
   }) =>
       User(
         id: id ?? this.id,
@@ -126,6 +130,7 @@ class User {
         banks: banks ?? this.banks,
         loans: loans ?? this.loans,
         ratings: ratings ?? this.ratings,
+        payment: payment ?? this.payment,
       );
 
   Map<String, dynamic> buildCleanJson() {
