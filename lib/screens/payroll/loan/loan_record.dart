@@ -3,6 +3,8 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
+import 'package:ems/services/models/loan.dart';
+import 'package:ems/services/models/payment.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -28,7 +30,8 @@ class LoanRecord extends ConsumerStatefulWidget {
   ConsumerState createState() => _LoanRecordState();
 }
 
-class _LoanRecordState extends ConsumerState<LoanRecord> {
+class _LoanRecordState extends ConsumerState<LoanRecord>
+    with SingleTickerProviderStateMixin {
   // service
   final LoanService _loanService = LoanService();
   final UserService _userService = UserService();
@@ -38,13 +41,11 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
   List<User> user = [];
   List<User> userDisplay = [];
 
-  // string
-  String dropDownValue = '';
-
   // boolean
   bool _isLoading = true;
   bool _loadingUser = true;
   bool loanRecords = true;
+  bool _isloading = true;
 
   // datetime
   DateTime? pickStart;
@@ -56,6 +57,17 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
   TextEditingController amountController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController reasonController = TextEditingController();
+
+  final color = const Color(0xff05445E);
+
+  // tab view
+  late TabController _tabController;
+  late Tab _handler;
+  static List<Tab> myTabs = <Tab>[];
+
+  // loan
+  Loan? loan;
+  List<Payment> loans = [];
 
   // fetch user from api
   fetchUserById() async {
@@ -79,9 +91,9 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
   // fetch loan from api
   fetchLoanById() async {
     try {
-      setState(() {
-        _isLoading = true;
-      });
+      // setState(() {
+      _isLoading = true;
+      // });
       List<records.LoanRecord> loanDisplay =
           await _loanService.findManyRecords(widget.id);
       if (mounted) {
@@ -90,6 +102,24 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
           _isLoading = false;
         });
       }
+    } catch (err) {}
+  }
+
+  // fetch loan from api
+  fetchOneLoan() async {
+    setState(() {
+      _isloading = true;
+    });
+    try {
+      Loan loanDIsplay =
+          await _loanService.findOneLoanByUserId(intParse(widget.id));
+      setState(() {
+        loan = loanDIsplay;
+        loans = loan!.user!.payment!
+            .where((element) => element.loan != '0')
+            .toList();
+        _isloading = false;
+      });
     } catch (err) {}
   }
 
@@ -120,18 +150,22 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
     super.initState();
     fetchLoanById();
     fetchUserById();
+    fetchOneLoan();
+    _tabController = TabController(length: 2, vsync: this);
+    // _tabController.addListener(_handleSelected);
   }
+
+  // void _handleSelected() {
+  //   setState(() {
+  //     _handler = myTabs[_tabController.index];
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     bool isAdmin = ref.read(currentUserProvider).isAdmin;
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-    setState(() {
-      if (dropDownValue.isEmpty) {
-        dropDownValue = 'loan record';
-      }
-    });
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -141,12 +175,12 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
               ? IconButton(
                   onPressed: () async {
                     await MybottonSheet(
-                      () {
+                      () async {
                         records.LoanRecord loanRecord = records.LoanRecord(
                             amount: doubleParse(amountController.text),
                             reason: reasonController.text,
                             date: pickStart);
-                        createOne(widget.id, loanRecord);
+                        await createOne(widget.id, loanRecord);
                       },
                       context,
                       isEnglish,
@@ -177,14 +211,14 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
               ? Center(
                   child: Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 90,
                       ),
-                      Text(
+                      const Text(
                         'No loan has been recorded yet!',
                         style: kHeadingTwo,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Text(
@@ -212,73 +246,184 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
                     const SizedBox(
                       height: 40,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '${local?.loanRecord}',
-                            style: isEnglish ? kHeadingTwo : kHeadingFour,
+                    DefaultTabController(
+                      length: 2,
+                      child: SizedBox(
+                        width: 350,
+                        child: TabBar(
+                          // ),
+                          controller: _tabController,
+                          tabs: [
+                            Tab(
+                              text: '${local?.loan}',
+                            ),
+                            Tab(
+                              text: '${local?.repay}',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                        height: 533,
+                        margin: const EdgeInsets.only(top: 0),
+                        width: double.infinity,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                              gradient: LinearGradient(
+                                colors: [
+                                  kDarkestBlue,
+                                  color,
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              )),
+                          child: SizedBox(
+                            height: 100,
+                            child: TabBarView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              controller: _tabController,
+                              children: [
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(18.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '${local?.loanRecord}',
+                                            style: isEnglish
+                                                ? kHeadingTwo
+                                                : kHeadingFour,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        physics: const ClampingScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemBuilder: (contexxt, index) {
+                                          records.LoanRecord record =
+                                              loanList[index];
+                                          return _buildResult(
+                                              record, context, isAdmin, index);
+                                        },
+                                        itemCount: loanList.length,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(18.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '${local?.repayRecord}',
+                                            style: isEnglish
+                                                ? kHeadingTwo
+                                                : kHeadingFour,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                        child: ListView.builder(
+                                      itemBuilder: (context, index) {
+                                        return ExpansionTile(
+                                          collapsedBackgroundColor:
+                                              const Color(0xff254973),
+                                          backgroundColor:
+                                              const Color(0xff254973),
+                                          textColor: Colors.white,
+                                          iconColor: Colors.white,
+                                          initiallyExpanded: index == 0,
+                                          title: Text(
+                                            DateFormat('dd/MM/yyyy')
+                                                .format(loans[index].datePaid!),
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          children: [
+                                            Container(
+                                              color: Colors.black38,
+                                              padding: const EdgeInsets.only(
+                                                  top: 10,
+                                                  left: 15,
+                                                  right: 15,
+                                                  bottom: 15),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      const Text('Ref no'),
+                                                      Text(
+                                                        loans[index]
+                                                            .refNo
+                                                            .toString(),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 15,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      const Text('Date Paid'),
+                                                      Text(
+                                                        DateFormat('dd/MM/yyyy')
+                                                            .format(loans[index]
+                                                                .datePaid!),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 15,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      const Text(
+                                                          'Repaid Amount'),
+                                                      Text(
+                                                        '\$${loans[index].loan!}',
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        );
+                                      },
+                                      itemCount: loans.length,
+                                    ))
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: kDarkestBlue,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: DropdownButton(
-                              underline: Container(),
-                              style: kParagraph.copyWith(
-                                  fontWeight: FontWeight.bold),
-                              isDense: true,
-                              borderRadius:
-                                  const BorderRadius.all(kBorderRadius),
-                              dropdownColor: kDarkestBlue,
-                              icon: const Icon(Icons.expand_more),
-                              value: dropDownValue,
-                              onChanged: (String? newValue) {
-                                if (newValue == 'repaid record') {
-                                  setState(() {
-                                    loanRecords = false;
-                                    dropDownValue = newValue!;
-                                  });
-                                }
-                                if (newValue == 'loan record') {
-                                  setState(() {
-                                    loanRecords = true;
-                                    dropDownValue = newValue!;
-                                  });
-                                }
-                              },
-                              items: <String>[
-                                'loan record',
-                                'repaid record',
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        physics: const ClampingScrollPhysics(),
-                        shrinkWrap: true,
-                        itemBuilder: (contexxt, index) {
-                          records.LoanRecord record = loanList[index];
-                          return _buildResult(record, context, isAdmin);
-                        },
-                        itemCount: loanList.length,
-                      ),
-                    ),
+                        ))
                   ],
                 ),
     );
@@ -524,7 +669,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
   }
 
   Widget _buildResult(
-      records.LoanRecord record, BuildContext context, bool isAdmin) {
+      records.LoanRecord record, BuildContext context, bool isAdmin, indexx) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     return ExpansionTile(
@@ -532,7 +677,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
       backgroundColor: const Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
-      initiallyExpanded: false,
+      initiallyExpanded: indexx == 0,
       title: Text(
         getDateStringFromDateTime(DateTime.parse(record.date.toString())),
         style: const TextStyle(
@@ -557,7 +702,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
                   children: [
                     Text(
                       '${local?.id}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -572,7 +717,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
                   children: [
                     Text(
                       '${local?.amount}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -587,7 +732,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
                   children: [
                     Text(
                       '${local?.reason}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -726,6 +871,30 @@ class _LoanRecordState extends ConsumerState<LoanRecord> {
   }
 
   createOne(String id, loanRecord.LoanRecord record) async {
-    await _loanService.createOneRecord(id, record);
+    AppLocalizations? local = AppLocalizations.of(context);
+    try {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.adding}'),
+                content: Flex(
+                  direction: Axis.horizontal,
+                  children: const [
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 100),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ));
+      await _loanService.createOneRecord(id, record);
+    } catch (err) {
+      rethrow;
+    }
   }
 }
