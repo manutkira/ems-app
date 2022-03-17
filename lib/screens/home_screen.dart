@@ -287,74 +287,43 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             ),
             _buildSpacerVertical,
 
-            /// current user attendance
-            _buildTitle('${local?.attendance}'),
-            Container(
-              height: 170,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 12,
-              ),
-              child: ValueListenableBuilder(
-                  valueListenable:
-                      ref.watch(currentUserProvider).currentUserListenable,
-                  builder: (_, Box<User> box, __) {
-                    final listFromBox = box.values.toList();
-                    final currentUser =
-                        listFromBox.isNotEmpty ? listFromBox[0] : null;
-                    return Row(
+            ValueListenableBuilder(
+              valueListenable:
+                  ref.watch(currentUserProvider).currentUserListenable,
+              builder: (_, Box<User> box, __) {
+                final listFromBox = box.values.toList();
+                final currentUser =
+                    listFromBox.isNotEmpty ? listFromBox[0] : null;
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      // padding: const EdgeInsets.symmetric(horizontal: 16),
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 1,
+                      mainAxisSpacing: 1,
                       children: [
-                        Expanded(
-                          flex: 1,
-                          child: MenuItem(
-                            onTap: _goToAttendanceScreen,
-                            illustration: SvgPicture.asset(
-                              "assets/images/calendar.svg",
-                              width: MediaQuery.of(context).size.width * 0.15,
-                            ),
-                            label: "${local?.attendanceManager}",
+                        MenuItem(
+                          onTap: _goToAttendanceScreen,
+                          illustration: SvgPicture.asset(
+                            "assets/images/calendar.svg",
+                            width: MediaQuery.of(context).size.width * 0.17,
                           ),
+                          label: "${local?.attendanceManager}",
                         ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          flex: 1,
-                          child: MenuItem(
-                            onTap: () =>
-                                _goToMyAttendance(currentUser?.id as int),
-                            illustration: SvgPicture.asset(
-                              "assets/images/user.svg",
-                              width: MediaQuery.of(context).size.width * 0.17,
-                            ),
-                            label: "${local?.myAttendance}",
+                        MenuItem(
+                          onTap: () =>
+                              _goToMyAttendance(currentUser?.id as int),
+                          illustration: SvgPicture.asset(
+                            "assets/images/user.svg",
+                            width: MediaQuery.of(context).size.width * 0.17,
                           ),
+                          label: "${local?.myAttendance}",
                         ),
-                      ],
-                    );
-                  }),
-            ),
-            _buildSpacerVertical,
-
-            /// current user overtime
-            _buildTitle('${local?.overtime}'),
-            Container(
-              height: 170,
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 15,
-              ),
-              child: ValueListenableBuilder(
-                valueListenable:
-                    ref.watch(currentUserProvider).currentUserListenable,
-                builder: (_, Box<User> box, __) {
-                  final listFromBox = box.values.toList();
-                  final currentUser =
-                      listFromBox.isNotEmpty ? listFromBox[0] : null;
-
-                  return Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: MenuItem(
+                        MenuItem(
                           onTap: _goToOvertimeScreen,
                           illustration: SvgPicture.asset(
                             "assets/images/overtime-icon.svg",
@@ -362,11 +331,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                           ),
                           label: "${local?.overtimeManager}",
                         ),
-                      ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        flex: 1,
-                        child: MenuItem(
+                        MenuItem(
                           onTap: () => _goToMyOvertime(currentUser),
                           illustration: SvgPicture.asset(
                             "assets/images/user.svg",
@@ -374,151 +339,286 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                           ),
                           label: "${local?.myOvertime}",
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            _buildSpacerVertical,
-
-            /// payroll
-            _buildTitle('${local?.payroll}'),
-            Container(
-              height: 170,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 12,
-              ),
-              child: ValueListenableBuilder(
-                  valueListenable:
-                      ref.watch(currentUserProvider).currentUserListenable,
-                  builder: (_, Box<User> box, __) {
-                    final listFromBox = box.values.toList();
-                    final currentUser =
-                        listFromBox.isNotEmpty ? listFromBox[0] : null;
-                    return Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: MenuItem(
-                            onTap: _gotoPayroll,
-                            illustration: Image.asset(
-                              "assets/images/payroll.png",
-                              width: MediaQuery.of(context).size.width * 0.25,
-                            ),
-                            label: "${local?.payroll}",
+                        MenuItem(
+                          onTap: _gotoPayroll,
+                          illustration: Image.asset(
+                            "assets/images/payroll.png",
+                            width: MediaQuery.of(context).size.width * 0.17,
                           ),
+                          label: "${local?.payroll}",
                         ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          flex: 1,
-                          child: MenuItem(
-                            onTap: () =>
-                                _goToMyPayroll(intParse(currentUser?.id)),
-                            illustration: SvgPicture.asset(
-                              "assets/images/user.svg",
-                              width: MediaQuery.of(context).size.width * 0.17,
-                            ),
-                            label: "${local?.myPayroll}",
+                        MenuItem(
+                          onTap: () =>
+                              _goToMyPayroll(intParse(currentUser?.id)),
+                          illustration: SvgPicture.asset(
+                            "assets/images/user.svg",
+                            width: MediaQuery.of(context).size.width * 0.17,
                           ),
+                          label: "${local?.myPayroll}",
                         ),
-                      ],
-                    );
-                  }),
-            ),
-            _buildSpacerVertical,
-
-            /// loan
-            _buildTitle('${local?.loan}'),
-            Container(
-              height: 170,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 12,
-              ),
-              child: ValueListenableBuilder(
-                  valueListenable:
-                      ref.watch(currentUserProvider).currentUserListenable,
-                  builder: (_, Box<User> box, __) {
-                    final listFromBox = box.values.toList();
-                    final currentUser =
-                        listFromBox.isNotEmpty ? listFromBox[0] : null;
-                    return Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: MenuItem(
-                            onTap: _goToLoan,
-                            illustration: Image.asset(
-                              "assets/images/loan.png",
-                              width: MediaQuery.of(context).size.width * 0.20,
-                            ),
-                            label: "${local?.loan}",
+                        MenuItem(
+                          onTap: _goToLoan,
+                          illustration: Image.asset(
+                            "assets/images/loan.png",
+                            width: MediaQuery.of(context).size.width * 0.17,
                           ),
+                          label: "${local?.loan}",
                         ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          flex: 1,
-                          child: MenuItem(
-                            onTap: () => _goToMyLoan(intParse(currentUser?.id)),
-                            illustration: SvgPicture.asset(
-                              "assets/images/user.svg",
-                              width: MediaQuery.of(context).size.width * 0.17,
-                            ),
-                            label: "${local?.myLoan}",
+                        MenuItem(
+                          onTap: () => _goToMyLoan(intParse(currentUser?.id)),
+                          illustration: SvgPicture.asset(
+                            "assets/images/user.svg",
+                            width: MediaQuery.of(context).size.width * 0.17,
                           ),
+                          label: "${local?.myLoan}",
                         ),
-                      ],
-                    );
-                  }),
-            ),
-            _buildSpacerVertical,
-
-            /// current user overtime
-            _buildTitle('${local?.employee}'),
-            Container(
-              height: 170,
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 15,
-              ),
-              child: GestureDetector(
-                onTap: _goToEmployeeManager,
-                child: SizedBox(
-                  width: _size.width,
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: kLightBlue,
-                        borderRadius: BorderRadius.all(kBorderRadius),
-                      ),
-                      padding: kPaddingAll,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
+                        MenuItem(
+                          onTap: _goToEmployeeManager,
+                          illustration: SvgPicture.asset(
                             'assets/images/employees-group.svg',
-                            height: 82,
+                            width: MediaQuery.of(context).size.width * 0.17,
                           ),
-                          SizedBox(height: isEnglish ? 10 : 2),
-                          Text(
-                            "${local?.employeeManager}",
-                            style: kSubtitle.copyWith(
-                                color: kBlack, fontWeight: FontWeight.w700),
-                            textAlign: TextAlign.center,
-                          )
-                        ],
-                      ),
+                          label: "${local?.employeeManager}",
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
-            _buildSpacerVertical,
+            //
+            // /// current user attendance
+            // _buildTitle('${local?.attendance}'),
+            // Container(
+            //   height: 170,
+            //   padding: const EdgeInsets.symmetric(
+            //     horizontal: 15,
+            //     vertical: 12,
+            //   ),
+            //   child: ValueListenableBuilder(
+            //       valueListenable:
+            //           ref.watch(currentUserProvider).currentUserListenable,
+            //       builder: (_, Box<User> box, __) {
+            //         final listFromBox = box.values.toList();
+            //         final currentUser =
+            //             listFromBox.isNotEmpty ? listFromBox[0] : null;
+            //         return Row(
+            //           children: [
+            //             Expanded(
+            //               flex: 1,
+            //               child: MenuItem(
+            //                 onTap: _goToAttendanceScreen,
+            //                 illustration: SvgPicture.asset(
+            //                   "assets/images/calendar.svg",
+            //                   width: MediaQuery.of(context).size.width * 0.15,
+            //                 ),
+            //                 label: "${local?.attendanceManager}",
+            //               ),
+            //             ),
+            //             const SizedBox(width: 15),
+            //             Expanded(
+            //               flex: 1,
+            //               child: MenuItem(
+            //                 onTap: () =>
+            //                     _goToMyAttendance(currentUser?.id as int),
+            //                 illustration: SvgPicture.asset(
+            //                   "assets/images/user.svg",
+            //                   width: MediaQuery.of(context).size.width * 0.17,
+            //                 ),
+            //                 label: "${local?.myAttendance}",
+            //               ),
+            //             ),
+            //           ],
+            //         );
+            //       }),
+            // ),
+            // _buildSpacerVertical,
+            //
+            // /// current user overtime
+            // _buildTitle('${local?.overtime}'),
+            // Container(
+            //   height: 170,
+            //   padding: const EdgeInsets.symmetric(
+            //     vertical: 12,
+            //     horizontal: 15,
+            //   ),
+            //   child: ValueListenableBuilder(
+            //     valueListenable:
+            //         ref.watch(currentUserProvider).currentUserListenable,
+            //     builder: (_, Box<User> box, __) {
+            //       final listFromBox = box.values.toList();
+            //       final currentUser =
+            //           listFromBox.isNotEmpty ? listFromBox[0] : null;
+            //
+            //       return Row(
+            //         children: [
+            //           Expanded(
+            //             flex: 1,
+            //             child: MenuItem(
+            //               onTap: _goToOvertimeScreen,
+            //               illustration: SvgPicture.asset(
+            //                 "assets/images/overtime-icon.svg",
+            //                 width: MediaQuery.of(context).size.width * 0.17,
+            //               ),
+            //               label: "${local?.overtimeManager}",
+            //             ),
+            //           ),
+            //           const SizedBox(width: 15),
+            //           Expanded(
+            //             flex: 1,
+            //             child: MenuItem(
+            //               onTap: () => _goToMyOvertime(currentUser),
+            //               illustration: SvgPicture.asset(
+            //                 "assets/images/user.svg",
+            //                 width: MediaQuery.of(context).size.width * 0.17,
+            //               ),
+            //               label: "${local?.myOvertime}",
+            //             ),
+            //           ),
+            //         ],
+            //       );
+            //     },
+            //   ),
+            // ),
+            // _buildSpacerVertical,
+            //
+            // /// payroll
+            // _buildTitle('${local?.payroll}'),
+            // Container(
+            //   height: 170,
+            //   padding: const EdgeInsets.symmetric(
+            //     horizontal: 15,
+            //     vertical: 12,
+            //   ),
+            //   child: ValueListenableBuilder(
+            //       valueListenable:
+            //           ref.watch(currentUserProvider).currentUserListenable,
+            //       builder: (_, Box<User> box, __) {
+            //         final listFromBox = box.values.toList();
+            //         final currentUser =
+            //             listFromBox.isNotEmpty ? listFromBox[0] : null;
+            //         return Row(
+            //           children: [
+            //             Expanded(
+            //               flex: 1,
+            //               child: MenuItem(
+            //                 onTap: _gotoPayroll,
+            //                 illustration: Image.asset(
+            //                   "assets/images/payroll.png",
+            //                   width: MediaQuery.of(context).size.width * 0.25,
+            //                 ),
+            //                 label: "${local?.payroll}",
+            //               ),
+            //             ),
+            //             const SizedBox(width: 15),
+            //             Expanded(
+            //               flex: 1,
+            //               child: MenuItem(
+            //                 onTap: () =>
+            //                     _goToMyPayroll(intParse(currentUser?.id)),
+            //                 illustration: SvgPicture.asset(
+            //                   "assets/images/user.svg",
+            //                   width: MediaQuery.of(context).size.width * 0.17,
+            //                 ),
+            //                 label: "${local?.myPayroll}",
+            //               ),
+            //             ),
+            //           ],
+            //         );
+            //       }),
+            // ),
+            // _buildSpacerVertical,
+            //
+            // /// loan
+            // _buildTitle('${local?.loan}'),
+            // Container(
+            //   height: 170,
+            //   padding: const EdgeInsets.symmetric(
+            //     horizontal: 15,
+            //     vertical: 12,
+            //   ),
+            //   child: ValueListenableBuilder(
+            //       valueListenable:
+            //           ref.watch(currentUserProvider).currentUserListenable,
+            //       builder: (_, Box<User> box, __) {
+            //         final listFromBox = box.values.toList();
+            //         final currentUser =
+            //             listFromBox.isNotEmpty ? listFromBox[0] : null;
+            //         return Row(
+            //           children: [
+            //             Expanded(
+            //               flex: 1,
+            //               child: MenuItem(
+            //                 onTap: _goToLoan,
+            //                 illustration: Image.asset(
+            //                   "assets/images/loan.png",
+            //                   width: MediaQuery.of(context).size.width * 0.20,
+            //                 ),
+            //                 label: "${local?.loan}",
+            //               ),
+            //             ),
+            //             const SizedBox(width: 15),
+            //             Expanded(
+            //               flex: 1,
+            //               child: MenuItem(
+            //                 onTap: () => _goToMyLoan(intParse(currentUser?.id)),
+            //                 illustration: SvgPicture.asset(
+            //                   "assets/images/user.svg",
+            //                   width: MediaQuery.of(context).size.width * 0.17,
+            //                 ),
+            //                 label: "${local?.myLoan}",
+            //               ),
+            //             ),
+            //           ],
+            //         );
+            //       }),
+            // ),
+            // _buildSpacerVertical,
+            //
+            // /// current user overtime
+            // _buildTitle('${local?.employee}'),
+            // Container(
+            //   height: 170,
+            //   padding: const EdgeInsets.symmetric(
+            //     vertical: 12,
+            //     horizontal: 15,
+            //   ),
+            //   child: GestureDetector(
+            //     onTap: _goToEmployeeManager,
+            //     child: SizedBox(
+            //       width: _size.width,
+            //       child: AspectRatio(
+            //         aspectRatio: 1,
+            //         child: Container(
+            //           width: double.infinity,
+            //           decoration: const BoxDecoration(
+            //             color: kLightBlue,
+            //             borderRadius: BorderRadius.all(kBorderRadius),
+            //           ),
+            //           padding: kPaddingAll,
+            //           child: Column(
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             crossAxisAlignment: CrossAxisAlignment.center,
+            //             children: [
+            //               SvgPicture.asset(
+            //                 'assets/images/employees-group.svg',
+            //                 height: 82,
+            //               ),
+            //               SizedBox(height: isEnglish ? 10 : 2),
+            //               Text(
+            //                 "${local?.employeeManager}",
+            //                 style: kSubtitle.copyWith(
+            //                     color: kBlack, fontWeight: FontWeight.w700),
+            //                 textAlign: TextAlign.center,
+            //               )
+            //             ],
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // _buildSpacerVertical,
           ],
         ),
       ),

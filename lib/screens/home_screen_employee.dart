@@ -160,6 +160,66 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             ),
             _buildSpacerVertical,
 
+            // ValueListenableBuilder(
+            //   valueListenable:
+            //       ref.watch(currentUserProvider).currentUserListenable,
+            //   builder: (_, Box<User> box, __) {
+            //     final listFromBox = box.values.toList();
+            //     final currentUser =
+            //         listFromBox.isNotEmpty ? listFromBox[0] : null;
+            //     return Container(
+            //       padding: const EdgeInsets.symmetric(horizontal: 16),
+            //       child: ClipRRect(
+            //         borderRadius: BorderRadius.circular(16),
+            //         child: GridView.count(
+            //           shrinkWrap: true,
+            //           physics: const ClampingScrollPhysics(),
+            //           // padding: const EdgeInsets.symmetric(horizontal: 16),
+            //           crossAxisCount: 3,
+            //           crossAxisSpacing: 1,
+            //           mainAxisSpacing: 1,
+            //           children: [
+            //             MenuItem(
+            //               onTap: () =>
+            //                   _goToMyAttendance(currentUser?.id as int),
+            //               illustration: SvgPicture.asset(
+            //                 'assets/images/chart.svg',
+            //                 width: MediaQuery.of(context).size.width * 0.17,
+            //               ),
+            //               label: "${local?.myAttendance}",
+            //             ),
+            //             MenuItem(
+            //               onTap: () => _goToMyOvertime(currentUser),
+            //               illustration: SvgPicture.asset(
+            //                 'assets/images/overtime-icon.svg',
+            //                 width: MediaQuery.of(context).size.width * 0.17,
+            //               ),
+            //               label: "${local?.myOvertime}",
+            //             ),
+            //             MenuItem(
+            //               onTap: () =>
+            //                   _goToMyPayroll(intParse(currentUser?.id)),
+            //               illustration: Image.asset(
+            //                 "assets/images/payroll.png",
+            //                 width: MediaQuery.of(context).size.width * 0.17,
+            //               ),
+            //               label: "${local?.myPayroll}",
+            //             ),
+            //             MenuItem(
+            //               onTap: () => _goToMyLoan(intParse(currentUser?.id)),
+            //               illustration: Image.asset(
+            //                 "assets/images/loan.png",
+            //                 width: MediaQuery.of(context).size.width * 0.17,
+            //               ),
+            //               label: "${local?.myLoan}",
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     );
+            //   },
+            // ),
+
             /// current user attendance
             _buildTitle('${local?.attendance}'),
             ValueListenableBuilder(

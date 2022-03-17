@@ -16,37 +16,40 @@ class MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-              color: kLightBlue, borderRadius: BorderRadius.all(kBorderRadius)),
-          // padding: kPaddingAll,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              illustration,
-              const SizedBox(height: 6),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.5,
-                child: Text(
-                  label,
-                  style: kSubtitle.copyWith(
-                    fontSize: 14,
-                    color: kBlack,
-                    fontWeight: FontWeight.w700,
-                    height: 1.7,
-                    overflow: TextOverflow.visible,
+    return Material(
+      color: kLightBlue,
+      child: InkWell(
+        splashColor: kBlue.withOpacity(0.25),
+        onTap: onTap,
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Spacer(),
+                illustration,
+                const Spacer(),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Text(
+                    label,
+                    style: kSubtitle.copyWith(
+                      fontSize: 12,
+                      color: kBlack,
+                      fontWeight: FontWeight.w700,
+                      height: 1.7,
+                      // overflow: TextOverflow.visible,
+                    ),
+                    softWrap: true,
+                    textAlign: TextAlign.center,
                   ),
-                  softWrap: false,
-                  textAlign: TextAlign.center,
                 ),
-              )
-            ],
+                const Spacer(),
+              ],
+            ),
           ),
         ),
       ),
