@@ -354,8 +354,8 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                                           itemBuilder: (context, index) {
                                             new_model.Payment record =
                                                 payrollPending[index];
-                                            return _buildPayment(
-                                                context, record, isAdmin);
+                                            return _buildPayment(context,
+                                                record, isAdmin, index);
                                           },
                                           itemCount: payrollPending.length,
                                         )),
@@ -412,8 +412,8 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                                           itemBuilder: (context, index) {
                                             new_model.Payment record =
                                                 payrollPaid[index];
-                                            return _buildPayment(
-                                                context, record, isAdmin);
+                                            return _buildPayment(context,
+                                                record, isAdmin, index);
                                           },
                                           itemCount: payrollPaid.length,
                                         )),
@@ -474,7 +474,8 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
     );
   }
 
-  Widget _buildPayment(context, new_model.Payment record, bool isAdmin) {
+  Widget _buildPayment(
+      context, new_model.Payment record, bool isAdmin, indexx) {
     AppLocalizations? local = AppLocalizations.of(context);
     // bool isEnglish = isInEnglish(context);
     return ExpansionTile(
@@ -482,7 +483,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
       backgroundColor: const Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
-      initiallyExpanded: false,
+      initiallyExpanded: indexx == 0,
       title: Row(
         children: [
           Text(

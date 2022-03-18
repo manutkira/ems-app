@@ -102,7 +102,9 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
           _isLoading = false;
         });
       }
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // fetch loan from api
@@ -123,7 +125,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
     } catch (err) {}
   }
 
-  GlobalKey<FormState> _key = GlobalKey<FormState>();
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   // date picker for start date
   void _startDatePicker() {
@@ -174,7 +176,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
           isAdmin
               ? IconButton(
                   onPressed: () async {
-                    await MybottonSheet(
+                    await mybottonSheet(
                       () async {
                         records.LoanRecord loanRecord = records.LoanRecord(
                             amount: doubleParse(amountController.text),
@@ -429,7 +431,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
     );
   }
 
-  Future<dynamic> MybottonSheet(
+  Future<dynamic> mybottonSheet(
     Function function,
     BuildContext context,
     bool isEnglish,
@@ -768,7 +770,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                               pickStart =
                                   DateTime.tryParse(record.date!.toString());
 
-                              await MybottonSheet(() {
+                              await mybottonSheet(() {
                                 records.LoanRecord loanRecord =
                                     records.LoanRecord(
                                         amount:
@@ -785,7 +787,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                             },
                             child: Text('${local?.edit}'),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           RaisedButton(

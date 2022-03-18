@@ -65,6 +65,29 @@ class PayrollService extends BaseService {
     }
   }
 
+  Future<List<Payment>> createManyPayment({
+    required DateTime dateFrom,
+    required DateTime dateTo,
+  }) async {
+    try {
+      Response res = await dio.post(
+        'create-many-payments',
+        data: {
+          "date_from": dateFrom.toIso8601String(),
+          "date_to": dateTo.toIso8601String(),
+        },
+        options: Options(validateStatus: (status) => status == 200),
+      );
+      print(res.data);
+      return paymentsFromJson(res.data[0]);
+    } catch (err) {
+      if (err is DioError) {
+        throw Exception(err.response?.data['message']);
+      }
+      throw Exception(err.toString());
+    }
+  }
+
   Future<List<Payment>> findManyPayments() async {
     try {
       Response res = await dio.get(

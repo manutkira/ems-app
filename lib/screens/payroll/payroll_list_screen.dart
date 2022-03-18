@@ -2,15 +2,19 @@ import 'package:ems/models/attendance_count.dart';
 import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/generate_screen.dart';
+import 'package:ems/screens/payroll/generated_screen.dart';
 import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
+import 'package:ems/services/payroll.dart';
 
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../constants.dart';
 import '../../services/user.dart';
+import '../../services/models/payment.dart';
 
 class PayrollListScreen extends StatefulWidget {
   const PayrollListScreen({Key? key}) : super(key: key);
@@ -22,11 +26,19 @@ class PayrollListScreen extends StatefulWidget {
 class _PayrollListScreenState extends State<PayrollListScreen> {
   // servicers
   final UserService _userService = UserService.instance;
+  final PayrollService _payrollService = PayrollService();
   // final AttendanceService _attendanceService = AttendanceService.instance;
 
   // list users
   List<User> userList = [];
   List<User> user = [];
+  Payment? payments;
+
+  // datetime
+  final DateRangePickerController _datePickerController =
+      DateRangePickerController();
+  DateTime? startDate = DateTime.now();
+  DateTime? endDate = DateTime.now();
 
   // list attendances
   List<AttendancesWithDate> attendancesList = [];
@@ -82,6 +94,52 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${local?.payment}'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  content: SizedBox(
+                    height: 400,
+                    width: 400,
+                    child: SfDateRangePicker(
+                      todayHighlightColor: kBlueBackground,
+                      startRangeSelectionColor: Colors.green,
+                      endRangeSelectionColor: Colors.green,
+                      rangeSelectionColor: Colors.redAccent,
+                      view: DateRangePickerView.month,
+                      selectionMode:
+                          DateRangePickerSelectionMode.extendableRange,
+                      showActionButtons: true,
+                      controller: _datePickerController,
+                      onSubmit: (p0) async {
+                        setState(() {
+                          startDate =
+                              _datePickerController.selectedRange?.startDate;
+                          endDate =
+                              _datePickerController.selectedRange?.endDate;
+                        });
+                        Navigator.of(context).pop();
+                        if (startDate != null && endDate != null) {
+                          await createOne(
+                              startDate as DateTime, endDate as DateTime);
+                        }
+
+                        _datePickerController.selectedRange = null;
+                      },
+                      onCancel: () {
+                        Navigator.pop(context);
+                        _datePickerController.selectedRange = null;
+                      },
+                    ),
+                  ),
+                ),
+              );
+            },
+            icon: Icon(Icons.add),
+          ),
+        ],
       ),
       body: Container(
         width: double.infinity,
@@ -399,5 +457,43 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
         ),
       ),
     );
+  }
+
+  createOne(DateTime dateFrom, DateTime dateTo) async {
+    AppLocalizations? local = AppLocalizations.of(context);
+    try {
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('${local?.adding}'),
+                content: Flex(
+                  direction: Axis.horizontal,
+                  children: const [
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 100),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ));
+      List<Payment> payment = await _payrollService.createManyPayment(
+          dateFrom: dateFrom, dateTo: dateTo);
+      // print('asd $payment');
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => GeneratedScreen(
+            payment: payment,
+          ),
+        ),
+      );
+    } catch (err, sdk) {
+      rethrow;
+    }
   }
 }
