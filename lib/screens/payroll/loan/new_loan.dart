@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/services/loan.dart';
@@ -21,8 +23,8 @@ class NewLoanScreen extends StatefulWidget {
 
 class _NewLoanScreenState extends State<NewLoanScreen> {
   // service
-  UserService _userService = UserService.instance;
-  LoanService _loanService = LoanService();
+  final UserService _userService = UserService.instance;
+  final LoanService _loanService = LoanService();
 
   // user list
   List<User> userList = [];
@@ -55,10 +57,12 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
         userList = userDisplay;
         _isloading = false;
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
-  GlobalKey<FormState> _key = GlobalKey<FormState>();
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   // date picker for start date
   void _startDatePicker() {
@@ -93,7 +97,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Loan'),
+        title: Text('${local?.loan}'),
       ),
       body: _isloading
           ? Center(
@@ -111,11 +115,12 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
               key: _key,
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 30, top: 10, right: 17),
+                    padding:
+                        const EdgeInsets.only(left: 30, top: 10, right: 17),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -133,8 +138,8 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                               }
                               return null;
                             },
-                            decoration: InputDecoration(
-                              errorStyle: const TextStyle(
+                            decoration: const InputDecoration(
+                              errorStyle: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                               ),

@@ -137,7 +137,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
                 ),
               );
             },
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
           ),
         ],
       ),
@@ -493,7 +493,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
           ),
         ),
       );
-    } catch (err, sdk) {
+    } catch (err) {
       rethrow;
     }
   }

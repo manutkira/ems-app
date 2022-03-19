@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors
+
 import 'package:ems/screens/employee/widgets/employee_list/employee_list.dart';
 import 'package:flutter/material.dart';
 

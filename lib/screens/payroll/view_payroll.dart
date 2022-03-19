@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import '../../services/payroll.dart' as new_service;
 import '../../services/models/payroll.dart' as new_model;
 
+// ignore: must_be_immutable
 class ViewPayrollScreen extends ConsumerStatefulWidget {
   int paymentId;
   ViewPayrollScreen({
@@ -30,7 +31,7 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
   new_model.Payroll? payroll;
 
   // text editing controll
-  TextEditingController _loanController = TextEditingController();
+  final TextEditingController _loanController = TextEditingController();
 
   // boolean
   bool _isLoading = true;
@@ -114,7 +115,7 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                         children: [
                           Text(
                             '${local?.payrollDate}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
                             ),
@@ -153,7 +154,7 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                         children: [
                           Text(
                             '${local?.status}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
                             ),
@@ -183,7 +184,7 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                         children: [
                           Text(
                             '${local?.dayOfWork}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
                             ),
@@ -208,7 +209,7 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                         children: [
                           Text(
                             '${local?.basicSalary}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
                             ),
@@ -233,7 +234,7 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                         children: [
                           Text(
                             '${local?.loan}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
                             ),
@@ -241,13 +242,14 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                           payroll!.status!
                               ? Text('\$${payroll!.loan.toString()}')
                               : AnimatedContainer(
-                                  duration: Duration(milliseconds: 400),
+                                  duration: const Duration(milliseconds: 400),
                                   width: _isfolded ? 76 : 120,
                                   height: _isfolded ? 30 : 56,
-                                  decoration: BoxDecoration(),
+                                  decoration: const BoxDecoration(),
                                   child: _isfolded
                                       ? AnimatedContainer(
-                                          duration: Duration(milliseconds: 400),
+                                          duration:
+                                              const Duration(milliseconds: 400),
                                           child: RaisedButton(
                                             color: Colors.black,
                                             elevation: 10,
@@ -261,14 +263,15 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                                             },
                                             child: Text(
                                               '${local?.input}',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 color: kWhite,
                                               ),
                                             ),
                                           ),
                                         )
                                       : Container(
-                                          padding: EdgeInsets.only(left: 16),
+                                          padding:
+                                              const EdgeInsets.only(left: 16),
                                           child: !_isfolded
                                               ? Flex(
                                                   direction: Axis.horizontal,
@@ -305,7 +308,7 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                         children: [
                           Text(
                             '${local?.netSalary}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
                             ),

@@ -18,6 +18,7 @@ import '../../constants.dart';
 import '../../services/payroll.dart' as new_service;
 import '../../services/models/payment.dart' as new_model;
 
+// ignore: must_be_immutable
 class GeneratePaymentScreen extends ConsumerStatefulWidget {
   int id;
   GeneratePaymentScreen({
@@ -82,7 +83,9 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
           });
         }
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // fetch payroll from api

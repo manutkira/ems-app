@@ -11,6 +11,7 @@ import '../../services/models/payment.dart';
 import '../../models/user.dart';
 import '../../services/user.dart';
 
+// ignore: must_be_immutable
 class GeneratedScreen extends StatefulWidget {
   List<Payment>? payment;
   GeneratedScreen({

@@ -1162,6 +1162,10 @@
   "@generatedPayment": {
     "description": "take attendance"
   },
+  "noLoanRecord": "No loan has been recorded yet!",
+  "@onLoanRecord": {
+    "description": "take attendance"
+  },
   "payrollAndLoan": "Payroll and Loan",
   "@payrollAndLoan": {
     "description": "home screen"

@@ -1,4 +1,4 @@
-import 'dart:convert';
+// ignore_for_file: deprecated_member_use
 
 import 'package:ems/services/models/rating.dart';
 import 'package:flutter/material.dart';
@@ -135,7 +135,6 @@ class EmploymentInfo extends StatelessWidget {
                                           userDisplay[0].name.toString(),
                                           userDisplay[0].phone.toString(),
                                           userDisplay[0].id as int,
-                                          // TODO: CHANGE THIS
                                           "userDisplay[0].position.toString()",
                                           "userDisplay[0].skill.toString()",
                                           userDisplay[0].salary.toString(),
@@ -470,7 +469,6 @@ class EmploymentInfo extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
                                             children: [
-                                              // ignore: deprecated_member_use
                                               RaisedButton(
                                                 onPressed: () async {
                                                   if (_key.currentState!
@@ -497,7 +495,6 @@ class EmploymentInfo extends StatelessWidget {
                                               const SizedBox(
                                                 width: 15,
                                               ),
-                                              // ignore: deprecated_member_use
                                               RaisedButton(
                                                 onPressed: () {
                                                   Navigator.pop(context);
@@ -761,7 +758,6 @@ class EmploymentInfo extends StatelessWidget {
                                                                 MainAxisAlignment
                                                                     .end,
                                                             children: [
-                                                              // ignore: deprecated_member_use
                                                               RaisedButton(
                                                                 onPressed:
                                                                     () async {
@@ -806,7 +802,6 @@ class EmploymentInfo extends StatelessWidget {
                                                               const SizedBox(
                                                                 width: 15,
                                                               ),
-                                                              // ignore: deprecated_member_use
                                                               RaisedButton(
                                                                 onPressed: () {
                                                                   Navigator.pop(
@@ -857,7 +852,6 @@ class EmploymentInfo extends StatelessWidget {
                                               content: Text(
                                                   '${local?.cannotUndone}'),
                                               actions: [
-                                                // ignore: deprecated_member_use
                                                 OutlineButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
@@ -869,7 +863,6 @@ class EmploymentInfo extends StatelessWidget {
                                                   borderSide: const BorderSide(
                                                       color: Colors.green),
                                                 ),
-                                                // ignore: deprecated_member_use
                                                 OutlineButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, unused_field
 
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
@@ -13,7 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../../../services/loan.dart';
-import '../../../services/models/loan_record.dart' as loanRecord;
+import '../../../services/models/loan_record.dart' as loan_record;
 import '../../../services/models/loan_record.dart' as records;
 import '../../../services/user.dart';
 
@@ -62,8 +62,6 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
 
   // tab view
   late TabController _tabController;
-  late Tab _handler;
-  static List<Tab> myTabs = <Tab>[];
 
   // loan
   Loan? loan;
@@ -85,7 +83,9 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
           });
         }
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // fetch loan from api
@@ -122,7 +122,9 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
             .toList();
         _isloading = false;
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
@@ -214,11 +216,11 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                   child: Column(
                     children: [
                       const SizedBox(
-                        height: 90,
+                        height: 190,
                       ),
-                      const Text(
-                        'No loan has been recorded yet!',
-                        style: kHeadingTwo,
+                      Text(
+                        '${local?.noLoanRecord}',
+                        style: isEnglish ? kHeadingThree : kHeadingFour,
                       ),
                       const SizedBox(
                         height: 20,
@@ -552,7 +554,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                                     textInputAction: TextInputAction.next,
                                     decoration: InputDecoration(
                                       hintText: '${local?.enterAmount}',
-                                      errorStyle: TextStyle(
+                                      errorStyle: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -597,12 +599,12 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                                       textInputAction: TextInputAction.done,
                                       maxLines: 5,
                                       decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.only(
+                                        contentPadding: const EdgeInsets.only(
                                           left: 10,
                                           top: 20,
                                         ),
                                         hintText: '${local?.enterReason}',
-                                        errorStyle: TextStyle(
+                                        errorStyle: const TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -868,11 +870,11 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
     }
   }
 
-  updateONe(loanRecord.LoanRecord record) async {
+  updateONe(loan_record.LoanRecord record) async {
     await _loanService.updateOneRecord(record);
   }
 
-  createOne(String id, loanRecord.LoanRecord record) async {
+  createOne(String id, loan_record.LoanRecord record) async {
     AppLocalizations? local = AppLocalizations.of(context);
     try {
       Navigator.pop(context);

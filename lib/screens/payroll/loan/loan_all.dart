@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../services/models/loan.dart';
 import '../../../utils/utils.dart';
-import '../../../services/loan.dart' as newService;
+import '../../../services/loan.dart' as new_service;
 
 class LoanAll extends StatefulWidget {
   const LoanAll({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class LoanAll extends StatefulWidget {
 
 class _LoanAllState extends State<LoanAll> {
   // service
-  final newService.LoanService _loanService = newService.LoanService();
+  final new_service.LoanService _loanService = new_service.LoanService();
 
   // loan all list
   List<Loan> loanAllList = [];
@@ -46,7 +46,9 @@ class _LoanAllState extends State<LoanAll> {
         loan = loanAllList;
         _isloading = false;
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
@@ -68,13 +70,13 @@ class _LoanAllState extends State<LoanAll> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => NewLoanScreen(),
+                  builder: (_) => const NewLoanScreen(),
                 ),
               );
               loanAllList = [];
               fetchLoanAll();
             },
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
           ),
         ],
       ),

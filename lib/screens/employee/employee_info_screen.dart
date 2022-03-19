@@ -1,13 +1,10 @@
-// ignore_for_file: prefer_const_declarations, unused_local_variable
-
-import 'dart:convert';
+// ignore_for_file: prefer_const_declarations, unused_local_variable, unused_field
 
 import 'package:ems/screens/employee/widgets/employee_info/employment_info.dart';
 import 'package:ems/screens/employee/widgets/employee_info/personal_info.dart';
 import 'package:ems/utils/services/position_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/user_service.dart';
@@ -145,7 +142,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
           });
         }
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override

@@ -1,12 +1,11 @@
+// ignore_for_file: use_key_in_widget_constructors
+
 import 'dart:io';
-import 'dart:convert';
 import 'package:ems/models/user.dart';
-import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/image_input/new_emp_id_img.dart';
 import 'package:ems/widgets/image_input/new_emp_profile_img.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../constants.dart';
@@ -19,7 +18,7 @@ class NewEmployeeScreen extends StatefulWidget {
 
 class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
   // service
-  UserService _userService = UserService();
+  final UserService _userService = UserService();
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/image";
   String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
@@ -95,7 +94,8 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                                   Navigator.of(context).pop();
                                 },
                                 child: Text('${local?.yes}'),
-                                borderSide: BorderSide(color: Colors.green),
+                                borderSide:
+                                    const BorderSide(color: Colors.green),
                               ),
                               // ignore: deprecated_member_use
                               OutlineButton(
@@ -639,117 +639,5 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
                 ],
               ));
     }
-  }
-
-  addNewEmployee() async {
-    AppLocalizations? local = AppLocalizations.of(context);
-    var aName = name.text;
-    var aPhone = phone.text;
-    var aEmail = email.text;
-    var aAddress = address.text;
-    var aRole = dropDownValue1;
-    var aStatus = dropDownValue;
-    var apassword = password.text;
-    var aBackground = background.text;
-    var request = await http.MultipartRequest('POST', Uri.parse(urlUser));
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Content": "charset-UTF-8",
-    };
-    if (pickedImg != null) {
-      request.files.add(http.MultipartFile(
-          'image', pickedImg!.readAsBytes().asStream(), pickedImg!.lengthSync(),
-          filename: pickedImg!.path.split('/').last));
-    }
-    if (pickedId != null) {
-      request.files.add(http.MultipartFile('image_id',
-          pickedId!.readAsBytes().asStream(), pickedId!.lengthSync(),
-          filename: pickedId!.path.split('/').last));
-    }
-    request.files.add(http.MultipartFile.fromString('name', aName));
-    request.files.add(http.MultipartFile.fromString('phone', aPhone));
-    request.files.add(http.MultipartFile.fromString('email', aEmail));
-    request.files.add(http.MultipartFile.fromString('address', aAddress));
-
-    String checkRole() {
-      if (aRole == local?.employee) {
-        return 'employee';
-      }
-      if (aRole == local?.admin) {
-        return 'admin';
-      } else {
-        return '';
-      }
-    }
-
-    request.files.add(http.MultipartFile.fromString('role', checkRole()));
-
-    String checkStatus() {
-      if (aStatus == local?.active) {
-        return 'active';
-      }
-      if (aStatus == local?.inactive) {
-        return 'inactive';
-      }
-      if (aStatus == local?.resigned) {
-        return 'resigned';
-      }
-      if (aStatus == local?.fired) {
-        return 'fired';
-      } else {
-        return '';
-      }
-    }
-
-    request.files.add(http.MultipartFile.fromString('status', checkStatus()));
-    request.files.add(http.MultipartFile.fromString('password', apassword));
-    request.files.add(http.MultipartFile.fromString('background', aBackground));
-    request.headers.addAll(headers);
-
-    var res = await request.send();
-    print(res.statusCode);
-    if (res.statusCode != 201) {
-      Navigator.pop(context);
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text('${local?.failed}',
-                    style: const TextStyle(color: Colors.red)),
-                content: Text('${local?.addFail}'),
-                actions: [
-                  // ignore: deprecated_member_use
-                  OutlineButton(
-                    borderSide: const BorderSide(color: Colors.red),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('${local?.back}',
-                        style: const TextStyle(color: Colors.red)),
-                  ),
-                ],
-              ));
-    }
-    if (res.statusCode == 201) {
-      Navigator.of(context).pop();
-      showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text('${local?.success}'),
-                content: Text('${local?.newEmpAdded}'),
-                actions: [
-                  // ignore: deprecated_member_use
-                  OutlineButton(
-                    borderSide: const BorderSide(color: Colors.green),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                    child: Text('${local?.done}'),
-                  ),
-                ],
-              ));
-    }
-    res.stream.transform(utf8.decoder).listen((event) {});
   }
 }

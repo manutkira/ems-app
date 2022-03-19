@@ -1,3 +1,5 @@
+// ignore_for_file: await_only_futures
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:ems/screens/employee/widgets/employee_edit.dart/edit_personal.dart';
@@ -5,9 +7,6 @@ import 'package:ems/screens/employee/widgets/employee_edit.dart/edit_personal.da
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-
-import '../../services/user.dart';
-import '../../models/user.dart';
 
 class EmployeeEditScreen extends StatefulWidget {
   final int id;
@@ -48,9 +47,6 @@ class EmployeeEditScreen extends StatefulWidget {
 }
 
 class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
-  // service
-  final UserService _userService = UserService();
-
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
   // text controller
@@ -220,17 +216,6 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   updatePersonal() async {
     AppLocalizations? local = AppLocalizations.of(context);
     try {
-      User user = User(
-        name: nameController.text,
-        phone: phoneController.text,
-        email: emailController.text,
-        address: addressController.text,
-        background: backgroundController.text,
-        id: widget.id,
-      );
-      User updatedUser = await _userService.updateOne(user,
-          image: pickedImg, imageId: pickedId);
-
       Navigator.pop(context);
       showDialog(
           context: context,

@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:ems/models/bank.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -43,8 +40,6 @@ class PersonalInfo extends StatelessWidget {
 
     // key
     GlobalKey<FormState> _key = GlobalKey<FormState>();
-
-    String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
     // add new bank info to api
     createOneBank(model_bank.Bank bank) async {
@@ -118,7 +113,6 @@ class PersonalInfo extends StatelessWidget {
                                         userDisplay[0].phone.toString(),
                                         userDisplay[0].email.toString(),
                                         userDisplay[0].address.toString(),
-                                        // TODO: CHANGE HERE
                                         "userDisplay[0].position.toString()",
                                         "userDisplay[0].skill.toString()",
                                         userDisplay[0].salary.toString(),

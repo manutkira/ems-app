@@ -57,7 +57,9 @@ class _EmployeeListState extends State<EmployeeList> {
           _isLoading = false;
         });
       }
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // delete user from api

@@ -1,16 +1,13 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, must_be_immutable
 
 // import 'package:ems/models/loan.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/services/models/payment.dart';
-import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
 
 import '../../../constants.dart';
-import '../../../utils/utils.dart';
 import '../../../services/loan.dart' as new_service;
 import '../../../services/models/loan.dart';
 
@@ -50,7 +47,9 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
             .toList();
         _isloading = false;
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   @override
@@ -62,7 +61,7 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
-    bool isEnglish = isInEnglish(context);
+    // bool isEnglish = isInEnglish(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('${local?.loan}'),
@@ -133,14 +132,14 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                         children: [
                           Text(
                             '${local?.totalAmount}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
                             ),
                           ),
                           Text(
                             '\$${loan!.amountTotal.toString()}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 14,
                             ),
                           ),
@@ -154,14 +153,14 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                         children: [
                           Text(
                             '${local?.repay}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
                             ),
                           ),
                           Text(
                             '\$${loan!.repay.toString()}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 14,
                             ),
                           ),
@@ -175,14 +174,14 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                         children: [
                           Text(
                             '${local?.remain}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
                             ),
                           ),
                           Text(
                             '\$${loan!.remain.toString()}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 14,
                             ),
                           ),
