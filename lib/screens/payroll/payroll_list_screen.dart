@@ -463,6 +463,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
     AppLocalizations? local = AppLocalizations.of(context);
     try {
       showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (ctx) => AlertDialog(
                 title: Text('${local?.adding}'),

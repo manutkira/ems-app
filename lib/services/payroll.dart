@@ -78,8 +78,7 @@ class PayrollService extends BaseService {
         },
         options: Options(validateStatus: (status) => status == 200),
       );
-      print(res.data);
-      return paymentsFromJson(res.data[0]);
+      return paymentsFromJson(res.data);
     } catch (err) {
       if (err is DioError) {
         throw Exception(err.response?.data['message']);

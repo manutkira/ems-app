@@ -877,6 +877,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
     try {
       Navigator.pop(context);
       showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (ctx) => AlertDialog(
                 title: Text('${local?.adding}'),

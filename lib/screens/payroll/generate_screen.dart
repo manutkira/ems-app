@@ -57,8 +57,6 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
 
   // tab view
   late TabController _tabController;
-  late Tab _handler;
-  static List<Tab> myTabs = <Tab>[];
 
   // string
   String dropDownValue = '';
@@ -164,7 +162,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
               ? Padding(
                   padding: const EdgeInsets.all(8),
                   child: IconButton(
-                    icon: Icon(Icons.add),
+                    icon: const Icon(Icons.add),
                     // elevation: 10,
                     // shape: RoundedRectangleBorder(
                     //     borderRadius: BorderRadius.circular(10)),
@@ -308,7 +306,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                                   Row(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.all(18.0),
+                                        padding: const EdgeInsets.all(18.0),
                                         child: Text(
                                           '${local?.pendingList}',
                                           style: const TextStyle(
@@ -325,7 +323,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                                             padding: const EdgeInsets.all(12.0),
                                             child: Column(
                                               children: [
-                                                SizedBox(
+                                                const SizedBox(
                                                   height: 90,
                                                 ),
                                                 Text(
@@ -334,7 +332,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                                                       ? kHeadingThree
                                                       : kHeadingFour,
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   height: 20,
                                                 ),
                                                 Text(
@@ -364,7 +362,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                               Column(
                                 children: [
                                   Padding(
-                                    padding: EdgeInsets.all(18.0),
+                                    padding: const EdgeInsets.all(18.0),
                                     child: Row(
                                       children: [
                                         Text(
@@ -383,7 +381,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                                             padding: const EdgeInsets.all(12.0),
                                             child: Column(
                                               children: [
-                                                SizedBox(
+                                                const SizedBox(
                                                   height: 90,
                                                 ),
                                                 Text(
@@ -392,7 +390,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                                                       ? kHeadingThree
                                                       : kHeadingFour,
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   height: 20,
                                                 ),
                                                 Text(
@@ -494,7 +492,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
               fontWeight: FontWeight.w500,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Container(
@@ -586,7 +584,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                         '${local?.optionView}',
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     isAdmin
@@ -642,6 +640,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
     AppLocalizations? local = AppLocalizations.of(context);
     try {
       showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (ctx) => AlertDialog(
                 title: Text('${local?.adding}'),

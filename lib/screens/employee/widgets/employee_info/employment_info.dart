@@ -72,7 +72,6 @@ class EmploymentInfo extends StatelessWidget {
     // edit rate from api
     updateRate(Rating rate) async {
       await _rateService.updateOne(rate);
-      print(rate.score);
     }
 
     GlobalKey<FormState> _key = GlobalKey<FormState>();

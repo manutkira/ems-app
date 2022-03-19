@@ -711,6 +711,7 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
     if (res.statusCode != 201) {
       Navigator.pop(context);
       showDialog(
+          barrierDismissible: false,
           context: context,
           builder: (ctx) => AlertDialog(
                 title: Text('${local?.failed}',
