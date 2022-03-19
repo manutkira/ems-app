@@ -338,7 +338,8 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                                                 Text(
                                                   '🤷🏼',
                                                   style: kHeadingTwo.copyWith(
-                                                      fontSize: 50),
+                                                    fontSize: 50,
+                                                  ),
                                                 )
                                               ],
                                             ),

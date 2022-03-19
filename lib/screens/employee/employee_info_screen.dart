@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_declarations, unused_local_variable
+
 import 'dart:convert';
 
 import 'package:ems/screens/employee/widgets/employee_info/employment_info.dart';
@@ -95,7 +97,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
           });
         }
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // fetch rate from api
@@ -109,7 +113,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
           });
         }
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // fetch bank info from api
@@ -123,7 +129,9 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
           });
         }
       });
-    } catch (err) {}
+    } catch (err) {
+      rethrow;
+    }
   }
 
   // fetch position from api
@@ -381,7 +389,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                                               color:
                                                                   Colors.white,
                                                             )),
-                                                            child: Text(
+                                                            child: const Text(
                                                                 'No Image'))
                                                         : Container(
                                                             decoration:
@@ -426,7 +434,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                                                               color:
                                                                   Colors.white,
                                                             )),
-                                                            child: Text(
+                                                            child: const Text(
                                                                 'No Image'))
                                                         : Container(
                                                             decoration:

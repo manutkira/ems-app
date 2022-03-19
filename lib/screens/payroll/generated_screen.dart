@@ -1,13 +1,15 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:ems/constants.dart';
 import 'package:ems/screens/payroll/generate_screen.dart';
-import 'package:ems/screens/payroll/loan/loan_record.dart';
-import 'package:ems/screens/payroll/view_payroll.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../services/models/payment.dart';
+import '../../models/user.dart';
+import '../../services/user.dart';
 
 class GeneratedScreen extends StatefulWidget {
   List<Payment>? payment;
@@ -21,6 +23,36 @@ class GeneratedScreen extends StatefulWidget {
 }
 
 class _GeneratedScreenState extends State<GeneratedScreen> {
+  // service
+  final UserService _userService = UserService();
+
+  // list user
+  List<User> userList = [];
+
+  // boolean
+  bool _isLoading = true;
+
+  // fetch data from api
+  fetchManyUser() async {
+    _isLoading = true;
+    try {
+      List<User> userDisplay = await _userService.findMany();
+      setState(() {
+        userList =
+            userDisplay.where((element) => element.status == 'active').toList();
+        _isLoading = false;
+      });
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchManyUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
@@ -28,189 +60,190 @@ class _GeneratedScreenState extends State<GeneratedScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'created',
+          '${local?.payment}',
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Text(
-                  'Payment List',
-                  style: kHeadingThree,
-                )
-              ],
-            ),
-          ),
-          Expanded(
-              child: ListView.builder(
-            itemBuilder: (context, index) {
-              return ExpansionTile(
-                collapsedBackgroundColor: const Color(0xff254973),
-                backgroundColor: const Color(0xff254973),
-                textColor: Colors.white,
-                iconColor: Colors.white,
-                initiallyExpanded: false,
-                title: Row(
+      body: _isLoading
+          ? Container(
+              padding: const EdgeInsets.only(top: 320),
+              alignment: Alignment.center,
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      DateFormat('dd/MM/yyyy')
-                          .format(widget.payment![index].dateFrom!),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    Text('${local?.fetchData}'),
+                    const SizedBox(
+                      height: 10,
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: widget.payment![index].status == false
-                            ? Colors.orange
-                            : Colors.green,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.8),
-                        child: Text(
-                          widget.payment![index].status == false
-                              ? '${local?.pending}'
-                              : '${local?.paid}',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
+                    Image.asset(
+                      'assets/images/Gear-0.5s-200px.gif',
+                      width: 60,
+                    )
                   ],
                 ),
-                children: [
-                  Container(
-                    color: Colors.black38,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 20,
-                        right: 20,
-                        bottom: 18,
-                        top: 10,
-                      ),
-                      child: Column(
+              ),
+            )
+          : Column(
+              children: [
+                SizedBox(
+                  height: isEnglish ? 0 : 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 8,
+                    left: 18,
+                    right: 15,
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        '${local?.generatedPayment}',
+                        style: kHeadingThree,
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Expanded(
+                    child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    return ExpansionTile(
+                      collapsedBackgroundColor: const Color(0xff254973),
+                      backgroundColor: const Color(0xff254973),
+                      textColor: Colors.white,
+                      iconColor: Colors.white,
+                      initiallyExpanded: false,
+                      title: Row(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Ref no'),
-                              Text(widget.payment![index].refNo!),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('${local?.from}'),
-                              Text(
-                                DateFormat('dd-MM-yyyy').format(widget
-                                    .payment![index].dateFrom as DateTime),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('${local?.to}'),
-                              Text(
-                                DateFormat('dd-MM-yyyy').format(
-                                    widget.payment![index].dateTo as DateTime),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              RaisedButton(
-                                elevation: 10,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                color: kBlack,
-                                onPressed: () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => GeneratePaymentScreen(
-                                          id: widget.payment![index].userId!),
-                                    ),
-                                  );
-                                  // payrollList = [];
-                                  // fetchPaymentById();
-                                },
-                                child: Text(
-                                  '${local?.optionView}',
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              // isAdmin
-                              //     ? RaisedButton(
-                              //         child: Text('${local?.delete}'),
-                              //         elevation: 10,
-                              //         shape: RoundedRectangleBorder(
-                              //           borderRadius: BorderRadius.circular(10),
-                              //         ),
-                              //         color: Colors.red,
-                              //         onPressed: () {
-                              //           showDialog(
-                              //             context: context,
-                              //             builder: (ctx) => AlertDialog(
-                              //               title: Text('${local?.areYouSure}'),
-                              //               content: Text('${local?.cannotUndone}'),
-                              //               actions: [
-                              //                 OutlineButton(
-                              //                   onPressed: () async {
-                              //                     // deleteData(record.id!, context);
-                              //                     Navigator.of(context).pop();
-                              //                     // fetchPaymentById();
-                              //                   },
-                              //                   child: Text('${local?.yes}'),
-                              //                   borderSide:
-                              //                       const BorderSide(color: Colors.green),
-                              //                 ),
-                              //                 OutlineButton(
-                              //                   onPressed: () {
-                              //                     Navigator.of(context).pop();
-                              //                   },
-                              //                   borderSide:
-                              //                       const BorderSide(color: Colors.red),
-                              //                   child: Text('${local?.no}'),
-                              //                 )
-                              //               ],
-                              //             ),
-                              //           );
-                              //         },
-                              //       )
-                              //     : Container(),
-                            ],
+                          Text(
+                            userList[index].name!,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                ],
-              );
-            },
-            itemCount: widget.payment!.length,
-          ))
-        ],
-      ),
+                      children: [
+                        Container(
+                          color: Colors.black38,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 20,
+                              right: 20,
+                              bottom: 18,
+                              top: 10,
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Ref no'),
+                                    Text(widget.payment![index].refNo!),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('${local?.userId}'),
+                                    Text(widget.payment![index].userId
+                                        .toString()),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('${local?.status}'),
+                                    Text(widget.payment![index].status!
+                                        ? '${local?.paid}'
+                                        : '${local?.pending}'),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('${local?.from}'),
+                                    Text(
+                                      DateFormat('dd-MM-yyyy').format(widget
+                                          .payment![index]
+                                          .dateFrom as DateTime),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('${local?.to}'),
+                                    Text(
+                                      DateFormat('dd-MM-yyyy').format(widget
+                                          .payment![index].dateTo as DateTime),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    RaisedButton(
+                                      elevation: 10,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      color: kBlueBackground,
+                                      onPressed: () async {
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                GeneratePaymentScreen(
+                                                    id: widget.payment![index]
+                                                        .userId!),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        '${local?.optionView}',
+                                        style: const TextStyle(
+                                          color: kBlack,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                  itemCount: widget.payment!.length,
+                ))
+              ],
+            ),
     );
   }
 }

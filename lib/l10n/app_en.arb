@@ -1158,6 +1158,10 @@
   "@repayRecord": {
     "description": "take attendance"
   },
+  "generatedPayment": "Generated Payment",
+  "@generatedPayment": {
+    "description": "take attendance"
+  },
   "payrollAndLoan": "Payroll and Loan",
   "@payrollAndLoan": {
     "description": "home screen"
