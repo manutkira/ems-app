@@ -1,4 +1,5 @@
 import 'package:ems/constants.dart';
+import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
 import 'package:ems/screens/payroll/loan/new_loan.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -41,11 +42,13 @@ class _LoanAllState extends State<LoanAll> {
     });
     try {
       List<Loan> loanAllDIsplay = await _loanService.findManyLoans();
-      setState(() {
-        loanAllList = loanAllDIsplay;
-        loan = loanAllList;
-        _isloading = false;
-      });
+      if (mounted) {
+        setState(() {
+          loanAllList = loanAllDIsplay;
+          loan = loanAllList;
+          _isloading = false;
+        });
+      }
     } catch (err) {
       rethrow;
     }
@@ -254,14 +257,15 @@ class _LoanAllState extends State<LoanAll> {
                                                 // );
                                               }
                                               if (selectedValue == 1) {
-                                                int id = loanAllList[index]
+                                                String id = loanAllList[index]
                                                     .user!
-                                                    .id as int;
+                                                    .id
+                                                    .toString();
                                                 await Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (_) =>
-                                                            LoanTotalIndividual(
+                                                            LoanRecord(
                                                               id: id,
                                                             )));
                                                 loanAllList = [];

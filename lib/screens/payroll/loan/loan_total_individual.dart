@@ -96,34 +96,9 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                   height: 40,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  padding: const EdgeInsets.only(left: 25, right: 25),
                   child: Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          RaisedButton(
-                            color: Colors.black,
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            onPressed: () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      LoanRecord(id: loan!.user!.id.toString()),
-                                ),
-                              );
-                              fetchOneLoan();
-                            },
-                            child: Text(
-                              '${local?.viewRecord}',
-                            ),
-                          )
-                        ],
-                      ),
                       const SizedBox(
                         height: 10,
                       ),
@@ -192,6 +167,31 @@ class _LoanTotalIndividualState extends State<LoanTotalIndividual> {
                       ),
                       const SizedBox(
                         height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          RaisedButton(
+                            color: Colors.black,
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            onPressed: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      LoanRecord(id: loan!.user!.id.toString()),
+                                ),
+                              );
+                              fetchOneLoan();
+                            },
+                            child: Text(
+                              '${local?.viewRecord}',
+                            ),
+                          )
+                        ],
                       ),
                     ],
                   ),

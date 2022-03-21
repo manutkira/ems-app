@@ -12,6 +12,7 @@ class PayrollService extends BaseService {
       );
       var data = res.data;
       var payroll = Payroll.fromJson(data);
+      print(payroll);
       return payroll;
     } catch (err) {
       if (err is DioError) {

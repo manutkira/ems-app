@@ -51,6 +51,7 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
       if (mounted) {
         setState(() {
           payroll = payrollDisplay;
+
           _isLoading = false;
         });
       }

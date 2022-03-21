@@ -6,6 +6,7 @@ import 'package:ems/widgets/image_input/edit_emp_profile.dart';
 
 import '../../../../constants.dart';
 
+// ignore: must_be_immutable
 class EditPersonal extends StatelessWidget {
   final form;
   final Function selectImageId;
@@ -340,8 +341,7 @@ class EditPersonal extends StatelessWidget {
                           context: context,
                           builder: (ctx) => AlertDialog(
                                 title: Text('${local?.areYouSure}'),
-                                content:
-                                    const Text('Your changes will be lost.'),
+                                content: Text('${local?.changesWillLost}'),
                                 actions: [
                                   // ignore: deprecated_member_use
                                   OutlineButton(

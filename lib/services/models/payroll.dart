@@ -61,11 +61,11 @@ class Payroll {
         dateFrom: convertStringToDateTime(json?['date_from']),
         dateTo: convertStringToDateTime(json?['date_to']),
         status: json?['status'],
-        dayOfWork: double.tryParse(json?['day_of_work']),
+        dayOfWork: doubleParse(json?['day_of_work']),
         overtime: convertStringToDuration(json?['overtime']),
-        salary: double.tryParse(json?['salary']),
-        loan: double.tryParse(json?['loan']),
-        netSalary: double.tryParse(json?['netsalary']),
+        salary: doubleParse(json?['salary']),
+        loan: doubleParse(json?['loan']),
+        netSalary: doubleParse(json?['netsalary']),
       );
 
   Map<String, dynamic> toJson() {

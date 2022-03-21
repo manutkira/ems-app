@@ -191,5 +191,9 @@ intParse(dynamic id) {
 
 // parse number from json to double || null
 doubleParse(dynamic number) {
-  return double.tryParse('$number');
+  try {
+    return double.parse('$number');
+  } catch (err) {
+    return 0.0;
+  }
 }

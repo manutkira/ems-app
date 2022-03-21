@@ -9,6 +9,7 @@ import '../../constants.dart';
 import '../../services/attendance.dart';
 import '../../services/models/attendance.dart';
 
+// ignore: must_be_immutable
 class AttedancesEdit extends StatefulWidget {
   final int id;
   final DateTime date;
@@ -67,6 +68,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
   }
 
   // date picker popup
+  // ignore: unused_element
   void _byDayDatePicker() {
     showDatePicker(
       context: context,
@@ -345,6 +347,7 @@ class _AttedancesEditState extends State<AttedancesEdit> {
       id: widget.id,
     );
     showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (ctx) => AlertDialog(
               title: Text('${local?.editing}'),

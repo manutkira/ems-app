@@ -15,6 +15,7 @@ import '../../../../constants.dart';
 import '../../employee_edit_employment.dart';
 import '../../../../services/rating.dart';
 
+// ignore: must_be_immutable
 class EmploymentInfo extends StatelessWidget {
   List<User> userDisplay;
   List<User> user;
@@ -292,6 +293,11 @@ class EmploymentInfo extends StatelessWidget {
                   IconButton(
                       onPressed: () async {
                         await showModalBottomSheet(
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(30),
+                              topLeft: Radius.circular(30),
+                            )),
                             isScrollControlled: true,
                             context: contextt,
                             builder: (_) {
@@ -572,6 +578,11 @@ class EmploymentInfo extends StatelessWidget {
                                         scoreController.text =
                                             rateDisplay[index].score.toString();
                                         await showModalBottomSheet(
+                                            shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(30),
+                                              topLeft: Radius.circular(30),
+                                            )),
                                             isScrollControlled: true,
                                             context: contextt,
                                             builder: (_) {

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +13,7 @@ import '../../employee_edit_screen.dart';
 import '../../../../services/models/bank.dart' as model_bank;
 import '../../../../services/bank.dart' as service_bank;
 
+// ignore: must_be_immutable
 class PersonalInfo extends StatelessWidget {
   List<User> userDisplay;
   List<User> user;
@@ -315,6 +318,11 @@ class PersonalInfo extends StatelessWidget {
                   IconButton(
                     onPressed: () async {
                       await showModalBottomSheet(
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(30),
+                            topLeft: Radius.circular(30),
+                          )),
                           isScrollControlled: true,
                           context: contextt,
                           builder: (_) {
@@ -486,7 +494,6 @@ class PersonalInfo extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           children: [
-                                            // ignore: deprecated_member_use
                                             RaisedButton(
                                               onPressed: () async {
                                                 if (_key.currentState!
@@ -525,7 +532,6 @@ class PersonalInfo extends StatelessWidget {
                                             const SizedBox(
                                               width: 15,
                                             ),
-                                            // ignore: deprecated_member_use
                                             RaisedButton(
                                               onPressed: () {
                                                 Navigator.pop(context);
@@ -649,6 +655,11 @@ class PersonalInfo extends StatelessWidget {
                             accountNumberController.text =
                                 e.accountNumber.toString();
                             await showModalBottomSheet(
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(30),
+                                  topLeft: Radius.circular(30),
+                                )),
                                 isScrollControlled: true,
                                 context: contextt,
                                 builder: (_) {
@@ -845,7 +856,6 @@ class PersonalInfo extends StatelessWidget {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
                                                 children: [
-                                                  // ignore: deprecated_member_use
                                                   RaisedButton(
                                                     onPressed: () async {
                                                       if (_key.currentState!
@@ -882,7 +892,6 @@ class PersonalInfo extends StatelessWidget {
                                                   const SizedBox(
                                                     width: 15,
                                                   ),
-                                                  // ignore: deprecated_member_use
                                                   RaisedButton(
                                                     onPressed: () {
                                                       Navigator.pop(context);
@@ -919,7 +928,6 @@ class PersonalInfo extends StatelessWidget {
                                 title: Text('${local?.areYouSure}'),
                                 content: Text('${local?.cannotUndone}'),
                                 actions: [
-                                  // ignore: deprecated_member_use
                                   OutlineButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
@@ -929,7 +937,6 @@ class PersonalInfo extends StatelessWidget {
                                     borderSide:
                                         const BorderSide(color: Colors.green),
                                   ),
-                                  // ignore: deprecated_member_use
                                   OutlineButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();

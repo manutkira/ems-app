@@ -1166,6 +1166,10 @@
   "@onLoanRecord": {
     "description": "take attendance"
   },
+  "loanDetail": "Loan Detail",
+  "@loanDetail": {
+    "description": "take attendance"
+  },
   "payrollAndLoan": "Payroll and Loan",
   "@payrollAndLoan": {
     "description": "home screen"

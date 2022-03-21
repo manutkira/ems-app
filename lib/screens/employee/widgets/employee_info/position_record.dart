@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, prefer_const_constructors_in_immutables
 
 import 'package:http/http.dart' as http;
 import 'package:ems/utils/utils.dart';
@@ -163,6 +163,11 @@ class _TestPositionState extends State<TestPosition> {
           IconButton(
             onPressed: () async {
               await showModalBottomSheet(
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(30),
+                    topLeft: Radius.circular(30),
+                  )),
                   isScrollControlled: true,
                   context: context,
                   builder: (_) {
@@ -211,7 +216,7 @@ class _TestPositionState extends State<TestPosition> {
                                           direction: Axis.horizontal,
                                           children: [
                                             Flexible(
-                                              child: Container(
+                                              child: SizedBox(
                                                 height: 45,
                                                 child: TextFormField(
                                                   decoration: InputDecoration(
@@ -219,7 +224,7 @@ class _TestPositionState extends State<TestPosition> {
                                                         const EdgeInsets.only(
                                                             left: 10),
                                                     hintText:
-                                                        '${local.enterPosition}',
+                                                        local.enterPosition,
                                                     errorStyle: const TextStyle(
                                                       fontSize: 15,
                                                       fontWeight:
@@ -268,8 +273,7 @@ class _TestPositionState extends State<TestPosition> {
                                           child: TextFormField(
                                             readOnly: true,
                                             decoration: InputDecoration(
-                                              hintText:
-                                                  '${local.selectStartDate}',
+                                              hintText: local.selectStartDate,
                                               suffixIcon: IconButton(
                                                   onPressed: () {
                                                     _startDatePicker();
@@ -323,8 +327,7 @@ class _TestPositionState extends State<TestPosition> {
                                           child: TextFormField(
                                             readOnly: true,
                                             decoration: InputDecoration(
-                                              hintText:
-                                                  '${local.selectEndDate}',
+                                              hintText: local.selectEndDate,
                                               suffixIcon: IconButton(
                                                   onPressed: () {
                                                     _endDatePicker();
@@ -373,7 +376,7 @@ class _TestPositionState extends State<TestPosition> {
                                     },
                                     color: Theme.of(context).primaryColor,
                                     child: Text(
-                                      '${local.save}',
+                                      local.save,
                                       style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
@@ -392,7 +395,7 @@ class _TestPositionState extends State<TestPosition> {
                                     },
                                     color: Colors.red,
                                     child: Text(
-                                      '${local.cancel}',
+                                      local.cancel,
                                       style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
@@ -606,6 +609,11 @@ class _TestPositionState extends State<TestPosition> {
                                                 .toString());
                                       }
                                       await showModalBottomSheet(
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(30),
+                                            topLeft: Radius.circular(30),
+                                          )),
                                           isScrollControlled: true,
                                           context: context,
                                           builder: (_) {

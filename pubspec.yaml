@@ -59,6 +59,7 @@ dependencies:
   internet_connection_checker: ^0.0.1+3
   syncfusion_flutter_datepicker: ^19.4.52
   dio: ^4.0.4
+  pdf: ^3.7.3
 
 dev_dependencies:
   hive_generator: ^1.1.1
