@@ -19,7 +19,7 @@ class MenuItem extends StatelessWidget {
     return Material(
       color: kLightBlue,
       child: InkWell(
-        splashColor: kBlue.withOpacity(0.25),
+        highlightColor: kBlue.withOpacity(0.25),
         onTap: onTap,
         child: AspectRatio(
           aspectRatio: 1,

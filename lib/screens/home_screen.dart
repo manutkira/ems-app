@@ -248,37 +248,40 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                 vertical: 12,
                 horizontal: 15,
               ),
-              child: GestureDetector(
-                onTap: _goToCheckInScreen,
-                child: SizedBox(
-                  width: _size.width,
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: kLightBlue,
-                        borderRadius: BorderRadius.all(kBorderRadius),
-                      ),
-                      padding: kPaddingAll,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            "assets/images/scan-qr-code-icon.svg",
-                            height: 100,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(kBorderRadius),
+                child: Material(
+                  color: kLightBlue,
+                  child: InkWell(
+                    highlightColor: kBlue.withOpacity(0.25),
+                    onTap: _goToCheckInScreen,
+                    child: SizedBox(
+                      width: _size.width,
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: Container(
+                          width: double.infinity,
+                          padding: kPaddingAll,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                "assets/images/scan-qr-code-icon.svg",
+                                height: 100,
+                              ),
+                              Text(
+                                "${local?.checkInOut}",
+                                style: kSubtitle.copyWith(
+                                  color: kBlack,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18,
+                                ),
+                                textAlign: TextAlign.center,
+                              )
+                            ],
                           ),
-                          Text(
-                            "${local?.checkInOut}",
-                            style: kSubtitle.copyWith(
-                              color: kBlack,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18,
-                            ),
-                            textAlign: TextAlign.center,
-                          )
-                        ],
+                        ),
                       ),
                     ),
                   ),
