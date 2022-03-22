@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:ems/models/bank.dart';
 import 'package:ems/services/base.dart';
-import 'package:ems/services/models/bank.dart';
 
 class BankService extends BaseService {
   static BankService get instance => BankService();

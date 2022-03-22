@@ -1,32 +1,56 @@
+import '../utils/utils.dart';
+
+List<Position> positionsFromJson(List<dynamic>? list) {
+  if (list == null) return [];
+
+  return list.map((json) => Position.fromJson(json)).toList();
+}
+
 class Position {
-  int id;
-  int userId;
-  String positionName;
-  String startDate;
-  String? endDate;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  int? id;
+  int? userId;
+  String? name; // title
+  DateTime? startDate;
+  DateTime? endDate;
+
   Position({
-    required this.id,
-    required this.userId,
-    required this.positionName,
-    required this.startDate,
-    required this.endDate,
-    this.createdAt,
-    this.updatedAt,
+    this.id,
+    this.userId,
+    this.name,
+    this.startDate,
+    this.endDate,
   });
 
-  factory Position.fromJson(Map<String, dynamic> json) => Position(
-        positionName: json["position_name"],
-        startDate: json["start_date"],
-        endDate: json["end_date"],
-        id: json["id"],
-        userId: json["user_id"],
-        createdAt: json["created_at"] == null
-            ? null
-            : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null
-            ? null
-            : DateTime.parse(json["updated_at"]),
+  factory Position.fromJson(Map<String, dynamic>? json) => Position(
+        id: intParse(json?['id']),
+        userId: intParse(json?['user_id']),
+        name: json?['position_name'],
+        startDate: convertStringToDateTime(json?['start_date']),
+        endDate: convertStringToDateTime(json?['end_date']),
+      );
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "user_id": userId,
+      "position_name": name,
+      "start_date": startDate?.toIso8601String(),
+      "end_date": endDate?.toIso8601String(),
+    };
+  }
+
+  Position copyWith({
+    int? id,
+    int? userId,
+    String? name, // title
+    DateTime? startDate,
+    DateTime? endDate,
+  }) =>
+      Position(
+        id: id ?? this.id,
+        userId: userId ?? this.userId,
+        name: name ?? this.name,
+        startDate: startDate ?? this.startDate,
+        endDate: endDate ?? this.endDate,
       );
 }

@@ -1,12 +1,11 @@
-import 'package:ems/services/models/attendance.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:ems/models/attendance.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/attendance_edit.dart';
 import 'package:ems/screens/attendances_api/view_attendance.dart';
 import 'package:ems/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../constants.dart';
 

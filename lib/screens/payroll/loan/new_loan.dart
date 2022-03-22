@@ -11,8 +11,8 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../constants.dart';
+import '../../../models/loan_record.dart' as record;
 import '../../../utils/utils.dart';
-import '../../../services/models/loan_record.dart' as record;
 
 class NewLoanScreen extends StatefulWidget {
   const NewLoanScreen({Key? key}) : super(key: key);

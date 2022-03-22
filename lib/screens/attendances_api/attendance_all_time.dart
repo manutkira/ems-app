@@ -9,7 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 import '../../services/attendance.dart';
-import '../../services/models/attendance.dart';
+import '../../models/attendance.dart';
 
 class AttendanceAllTimeScreen extends StatefulWidget {
   @override

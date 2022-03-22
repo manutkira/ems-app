@@ -4,10 +4,10 @@ import 'package:ems/constants.dart';
 import 'package:ems/screens/payroll/generate_screen.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
-import '../../services/models/payment.dart';
+import '../../models/payment.dart';
 import '../../models/user.dart';
 import '../../services/user.dart';
 

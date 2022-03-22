@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:ems/models/loan.dart';
+import 'package:ems/models/loan_record.dart';
 import 'package:ems/services/base.dart';
-import 'package:ems/services/models/loan.dart';
-import 'package:ems/services/models/loan_record.dart';
 
 class LoanService extends BaseService {
   Future<List<LoanRecord>> findManyRecords(String userId) async {

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:ems/models/position.dart';
 import 'package:ems/services/base.dart';
-import 'package:ems/services/models/position.dart';
 
 class PositionService extends BaseService {
   static PositionService get instance => PositionService();

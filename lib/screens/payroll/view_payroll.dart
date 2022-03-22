@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:ems/constants.dart';
+import 'package:ems/models/payroll.dart' as new_model;
 import 'package:ems/persistence/current_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../services/payroll.dart' as new_service;
-import '../../services/models/payroll.dart' as new_model;
 
 // ignore: must_be_immutable
 class ViewPayrollScreen extends ConsumerStatefulWidget {

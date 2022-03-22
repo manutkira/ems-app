@@ -1,4 +1,4 @@
-import '../../utils/utils.dart';
+import '../utils/utils.dart';
 
 List<Payment> paymentsFromJson(List<dynamic>? list) {
   if (list == null) return [];

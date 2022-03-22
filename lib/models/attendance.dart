@@ -1,145 +1,183 @@
-import 'dart:convert';
+import 'package:ems/utils/utils.dart';
+import 'package:flutter/material.dart';
 
-import 'package:ems/models/user.dart';
+import 'user.dart';
 
-List<AttendanceWithDate> attendancesByDayFromJson(Map<String, dynamic> list) {
-  List<AttendanceWithDate> awdlist = [];
+List<AttendancesByDate> attendancesByDatesFromJson(Map<String, dynamic>? json) {
+  if (json == null) return [];
+  return json.entries
+      .map((entry) => AttendancesByDate.fromJson(entry))
+      .toList();
+}
 
-  list.forEach((key, value) {
-    var awd = AttendanceWithDate(
-        date: DateTime.parse(key), list: attendancesFromJson(value));
-    awdlist.add(awd);
+class AttendancesByDate {
+  DateTime? date;
+  List<Attendance>? attendances;
+
+  AttendancesByDate({
+    this.date,
+    this.attendances,
   });
 
-  /// lists here to send back to service.
-  return awdlist;
-}
-
-List<Attendance> attendancesFromAttendancesByDay(
-  List<AttendanceWithDate> awds,
-) {
-  List<Attendance> attendances = [];
-  try {
-    // flatten the list to get the attendances
-    attendances = awds.expand((element) => element.list).toList();
-  } catch (e) {
-    return [];
+  factory AttendancesByDate.fromJson(MapEntry<String, dynamic>? entry) {
+    return AttendancesByDate(
+      date: convertStringToDateTime(entry?.key),
+      attendances: attendancesFromJson(entry?.value),
+    );
   }
-  return attendances;
-}
 
-class AttendanceWithDate {
-  DateTime date;
-  List<Attendance> list;
-
-  AttendanceWithDate({required this.date, required this.list});
-
-  AttendanceWithDate copyWith({
+  AttendancesByDate copyWith({
     DateTime? date,
-    List<Attendance>? list,
+    List<Attendance>? attendances,
   }) =>
-      AttendanceWithDate(date: date ?? this.date, list: list ?? this.list);
+      AttendancesByDate(
+        date: date ?? this.date,
+        attendances: attendances ?? this.attendances,
+      );
 }
 
-List<Attendance> attendancesFromJson(List<dynamic> list) {
-  return List<Attendance>.from(list.map((x) => Attendance.fromJson(x)));
-}
+List<Attendance> attendancesFromJson(List<dynamic>? list) {
+  if (list == null) return [];
 
-String attendancesToJson(List<Attendance> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-class AttendanceType {
-  static String get typeCheckIn => "checkin";
-  static String get typeCheckOut => "checkout";
+  return list.map((json) => Attendance.fromJson(json)).toList();
 }
 
 class Attendance {
-  Attendance({
-    this.id,
-    this.userId,
-    this.date,
-    this.type,
-    this.note,
-    this.code,
-    this.createdAt,
-    this.updatedAt,
-    this.users,
-  });
-
   int? id;
   int? userId;
   DateTime? date;
-  String? type;
-  String? note;
-  String? code;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  User? users;
+  double? total;
+  Duration? overtime;
+  User? user;
+  AttendanceRecord? t1;
+  AttendanceRecord? t2;
+  AttendanceRecord? t3;
+  AttendanceRecord? t4;
+  AttendanceRecord? t5;
+  AttendanceRecord? t6;
+
+  Attendance({
+    this.id,
+    this.userId,
+    this.overtime,
+    this.user,
+    this.date,
+    this.total,
+    this.t1,
+    this.t2,
+    this.t3,
+    this.t4,
+    this.t5,
+    this.t6,
+  });
+
+  factory Attendance.fromJson(Map<String, dynamic>? json) => Attendance(
+        id: intParse(json?['id']),
+        userId: intParse(json?['user_id']),
+        date: convertStringToDateTime(json?['date']),
+        overtime: convertStringToDuration(json?['overtime']),
+        total: doubleParse(json?['t']),
+        user: User.fromJson(json?['users']),
+        t1: json?['get_t1'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t1']),
+        t2: json?['get_t2'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t2']),
+        t3: json?['get_t3'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t3']),
+        t4: json?['get_t4'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t4']),
+        t5: json?['get_t5'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t5']),
+        t6: json?['get_t6'] == null
+            ? null
+            : AttendanceRecord.fromJson(json?['get_t6']),
+      );
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "user_id": userId,
+      "date": convertDateTimeToString(date),
+      "overtime": convertDurationToString(overtime),
+      "total": total,
+      "t1": t1?.id,
+      "t2": t2?.id,
+      "t3": t3?.id,
+      "t4": t4?.id,
+      "t5": t5?.id,
+      "t6": t6?.id,
+    };
+  }
 
   Attendance copyWith({
     int? id,
     int? userId,
     DateTime? date,
-    String? type,
-    String? note,
-    String? code,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    User? users,
+    double? total,
+    Duration? overtime,
+    User? user,
+    AttendanceRecord? t1,
+    AttendanceRecord? t2,
+    AttendanceRecord? t3,
+    AttendanceRecord? t4,
+    AttendanceRecord? t5,
+    AttendanceRecord? t6,
   }) =>
       Attendance(
         id: id ?? this.id,
         userId: userId ?? this.userId,
+        overtime: overtime ?? this.overtime,
+        user: user ?? this.user,
         date: date ?? this.date,
-        type: type ?? this.type,
+        total: total ?? this.total,
+        t1: t1 ?? this.t1,
+        t2: t2 ?? this.t2,
+        t3: t3 ?? this.t3,
+        t4: t4 ?? this.t4,
+        t5: t5 ?? this.t5,
+        t6: t6 ?? this.t6,
+      );
+}
+
+class AttendanceRecord {
+  int? id;
+  TimeOfDay? time;
+  String? note;
+
+  AttendanceRecord({
+    this.id,
+    this.time,
+    this.note,
+  });
+
+  factory AttendanceRecord.fromJson(Map<String, dynamic>? json) =>
+      AttendanceRecord(
+        id: intParse(json?['id']),
+        time: convertStringToTime(json?['time']),
+        note: json?['note'],
+      );
+
+  AttendanceRecord copyWith({
+    int? id,
+    TimeOfDay? time,
+    String? note,
+  }) =>
+      AttendanceRecord(
+        id: id ?? this.id,
+        time: time ?? this.time,
         note: note ?? this.note,
-        code: code ?? this.code,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-        users: users == null ? this.users : users.copyWith(),
       );
-
-  factory Attendance.fromRawJson(String str) =>
-      Attendance.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory Attendance.fromJson(Map<String, dynamic> json) => Attendance(
-        id: json["id"],
-        userId: json["user_id"],
-        date: json["date"] == null ? null : DateTime.parse(json["date"]),
-        type: json["type"],
-        note: json["note"],
-        code: json["code"],
-        createdAt: json["created_at"] == null
-            ? null
-            : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null
-            ? null
-            : DateTime.parse(json["updated_at"]),
-        users: json["users"] == null ? null : User.fromJson(json["users"]),
-      );
-
-  Map<String, dynamic> toCleanJson() {
-    return {
-      "user_id": userId,
-      "date": date!.toIso8601String().toString(),
-      "type": type
-    };
-  }
 
   Map<String, dynamic> toJson() {
-    // user object is not necessary.
-
     return {
       "id": id,
-      "user_id": userId,
-      "date": date?.toIso8601String(),
-      "type": type,
+      "time": convertTimeToString(time),
       "note": note,
-      "code": code,
-      "created_at": createdAt?.toIso8601String(),
-      "updated_at": updatedAt?.toIso8601String(),
     };
   }
 }

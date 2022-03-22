@@ -1,8 +1,8 @@
-import 'package:ems/services/models/bank.dart';
-import 'package:ems/services/models/loan_record.dart';
-import 'package:ems/services/models/position.dart';
-import 'package:ems/services/models/rating.dart';
-import 'package:ems/services/models/payment.dart';
+import 'package:ems/models/bank.dart';
+import 'package:ems/models/loan_record.dart';
+import 'package:ems/models/payment.dart';
+import 'package:ems/models/position.dart';
+import 'package:ems/models/rating.dart';
 import 'package:hive/hive.dart';
 
 import '../../utils/utils.dart';

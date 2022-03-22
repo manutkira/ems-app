@@ -1,11 +1,10 @@
+import 'package:ems/models/attendance.dart';
 import 'package:ems/models/attendance_count.dart';
-import 'package:ems/models/attendances.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/generate_screen.dart';
 import 'package:ems/screens/payroll/generated_screen.dart';
 import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
 import 'package:ems/services/payroll.dart';
-
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +12,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../constants.dart';
+import '../../models/payment.dart';
 import '../../services/user.dart';
-import '../../services/models/payment.dart';
 
 class PayrollListScreen extends StatefulWidget {
   const PayrollListScreen({Key? key}) : super(key: key);
@@ -41,7 +40,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
   DateTime? endDate = DateTime.now();
 
   // list attendances
-  List<AttendancesWithDate> attendancesList = [];
+  List<AttendancesByDate> attendancesList = [];
   AttendanceCount? attendanceCount;
 
   // text controller

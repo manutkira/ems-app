@@ -10,7 +10,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 import '../../../../constants.dart';
 import '../../../../services/position.dart';
-import '../../../../services/models/position.dart';
+import '../../../../models/position.dart';
 
 class TestPosition extends StatefulWidget {
   final String imageUrl;

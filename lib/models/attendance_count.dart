@@ -1,60 +1,40 @@
-import 'package:flutter/material.dart';
-
 import 'package:ems/models/user.dart';
 
+import '../../utils/utils.dart';
+
 class AttendanceCount {
-  MAT morning;
-  MAT afternoon;
-  MAT total;
+  int? morningPresent;
+  int? morningLate;
+  int? afternoonPresent;
+  int? afternoonLate;
+  int? totalPresent;
+  int? totalLate;
   User? user;
+
   AttendanceCount({
-    required this.morning,
-    required this.afternoon,
-    required this.total,
+    this.morningPresent,
+    this.morningLate,
+    this.afternoonPresent,
+    this.afternoonLate,
+    this.totalPresent,
+    this.totalLate,
     this.user,
   });
 
-  factory AttendanceCount.fromJson(Map<String, dynamic>? json) =>
-      AttendanceCount(
-        morning: MAT.fromJson(json?["morning"]),
-        afternoon: MAT.fromJson(json?["afternoon"]),
-        total: MAT.fromJson(json?["total"]),
-      );
-
-  AttendanceCount copyWith({
-    MAT? morning,
-    MAT? afternoon,
-    MAT? total,
-    User? user,
-  }) {
+  factory AttendanceCount.fromJson(Map<String, dynamic>? json) {
+    var user = json?['users'];
+    var attendanceCount = json?['attendance_count'];
+    var morning = attendanceCount['morning'];
+    var afternoon = attendanceCount['afternoon'];
+    var total = attendanceCount['total'];
     return AttendanceCount(
-      morning: morning ?? this.morning,
-      afternoon: afternoon ?? this.afternoon,
-      total: total ?? this.total,
-      user: user == null ? this.user : user.copyWith(),
+      morningPresent: intParse(morning['present']),
+      morningLate: intParse(morning['late']),
+      afternoonPresent: intParse(afternoon['present']),
+      afternoonLate: intParse(afternoon['late']),
+      totalPresent: intParse(total['present']),
+      totalLate: intParse(total['late']),
+      user: User.fromJson(user),
     );
-  }
-}
-
-class MAT {
-  int present;
-  int late;
-  MAT({
-    required this.present,
-    required this.late,
-  });
-
-  factory MAT.fromJson(Map<String, dynamic> json) => MAT(
-        present: json["present"],
-        late: json["late"],
-      );
-
-  Map<String, dynamic> toJson() {
-    // user object is not necessary.
-
-    return {
-      "present": present,
-      "late": late,
-    };
   }
 }

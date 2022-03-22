@@ -1,6 +1,6 @@
+import 'package:ems/models/attendance.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/services/attendance.dart';
-import 'package:ems/services/models/attendance.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
