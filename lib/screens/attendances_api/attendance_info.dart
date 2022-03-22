@@ -1,6 +1,14 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:ems/models/user.dart';
+import 'package:ems/screens/attendances_api/calendar_attendance.dart';
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_attendacnace_list.dart';
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_no_data.dart';
+import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_present.dart';
 import 'package:ems/services/models/attendance.dart';
+import 'package:ems/services/user.dart';
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,19 +16,10 @@ import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-import 'package:ems/models/user.dart';
-import 'package:ems/screens/attendances_api/calendar_attendance.dart';
-import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_attendacnace_list.dart';
-import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
-import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_no_data.dart';
-import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_present.dart';
-import 'package:ems/utils/services/user_service.dart';
-import 'package:ems/utils/utils.dart';
-
 import '../../constants.dart';
 import '../../services/attendance.dart' as service_new;
-import '../../services/models/attendance_count.dart' as model_count;
 import '../../services/models/attendance.dart' as model_new;
+import '../../services/models/attendance_count.dart' as model_count;
 
 class AttendancesInfoScreen extends ConsumerStatefulWidget {
   static const routeName = '/attendances-info';

@@ -1,21 +1,20 @@
 // ignore_for_file: prefer_const_declarations, unused_local_variable, unused_field
 
+import 'package:ems/models/user.dart';
 import 'package:ems/screens/employee/widgets/employee_info/employment_info.dart';
 import 'package:ems/screens/employee/widgets/employee_info/personal_info.dart';
 import 'package:ems/utils/services/position_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:ems/models/user.dart';
 import 'package:ems/utils/services/user_service.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../services/rating.dart';
-import '../../services/models/rating.dart';
 import '../../constants.dart';
 import '../../services/bank.dart' as service_bank;
 import '../../services/models/bank.dart' as model_bank;
+import '../../services/models/rating.dart';
+import '../../services/rating.dart';
 
 class EmployeeInfoScreen extends StatefulWidget {
   final int id;
