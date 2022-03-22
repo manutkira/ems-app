@@ -1,12 +1,12 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
-import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/services/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 import '../../constants.dart';
 import '../../services/attendance.dart';
