@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:ems/services/base.dart';
-import 'package:ems/services/models/overtime.dart';
+import 'package:ems/models/overtime.dart';
 import 'package:ems/models/user.dart';
+import 'package:ems/services/base.dart';
+
 import '../utils/utils.dart';
 
 class OvertimeService extends BaseService {

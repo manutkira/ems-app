@@ -7,7 +7,7 @@ import 'package:ems/screens/overtime/view_overtime.dart';
 import 'package:ems/screens/overtime/widgets/blank_panel.dart';
 import 'package:ems/screens/overtime/widgets/drop_down_menu.dart';
 import 'package:ems/screens/overtime/widgets/more_menu_item.dart';
-import 'package:ems/services/models/overtime.dart';
+import 'package:ems/models/overtime.dart';
 import 'package:ems/services/overtime.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';

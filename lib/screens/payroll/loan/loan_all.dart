@@ -1,14 +1,13 @@
 import 'package:ems/constants.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
-import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
 import 'package:ems/screens/payroll/loan/new_loan.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../../../services/models/loan.dart';
-import '../../../utils/utils.dart';
+import '../../../models/loan.dart';
 import '../../../services/loan.dart' as new_service;
+import '../../../utils/utils.dart';
 
 class LoanAll extends StatefulWidget {
   const LoanAll({Key? key}) : super(key: key);

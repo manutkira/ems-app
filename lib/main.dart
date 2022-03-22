@@ -1,7 +1,6 @@
 import 'package:ems/persistence/attendances.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/persistence/setting.dart';
-import 'package:ems/screens/attendance/individual_attendance.dart';
 import 'package:ems/screens/home_screen.dart';
 import 'package:ems/screens/home_screen_employee.dart';
 import 'package:ems/screens/login_screen.dart';
@@ -13,7 +12,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 import './constants.dart';
-import './screens/employee/employee_list_screen.dart';
 import 'l10n/l10n.dart';
 import 'models/user.dart';
 
@@ -104,13 +102,6 @@ class _MyAppState extends ConsumerState<MyApp> {
               GlobalWidgetsLocalizations.delegate,
             ],
             supportedLocales: L10n.all,
-            routes: {
-              IndividualAttendanceScreen.routeName: (ctx) =>
-                  IndividualAttendanceScreen(),
-              // EmployeeEditScreen.routeName: (ctx) => EmployeeEditScreen(),
-              // EmployeeInfoScreen.routeName: (ctx) => EmployeeInfoScreen(),
-              EmployeeListScreen.routeName: (ctx) => EmployeeListScreen(),
-            },
           );
         });
   }

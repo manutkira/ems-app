@@ -8,15 +8,15 @@ import 'package:ems/screens/payroll/view_payroll.dart';
 import 'package:ems/services/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:http/http.dart' as http;
 
 import '../../constants.dart';
+import '../../models/payment.dart' as new_model;
 import '../../services/payroll.dart' as new_service;
-import '../../services/models/payment.dart' as new_model;
 
 // ignore: must_be_immutable
 class GeneratePaymentScreen extends ConsumerStatefulWidget {

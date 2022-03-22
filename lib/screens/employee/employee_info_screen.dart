@@ -11,9 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
+import '../../models/bank.dart' as model_bank;
+import '../../models/rating.dart';
 import '../../services/bank.dart' as service_bank;
-import '../../services/models/bank.dart' as model_bank;
-import '../../services/models/rating.dart';
 import '../../services/rating.dart';
 
 class EmployeeInfoScreen extends StatefulWidget {

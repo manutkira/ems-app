@@ -1,13 +1,12 @@
+import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-import 'package:ems/utils/utils.dart';
-
 import '../../constants.dart';
+import '../../models/attendance.dart';
 import '../../services/attendance.dart';
-import '../../services/models/attendance.dart';
 
 // ignore: must_be_immutable
 class AttedancesEdit extends StatefulWidget {

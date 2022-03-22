@@ -3,8 +3,8 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
-import 'package:ems/services/models/loan.dart';
-import 'package:ems/services/models/payment.dart';
+import 'package:ems/models/loan.dart';
+import 'package:ems/models/payment.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -13,8 +13,8 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../../../services/loan.dart';
-import '../../../services/models/loan_record.dart' as loan_record;
-import '../../../services/models/loan_record.dart' as records;
+import '../../../models/loan_record.dart' as loan_record;
+import '../../../models/loan_record.dart' as records;
 import '../../../services/user.dart';
 
 import '../../../constants.dart';

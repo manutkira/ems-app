@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:ems/models/rating.dart';
 import 'package:ems/services/base.dart';
-import 'package:ems/services/models/rating.dart';
 
 class RatingService extends BaseService {
   static RatingService get instance => RatingService();

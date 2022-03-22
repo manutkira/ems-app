@@ -9,8 +9,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 import '../../constants.dart';
+import '../../models/attendance.dart';
 import '../../services/attendance.dart';
-import '../../services/models/attendance.dart';
 
 class AttendanceByDayScreen extends StatefulWidget {
   @override

@@ -1,15 +1,15 @@
 // ignore_for_file: deprecated_member_use, must_be_immutable
 
+import 'package:ems/models/payment.dart';
 // import 'package:ems/models/loan.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
-import 'package:ems/services/models/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../constants.dart';
+import '../../../models/loan.dart';
 import '../../../services/loan.dart' as new_service;
-import '../../../services/models/loan.dart';
 
 class LoanTotalIndividual extends StatefulWidget {
   int id;

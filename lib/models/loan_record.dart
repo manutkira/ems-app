@@ -1,4 +1,4 @@
-import '../../utils/utils.dart';
+import '../utils/utils.dart';
 
 List<LoanRecord> loanRecordsFromJson(List<dynamic>? list) {
   if (list == null) return [];

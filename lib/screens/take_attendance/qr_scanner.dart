@@ -31,6 +31,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   final AttendanceService _attService = AttendanceService.instance;
   Attendance? attendance;
   String _loadingMessage = '';
+  String note = '';
 
   /// helps with hot reload
   @override
@@ -47,6 +48,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
   /// reset loading states to normal
   void resetLoading() {
     setState(() {
+      note = "";
       result = null;
       _loadingMessage = '';
       _isLoading = false;
@@ -77,7 +79,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
         await _attService.createOneRecord(
           userId: attendance?.userId as int,
           date: attendance?.date as DateTime,
-          note: attendance?.note,
+          note: note,
           // attendance: attendance as Attendance,
         );
       } else {
@@ -91,7 +93,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
           },
           "user_id": userFromQR['id'],
           "time": attendance?.date?.toIso8601String(),
-          "note": attendance?.note,
+          "note": note,
         };
 
         await ref.read(localAttendanceCacheProvider).add(att);
@@ -175,7 +177,7 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
 
     // use to set note from confirmation panel before registering the record
     // confirmation to true
-    void ok(String note) {
+    void ok(String attendanceNote) {
       setState(() {
         attendance = Attendance(
           userId: id,
@@ -184,9 +186,9 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
         );
       });
 
-      if (note.isNotEmpty || note != 'null') {
+      if (attendanceNote.isNotEmpty || attendanceNote != 'null') {
         setState(() {
-          attendance = attendance?.copyWith(note: note);
+          note = attendanceNote;
         });
       }
       confirmation = true;

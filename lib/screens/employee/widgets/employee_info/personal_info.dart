@@ -10,7 +10,7 @@ import 'package:ems/widgets/baseline_row.dart';
 
 import '../../../../constants.dart';
 import '../../employee_edit_screen.dart';
-import '../../../../services/models/bank.dart' as model_bank;
+import '../../../../models/bank.dart' as model_bank;
 import '../../../../services/bank.dart' as service_bank;
 
 // ignore: must_be_immutable

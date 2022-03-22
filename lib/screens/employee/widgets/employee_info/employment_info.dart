@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:ems/services/models/rating.dart';
+import 'package:ems/models/rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:ems/models/payment.dart';
+import 'package:ems/models/payroll.dart';
 import 'package:ems/services/base.dart';
-import 'package:ems/services/models/payment.dart';
-import 'package:ems/services/models/payroll.dart';
 
 class PayrollService extends BaseService {
   Future<Payroll> findOne(int paymentId) async {
