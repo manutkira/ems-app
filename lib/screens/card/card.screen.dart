@@ -1,5 +1,5 @@
 import 'package:ems/models/user.dart';
-import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/services/user.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
 

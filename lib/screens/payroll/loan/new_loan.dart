@@ -3,7 +3,7 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/services/loan.dart';
-import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

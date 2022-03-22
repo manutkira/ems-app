@@ -3,8 +3,8 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/employee/widgets/employee_info/employment_info.dart';
 import 'package:ems/screens/employee/widgets/employee_info/personal_info.dart';
-import 'package:ems/utils/services/position_service.dart';
-import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/services/position.dart';
+import 'package:ems/services/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
@@ -133,7 +133,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
   // fetch position from api
   fetchUserPosition() {
     try {
-      _positionService.findPosition(widget.id).then((usersFromServer) {
+      _positionService.findAllByUserId(widget.id).then((usersFromServer) {
         if (mounted) {
           setState(() {
             positionDisplay = [];

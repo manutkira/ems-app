@@ -3,7 +3,7 @@ import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/attendance_info.dart';
 import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
-import 'package:ems/utils/services/user_service.dart';
+import 'package:ems/services/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
