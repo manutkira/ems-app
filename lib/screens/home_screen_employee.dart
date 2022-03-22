@@ -160,66 +160,6 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
             ),
             _buildSpacerVertical,
 
-            // ValueListenableBuilder(
-            //   valueListenable:
-            //       ref.watch(currentUserProvider).currentUserListenable,
-            //   builder: (_, Box<User> box, __) {
-            //     final listFromBox = box.values.toList();
-            //     final currentUser =
-            //         listFromBox.isNotEmpty ? listFromBox[0] : null;
-            //     return Container(
-            //       padding: const EdgeInsets.symmetric(horizontal: 16),
-            //       child: ClipRRect(
-            //         borderRadius: BorderRadius.circular(16),
-            //         child: GridView.count(
-            //           shrinkWrap: true,
-            //           physics: const ClampingScrollPhysics(),
-            //           // padding: const EdgeInsets.symmetric(horizontal: 16),
-            //           crossAxisCount: 3,
-            //           crossAxisSpacing: 1,
-            //           mainAxisSpacing: 1,
-            //           children: [
-            //             MenuItem(
-            //               onTap: () =>
-            //                   _goToMyAttendance(currentUser?.id as int),
-            //               illustration: SvgPicture.asset(
-            //                 'assets/images/chart.svg',
-            //                 width: MediaQuery.of(context).size.width * 0.17,
-            //               ),
-            //               label: "${local?.myAttendance}",
-            //             ),
-            //             MenuItem(
-            //               onTap: () => _goToMyOvertime(currentUser),
-            //               illustration: SvgPicture.asset(
-            //                 'assets/images/overtime-icon.svg',
-            //                 width: MediaQuery.of(context).size.width * 0.17,
-            //               ),
-            //               label: "${local?.myOvertime}",
-            //             ),
-            //             MenuItem(
-            //               onTap: () =>
-            //                   _goToMyPayroll(intParse(currentUser?.id)),
-            //               illustration: Image.asset(
-            //                 "assets/images/payroll.png",
-            //                 width: MediaQuery.of(context).size.width * 0.17,
-            //               ),
-            //               label: "${local?.myPayroll}",
-            //             ),
-            //             MenuItem(
-            //               onTap: () => _goToMyLoan(intParse(currentUser?.id)),
-            //               illustration: Image.asset(
-            //                 "assets/images/loan.png",
-            //                 width: MediaQuery.of(context).size.width * 0.17,
-            //               ),
-            //               label: "${local?.myLoan}",
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //     );
-            //   },
-            // ),
-
             /// current user attendance
             _buildTitle('${local?.attendance}'),
             ValueListenableBuilder(
@@ -235,32 +175,37 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                       vertical: 12,
                       horizontal: 15,
                     ),
-                    child: GestureDetector(
-                      onTap: () => _goToMyAttendance(currentUser?.id as int),
-                      child: SizedBox(
-                        width: _size.width,
-                        child: Container(
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                            color: kLightBlue,
-                            borderRadius: BorderRadius.all(kBorderRadius),
-                          ),
-                          padding: kPaddingAll,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/images/chart.svg',
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(kBorderRadius),
+                      child: Material(
+                        color: kLightBlue,
+                        child: InkWell(
+                          highlightColor: kBlue.withOpacity(0.25),
+                          onTap: () =>
+                              _goToMyAttendance(currentUser?.id as int),
+                          child: SizedBox(
+                            width: _size.width,
+                            child: Container(
+                              width: double.infinity,
+                              padding: kPaddingAll,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/images/chart.svg',
+                                  ),
+                                  SizedBox(height: isEnglish ? 10 : 2),
+                                  Text(
+                                    "${local?.myAttendance}",
+                                    style: kSubtitle.copyWith(
+                                        color: kBlack,
+                                        fontWeight: FontWeight.w700),
+                                    textAlign: TextAlign.center,
+                                  )
+                                ],
                               ),
-                              SizedBox(height: isEnglish ? 10 : 2),
-                              Text(
-                                "${local?.myAttendance}",
-                                style: kSubtitle.copyWith(
-                                    color: kBlack, fontWeight: FontWeight.w700),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -285,35 +230,39 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                   final currentUser =
                       listFromBox.isNotEmpty ? listFromBox[0] : null;
 
-                  return GestureDetector(
-                    onTap: () => _goToMyOvertime(currentUser),
-                    child: SizedBox(
-                      width: _size.width,
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                            color: kLightBlue,
-                            borderRadius: BorderRadius.all(kBorderRadius),
-                          ),
-                          padding: kPaddingAll,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/images/overtime-icon.svg',
-                                height: 82,
+                  return ClipRRect(
+                    borderRadius: const BorderRadius.all(kBorderRadius),
+                    child: Material(
+                      color: kLightBlue,
+                      child: InkWell(
+                        highlightColor: kBlue.withOpacity(0.25),
+                        onTap: () => _goToMyOvertime(currentUser),
+                        child: SizedBox(
+                          width: _size.width,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Container(
+                              width: double.infinity,
+                              padding: kPaddingAll,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/images/overtime-icon.svg',
+                                    height: 82,
+                                  ),
+                                  SizedBox(height: isEnglish ? 10 : 2),
+                                  Text(
+                                    "${local?.myOvertime}",
+                                    style: kSubtitle.copyWith(
+                                        color: kBlack,
+                                        fontWeight: FontWeight.w700),
+                                    textAlign: TextAlign.center,
+                                  )
+                                ],
                               ),
-                              SizedBox(height: isEnglish ? 10 : 2),
-                              Text(
-                                "${local?.myOvertime}",
-                                style: kSubtitle.copyWith(
-                                    color: kBlack, fontWeight: FontWeight.w700),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -340,35 +289,39 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                   final currentUser =
                       listFromBox.isNotEmpty ? listFromBox[0] : null;
 
-                  return GestureDetector(
-                    onTap: () => _goToMyPayroll(intParse(currentUser?.id)),
-                    child: SizedBox(
-                      width: _size.width,
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                            color: kLightBlue,
-                            borderRadius: BorderRadius.all(kBorderRadius),
-                          ),
-                          padding: kPaddingAll,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/images/payroll.png",
-                                height: 82,
+                  return ClipRRect(
+                    borderRadius: const BorderRadius.all(kBorderRadius),
+                    child: Material(
+                      color: kLightBlue,
+                      child: InkWell(
+                        highlightColor: kBlue.withOpacity(0.25),
+                        onTap: () => _goToMyPayroll(intParse(currentUser?.id)),
+                        child: SizedBox(
+                          width: _size.width,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Container(
+                              width: double.infinity,
+                              padding: kPaddingAll,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "assets/images/payroll.png",
+                                    height: 82,
+                                  ),
+                                  SizedBox(height: isEnglish ? 10 : 2),
+                                  Text(
+                                    "${local?.myPayroll}",
+                                    style: kSubtitle.copyWith(
+                                        color: kBlack,
+                                        fontWeight: FontWeight.w700),
+                                    textAlign: TextAlign.center,
+                                  )
+                                ],
                               ),
-                              SizedBox(height: isEnglish ? 10 : 2),
-                              Text(
-                                "${local?.myPayroll}",
-                                style: kSubtitle.copyWith(
-                                    color: kBlack, fontWeight: FontWeight.w700),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -395,35 +348,39 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
                   final currentUser =
                       listFromBox.isNotEmpty ? listFromBox[0] : null;
 
-                  return GestureDetector(
-                    onTap: () => _goToMyLoan(intParse(currentUser?.id)),
-                    child: SizedBox(
-                      width: _size.width,
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                            color: kLightBlue,
-                            borderRadius: BorderRadius.all(kBorderRadius),
-                          ),
-                          padding: kPaddingAll,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/images/loan.png",
-                                height: 82,
+                  return ClipRRect(
+                    borderRadius: const BorderRadius.all(kBorderRadius),
+                    child: Material(
+                      color: kLightBlue,
+                      child: InkWell(
+                        highlightColor: kBlue.withOpacity(0.25),
+                        onTap: () => _goToMyLoan(intParse(currentUser?.id)),
+                        child: SizedBox(
+                          width: _size.width,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Container(
+                              width: double.infinity,
+                              padding: kPaddingAll,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "assets/images/loan.png",
+                                    height: 82,
+                                  ),
+                                  SizedBox(height: isEnglish ? 10 : 2),
+                                  Text(
+                                    "${local?.myLoan}",
+                                    style: kSubtitle.copyWith(
+                                        color: kBlack,
+                                        fontWeight: FontWeight.w700),
+                                    textAlign: TextAlign.center,
+                                  )
+                                ],
                               ),
-                              SizedBox(height: isEnglish ? 10 : 2),
-                              Text(
-                                "${local?.myLoan}",
-                                style: kSubtitle.copyWith(
-                                    color: kBlack, fontWeight: FontWeight.w700),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
+                            ),
                           ),
                         ),
                       ),

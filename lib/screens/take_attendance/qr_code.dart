@@ -70,11 +70,13 @@ class _QRCodeState extends ConsumerState<QRCode> {
                 builder: (BuildContext context, Box<User> box, Widget? child) {
                   User? user = box.get(currentUserBoxName);
                   return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CustomCircleAvatar(
                         imageUrl: "${user?.image}",
-                        size: size,
+                        size: size - 50,
                       ),
+                      const SizedBox(width: 16),
                       Column(
                         children: [
                           Text(
