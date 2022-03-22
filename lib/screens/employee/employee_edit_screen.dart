@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import '../../services/user.dart';
+import '../../models/user.dart';
 
 class EmployeeEditScreen extends StatefulWidget {
   final int id;
@@ -49,6 +50,7 @@ class EmployeeEditScreen extends StatefulWidget {
 
 class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   // service
+  UserService _userService = UserService();
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
@@ -219,6 +221,15 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   updatePersonal() async {
     AppLocalizations? local = AppLocalizations.of(context);
     try {
+      User user = User(
+        name: nameController.text,
+        phone: phoneController.text,
+        email: emailController.text,
+        address: addressController.text,
+        background: backgroundController.text,
+        id: widget.id,
+      );
+      await _userService.updateOne(user, image: pickedImg, imageId: pickedId);
       Navigator.pop(context);
       showDialog(
           context: context,
@@ -266,88 +277,5 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
                 ],
               ));
     }
-  }
-
-  updateEmployee() async {
-    AppLocalizations? local = AppLocalizations.of(context);
-    var aName = nameController.text;
-    var aPhone = phoneController.text;
-    var aEmail = emailController.text;
-    var aAddress = addressController.text;
-    var aBackground = backgroundController.text;
-    var request = await http.MultipartRequest(
-        'POST', Uri.parse("$url/${widget.id}?_method=PUT"));
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Content": "charset-UTF-8",
-    };
-    if (pickedImg != null) {
-      request.files.add(http.MultipartFile(
-          'image', pickedImg!.readAsBytes().asStream(), pickedImg!.lengthSync(),
-          filename: pickedImg!.path.split('/').last));
-    }
-    if (pickedId != null) {
-      request.files.add(http.MultipartFile('image_id',
-          pickedId!.readAsBytes().asStream(), pickedId!.lengthSync(),
-          filename: pickedId!.path.split('/').last));
-    }
-    request.files.add(http.MultipartFile.fromString('name', aName));
-    request.files.add(http.MultipartFile.fromString('phone', aPhone));
-    request.files.add(http.MultipartFile.fromString('email', aEmail));
-    request.files.add(http.MultipartFile.fromString('address', aAddress));
-    request.files.add(http.MultipartFile.fromString('background', aBackground));
-    request.headers.addAll(headers);
-
-    var res = await request.send();
-    if (res.statusCode != 200) {
-      Navigator.pop(context);
-      showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text('${local?.failed}',
-                    style: const TextStyle(color: Colors.red)),
-                content: Text('${local?.editFailed}'),
-                actions: [
-                  // ignore: deprecated_member_use
-                  OutlineButton(
-                    borderSide: const BorderSide(color: Colors.red),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('${local?.back}',
-                        style: const TextStyle(color: Colors.red)),
-                  ),
-                ],
-              ));
-    }
-    if (res.statusCode == 200) {
-      Navigator.pop(context);
-      showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text('${local?.success}'),
-                content: Text('${local?.edited}'),
-                actions: [
-                  // ignore: deprecated_member_use
-                  OutlineButton(
-                    borderSide: const BorderSide(color: Colors.grey),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('${local?.done}'),
-                  ),
-                  // ignore: deprecated_member_use
-                  OutlineButton(
-                    borderSide: const BorderSide(color: Colors.green),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                    child: Text('${local?.back}'),
-                  ),
-                ],
-              ));
-    }
-    res.stream.transform(utf8.decoder).listen((event) {});
   }
 }

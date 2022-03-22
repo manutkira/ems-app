@@ -72,37 +72,76 @@ class _ImageInputPickerIdState extends State<ImageInputPickerId> {
     bool isEnglish = isInEnglish(context);
     return Row(
       children: [
-        Container(
-          width: 120,
-          height: 80,
-          decoration: BoxDecoration(
-              border: Border.all(
-            width: 1,
-            color: Colors.white,
-          )),
-          child: _pickedNationalId != null
-              ? ClipRRect(
-                  child: Image.file(
-                    _pickedNationalId!,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: 120,
+        Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 120,
+                height: 80,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                  width: 1,
+                  color: Colors.white,
+                )),
+                child: _pickedNationalId != null
+                    ? ClipRRect(
+                        child: Image.file(
+                          _pickedNationalId!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 120,
+                        ),
+                      )
+                    : widget.imageUrl.length == 4
+                        ? Text(
+                            '${local?.noIdImage}',
+                            textAlign: TextAlign.center,
+                          )
+                        : ClipRRect(
+                            child: Image.network(
+                              widget.imageUrl.toString(),
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: 120,
+                            ),
+                          ),
+                alignment: Alignment.center,
+              ),
+            ),
+            Visibility(
+              visible: _pickedNationalId != null || widget.imageUrl != 'null',
+              child: Positioned(
+                top: 0,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 80,
                   ),
-                )
-              : widget.imageUrl.length == 4
-                  ? Text(
-                      '${local?.noIdImage}',
-                      textAlign: TextAlign.center,
-                    )
-                  : ClipRRect(
-                      child: Image.network(
-                        widget.imageUrl.toString(),
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 120,
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      color: kBlack,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _pickedNationalId = null;
+                          widget.imageUrl = 'null';
+                        });
+                      },
+                      icon: Icon(
+                        Icons.close,
+                        size: 15,
                       ),
                     ),
-          alignment: Alignment.center,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         SizedBox(
           width: 10,

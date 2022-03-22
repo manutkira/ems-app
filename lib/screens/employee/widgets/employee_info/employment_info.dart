@@ -177,7 +177,9 @@ class EmploymentInfo extends StatelessWidget {
                                 Text(
                                   positionDisplay[0].isEmpty
                                       ? '${local?.noData}'
-                                      : positionDisplay[0][0]['position_name']
+                                      : userDisplay[0]
+                                          .positions![0]
+                                          .name
                                           .toString(),
                                   style: kParagraph.copyWith(
                                     color: Colors.white,

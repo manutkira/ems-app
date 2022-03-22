@@ -430,22 +430,13 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
                     itemBuilder: (_) => [
                       PopupMenuItem(
                         child: Text(
-                          '${local?.generatePayment}',
+                          '${local?.optionView}',
                           style: TextStyle(
                             fontSize: isEnglish ? 15 : 16,
                           ),
                         ),
                         value: 0,
                       ),
-                      // PopupMenuItem(
-                      //   child: Text(
-                      //     'Loan Record',
-                      //     style: TextStyle(
-                      //       fontSize: isEnglish ? 15 : 16,
-                      //     ),
-                      //   ),
-                      //   value: 1,
-                      // ),
                     ],
                     icon: const Icon(Icons.more_vert),
                   )
@@ -482,7 +473,6 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
               ));
       List<Payment> payment = await _payrollService.createManyPayment(
           dateFrom: dateFrom, dateTo: dateTo);
-      // print('asd $payment');
       Navigator.pop(context);
       Navigator.push(
         context,

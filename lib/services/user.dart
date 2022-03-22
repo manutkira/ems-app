@@ -77,9 +77,6 @@ class UserService extends BaseService {
       return user;
     } catch (err) {
       if (err is DioError) {
-        // for (int i = 0; i < err.response?.data['errors'].length; i++){
-        //   print(object)
-        // }
         throw Exception(err.response?.data['errors']);
       }
       throw Exception(err.toString());
