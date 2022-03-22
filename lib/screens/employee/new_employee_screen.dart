@@ -81,32 +81,44 @@ class _NewEmployeeScreenState extends State<NewEmployeeScreen> {
             title: Text('${local?.addEmployee}'),
             leading: IconButton(
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                            title: Text('${local?.areYouSure}'),
-                            content: Text('${local?.yourDataWillLost}'),
-                            actions: [
-                              // ignore: deprecated_member_use
-                              OutlineButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('${local?.yes}'),
-                                borderSide:
-                                    const BorderSide(color: Colors.green),
-                              ),
-                              // ignore: deprecated_member_use
-                              OutlineButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('${local?.no}'),
-                                borderSide: const BorderSide(color: Colors.red),
-                              )
-                            ],
-                          ));
+                  if (name.text.isEmpty &&
+                      phone.text.isEmpty &&
+                      email.text.isEmpty &&
+                      password.text.isEmpty &&
+                      address.text.isEmpty &&
+                      background.text.isEmpty &&
+                      pickedId == null &&
+                      pickedImg == null) {
+                    Navigator.pop(context);
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                              title: Text('${local?.areYouSure}'),
+                              content: Text('${local?.yourDataWillLost}'),
+                              actions: [
+                                // ignore: deprecated_member_use
+                                OutlineButton(
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('${local?.yes}'),
+                                  borderSide:
+                                      const BorderSide(color: Colors.green),
+                                ),
+                                // ignore: deprecated_member_use
+                                OutlineButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('${local?.no}'),
+                                  borderSide:
+                                      const BorderSide(color: Colors.red),
+                                )
+                              ],
+                            ));
+                  }
                 },
                 icon: const Icon(Icons.arrow_back)),
           ),

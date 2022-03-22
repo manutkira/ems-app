@@ -1,3 +1,4 @@
+import 'package:ems/models/position.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -70,27 +71,63 @@ class _ImageInputIdState extends State<ImageInputId> {
     bool isEnglish = isInEnglish(context);
     return Row(
       children: [
-        Container(
-          width: 120,
-          height: 80,
-          decoration: BoxDecoration(
-              border: Border.all(
-            width: 1,
-            color: Colors.white,
-          )),
-          child: _pickedNationalId != null
-              ? ClipRRect(
-                  child: Image.file(
-                    _pickedNationalId!,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
+        Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 120,
+                height: 80,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                  width: 1,
+                  color: Colors.white,
+                )),
+                child: _pickedNationalId != null
+                    ? ClipRRect(
+                        child: Image.file(
+                          _pickedNationalId!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      )
+                    : Text(
+                        '${local?.noIdImage}',
+                        textAlign: TextAlign.center,
+                      ),
+                alignment: Alignment.center,
+              ),
+            ),
+            Visibility(
+              visible: _pickedNationalId != null,
+              child: Positioned(
+                top: 0,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 100, bottom: 50),
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      color: kBlack,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _pickedNationalId = null;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.close,
+                        size: 15,
+                      ),
+                    ),
                   ),
-                )
-              : Text(
-                  '${local?.noIdImage}',
-                  textAlign: TextAlign.center,
                 ),
-          alignment: Alignment.center,
+              ),
+            ),
+          ],
         ),
         SizedBox(
           width: 10,

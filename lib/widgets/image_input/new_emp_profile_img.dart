@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../../constants.dart';
 
 class ImageInputPicker extends StatefulWidget {
@@ -72,32 +73,62 @@ class _ImageInputPickerState extends State<ImageInputPicker> {
     bool isEnglish = isInEnglish(context);
     return Row(
       children: [
-        Container(
-          width: 120,
-          height: 120,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(100)),
-              border: Border.all(
-                width: 1,
-                color: Colors.white,
-              )),
-          child: _pickedImage != null
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(150),
-                  child: Image.file(
-                    _pickedImage!,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
+        Stack(
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.white,
+                  )),
+              child: _pickedImage != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(150),
+                      child: Image.file(
+                        _pickedImage!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
+                    )
+                  : Text(
+                      '${local?.noProfile}',
+                      style: TextStyle(
+                        fontSize: isEnglish ? 15 : 16,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+              alignment: Alignment.center,
+            ),
+            _pickedImage == null
+                ? Container()
+                : Padding(
+                    padding: const EdgeInsets.only(
+                      left: 80,
+                    ),
+                    child: Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                        color: kBlack,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _pickedImage = null;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.close,
+                          size: 15,
+                        ),
+                      ),
+                    ),
                   ),
-                )
-              : Text(
-                  '${local?.noProfile}',
-                  style: TextStyle(
-                    fontSize: isEnglish ? 15 : 16,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-          alignment: Alignment.center,
+          ],
         ),
         SizedBox(
           width: 10,

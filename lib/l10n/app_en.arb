@@ -1142,6 +1142,10 @@
   "@noPayment": {
     "description": "take attendance"
   },
+  "noPaidPayment": "No paid payment has been recorded yet",
+  "@noPaidPayment": {
+    "description": "take attendance"
+  },
   "doYouWantToPay": "Do you want to pay?",
   "@doYouWantToPay": {
     "description": "take attendance"

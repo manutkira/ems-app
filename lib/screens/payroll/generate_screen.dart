@@ -389,7 +389,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                                                   height: 90,
                                                 ),
                                                 Text(
-                                                  '${local?.noPayment}',
+                                                  '${local?.noPaidPayment}',
                                                   style: isEnglish
                                                       ? kHeadingThree
                                                       : kHeadingFour,

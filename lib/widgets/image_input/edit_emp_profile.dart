@@ -74,37 +74,69 @@ class _ImageInputProfileEditState extends State<ImageInputProfileEdit> {
     bool isEnglish = isInEnglish(context);
     return Row(
       children: [
-        Container(
-          width: 120,
-          height: 120,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(100)),
-              border: Border.all(
-                width: 1,
-                color: Colors.white,
-              )),
-          child: _pickedImage != null
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(150),
-                  child: Image.file(
-                    _pickedImage!,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: 120,
-                  ),
-                )
-              : widget.imageUrl.length == 4
-                  ? Image.asset('assets/images/profile-icon-png-910.png')
-                  : ClipRRect(
+        Stack(
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.white,
+                  )),
+              child: _pickedImage != null
+                  ? ClipRRect(
                       borderRadius: BorderRadius.circular(150),
-                      child: Image.network(
-                        widget.imageUrl.toString(),
+                      child: Image.file(
+                        _pickedImage!,
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: 120,
                       ),
+                    )
+                  : widget.imageUrl.length == 4
+                      ? Image.asset('assets/images/profile-icon-png-910.png')
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(150),
+                          child: Image.network(
+                            widget.imageUrl.toString(),
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 120,
+                          ),
+                        ),
+              alignment: Alignment.center,
+            ),
+            Visibility(
+              visible: _pickedImage != null || widget.imageUrl != 'null',
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 80,
+                ),
+                child: Container(
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                    color: kBlack,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _pickedImage = null;
+                        widget.imageUrl = 'null';
+                      });
+                    },
+                    icon: Icon(
+                      Icons.close,
+                      size: 15,
                     ),
-          alignment: Alignment.center,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         SizedBox(
           width: 10,
