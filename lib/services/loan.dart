@@ -108,7 +108,10 @@ class LoanService extends BaseService {
         options: Options(validateStatus: (status) => status == 200),
       );
       var data = res.data;
-      var loan = Loan.fromJson(data[0]);
+      var loan = Loan.fromJson(data?[0]);
+      // if (loan == null) {
+      //   return null;
+      // }
       return loan;
     } catch (err) {
       if (err is DioError) {

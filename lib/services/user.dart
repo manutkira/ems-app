@@ -85,6 +85,7 @@ class UserService extends BaseService {
 
   Future<User> updateOne(User user, {File? image, File? imageId}) async {
     var payload = await _preparePayload(user, image: image, imageId: imageId);
+
     try {
       Response res = await dio.post(
         'users/${user.id}?_method=put',

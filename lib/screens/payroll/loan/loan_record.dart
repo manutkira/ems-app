@@ -198,6 +198,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                       context,
                       isEnglish,
                       local,
+                      true,
                     );
                     amountController.text = '';
                     dateController.text = '';
@@ -587,6 +588,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
     BuildContext context,
     bool isEnglish,
     AppLocalizations? local,
+    bool newLoan,
   ) {
     return showModalBottomSheet(
         shape: RoundedRectangleBorder(
@@ -686,38 +688,58 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                           SizedBox(
                             width: isEnglish ? 52 : 35,
                           ),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.6),
-                            child: Flex(
-                              direction: Axis.horizontal,
-                              children: [
-                                Flexible(
-                                  child: TextFormField(
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return '${local?.plsEnterAmount}';
-                                      }
-                                      if (!RegExp(r'[0-9]').hasMatch(value)) {
-                                        return '${local?.enterNumber}';
-                                      }
-                                      return null;
-                                    },
-                                    keyboardType: TextInputType.number,
-                                    textInputAction: TextInputAction.next,
-                                    decoration: InputDecoration(
-                                      hintText: '${local?.enterAmount}',
-                                      errorStyle: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                            0.6),
+                                child: Flex(
+                                  direction: Axis.horizontal,
+                                  children: [
+                                    Flexible(
+                                      child: TextFormField(
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return '${local?.plsEnterAmount}';
+                                          }
+                                          if (!RegExp(r'[0-9]')
+                                              .hasMatch(value)) {
+                                            return '${local?.enterNumber}';
+                                          }
+                                          return null;
+                                        },
+                                        keyboardType: TextInputType.number,
+                                        textInputAction: TextInputAction.next,
+                                        decoration: InputDecoration(
+                                          hintText: '${local?.enterAmount}',
+                                          errorStyle: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        controller: amountController,
                                       ),
                                     ),
-                                    controller: amountController,
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              newLoan
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 15, top: 8),
+                                      child: Text(
+                                        '${local?.canBorrowUpTo} \$${loan!.user!.salary! * 7 - loan!.remain!}',
+                                        style: TextStyle(
+                                          fontSize: isEnglish ? 12 : 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
+                            ],
                           ),
                         ],
                       ),
@@ -935,7 +957,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                                         date: pickStart,
                                         id: loanId);
                                 updateONe(loanRecord);
-                              }, context, isEnglish, local);
+                              }, context, isEnglish, local, false);
                               amountController.text = '';
                               dateController.text = '';
                               reasonController.text = '';

@@ -175,6 +175,7 @@ class User {
       "status": status,
       "image": image,
       "image_id": imageId,
+      "salary": salary,
     };
   }
 

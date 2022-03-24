@@ -440,7 +440,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
 
     try {
       User user = User(
-        salary: double.parse(salaryController.text),
+        salary: doubleParse(salaryController.text),
         role: checkRole(),
         status: checkStatus(),
         id: widget.id,

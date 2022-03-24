@@ -1174,6 +1174,10 @@
   "@loanDetail": {
     "description": "take attendance"
   },
+  "canBorrowUpTo": "Can borrow up to",
+  "@canBorrowUpTo": {
+    "description": "take attendance"
+  },
   "payrollAndLoan": "Payroll and Loan",
   "@payrollAndLoan": {
     "description": "home screen"

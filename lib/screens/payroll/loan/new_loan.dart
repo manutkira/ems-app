@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:ems/models/loan.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/services/loan.dart';
@@ -28,18 +29,18 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
 
   // user list
   List<User> userList = [];
+  Loan? loan;
+  User? user;
 
   // loan
   // record.LoanRecord loanRecord = record.LoanRecord();
 
   // boolean
   bool _isloading = true;
+  bool _isloadingOne = true;
 
   // datetime
   DateTime? pickStart;
-
-  // url
-  String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 
   String? _mySelection;
 
@@ -59,6 +60,27 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
       });
     } catch (err) {
       rethrow;
+    }
+  }
+
+  // find one user
+  fetchOneUser(int id) async {
+    _isloadingOne = true;
+    try {
+      Loan? userDisplay = await _loanService.findOneLoanByUserId(id);
+      setState(() {
+        loan = userDisplay;
+        _isloadingOne = false;
+      });
+    } catch (err) {
+      setState(() {
+        loan = null;
+      });
+      User? userDisplay = await _userService.findOne(id);
+      setState(() {
+        user = userDisplay;
+        _isloadingOne = false;
+      });
     }
   }
 
@@ -154,6 +176,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                             onChanged: (newVal) {
                               setState(() {
                                 _mySelection = newVal.toString();
+                                fetchOneUser(intParse(_mySelection));
                               });
                             },
                             value: _mySelection,
@@ -236,40 +259,68 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                         const SizedBox(
                           width: 20,
                         ),
-                        Container(
-                          constraints: BoxConstraints(
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.6),
-                          child: Flex(
-                            direction: Axis.horizontal,
-                            children: [
-                              Flexible(
-                                child: TextFormField(
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp('[0-9.,]+')),
-                                  ],
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    hintText: '${local?.enterAmount} ',
-                                    errorStyle: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width * 0.6),
+                              child: Flex(
+                                direction: Axis.horizontal,
+                                children: [
+                                  Flexible(
+                                    child: TextFormField(
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp('[0-9.,]+')),
+                                      ],
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        hintText: '${local?.enterAmount}',
+                                        errorStyle: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      controller: amountController,
+                                      textInputAction: TextInputAction.next,
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return '${local?.plsEnterAmount}';
+                                        }
+
+                                        return null;
+                                      },
                                     ),
                                   ),
-                                  controller: amountController,
-                                  textInputAction: TextInputAction.next,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return '${local?.plsEnterAmount}';
-                                    }
-
-                                    return null;
-                                  },
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                            _isloadingOne
+                                ? Container()
+                                : loan == null
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 16, top: 8),
+                                        child: Text(
+                                          '${local?.canBorrowUpTo} ${user!.salary! * 7}',
+                                          style: TextStyle(
+                                              fontSize: isEnglish ? 12 : 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 15, top: 8),
+                                        child: Text(
+                                          '${local?.canBorrowUpTo} \$${loan!.user!.salary! * 7 - doubleParse(loan!.remain)}',
+                                          style: TextStyle(
+                                              fontSize: isEnglish ? 12 : 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                          ],
                         ),
                       ],
                     ),
