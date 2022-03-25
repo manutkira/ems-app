@@ -54,9 +54,9 @@ class PayrollService extends BaseService {
           "date_from": dateFrom.toIso8601String(),
           "date_to": dateTo.toIso8601String(),
         },
-        options: Options(validateStatus: (status) => status == 201),
+        options: Options(validateStatus: (status) => status == 200),
       );
-      return Payment.fromJson(res.data);
+      return Payment.fromJson(res.data[0]);
     } catch (err) {
       if (err is DioError) {
         throw Exception(err.response?.data['message']);

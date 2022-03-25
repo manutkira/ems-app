@@ -5,6 +5,7 @@ import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/widgets/attendance_info/attendance_info_name_id.dart';
 import 'package:ems/models/loan.dart';
 import 'package:ems/models/payment.dart';
+import 'package:ems/services/payroll.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -35,11 +36,15 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
   // service
   final LoanService _loanService = LoanService();
   final UserService _userService = UserService();
+  final PayrollService _payrollService = PayrollService();
 
   // list laon
   List<records.LoanRecord> loanList = [];
   List<User> user = [];
   List<User> userDisplay = [];
+
+  // list payment
+  List<Payment> paymentList = [];
 
   // boolean
   bool _isLoading = true;
@@ -47,8 +52,11 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
   bool loanRecords = true;
   bool _isloading = true;
   bool _isloadingOne = true;
-
   bool isFilterExpanded = false;
+  bool _isloadingPayroll = true;
+
+  // int
+  int? countDays;
 
   // datetime
   DateTime? pickStart;
@@ -136,6 +144,28 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
     }
   }
 
+  // fetch payment by id
+  fetchOnePayment(int id) async {
+    _isloadingPayroll = true;
+    try {
+      List<Payment> payment =
+          await _payrollService.findManyPaymentsByUserId(id);
+      setState(() {
+        paymentList = payment;
+        int count =
+            paymentList[0].dateTo!.difference(paymentList[0].dateFrom!).inDays +
+                1;
+        countDays = count;
+        _isloadingPayroll = false;
+      });
+    } catch (err) {
+      setState(() {
+        paymentList = [];
+        _isloadingPayroll = false;
+      });
+    }
+  }
+
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   // date picker for start date
@@ -187,6 +217,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
           isAdmin
               ? IconButton(
                   onPressed: () async {
+                    await fetchOnePayment(intParse(widget.id));
                     await mybottonSheet(
                       () async {
                         records.LoanRecord loanRecord = records.LoanRecord(
@@ -727,17 +758,31 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                                 ),
                               ),
                               newLoan
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 15, top: 8),
-                                      child: Text(
-                                        '${local?.canBorrowUpTo} \$${loan!.user!.salary! * 7 - loan!.remain!}',
-                                        style: TextStyle(
-                                          fontSize: isEnglish ? 12 : 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    )
+                                  ? _isloadingPayroll
+                                      ? Container()
+                                      : paymentList.isEmpty
+                                          ? Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 15, top: 8),
+                                              child: Text(
+                                                '${local?.canBorrowUpTo} \$${loan!.user!.salary! * 7 - loan!.remain!}',
+                                                style: TextStyle(
+                                                  fontSize: isEnglish ? 12 : 14,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            )
+                                          : Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 15, top: 8),
+                                              child: Text(
+                                                '${local?.canBorrowUpTo} \$${loan!.user!.salary! * intParse(countDays) - loan!.remain!}',
+                                                style: TextStyle(
+                                                  fontSize: isEnglish ? 12 : 14,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            )
                                   : Container(),
                             ],
                           ),
@@ -947,7 +992,6 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                               reasonController.text = record.reason.toString();
                               pickStart =
                                   DateTime.tryParse(record.date!.toString());
-
                               await mybottonSheet(() {
                                 records.LoanRecord loanRecord =
                                     records.LoanRecord(

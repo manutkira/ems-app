@@ -115,37 +115,45 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '${local?.payrollDate}',
+                            '${local?.from}',
                             style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                '${local?.from} ${DateFormat('dd-MM-yyyy').format(payroll!.dateFrom!)}',
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                '${local?.to} ${DateFormat('dd-MM-yyyy').format(payroll!.dateTo!)}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            DateFormat('dd-MM-yyyy').format(payroll!.dateFrom!),
+                            style: const TextStyle(
+                              fontSize: 15,
+                            ),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 10,
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 18, right: 25, top: 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${local?.to}',
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            DateFormat('dd-MM-yyyy').format(payroll!.dateTo!),
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     Padding(
                       padding:
@@ -240,61 +248,61 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          payroll!.status!
-                              ? Text('\$${payroll!.loan.toString()}')
-                              : AnimatedContainer(
-                                  duration: const Duration(milliseconds: 400),
-                                  width: _isfolded ? 76 : 120,
-                                  height: _isfolded ? 30 : 56,
-                                  decoration: const BoxDecoration(),
-                                  child: _isfolded
-                                      ? AnimatedContainer(
-                                          duration:
-                                              const Duration(milliseconds: 400),
-                                          child: RaisedButton(
-                                            color: Colors.black,
-                                            elevation: 10,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            onPressed: () {
-                                              setState(() {
-                                                _isfolded = !_isfolded;
-                                              });
-                                            },
-                                            child: Text(
-                                              '${local?.input}',
-                                              style: const TextStyle(
-                                                color: kWhite,
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : Container(
-                                          padding:
-                                              const EdgeInsets.only(left: 16),
-                                          child: !_isfolded
-                                              ? Flex(
-                                                  direction: Axis.horizontal,
-                                                  children: [
-                                                    Flexible(
-                                                      child: TextField(
-                                                        controller:
-                                                            _loanController,
-                                                        decoration:
-                                                            InputDecoration(
-                                                          hintText:
-                                                              '${local?.amount}',
-                                                          border:
-                                                              InputBorder.none,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              : null,
-                                        ),
-                                )
+                          // payroll!.status!
+                          Text('\$${payroll!.loan.toString()}')
+                          //  AnimatedContainer(
+                          //     duration: const Duration(milliseconds: 400),
+                          //     width: _isfolded ? 76 : 120,
+                          //     height: _isfolded ? 30 : 56,
+                          //     decoration: const BoxDecoration(),
+                          //     child: _isfolded
+                          //         ? AnimatedContainer(
+                          //             duration:
+                          //                 const Duration(milliseconds: 400),
+                          //             child: RaisedButton(
+                          //               color: Colors.black,
+                          //               elevation: 10,
+                          //               shape: RoundedRectangleBorder(
+                          //                   borderRadius:
+                          //                       BorderRadius.circular(10)),
+                          //               onPressed: () {
+                          //                 setState(() {
+                          //                   _isfolded = !_isfolded;
+                          //                 });
+                          //               },
+                          //               child: Text(
+                          //                 '${local?.input}',
+                          //                 style: const TextStyle(
+                          //                   color: kWhite,
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //           )
+                          //         : Container(
+                          //             padding:
+                          //                 const EdgeInsets.only(left: 16),
+                          //             child: !_isfolded
+                          //                 ? Flex(
+                          //                     direction: Axis.horizontal,
+                          //                     children: [
+                          //                       Flexible(
+                          //                         child: TextField(
+                          //                           controller:
+                          //                               _loanController,
+                          //                           decoration:
+                          //                               InputDecoration(
+                          //                             hintText:
+                          //                                 '${local?.amount}',
+                          //                             border:
+                          //                                 InputBorder.none,
+                          //                           ),
+                          //                         ),
+                          //                       ),
+                          //                     ],
+                          //                   )
+                          //                 : null,
+                          //           ),
+                          //   )
                         ],
                       ),
                     ),
@@ -345,8 +353,9 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                                               actions: [
                                                 OutlineButton(
                                                   onPressed: () async {
-                                                    await updateStatus(
-                                                        _loanController.text);
+                                                    await updateStatus(payroll!
+                                                        .loan
+                                                        .toString());
                                                     Navigator.of(context).pop();
                                                     fetchPayrollById();
                                                   },

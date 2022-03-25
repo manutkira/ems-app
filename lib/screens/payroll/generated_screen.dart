@@ -143,12 +143,12 @@ class _GeneratedScreenState extends State<GeneratedScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const Text('Ref no'),
-                                    Text(widget.payment![index].refNo!),
+                                    Text('${local?.id}'),
+                                    Text(widget.payment![index].id.toString()),
                                   ],
                                 ),
                                 const SizedBox(
-                                  height: 15,
+                                  height: 10,
                                 ),
                                 Row(
                                   mainAxisAlignment:
@@ -170,6 +170,19 @@ class _GeneratedScreenState extends State<GeneratedScreen> {
                                     Text(widget.payment![index].status!
                                         ? '${local?.paid}'
                                         : '${local?.pending}'),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('${local?.loan}'),
+                                    Text(
+                                      '\$${doubleParse(widget.payment![index].loan!)}',
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(

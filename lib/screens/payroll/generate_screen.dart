@@ -487,17 +487,32 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
       iconColor: Colors.white,
       initiallyExpanded: indexx == 0,
       title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            getDateStringFromDateTime(
-                DateTime.parse(record.dateFrom.toString())),
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(
-            width: 10,
+          Row(
+            children: [
+              Text(
+                getDateStringFromDateTime(
+                    DateTime.parse(record.dateFrom.toString())),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              Text(
+                '- ${getDateStringFromDateTime(DateTime.parse(record.dateTo.toString()))}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+            ],
           ),
           Container(
             decoration: BoxDecoration(
@@ -532,8 +547,30 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Ref no'),
-                    Text(record.refNo!),
+                    Text('${local?.id}'),
+                    Text(record.id.toString()),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('${local?.status}'),
+                    Text(
+                      record.status! ? '${local?.paid}' : '${local?.pending}',
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('${local?.loan}'),
+                    Text('\$${doubleParse(record.loan!)}'),
                   ],
                 ),
                 const SizedBox(

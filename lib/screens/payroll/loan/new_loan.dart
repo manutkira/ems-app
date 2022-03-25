@@ -1,9 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:ems/models/loan.dart';
+import 'package:ems/models/payment.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/loan/loan_record.dart';
 import 'package:ems/services/loan.dart';
+import 'package:ems/services/payroll.dart';
 import 'package:ems/services/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,18 +28,21 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
   // service
   final UserService _userService = UserService.instance;
   final LoanService _loanService = LoanService();
+  final PayrollService _payrollService = PayrollService();
 
   // user list
   List<User> userList = [];
   Loan? loan;
   User? user;
+  List<Payment> paymentList = [];
 
-  // loan
-  // record.LoanRecord loanRecord = record.LoanRecord();
+  // int
+  int? countDays;
 
   // boolean
   bool _isloading = true;
   bool _isloadingOne = true;
+  bool _isloadingPayroll = true;
 
   // datetime
   DateTime? pickStart;
@@ -67,9 +72,14 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
   fetchOneUser(int id) async {
     _isloadingOne = true;
     try {
-      Loan? userDisplay = await _loanService.findOneLoanByUserId(id);
+      Loan? loanDisplay = await _loanService.findOneLoanByUserId(id);
       setState(() {
-        loan = userDisplay;
+        loan = loanDisplay;
+        int count = loan!.user!.payment![0].dateTo!
+                .difference(loan!.user!.payment![0].dateFrom!)
+                .inDays +
+            1;
+        countDays = count;
         _isloadingOne = false;
       });
     } catch (err) {
@@ -80,6 +90,28 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
       setState(() {
         user = userDisplay;
         _isloadingOne = false;
+      });
+    }
+  }
+
+  // fetch payment by id
+  fetchOnePayment(int id) async {
+    _isloadingPayroll = true;
+    try {
+      List<Payment> payment =
+          await _payrollService.findManyPaymentsByUserId(id);
+      setState(() {
+        paymentList = payment;
+        int count =
+            paymentList[0].dateTo!.difference(paymentList[0].dateFrom!).inDays +
+                1;
+        countDays = count;
+        _isloadingPayroll = false;
+      });
+    } catch (err) {
+      setState(() {
+        paymentList = [];
+        _isloadingPayroll = false;
       });
     }
   }
@@ -177,6 +209,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                               setState(() {
                                 _mySelection = newVal.toString();
                                 fetchOneUser(intParse(_mySelection));
+                                fetchOnePayment(intParse(_mySelection));
                               });
                             },
                             value: _mySelection,
@@ -297,7 +330,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                 ],
                               ),
                             ),
-                            _isloadingOne
+                            _isloadingOne || _isloadingPayroll
                                 ? Container()
                                 : loan == null
                                     ? Padding(
@@ -310,16 +343,28 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                       )
-                                    : Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 15, top: 8),
-                                        child: Text(
-                                          '${local?.canBorrowUpTo} \$${loan!.user!.salary! * 7 - doubleParse(loan!.remain)}',
-                                          style: TextStyle(
-                                              fontSize: isEnglish ? 12 : 14,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
+                                    : paymentList.isEmpty ||
+                                            paymentList[0].status == true
+                                        ? Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 15, top: 8),
+                                            child: Text(
+                                              '${local?.canBorrowUpTo} \$${loan!.user!.salary! * 7 - doubleParse(loan!.remain)}',
+                                              style: TextStyle(
+                                                  fontSize: isEnglish ? 12 : 14,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          )
+                                        : Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 15, top: 8),
+                                            child: Text(
+                                              '${local?.canBorrowUpTo} \$${loan!.user!.salary! * intParse(countDays) - doubleParse(loan!.remain)}',
+                                              style: TextStyle(
+                                                  fontSize: isEnglish ? 12 : 14,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
                           ],
                         ),
                       ],
