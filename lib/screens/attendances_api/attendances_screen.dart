@@ -10,6 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../constants.dart';
 
+// ignore: use_key_in_widget_constructors
 class AttendancesScreen extends StatefulWidget {
   @override
   State<AttendancesScreen> createState() => _AttendancesScreenState();

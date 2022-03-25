@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:ems/constants.dart';
 import 'package:ems/models/payroll.dart' as new_model;
 import 'package:ems/persistence/current_user.dart';
 import 'package:flutter/material.dart';
@@ -30,13 +29,9 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
   //  payroll
   new_model.Payroll? payroll;
 
-  // text editing controll
-  final TextEditingController _loanController = TextEditingController();
-
   // boolean
   bool _isLoading = true;
   bool pending = true;
-  bool _isfolded = true;
 
   // variable
   String urlUser = "http://rest-api-laravel-flutter.herokuapp.com/api/users";

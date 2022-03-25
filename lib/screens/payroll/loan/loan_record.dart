@@ -20,6 +20,7 @@ import '../../../services/user.dart';
 
 import '../../../constants.dart';
 
+// ignore: must_be_immutable
 class LoanRecord extends ConsumerStatefulWidget {
   String id;
   LoanRecord({
@@ -50,7 +51,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
   bool _isLoading = true;
   bool _loadingUser = true;
   bool loanRecords = true;
-  bool _isloading = true;
+  final bool _isloading = true;
   bool _isloadingOne = true;
   bool isFilterExpanded = false;
   bool _isloadingPayroll = true;
@@ -195,14 +196,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
     fetchUserById();
     fetchOneLoan();
     _tabController = TabController(length: 2, vsync: this);
-    // _tabController.addListener(_handleSelected);
   }
-
-  // void _handleSelected() {
-  //   setState(() {
-  //     _handler = myTabs[_tabController.index];
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -622,7 +616,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
     bool newLoan,
   ) {
     return showModalBottomSheet(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
           topRight: Radius.circular(30),
           topLeft: Radius.circular(30),

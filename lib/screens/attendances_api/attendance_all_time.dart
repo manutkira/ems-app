@@ -11,6 +11,7 @@ import '../../constants.dart';
 import '../../services/attendance.dart';
 import '../../models/attendance.dart';
 
+// ignore: use_key_in_widget_constructors
 class AttendanceAllTimeScreen extends StatefulWidget {
   @override
   _AttendanceAllTimeScreenState createState() =>
@@ -37,7 +38,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
   final color = const Color(0xff05445E);
   final color1 = const Color(0xff3982A0);
   String dropDownValue = '';
-  var _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   void clearText() {
     _controller.clear();

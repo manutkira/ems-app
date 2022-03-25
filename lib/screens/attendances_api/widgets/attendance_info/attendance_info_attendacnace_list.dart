@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../constants.dart';
 
+// ignore: must_be_immutable
 class AttendanceInfoAttendanceList extends ConsumerWidget {
   final bool multiday;
   final bool isOneDay;
@@ -43,11 +44,6 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     required this.fetchAttendanceCountAll,
     required this.fetchAttendanceCount,
   }) : super(key: key);
-
-  _onrefresh() {
-    fetchAttedancesById();
-    fetchAllAttendance();
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

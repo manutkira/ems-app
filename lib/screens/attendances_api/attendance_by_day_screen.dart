@@ -12,6 +12,7 @@ import '../../constants.dart';
 import '../../models/attendance.dart';
 import '../../services/attendance.dart';
 
+// ignore: use_key_in_widget_constructors
 class AttendanceByDayScreen extends StatefulWidget {
   @override
   _AttendanceByDayScreenState createState() => _AttendanceByDayScreenState();
@@ -41,7 +42,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
   final color1 = const Color(0xff3982A0);
   DateTime testdate = DateTime(10, 11, 2021);
   String dropDownValue = '';
-  var _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   void clearText() {
     _controller.clear();

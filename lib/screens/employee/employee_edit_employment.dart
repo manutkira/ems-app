@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:ems/models/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:http/http.dart' as http;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../constants.dart';
@@ -20,7 +17,8 @@ class EmployeeEditEmployment extends StatefulWidget {
   final String role;
   final String status;
   final String ratee;
-  const EmployeeEditEmployment(
+  // ignore: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
+  EmployeeEditEmployment(
     this.name,
     this.phone,
     this.id,
@@ -446,7 +444,7 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
         id: widget.id,
       );
 
-      User updatedUser = await _userService.updateOne(user);
+      await _userService.updateOne(user);
       Navigator.pop(context);
       showDialog(
           context: context,
@@ -494,108 +492,5 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                 ],
               ));
     }
-  }
-
-  updateEmployee() async {
-    AppLocalizations? local = AppLocalizations.of(context);
-
-    var aName = nameController.text;
-    var aPhone = phoneController.text;
-    var aSalary = salaryController.text;
-    var aRole = role;
-    var aStatus = status;
-
-    var request = await http.MultipartRequest(
-        'POST', Uri.parse("$url/${widget.id}?_method=PUT"));
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Content": "charset-UTF-8",
-    };
-    request.files.add(http.MultipartFile.fromString('name', aName));
-    request.files.add(http.MultipartFile.fromString('phone', aPhone));
-    request.files.add(http.MultipartFile.fromString('salary', aSalary));
-    String checkRole() {
-      if (aRole == local?.employee) {
-        return 'employee';
-      }
-      if (aRole == local?.admin) {
-        return 'admin';
-      } else {
-        return '';
-      }
-    }
-
-    request.files.add(http.MultipartFile.fromString('role', checkRole()));
-    String checkStatus() {
-      if (aStatus == local?.active) {
-        return 'active';
-      }
-      if (aStatus == local?.inactive) {
-        return 'inactive';
-      }
-      if (aStatus == local?.resigned) {
-        return 'resigned';
-      }
-      if (aStatus == local?.fired) {
-        return 'fired';
-      } else {
-        return '';
-      }
-    }
-
-    request.files.add(http.MultipartFile.fromString('status', checkStatus()));
-    request.headers.addAll(headers);
-
-    var res = await request.send();
-    if (res.statusCode != 200) {
-      Navigator.pop(context);
-      showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text('${local?.failed}',
-                    style: const TextStyle(color: Colors.red)),
-                content: Text('${local?.editFailed}'),
-                actions: [
-                  // ignore: deprecated_member_use
-                  OutlineButton(
-                    borderSide: const BorderSide(color: Colors.red),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('${local?.back}',
-                        style: const TextStyle(color: Colors.red)),
-                  ),
-                ],
-              ));
-    }
-    if (res.statusCode == 200) {
-      Navigator.pop(context);
-      showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text('${local?.success}'),
-                content: Text('${local?.edited}'),
-                actions: [
-                  // ignore: deprecated_member_use
-                  OutlineButton(
-                    borderSide: const BorderSide(color: Colors.grey),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('${local?.done}'),
-                  ),
-                  // ignore: deprecated_member_use
-                  OutlineButton(
-                    borderSide: const BorderSide(color: Colors.green),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                    child: Text('${local?.back}'),
-                  ),
-                ],
-              ));
-    }
-    res.stream.transform(utf8.decoder).listen((event) {});
   }
 }

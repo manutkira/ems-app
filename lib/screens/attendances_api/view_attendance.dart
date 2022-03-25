@@ -9,6 +9,7 @@ import 'package:ems/widgets/baseline_row.dart';
 
 import '../../constants.dart';
 
+// ignore: must_be_immutable
 class ViewAttendanceScreen extends StatefulWidget {
   final int id;
   final int userId;

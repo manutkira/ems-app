@@ -4,6 +4,7 @@ import 'package:ems/utils/utils.dart';
 
 import '../../../../constants.dart';
 
+// ignore: must_be_immutable
 class AttendanceInfoPresent extends StatelessWidget {
   final String text;
   final bool afternoon;

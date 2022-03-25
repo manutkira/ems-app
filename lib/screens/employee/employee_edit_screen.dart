@@ -1,11 +1,9 @@
 // ignore_for_file: await_only_futures
 
-import 'dart:convert';
 import 'dart:io';
 import 'package:ems/screens/employee/widgets/employee_edit.dart/edit_personal.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import '../../services/user.dart';
 import '../../models/user.dart';
@@ -26,6 +24,7 @@ class EmployeeEditScreen extends StatefulWidget {
   final String? image;
   final String? imageId;
 
+  // ignore: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
   EmployeeEditScreen(
     this.id,
     this.name,
@@ -50,7 +49,7 @@ class EmployeeEditScreen extends StatefulWidget {
 
 class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
   // service
-  UserService _userService = UserService();
+  final UserService _userService = UserService();
 
   String url = "http://rest-api-laravel-flutter.herokuapp.com/api/users";
 

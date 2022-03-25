@@ -11,6 +11,7 @@ import '../../models/attendance.dart';
 import '../../services/attendance.dart';
 import '../../services/user.dart';
 
+// ignore: use_key_in_widget_constructors
 class AttendancesByMonthScreen extends StatefulWidget {
   @override
   _AttendancesByMonthScreenState createState() =>

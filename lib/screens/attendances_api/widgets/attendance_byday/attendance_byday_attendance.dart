@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class AttendanceByDayAttendance extends StatelessWidget {
   final bool afternoon;
   List attendanceDisplay;

@@ -5,9 +5,11 @@ import 'package:ems/utils/utils.dart';
 
 import '../../../../constants.dart';
 
+// ignore: must_be_immutable
 class AttendanceInfoFilterButton extends StatefulWidget {
   final Function toggleFilter;
   final bool isFilterExpanded;
+  // ignore: prefer_typing_uninitialized_variables
   var dropdownItems;
   String sortByValue;
   bool multipleDay;
