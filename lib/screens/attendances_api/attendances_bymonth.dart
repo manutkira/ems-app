@@ -266,36 +266,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('${local?.byMonth}'),
-        actions: [
-          PopupMenuButton(
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              color: kBlack,
-              onSelected: (item) => onSelected(context, item as int),
-              icon: const Icon(Icons.filter_list),
-              itemBuilder: (_) => [
-                    PopupMenuItem(
-                      child: Text(
-                        '${local?.byDay}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      value: 0,
-                    ),
-                    PopupMenuItem(
-                      child: Text(
-                        '${local?.byAllTime}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      value: 1,
-                    ),
-                  ])
-        ],
+        actions: [_popupmenuIcon(context, local)],
       ),
       body: Form(
         key: _formKey,
@@ -304,231 +275,9 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: const EdgeInsets.only(left: 20, bottom: 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      _selectMonth == null
-                          ? '${local?.monthYear}: ____'
-                          : '${local?.monthYear}: $_selectMonth/$pickedYear',
-                      style: kParagraph.copyWith(fontSize: 14),
-                    ),
-                    // ignore: deprecated_member_use
-                    RaisedButton(
-                      color: kDarkestBlue,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return StatefulBuilder(
-                              builder: (context, _setState) {
-                                return AlertDialog(
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0))),
-                                  title: Text('${local?.pickMonth}'),
-                                  content: SizedBox(
-                                    height: 300,
-                                    width: 400,
-                                    child: Column(
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 8,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: kDarkestBlue,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: DropdownButton(
-                                                underline: Container(),
-                                                style: kParagraph.copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                                isDense: true,
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        kBorderRadius),
-                                                dropdownColor: kDarkestBlue,
-                                                icon: const Icon(
-                                                    Icons.expand_more),
-                                                value: dropDownValue1,
-                                                onChanged: (String? newValue) {
-                                                  _setState(() {
-                                                    dropDownValue1 = newValue!;
-                                                  });
-                                                },
-                                                items: <String>[
-                                                  '2021',
-                                                  '2022',
-                                                  '2023',
-                                                  '2024',
-                                                  '2025',
-                                                  '2026',
-                                                ].map<DropdownMenuItem<String>>(
-                                                    (String value) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: value,
-                                                    child: Text(value),
-                                                  );
-                                                }).toList(),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                            ),
-                                            SizedBox(
-                                              height: 250,
-                                              child: GridView.count(
-                                                mainAxisSpacing: 20,
-                                                crossAxisSpacing: 20,
-                                                childAspectRatio: 2.2,
-                                                crossAxisCount: 3,
-                                                shrinkWrap: true,
-                                                physics:
-                                                    const NeverScrollableScrollPhysics(),
-                                                children: [
-                                                  ...monthList
-                                                      .asMap()
-                                                      .entries
-                                                      .map((e) {
-                                                    int index = e.key;
-                                                    String name = e.value;
-                                                    return ElevatedButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          _selectMonth =
-                                                              index + 1;
-                                                          pickedYear =
-                                                              dropDownValue1;
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          countAttendance();
-                                                        });
-                                                      },
-                                                      child: Text(name),
-                                                      style: ButtonStyle(
-                                                          shape: MaterialStateProperty.all<
-                                                                  RoundedRectangleBorder>(
-                                                              RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              10.0),
-                                                                  side: const BorderSide(
-                                                                      color: Colors
-                                                                          .teal,
-                                                                      width:
-                                                                          2.0)))),
-                                                    );
-                                                  })
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        );
-                      },
-                      child: Text(
-                        '${local?.pickMonth}',
-                        style: kParagraph,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: kDarkestBlue,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: DropdownButton(
-                        underline: Container(),
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        isDense: true,
-                        borderRadius: const BorderRadius.all(kBorderRadius),
-                        dropdownColor: kDarkestBlue,
-                        icon: const Icon(Icons.expand_more),
-                        value: dropDownValue,
-                        onChanged: (String? newValue) {
-                          if (newValue == '${local?.afternoon}') {
-                            setState(() {
-                              afternoon = true;
-                              total = false;
-                              dropDownValue = newValue!;
-                            });
-                          }
-                          if (newValue == '${local?.morning}') {
-                            setState(() {
-                              afternoon = false;
-                              total = false;
-                              dropDownValue = newValue!;
-                            });
-                          }
-                          if (newValue == '${local?.total}') {
-                            setState(() {
-                              afternoon = false;
-                              total = true;
-                              dropDownValue = newValue!;
-                            });
-                          }
-                        },
-                        items: <String>[
-                          '${local?.morning}',
-                          '${local?.afternoon}',
-                          '${local?.total}',
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _pickMonthBtnAndFilter(local, context),
               pickedYear == null
-                  ? Container(
-                      padding: const EdgeInsets.only(top: 150, left: 70),
-                      child: Column(
-                        children: [
-                          Text(
-                            '${local?.plsPickMonth}',
-                            style: kHeadingTwo.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Image.asset(
-                            'assets/images/calendar.jpeg',
-                            width: 220,
-                          ),
-                        ],
-                      ),
-                    )
+                  ? _plsPickMonth(local)
                   : Expanded(
                       flex: 3,
                       child: Container(
@@ -547,418 +296,8 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
                               end: Alignment.bottomCenter,
                             )),
                         child: userDisplay.isEmpty
-                            ? Column(
-                                children: [
-                                  _searchBar(),
-                                  Container(
-                                    padding: const EdgeInsets.only(top: 150),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '${local?.employeeNotFound}',
-                                          style: kHeadingThree.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-                                        Image.asset(
-                                          'assets/images/notfound.png',
-                                          width: 220,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : Column(
-                                children: [
-                                  _searchBar(),
-                                  Expanded(
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: userDisplay.length,
-                                      itemBuilder: (context, index) {
-                                        return Container(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 20),
-                                          margin: const EdgeInsets.all(20),
-                                          decoration: const BoxDecoration(
-                                              border: Border(
-                                                  bottom: BorderSide(
-                                                      color: Colors.black,
-                                                      width: 2))),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: 60,
-                                                    height: 60,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                    .all(
-                                                                Radius.circular(
-                                                                    100)),
-                                                        border: Border.all(
-                                                          width: 1,
-                                                          color: Colors.white,
-                                                        )),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              150),
-                                                      child: userDisplay[index]
-                                                                  .image ==
-                                                              null
-                                                          ? Image.asset(
-                                                              'assets/images/profile-icon-png-910.png',
-                                                              width: 60,
-                                                            )
-                                                          : Image.network(
-                                                              userDisplay[index]
-                                                                  .image
-                                                                  .toString(),
-                                                              fit: BoxFit.cover,
-                                                              width: 65,
-                                                              height: 75,
-                                                            ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      BaselineRow(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: isEnglish
-                                                                        ? 0
-                                                                        : 3),
-                                                            child: Text(
-                                                              '${local?.name}: ',
-                                                              style: const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            userDisplay[index]
-                                                                        .name
-                                                                        .length >=
-                                                                    13
-                                                                ? '${userDisplay[index].name.substring(0, 8).toString()}...'
-                                                                : userDisplay[
-                                                                        index]
-                                                                    .name
-                                                                    // .substring(
-                                                                    //     userDisplay[index].name.length - 7)
-                                                                    .toString(),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      BaselineRow(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: isEnglish
-                                                                        ? 0
-                                                                        : 3),
-                                                            child: Text(
-                                                              '${local?.id}: ',
-                                                              style: const TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                              userDisplay[index]
-                                                                  .id
-                                                                  .toString()),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Column(
-                                                    children: [
-                                                      BaselineRow(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: isEnglish
-                                                                        ? 0
-                                                                        : 3),
-                                                            child: Text(
-                                                                '${local?.shortPresent}: '),
-                                                          ),
-                                                          total
-                                                              ? Text((attsList.where(
-                                                                          (element) {
-                                                                        return element.userId == userDisplay[index].id &&
-                                                                            element.date!.month ==
-                                                                                _selectMonth &&
-                                                                            element.t1 !=
-                                                                                null &&
-                                                                            checkPresent(element
-                                                                                .t1) &&
-                                                                            element.date!.year ==
-                                                                                int.parse(pickedYear);
-                                                                      }).length +
-                                                                      attsList.where(
-                                                                          (element) {
-                                                                        return element.userId == userDisplay[index].id &&
-                                                                            element.date!.month ==
-                                                                                _selectMonth &&
-                                                                            element.t3 !=
-                                                                                null &&
-                                                                            checkPresengetT2(element
-                                                                                .t3) &&
-                                                                            element.date!.year ==
-                                                                                int.parse(pickedYear);
-                                                                      }).length)
-                                                                  .toString())
-                                                              : afternoon
-                                                                  ? Text(attsList
-                                                                      .where((element) {
-                                                                        return element.userId == userDisplay[index].id &&
-                                                                            element.date!.month ==
-                                                                                _selectMonth &&
-                                                                            element.t3 !=
-                                                                                null &&
-                                                                            checkPresengetT2(element
-                                                                                .t3) &&
-                                                                            element.date!.year ==
-                                                                                int.parse(pickedYear);
-                                                                      })
-                                                                      .length
-                                                                      .toString())
-                                                                  : Text(
-                                                                      attsList
-                                                                          .where(
-                                                                              (element) {
-                                                                            return element.userId == userDisplay[index].id &&
-                                                                                element.date!.month == _selectMonth &&
-                                                                                element.t1 != null &&
-                                                                                checkPresent(element.t1) &&
-                                                                                element.date!.year == int.parse(pickedYear);
-                                                                          })
-                                                                          .length
-                                                                          .toString(),
-                                                                    ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      BaselineRow(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: isEnglish
-                                                                        ? 0
-                                                                        : 3),
-                                                            child: Text(
-                                                                '${local?.shortAbsent}: '),
-                                                          ),
-                                                          total
-                                                              ? Text((attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month ==
-                                                                                  _selectMonth &&
-                                                                              element.t1 !=
-                                                                                  null &&
-                                                                              checkAbsengetT1(element
-                                                                                  .t1) &&
-                                                                              element.date!.year ==
-                                                                                  int.parse(
-                                                                                      pickedYear)))
-                                                                          .length +
-                                                                      attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month == _selectMonth &&
-                                                                              element.t3 != null &&
-                                                                              checkAbsengetT2(element.t3) &&
-                                                                              element.date!.year == int.parse(pickedYear)))
-                                                                          .length)
-                                                                  .toString())
-                                                              : afternoon
-                                                                  ? Text(
-                                                                      attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month == _selectMonth &&
-                                                                              element.t3 != null &&
-                                                                              checkAbsengetT2(element.t3) &&
-                                                                              element.date!.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    )
-                                                                  : Text(
-                                                                      attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month == _selectMonth &&
-                                                                              element.t1 != null &&
-                                                                              checkAbsengetT1(element.t1) &&
-                                                                              element.date!.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 15,
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      BaselineRow(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: isEnglish
-                                                                        ? 0
-                                                                        : 3),
-                                                            child: Text(
-                                                                '${local?.shortLate}: '),
-                                                          ),
-                                                          total
-                                                              ? Text((attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month ==
-                                                                                  _selectMonth &&
-                                                                              element.t1 !=
-                                                                                  null &&
-                                                                              checkLate1(element
-                                                                                  .t1) &&
-                                                                              element.date!.year ==
-                                                                                  int.parse(
-                                                                                      pickedYear)))
-                                                                          .length +
-                                                                      attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month == _selectMonth &&
-                                                                              element.t3 != null &&
-                                                                              checkLate2(element.t3) &&
-                                                                              element.date!.year == int.parse(pickedYear)))
-                                                                          .length)
-                                                                  .toString())
-                                                              : afternoon
-                                                                  ? Text(
-                                                                      attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month == _selectMonth &&
-                                                                              element.t3 != null &&
-                                                                              checkLate2(element.t3) &&
-                                                                              element.date!.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    )
-                                                                  : Text(
-                                                                      attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month == _selectMonth &&
-                                                                              element.t1 != null &&
-                                                                              checkLate1(element.t1) &&
-                                                                              element.date!.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      BaselineRow(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: isEnglish
-                                                                        ? 0
-                                                                        : 3),
-                                                            child: Text(
-                                                                '${local?.shortPermission}: '),
-                                                          ),
-                                                          total
-                                                              ? Text((attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month ==
-                                                                                  _selectMonth &&
-                                                                              element.t1 !=
-                                                                                  null &&
-                                                                              checkPermissiongetT1(element
-                                                                                  .t1) &&
-                                                                              element.date!.year ==
-                                                                                  int.parse(
-                                                                                      pickedYear)))
-                                                                          .length +
-                                                                      attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month == _selectMonth &&
-                                                                              element.t3 != null &&
-                                                                              checkPermissiongetT2(element.t3) &&
-                                                                              element.date!.year == int.parse(pickedYear)))
-                                                                          .length)
-                                                                  .toString())
-                                                              : afternoon
-                                                                  ? Text(
-                                                                      attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month == _selectMonth &&
-                                                                              element.t3 != null &&
-                                                                              checkPermissiongetT2(element.t3) &&
-                                                                              element.date!.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    )
-                                                                  : Text(
-                                                                      attsList
-                                                                          .where((element) => (element.userId == userDisplay[index].id &&
-                                                                              element.date!.month == _selectMonth &&
-                                                                              element.t1 != null &&
-                                                                              checkPermissiongetT1(element.t1) &&
-                                                                              element.date!.year == int.parse(pickedYear)))
-                                                                          .length
-                                                                          .toString(),
-                                                                    ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            ? _notFound(local)
+                            : _employeeListAndCount(isEnglish, local),
                       ),
                     ),
             ],
@@ -968,6 +307,653 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
     );
   }
 
+// list employee and attendance count
+  Column _employeeListAndCount(
+    bool isEnglish,
+    AppLocalizations? local,
+  ) {
+    return Column(
+      children: [
+        _searchBar(),
+        Expanded(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: userDisplay.length,
+            itemBuilder: (context, index) {
+              return _listItem(index, isEnglish, local);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+// list employee and attendance count
+  Container _listItem(
+    int index,
+    bool isEnglish,
+    AppLocalizations? local,
+  ) {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.black,
+            width: 2,
+          ),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(
+                        100,
+                      ),
+                    ),
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.white,
+                    )),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(150),
+                  child: userDisplay[index].image == null
+                      ? Image.asset(
+                          'assets/images/profile-icon-png-910.png',
+                          width: 60,
+                        )
+                      : Image.network(
+                          userDisplay[index].image.toString(),
+                          fit: BoxFit.cover,
+                          width: 65,
+                          height: 75,
+                        ),
+                ),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              _nameAndId(isEnglish, local, index),
+            ],
+          ),
+          Row(
+            children: [
+              presentAndAbsent(isEnglish, local, index),
+              const SizedBox(
+                width: 15,
+              ),
+              lateAndPermission(isEnglish, local, index),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+// count late and permission
+  Column lateAndPermission(
+    bool isEnglish,
+    AppLocalizations? local,
+    int index,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BaselineRow(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+              child: Text('${local?.shortLate}: '),
+            ),
+            total
+                ? Text((attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t1 != null &&
+                                checkLate1(element.t1) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length +
+                        attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t3 != null &&
+                                checkLate2(element.t3) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length)
+                    .toString())
+                : afternoon
+                    ? Text(
+                        attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t3 != null &&
+                                checkLate2(element.t3) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length
+                            .toString(),
+                      )
+                    : Text(
+                        attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t1 != null &&
+                                checkLate1(element.t1) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length
+                            .toString(),
+                      ),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        BaselineRow(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+              child: Text('${local?.shortPermission}: '),
+            ),
+            total
+                ? Text((attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t1 != null &&
+                                checkPermissiongetT1(element.t1) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length +
+                        attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t3 != null &&
+                                checkPermissiongetT2(element.t3) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length)
+                    .toString())
+                : afternoon
+                    ? Text(
+                        attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t3 != null &&
+                                checkPermissiongetT2(element.t3) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length
+                            .toString(),
+                      )
+                    : Text(
+                        attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t1 != null &&
+                                checkPermissiongetT1(element.t1) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length
+                            .toString(),
+                      ),
+          ],
+        ),
+      ],
+    );
+  }
+
+// count present and absent
+  Column presentAndAbsent(
+    bool isEnglish,
+    AppLocalizations? local,
+    int index,
+  ) {
+    return Column(
+      children: [
+        BaselineRow(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+              child: Text('${local?.shortPresent}: '),
+            ),
+            total
+                ? Text((attsList.where((element) {
+                          return element.userId == userDisplay[index].id &&
+                              element.date!.month == _selectMonth &&
+                              element.t1 != null &&
+                              checkPresent(element.t1) &&
+                              element.date!.year == int.parse(pickedYear);
+                        }).length +
+                        attsList.where((element) {
+                          return element.userId == userDisplay[index].id &&
+                              element.date!.month == _selectMonth &&
+                              element.t3 != null &&
+                              checkPresengetT2(element.t3) &&
+                              element.date!.year == int.parse(pickedYear);
+                        }).length)
+                    .toString())
+                : afternoon
+                    ? Text(attsList
+                        .where((element) {
+                          return element.userId == userDisplay[index].id &&
+                              element.date!.month == _selectMonth &&
+                              element.t3 != null &&
+                              checkPresengetT2(element.t3) &&
+                              element.date!.year == int.parse(pickedYear);
+                        })
+                        .length
+                        .toString())
+                    : Text(
+                        attsList
+                            .where((element) {
+                              return element.userId == userDisplay[index].id &&
+                                  element.date!.month == _selectMonth &&
+                                  element.t1 != null &&
+                                  checkPresent(element.t1) &&
+                                  element.date!.year == int.parse(pickedYear);
+                            })
+                            .length
+                            .toString(),
+                      ),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        BaselineRow(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+              child: Text('${local?.shortAbsent}: '),
+            ),
+            total
+                ? Text((attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t1 != null &&
+                                checkAbsengetT1(element.t1) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length +
+                        attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t3 != null &&
+                                checkAbsengetT2(element.t3) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length)
+                    .toString())
+                : afternoon
+                    ? Text(
+                        attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t3 != null &&
+                                checkAbsengetT2(element.t3) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length
+                            .toString(),
+                      )
+                    : Text(
+                        attsList
+                            .where((element) => (element.userId ==
+                                    userDisplay[index].id &&
+                                element.date!.month == _selectMonth &&
+                                element.t1 != null &&
+                                checkAbsengetT1(element.t1) &&
+                                element.date!.year == int.parse(pickedYear)))
+                            .length
+                            .toString(),
+                      ),
+          ],
+        ),
+      ],
+    );
+  }
+
+// name id and image widget
+  Column _nameAndId(
+    bool isEnglish,
+    AppLocalizations? local,
+    int index,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BaselineRow(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+              child: Text(
+                '${local?.name}: ',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Text(
+              userDisplay[index].name.length >= 13
+                  ? '${userDisplay[index].name.substring(0, 8).toString()}...'
+                  : userDisplay[index]
+                      .name
+                      // .substring(
+                      //     userDisplay[index].name.length - 7)
+                      .toString(),
+            ),
+          ],
+        ),
+        BaselineRow(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+              child: Text(
+                '${local?.id}: ',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            Text(userDisplay[index].id.toString()),
+          ],
+        ),
+      ],
+    );
+  }
+
+// show not found msg when search wrong name
+  Column _notFound(AppLocalizations? local) {
+    return Column(
+      children: [
+        _searchBar(),
+        Container(
+          padding: const EdgeInsets.only(top: 150),
+          child: Column(
+            children: [
+              Text(
+                '${local?.employeeNotFound}',
+                style: kHeadingThree.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Image.asset(
+                'assets/images/notfound.png',
+                width: 220,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+// show msg pls pick a month
+  Container _plsPickMonth(AppLocalizations? local) {
+    return Container(
+      padding: const EdgeInsets.only(top: 150, left: 70),
+      child: Column(
+        children: [
+          Text(
+            '${local?.plsPickMonth}',
+            style: kHeadingTwo.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Image.asset(
+            'assets/images/calendar.jpeg',
+            width: 220,
+          ),
+        ],
+      ),
+    );
+  }
+
+// pick month button and filter morning/afternoon
+  Container _pickMonthBtnAndFilter(
+    AppLocalizations? local,
+    BuildContext context,
+  ) {
+    return Container(
+      margin: const EdgeInsets.only(left: 20, bottom: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            _selectMonth == null
+                ? '${local?.monthYear}: ____'
+                : '${local?.monthYear}: $_selectMonth/$pickedYear',
+            style: kParagraph.copyWith(fontSize: 14),
+          ),
+          // ignore: deprecated_member_use
+          RaisedButton(
+            color: kDarkestBlue,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return StatefulBuilder(
+                    builder: (context, _setState) {
+                      return AlertDialog(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0))),
+                        title: Text('${local?.pickMonth}'),
+                        content: SizedBox(
+                          height: 300,
+                          width: 400,
+                          child: Column(
+                            children: [
+                              Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: kDarkestBlue,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: DropdownButton(
+                                      underline: Container(),
+                                      style: kParagraph.copyWith(
+                                          fontWeight: FontWeight.bold),
+                                      isDense: true,
+                                      borderRadius:
+                                          const BorderRadius.all(kBorderRadius),
+                                      dropdownColor: kDarkestBlue,
+                                      icon: const Icon(Icons.expand_more),
+                                      value: dropDownValue1,
+                                      onChanged: (String? newValue) {
+                                        _setState(() {
+                                          dropDownValue1 = newValue!;
+                                        });
+                                      },
+                                      items: <String>[
+                                        '2021',
+                                        '2022',
+                                        '2023',
+                                        '2024',
+                                        '2025',
+                                        '2026',
+                                      ].map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  SizedBox(
+                                    height: 250,
+                                    child: GridView.count(
+                                      mainAxisSpacing: 20,
+                                      crossAxisSpacing: 20,
+                                      childAspectRatio: 2.2,
+                                      crossAxisCount: 3,
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      children: [
+                                        ...monthList.asMap().entries.map((e) {
+                                          int index = e.key;
+                                          String name = e.value;
+                                          return ElevatedButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _selectMonth = index + 1;
+                                                pickedYear = dropDownValue1;
+                                                Navigator.of(context).pop();
+                                                countAttendance();
+                                              });
+                                            },
+                                            child: Text(name),
+                                            style: ButtonStyle(
+                                                shape: MaterialStateProperty.all<
+                                                        RoundedRectangleBorder>(
+                                                    RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                        side: const BorderSide(
+                                                            color: Colors.teal,
+                                                            width: 2.0)))),
+                                          );
+                                        })
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            },
+            child: Text(
+              '${local?.pickMonth}',
+              style: kParagraph,
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 8,
+            ),
+            decoration: BoxDecoration(
+              color: kDarkestBlue,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: DropdownButton(
+              underline: Container(),
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+              isDense: true,
+              borderRadius: const BorderRadius.all(kBorderRadius),
+              dropdownColor: kDarkestBlue,
+              icon: const Icon(Icons.expand_more),
+              value: dropDownValue,
+              onChanged: (String? newValue) {
+                if (newValue == '${local?.afternoon}') {
+                  setState(() {
+                    afternoon = true;
+                    total = false;
+                    dropDownValue = newValue!;
+                  });
+                }
+                if (newValue == '${local?.morning}') {
+                  setState(() {
+                    afternoon = false;
+                    total = false;
+                    dropDownValue = newValue!;
+                  });
+                }
+                if (newValue == '${local?.total}') {
+                  setState(() {
+                    afternoon = false;
+                    total = true;
+                    dropDownValue = newValue!;
+                  });
+                }
+              },
+              items: <String>[
+                '${local?.morning}',
+                '${local?.afternoon}',
+                '${local?.total}',
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// popupmenu to navigate to other screen
+  PopupMenuButton<int> _popupmenuIcon(
+    BuildContext context,
+    AppLocalizations? local,
+  ) {
+    return PopupMenuButton(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        color: kBlack,
+        onSelected: (item) => onSelected(context, item as int),
+        icon: const Icon(Icons.filter_list),
+        itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text(
+                  '${local?.byDay}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 0,
+              ),
+              PopupMenuItem(
+                child: Text(
+                  '${local?.byAllTime}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 1,
+              ),
+            ]);
+  }
+
+// search bar for searching employee
   _searchBar() {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
@@ -1076,6 +1062,7 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
   }
 }
 
+// onSelected popupmenu
 void onSelected(BuildContext context, int item) {
   switch (item) {
     case 0:

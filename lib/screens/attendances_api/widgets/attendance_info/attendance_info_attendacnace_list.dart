@@ -51,26 +51,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
     return isOneDay && onedayList.isEmpty
-        ? Column(
-            children: [
-              Text(
-                local!.noAttendance,
-                style: kHeadingThree.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(
-                height: isEnglish ? 30 : 0,
-              ),
-              const Text(
-                '🤷🏼',
-                style: TextStyle(
-                  fontSize: 60,
-                ),
-              )
-            ],
-          )
+        ? _noAttendnaceOneDay(local, isEnglish)
         : RefreshIndicator(
             onRefresh: () {
               return multiday ? fetchAttedancesById() : fetchAllAttendance();
@@ -125,6 +106,31 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
           );
   }
 
+// show no attendnace msg for oneday
+  Column _noAttendnaceOneDay(AppLocalizations? local, bool isEnglish) {
+    return Column(
+      children: [
+        Text(
+          local!.noAttendance,
+          style: kHeadingThree.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        SizedBox(
+          height: isEnglish ? 30 : 0,
+        ),
+        const Text(
+          '🤷🏼',
+          style: TextStyle(
+            fontSize: 60,
+          ),
+        )
+      ],
+    );
+  }
+
+// check attendance status
   checkPresent(AttendancesByDate element) {
     if (element.attendances?[0].t1?.note != 'absent' &&
         element.attendances?[0].t1?.note != 'permission') {
@@ -216,6 +222,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     }
   }
 
+// popupmenu
   popUp1(AttendancesByDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);
     return PopupMenuButton(
@@ -621,8 +628,12 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     );
   }
 
+// show all attendance widget
   Widget _buildAllResult(
-      AttendancesByDate record, BuildContext context, bool isAdmin) {
+    AttendancesByDate record,
+    BuildContext context,
+    bool isAdmin,
+  ) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
@@ -811,10 +822,13 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     );
   }
 
+// show today attendance widget
   Widget _buildNowResult(
-      AttendancesByDate record, BuildContext context, bool isAdmin) {
+    AttendancesByDate record,
+    BuildContext context,
+    bool isAdmin,
+  ) {
     AppLocalizations? local = AppLocalizations.of(context);
-
     return ExpansionTile(
       collapsedBackgroundColor: const Color(0xff254973),
       backgroundColor: const Color(0xff254973),
@@ -1001,11 +1015,13 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     );
   }
 
+// show oneday attendance widget
   Widget _buildOnedayResult(
-      AttendancesByDate record, BuildContext context, bool isAdmin) {
+    AttendancesByDate record,
+    BuildContext context,
+    bool isAdmin,
+  ) {
     AppLocalizations? local = AppLocalizations.of(context);
-    // bool isEnglish = isInEnglish(context);
-
     return ExpansionTile(
       collapsedBackgroundColor: const Color(0xff254973),
       backgroundColor: const Color(0xff254973),
@@ -1192,6 +1208,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
     );
   }
 
+// show multiday attendance widget
   Widget _buildMultipleResult(
       AttendancesByDate record, BuildContext context, bool isAdmin) {
     AppLocalizations? local = AppLocalizations.of(context);

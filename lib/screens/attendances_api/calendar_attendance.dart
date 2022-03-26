@@ -249,59 +249,67 @@ class _AttendanceCalendarState extends State<AttendanceCalendar> {
         appBar: AppBar(
           title: Text('${local?.calendarAttendance}'),
         ),
-        body: _isLoadingById
-            ? Container(
-                padding: const EdgeInsets.only(top: 320),
-                alignment: Alignment.center,
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text('loading'),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Image.asset(
-                        'assets/images/Gear-0.5s-200px.gif',
-                        width: 60,
-                      )
-                    ],
-                  ),
-                ),
-              )
-            : Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Column(
-                  children: [
-                    SfCalendar(
-                      view: CalendarView.month,
-                      dataSource: MeetingDataSource(getAppointments()),
-                    ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    SfCalendar(
-                      scheduleViewSettings: const ScheduleViewSettings(
-                        monthHeaderSettings: MonthHeaderSettings(
-                          monthFormat: 'MMMM yyyy',
-                          height: 100,
-                          textAlign: TextAlign.start,
-                        ),
-                        hideEmptyScheduleWeek: true,
-                        appointmentItemHeight: 60,
-                        appointmentTextStyle: TextStyle(
-                          color: kGreenText,
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      headerHeight: 1,
-                      view: CalendarView.schedule,
-                      dataSource: MeetingDataSource(getAppointments()),
-                    ),
-                  ],
-                ),
-              ));
+        body: _isLoadingById ? _fetchingAndLoading() : calendarAndSchedule());
+  }
+
+// calendar and schedule widget
+  Padding calendarAndSchedule() {
+    return Padding(
+      padding: const EdgeInsets.all(18.0),
+      child: Column(
+        children: [
+          SfCalendar(
+            view: CalendarView.month,
+            dataSource: MeetingDataSource(getAppointments()),
+          ),
+          const SizedBox(
+            height: 25,
+          ),
+          SfCalendar(
+            scheduleViewSettings: const ScheduleViewSettings(
+              monthHeaderSettings: MonthHeaderSettings(
+                monthFormat: 'MMMM yyyy',
+                height: 100,
+                textAlign: TextAlign.start,
+              ),
+              hideEmptyScheduleWeek: true,
+              appointmentItemHeight: 60,
+              appointmentTextStyle: TextStyle(
+                color: kGreenText,
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            headerHeight: 1,
+            view: CalendarView.schedule,
+            dataSource: MeetingDataSource(getAppointments()),
+          ),
+        ],
+      ),
+    );
+  }
+
+// fetching and loading widget
+  Container _fetchingAndLoading() {
+    return Container(
+      padding: const EdgeInsets.only(top: 320),
+      alignment: Alignment.center,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text('loading'),
+            const SizedBox(
+              height: 10,
+            ),
+            Image.asset(
+              'assets/images/Gear-0.5s-200px.gif',
+              width: 60,
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 

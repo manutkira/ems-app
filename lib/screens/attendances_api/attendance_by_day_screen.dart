@@ -322,252 +322,277 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text('${local?.byDay}'),
-          actions: [
-            PopupMenuButton(
-                color: kBlack,
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                onSelected: (item) => onSelected(context, item as int),
-                icon: const Icon(Icons.filter_list),
-                itemBuilder: (_) => [
-                      PopupMenuItem(
-                        child: Text(
-                          '${local?.byMonth}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        value: 0,
-                      ),
-                      PopupMenuItem(
-                        child: Text(
-                          '${local?.byAllTime}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        value: 1,
-                      ),
-                    ])
-          ],
+          actions: [_popUpMenu(context, local)],
         ),
         body: attendanceDisplay.isEmpty
-            ? Container(
-                padding: const EdgeInsets.only(top: 320),
-                alignment: Alignment.center,
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('${local?.fetchData}'),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const CircularProgressIndicator(
-                        color: kWhite,
-                      ),
-                    ],
-                  ),
-                ),
-              )
+            ? _fetchingData(local)
             : Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          _selectDate == null
-                              ? '${local?.date}: _______'
-                              : '${local?.date}: ${DateFormat.yMd().format(_selectDate as DateTime)}',
-                          style: kParagraph.copyWith(fontSize: 14),
-                        ),
-                        // ignore: deprecated_member_use
-                        RaisedButton(
-                          padding: const EdgeInsets.only(
-                              top: 0, bottom: 0, left: 7, right: 7),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                          // elevation: 10,
-                          color: kDarkestBlue,
-                          onPressed: () {
-                            setState(
-                              () {
-                                _byDayDatePicker();
-                              },
-                            );
-                          },
-                          child: Text(
-                            '${local?.pickDate}',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 7,
-                          ),
-                          decoration: BoxDecoration(
-                            color: kDarkestBlue,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: DropdownButton(
-                            underline: Container(),
-                            style: kParagraph.copyWith(
-                                fontWeight: FontWeight.bold),
-                            isDense: true,
-                            borderRadius: const BorderRadius.all(kBorderRadius),
-                            dropdownColor: kDarkestBlue,
-                            icon: const Icon(Icons.expand_more),
-                            value: dropDownValue,
-                            onChanged: (String? newValue) {
-                              if (newValue == '${local?.afternoon}') {
-                                setState(() {
-                                  afternoon = true;
-                                  dropDownValue = newValue!;
-                                });
-                              }
-                              if (newValue == '${local?.morning}') {
-                                setState(() {
-                                  afternoon = false;
-                                  dropDownValue = newValue!;
-                                });
-                              }
-                            },
-                            items: <String>[
-                              '${local?.morning}',
-                              '${local?.afternoon}',
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: noData
-                        ? Container(
-                            padding: const EdgeInsets.only(top: 140),
-                            child: Column(
-                              children: [
-                                Text(
-                                  '${local?.plsPickDate}',
-                                  style: kHeadingTwo.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 30,
-                                ),
-                                Image.asset(
-                                  'assets/images/calendar.jpeg',
-                                  width: 220,
-                                ),
-                              ],
-                            ),
-                          )
-                        : Container(
-                            margin: const EdgeInsets.only(top: 15),
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    color1,
-                                    color,
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                )),
-                            child: !afternoon && checkedDate.isEmpty
-                                ? Column(
-                                    children: [
-                                      _searchBar(),
-                                      Container(
-                                        padding:
-                                            const EdgeInsets.only(top: 150),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              '${local?.noAttendance}',
-                                              style: kHeadingThree.copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 30,
-                                            ),
-                                            Image.asset(
-                                              'assets/images/attendanceicon.png',
-                                              width: 220,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : afternoon && checkedDateNoon.isEmpty
-                                    ? Column(
-                                        children: [
-                                          _searchBar(),
-                                          Container(
-                                            padding:
-                                                const EdgeInsets.only(top: 150),
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  '${local?.noAttendance}',
-                                                  style: kHeadingThree.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Image.asset(
-                                                  'assets/images/attendanceicon.png',
-                                                  width: 220,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    : Column(
-                                        children: [
-                                          _searchBar(),
-                                          Expanded(
-                                            child: ListView.builder(
-                                              itemBuilder: (ctx, index) {
-                                                return _listItem(index);
-                                              },
-                                              itemCount: afternoon
-                                                  ? checkedDateNoon.length
-                                                  : checkedDate.length,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                          ),
-                  ),
+                  _pickDateIconAndFilterMenu(local),
+                  _plsPickAndPicked(local),
                 ],
               ));
   }
 
+// pls pick date msg and attendance list widget
+  Expanded _plsPickAndPicked(AppLocalizations? local) {
+    return Expanded(
+      child: noData ? _plsPickDate(local) : _attendanceList(local),
+    );
+  }
+
+// show attendance list after picked date
+  Container _attendanceList(AppLocalizations? local) {
+    return Container(
+      margin: const EdgeInsets.only(top: 15),
+      width: double.infinity,
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+          gradient: LinearGradient(
+            colors: [
+              color1,
+              color,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          )),
+      child: !afternoon && checkedDate.isEmpty
+          ? Column(
+              children: [
+                _searchBar(),
+                Container(
+                  padding: const EdgeInsets.only(top: 150),
+                  child: Column(
+                    children: [
+                      Text(
+                        '${local?.noAttendance}',
+                        style: kHeadingThree.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Image.asset(
+                        'assets/images/attendanceicon.png',
+                        width: 220,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : afternoon && checkedDateNoon.isEmpty
+              ? Column(
+                  children: [
+                    _searchBar(),
+                    Container(
+                      padding: const EdgeInsets.only(top: 150),
+                      child: Column(
+                        children: [
+                          Text(
+                            '${local?.noAttendance}',
+                            style: kHeadingThree.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          Image.asset(
+                            'assets/images/attendanceicon.png',
+                            width: 220,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    _searchBar(),
+                    Expanded(
+                      child: ListView.builder(
+                        itemBuilder: (ctx, index) {
+                          return _listItem(index);
+                        },
+                        itemCount: afternoon
+                            ? checkedDateNoon.length
+                            : checkedDate.length,
+                      ),
+                    ),
+                  ],
+                ),
+    );
+  }
+
+// show message to pick date
+  Container _plsPickDate(AppLocalizations? local) {
+    return Container(
+      padding: const EdgeInsets.only(top: 140),
+      child: Column(
+        children: [
+          Text(
+            '${local?.plsPickDate}',
+            style: kHeadingTwo.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Image.asset(
+            'assets/images/calendar.jpeg',
+            width: 220,
+          ),
+        ],
+      ),
+    );
+  }
+
+// pick date button and filter morning/afternoon
+  Padding _pickDateIconAndFilterMenu(AppLocalizations? local) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            _selectDate == null
+                ? '${local?.date}: _______'
+                : '${local?.date}: ${DateFormat.yMd().format(_selectDate as DateTime)}',
+            style: kParagraph.copyWith(fontSize: 14),
+          ),
+          // ignore: deprecated_member_use
+          RaisedButton(
+            padding:
+                const EdgeInsets.only(top: 0, bottom: 0, left: 7, right: 7),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            // elevation: 10,
+            color: kDarkestBlue,
+            onPressed: () {
+              setState(
+                () {
+                  _byDayDatePicker();
+                },
+              );
+            },
+            child: Text(
+              '${local?.pickDate}',
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 7,
+            ),
+            decoration: BoxDecoration(
+              color: kDarkestBlue,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: DropdownButton(
+              underline: Container(),
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+              isDense: true,
+              borderRadius: const BorderRadius.all(kBorderRadius),
+              dropdownColor: kDarkestBlue,
+              icon: const Icon(Icons.expand_more),
+              value: dropDownValue,
+              onChanged: (String? newValue) {
+                if (newValue == '${local?.afternoon}') {
+                  setState(() {
+                    afternoon = true;
+                    dropDownValue = newValue!;
+                  });
+                }
+                if (newValue == '${local?.morning}') {
+                  setState(() {
+                    afternoon = false;
+                    dropDownValue = newValue!;
+                  });
+                }
+              },
+              items: <String>[
+                '${local?.morning}',
+                '${local?.afternoon}',
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// fetching and loading widget
+  Container _fetchingData(AppLocalizations? local) {
+    return Container(
+      padding: const EdgeInsets.only(top: 320),
+      alignment: Alignment.center,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('${local?.fetchData}'),
+            const SizedBox(
+              height: 10,
+            ),
+            const CircularProgressIndicator(
+              color: kWhite,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+// icon to navigate to other screen
+  PopupMenuButton<int> _popUpMenu(
+      BuildContext context, AppLocalizations? local) {
+    return PopupMenuButton(
+        color: kBlack,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        onSelected: (item) => onSelected(context, item as int),
+        icon: const Icon(Icons.filter_list),
+        itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text(
+                  '${local?.byMonth}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 0,
+              ),
+              PopupMenuItem(
+                child: Text(
+                  '${local?.byAllTime}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 1,
+              ),
+            ]);
+  }
+
+// searchBar to search employee list
   _searchBar() {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
@@ -699,12 +724,10 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     );
   }
 
+// employee list widget
   _listItem(index) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
-
-    // afternoon ? checkedDateNoon[index].attendances : checkedDate[index];
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.only(bottom: 10),
@@ -852,6 +875,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
     );
   }
 
+// onSelected popupmenu
   void onSelected(BuildContext context, int item) {
     switch (item) {
       case 0:

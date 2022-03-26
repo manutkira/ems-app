@@ -67,46 +67,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text('${local?.attendance}'),
-          actions: [
-            PopupMenuButton(
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                color: kBlack,
-                onSelected: (item) => onSelected(context, item as int),
-                icon: const Icon(Icons.filter_list),
-                itemBuilder: (_) => [
-                      PopupMenuItem(
-                        child: Text(
-                          '${local?.byDay}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        value: 0,
-                      ),
-                      PopupMenuItem(
-                        child: Text(
-                          '${local?.byAllTime}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        value: 1,
-                      ),
-                      PopupMenuItem(
-                        child: Text(
-                          '${local?.byMonth}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        value: 2,
-                      ),
-                    ])
-          ],
+          actions: [_popupmenu(context, local)],
         ),
         body: Container(
           width: double.infinity,
@@ -124,67 +85,126 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                 end: Alignment.bottomCenter,
               )),
           child: _isLoading
-              ? Container(
-                  padding: const EdgeInsets.only(top: 320),
-                  alignment: Alignment.center,
-                  child: Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text('${local?.fetchData}'),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const CircularProgressIndicator(
-                          color: kWhite,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
+              ? _fetchingData(local)
               : userDisplay.isEmpty
-                  ? Column(
-                      children: [
-                        _searchBar(),
-                        Container(
-                          padding: const EdgeInsets.only(top: 150),
-                          child: Column(
-                            children: [
-                              Text(
-                                '${local?.employeeNotFound}',
-                                style: kHeadingTwo.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              Image.asset(
-                                'assets/images/notfound.png',
-                                width: 220,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  : Column(
-                      children: [
-                        _searchBar(),
-                        Expanded(
-                          child: ListView.builder(
-                              // reverse: order,
-                              itemCount: userDisplay.length,
-                              itemBuilder: (context, index) {
-                                return _listItem(index);
-                              }),
-                        ),
-                      ],
-                    ),
+                  ? _notFound(local)
+                  : _employeeList(),
         ));
   }
 
+// employee list
+  Column _employeeList() {
+    return Column(
+      children: [
+        _searchBar(),
+        Expanded(
+          child: ListView.builder(
+              // reverse: order,
+              itemCount: userDisplay.length,
+              itemBuilder: (context, index) {
+                return _listItem(index);
+              }),
+        ),
+      ],
+    );
+  }
+
+// show not found msg when search wrong name
+  Column _notFound(AppLocalizations? local) {
+    return Column(
+      children: [
+        _searchBar(),
+        Container(
+          padding: const EdgeInsets.only(top: 150),
+          child: Column(
+            children: [
+              Text(
+                '${local?.employeeNotFound}',
+                style: kHeadingTwo.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Image.asset(
+                'assets/images/notfound.png',
+                width: 220,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+// fetching and loading name
+  Container _fetchingData(AppLocalizations? local) {
+    return Container(
+      padding: const EdgeInsets.only(top: 320),
+      alignment: Alignment.center,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('${local?.fetchData}'),
+            const SizedBox(
+              height: 10,
+            ),
+            const CircularProgressIndicator(
+              color: kWhite,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+// popupmenu to navigate to other screen
+  PopupMenuButton<int> _popupmenu(
+      BuildContext context, AppLocalizations? local) {
+    return PopupMenuButton(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        color: kBlack,
+        onSelected: (item) => onSelected(context, item as int),
+        icon: const Icon(Icons.filter_list),
+        itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text(
+                  '${local?.byDay}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 0,
+              ),
+              PopupMenuItem(
+                child: Text(
+                  '${local?.byAllTime}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 1,
+              ),
+              PopupMenuItem(
+                child: Text(
+                  '${local?.byMonth}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 2,
+              ),
+            ]);
+  }
+
+// search bar for searching employee name
   _searchBar() {
     AppLocalizations? local = AppLocalizations.of(context);
     return Padding(
@@ -237,6 +257,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
     );
   }
 
+// employee list
   _listItem(index) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
@@ -355,6 +376,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
   }
 }
 
+// onSelected popupmenu
 void onSelected(BuildContext context, int item) {
   switch (item) {
     case 0:

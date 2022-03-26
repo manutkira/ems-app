@@ -122,215 +122,20 @@ class _AttedancesEditState extends State<AttedancesEdit> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${local?.id} ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flex(
-                      direction: Axis.horizontal,
-                      children: [
-                        Flexible(
-                          child: TextFormField(
-                            readOnly: true,
-                            controller: id,
-                            textInputAction: TextInputAction.next,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              _idField(local, context),
               const SizedBox(
                 height: 20,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${local?.date} ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flex(
-                      direction: Axis.horizontal,
-                      children: [
-                        Flexible(
-                          child: TextFormField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                  onPressed: () {
-                                    // _fullTime();
-                                    // _byDayDatePicker();
-                                  },
-                                  icon: const Icon(Icons.calendar_today)),
-                              hintText: 'Enter Name',
-                              errorStyle: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            controller: dateController,
-                            textInputAction: TextInputAction.next,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              _dateField(local, context),
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${local?.time} ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flex(
-                      direction: Axis.horizontal,
-                      children: [
-                        Flexible(
-                          child: TextFormField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                  onPressed: () {
-                                    _selectTime();
-                                  },
-                                  icon: const Icon(MdiIcons.clockOutline)),
-                              errorStyle: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            controller: _timeController,
-                            textInputAction: TextInputAction.next,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              _timeField(local, context),
               const SizedBox(
                 height: 20,
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${local?.note} ',
-                    style: kParagraph.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: isEnglish ? 15 : 15.5),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flex(
-                      direction: Axis.horizontal,
-                      children: [
-                        Flexible(
-                          child: TextFormField(
-                            maxLines: 5,
-                            decoration: const InputDecoration(
-                              errorStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            controller: _noteController,
-                            textInputAction: TextInputAction.next,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.all(15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(right: 10),
-                      // ignore: deprecated_member_use
-                      child: RaisedButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (ctx) => AlertDialog(
-                                    title: Text('${local?.areYouSure}'),
-                                    content: Text('${local?.saveChanges}'),
-                                    actions: [
-                                      // ignore: deprecated_member_use
-                                      OutlineButton(
-                                        borderSide: const BorderSide(
-                                            color: Colors.green),
-                                        child: Text('${local?.yes}'),
-                                        onPressed: () async {
-                                          await updateOne();
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      // ignore: deprecated_member_use
-                                      OutlineButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('${local?.no}'),
-                                        borderSide:
-                                            const BorderSide(color: Colors.red),
-                                      )
-                                    ],
-                                  ));
-                        },
-                        child: Text('${local?.save}'),
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    // ignore: deprecated_member_use
-                    RaisedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text('${local?.cancel}'),
-                      color: Colors.red,
-                    ),
-                  ],
-                ),
-              ),
+              _noteField(local, isEnglish, context),
+              yesAndNoBtn(context, local),
             ],
           ),
         ),
@@ -338,6 +143,225 @@ class _AttedancesEditState extends State<AttedancesEdit> {
     );
   }
 
+// yes and no button
+  Container yesAndNoBtn(BuildContext context, AppLocalizations? local) {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(right: 10),
+            // ignore: deprecated_member_use
+            child: RaisedButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                          title: Text('${local?.areYouSure}'),
+                          content: Text('${local?.saveChanges}'),
+                          actions: [
+                            // ignore: deprecated_member_use
+                            OutlineButton(
+                              borderSide: const BorderSide(color: Colors.green),
+                              child: Text('${local?.yes}'),
+                              onPressed: () async {
+                                await updateOne();
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                            ),
+                            // ignore: deprecated_member_use
+                            OutlineButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('${local?.no}'),
+                              borderSide: const BorderSide(color: Colors.red),
+                            )
+                          ],
+                        ));
+              },
+              child: Text('${local?.save}'),
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+          // ignore: deprecated_member_use
+          RaisedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('${local?.cancel}'),
+            color: Colors.red,
+          ),
+        ],
+      ),
+    );
+  }
+
+// field to input note for attendance
+  Row _noteField(
+      AppLocalizations? local, bool isEnglish, BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '${local?.note} ',
+          style: kParagraph.copyWith(
+              fontWeight: FontWeight.bold, fontSize: isEnglish ? 15 : 15.5),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Container(
+          constraints:
+              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.6),
+          child: Flex(
+            direction: Axis.horizontal,
+            children: [
+              Flexible(
+                child: TextFormField(
+                  maxLines: 5,
+                  decoration: const InputDecoration(
+                    errorStyle: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  controller: _noteController,
+                  textInputAction: TextInputAction.next,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+// field to input time for attendance
+  Row _timeField(AppLocalizations? local, BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '${local?.time} ',
+          style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Container(
+          constraints:
+              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.6),
+          child: Flex(
+            direction: Axis.horizontal,
+            children: [
+              Flexible(
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          _selectTime();
+                        },
+                        icon: const Icon(MdiIcons.clockOutline)),
+                    errorStyle: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  controller: _timeController,
+                  textInputAction: TextInputAction.next,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+// field to input date for attendance
+  Row _dateField(AppLocalizations? local, BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '${local?.date} ',
+          style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Container(
+          constraints:
+              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.6),
+          child: Flex(
+            direction: Axis.horizontal,
+            children: [
+              Flexible(
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          // _fullTime();
+                          // _byDayDatePicker();
+                        },
+                        icon: const Icon(Icons.calendar_today)),
+                    hintText: 'Enter Name',
+                    errorStyle: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  controller: dateController,
+                  textInputAction: TextInputAction.next,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+// field to show id attendance
+  Row _idField(AppLocalizations? local, BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '${local?.id} ',
+          style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Container(
+          constraints:
+              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.6),
+          child: Flex(
+            direction: Axis.horizontal,
+            children: [
+              Flexible(
+                child: TextFormField(
+                  readOnly: true,
+                  controller: id,
+                  textInputAction: TextInputAction.next,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+// update attendance function
   updateOne() async {
     AppLocalizations? local = AppLocalizations.of(context);
     AttendanceRecord attendance = AttendanceRecord(

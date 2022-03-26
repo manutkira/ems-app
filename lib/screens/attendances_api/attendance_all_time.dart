@@ -221,36 +221,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text('${local?.byAllTime}'),
-          actions: [
-            PopupMenuButton(
-                color: kBlack,
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                onSelected: (item) => onSelected(context, item as int),
-                icon: const Icon(Icons.filter_list),
-                itemBuilder: (_) => [
-                      PopupMenuItem(
-                        child: Text(
-                          '${local?.byDay}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        value: 1,
-                      ),
-                      PopupMenuItem(
-                        child: Text(
-                          '${local?.byMonth}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        value: 0,
-                      ),
-                    ])
-          ],
+          actions: [_popUpMenuIcon(context, local)],
         ),
         body: Container(
           width: double.infinity,
@@ -268,67 +239,116 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                 end: Alignment.bottomCenter,
               )),
           child: _isLoading
-              ? Container(
-                  padding: const EdgeInsets.only(top: 320),
-                  alignment: Alignment.center,
-                  child: Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text('${local?.fetchData}'),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const CircularProgressIndicator(
-                          color: kWhite,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
+              ? _fetchingData(local)
               : userDisplay.isEmpty
-                  ? Column(
-                      children: [
-                        _searchBar(),
-                        Container(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Column(
-                            children: [
-                              Text(
-                                '${local?.employeeNotFound}',
-                                style: kHeadingThree.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 30,
-                              ),
-                              Image.asset(
-                                'assets/images/notfound.png',
-                                width: 220,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  : Column(
-                      children: [
-                        _searchBar(),
-                        Expanded(
-                          child: ListView.builder(
-                              // reverse: order,
-                              itemCount: userDisplay.length,
-                              itemBuilder: (context, index) {
-                                return _listItem(index);
-                              }),
-                        ),
-                      ],
-                    ),
+                  ? _notFound(local)
+                  : _employeeList(),
         ));
   }
 
+// employee list and attendance count
+  Column _employeeList() {
+    return Column(
+      children: [
+        _searchBar(),
+        Expanded(
+          child: ListView.builder(
+              // reverse: order,
+              itemCount: userDisplay.length,
+              itemBuilder: (context, index) {
+                return _listItem(index);
+              }),
+        ),
+      ],
+    );
+  }
+
+// show not found msg when search wrong name
+  Column _notFound(AppLocalizations? local) {
+    return Column(
+      children: [
+        _searchBar(),
+        Container(
+          padding: const EdgeInsets.only(top: 10),
+          child: Column(
+            children: [
+              Text(
+                '${local?.employeeNotFound}',
+                style: kHeadingThree.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Image.asset(
+                'assets/images/notfound.png',
+                width: 220,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+// fetching and loading data
+  Container _fetchingData(AppLocalizations? local) {
+    return Container(
+      padding: const EdgeInsets.only(top: 320),
+      alignment: Alignment.center,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('${local?.fetchData}'),
+            const SizedBox(
+              height: 10,
+            ),
+            const CircularProgressIndicator(
+              color: kWhite,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+// popupmenu to navigate to other screen
+  PopupMenuButton<int> _popUpMenuIcon(
+      BuildContext context, AppLocalizations? local) {
+    return PopupMenuButton(
+        color: kBlack,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        onSelected: (item) => onSelected(context, item as int),
+        icon: const Icon(Icons.filter_list),
+        itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text(
+                  '${local?.byDay}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 1,
+              ),
+              PopupMenuItem(
+                child: Text(
+                  '${local?.byMonth}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 0,
+              ),
+            ]);
+  }
+
+// employee list with attendance count
   _listItem(index) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
@@ -630,6 +650,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
     );
   }
 
+// search bar for searching employee
   _searchBar() {
     AppLocalizations? local = AppLocalizations.of(context);
     return Padding(
@@ -737,6 +758,7 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
     );
   }
 
+// onSelected popupmenu
   void onSelected(BuildContext context, int item) {
     switch (item) {
       case 0:
