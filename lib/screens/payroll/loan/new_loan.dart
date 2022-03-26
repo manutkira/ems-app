@@ -154,17 +154,7 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
         title: Text('${local?.loan}'),
       ),
       body: _isloading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('${local?.fetchData}'),
-                  const CircularProgressIndicator(
-                    color: kWhite,
-                  ),
-                ],
-              ),
-            )
+          ? _fetchingData(local)
           : Form(
               key: _key,
               child: Column(
@@ -172,316 +162,343 @@ class _NewLoanScreenState extends State<NewLoanScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 30, top: 10, right: 17),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${local?.username}',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          width: 235,
-                          child: DropdownButtonFormField(
-                            validator: (value) {
-                              if (value == null) {
-                                return '${local?.plsSelectName}';
-                              }
-                              return null;
-                            },
-                            decoration: const InputDecoration(
-                              errorStyle: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            items: userList.map((item) {
-                              return DropdownMenuItem(
-                                child: Text(item.name.toString()),
-                                value: item.id.toString(),
-                              );
-                            }).toList(),
-                            hint: Text('${local?.select}'),
-                            onChanged: (newVal) {
-                              setState(() {
-                                _mySelection = newVal.toString();
-                                fetchOneUser(intParse(_mySelection));
-                                fetchOnePayment(intParse(_mySelection));
-                              });
-                            },
-                            value: _mySelection,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _selectName(local),
                   const SizedBox(
                     height: 30,
                   ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 25, right: 15, bottom: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${local?.payrollDate} ',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          width: isEnglish ? 36 : 29,
-                        ),
-                        Container(
-                          constraints: BoxConstraints(
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.6),
-                          child: Flex(
-                            direction: Axis.horizontal,
-                            children: [
-                              Flexible(
-                                child: TextFormField(
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return '${local?.plsEnterDate}';
-                                    }
-                                    return null;
-                                  },
-                                  readOnly: true,
-                                  decoration: InputDecoration(
-                                    hintText: '${local?.enterDate}',
-                                    suffixIcon: IconButton(
-                                        onPressed: () {
-                                          _startDatePicker();
-                                        },
-                                        icon: const Icon(
-                                          MdiIcons.calendar,
-                                          color: Colors.white,
-                                        )),
-                                    errorStyle: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  controller: dateController,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _dateField(local, isEnglish, context),
                   const SizedBox(
                     height: 10,
                   ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 25, right: 15, bottom: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${local?.amount} ',
-                          style:
-                              kParagraph.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              constraints: BoxConstraints(
-                                  maxWidth:
-                                      MediaQuery.of(context).size.width * 0.6),
-                              child: Flex(
-                                direction: Axis.horizontal,
-                                children: [
-                                  Flexible(
-                                    child: TextFormField(
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp('[0-9.,]+')),
-                                      ],
-                                      keyboardType: TextInputType.number,
-                                      decoration: InputDecoration(
-                                        hintText: '${local?.enterAmount}',
-                                        errorStyle: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      controller: amountController,
-                                      textInputAction: TextInputAction.next,
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return '${local?.plsEnterAmount}';
-                                        }
-
-                                        return null;
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            _isloadingOne || _isloadingPayroll
-                                ? Container()
-                                : loan == null
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 16, top: 8),
-                                        child: Text(
-                                          '${local?.canBorrowUpTo} ${user!.salary! * 7}',
-                                          style: TextStyle(
-                                              fontSize: isEnglish ? 12 : 14,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      )
-                                    : paymentList.isEmpty ||
-                                            paymentList[0].status == true
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 15, top: 8),
-                                            child: Text(
-                                              '${local?.canBorrowUpTo} \$${loan!.user!.salary! * 7 - doubleParse(loan!.remain)}',
-                                              style: TextStyle(
-                                                  fontSize: isEnglish ? 12 : 14,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          )
-                                        : Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 15, top: 8),
-                                            child: Text(
-                                              '${local?.canBorrowUpTo} \$${loan!.user!.salary! * intParse(countDays) - doubleParse(loan!.remain)}',
-                                              style: TextStyle(
-                                                  fontSize: isEnglish ? 12 : 14,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  _amountField(local, context, isEnglish),
                   const SizedBox(
                     height: 10,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 25, right: 15, bottom: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '${local?.reason}',
-                            style: kParagraph.copyWith(
-                                fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            width: isEnglish ? 52 : 48,
-                          ),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.6),
-                            child: Flex(
-                              direction: Axis.horizontal,
-                              children: [
-                                Flexible(
-                                  child: TextFormField(
-                                    textInputAction: TextInputAction.done,
-                                    maxLines: 5,
-                                    decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.only(
-                                        left: 10,
-                                        top: 20,
-                                      ),
-                                      hintText: '${local?.enterReason}',
-                                      errorStyle: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    controller: reasonController,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  _reasonfield(local, isEnglish, context),
                   const SizedBox(
                     height: 10,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        RaisedButton(
-                          onPressed: () async {
-                            if (_key.currentState!.validate()) {
-                              record.LoanRecord loanRecord = record.LoanRecord(
-                                  amount: doubleParse(amountController.text),
-                                  reason: reasonController.text,
-                                  date: pickStart);
-                              await createLoan(_mySelection!, loanRecord);
-                              amountController.text = '';
-                              dateController.text = '';
-                              reasonController.text = '';
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) =>
-                                          LoanRecord(id: _mySelection!)));
-                            }
-                            // addLoan(_mySelection!);
-                          },
-                          color: Theme.of(context).primaryColor,
-                          child: Text(
-                            '${local?.save}',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        RaisedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          color: Colors.red,
-                          child: Text(
-                            '${local?.cancel}',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  yesAndNoBtn(context, local),
                 ],
               ),
             ),
     );
   }
 
+// yes/no button for save or cancel adding new loan
+  Padding yesAndNoBtn(BuildContext context, AppLocalizations? local) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          RaisedButton(
+            onPressed: () async {
+              if (_key.currentState!.validate()) {
+                record.LoanRecord loanRecord = record.LoanRecord(
+                    amount: doubleParse(amountController.text),
+                    reason: reasonController.text,
+                    date: pickStart);
+                await createLoan(_mySelection!, loanRecord);
+                amountController.text = '';
+                dateController.text = '';
+                reasonController.text = '';
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => LoanRecord(id: _mySelection!)));
+              }
+              // addLoan(_mySelection!);
+            },
+            color: Theme.of(context).primaryColor,
+            child: Text(
+              '${local?.save}',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 15,
+          ),
+          RaisedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            color: Colors.red,
+            child: Text(
+              '${local?.cancel}',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// reason field for input loan reason
+  Padding _reasonfield(
+      AppLocalizations? local, bool isEnglish, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(0),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 25, right: 15, bottom: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '${local?.reason}',
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              width: isEnglish ? 52 : 48,
+            ),
+            Container(
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.6),
+              child: Flex(
+                direction: Axis.horizontal,
+                children: [
+                  Flexible(
+                    child: TextFormField(
+                      textInputAction: TextInputAction.done,
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(
+                          left: 10,
+                          top: 20,
+                        ),
+                        hintText: '${local?.enterReason}',
+                        errorStyle: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      controller: reasonController,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+// amount field for input loan amount
+  Padding _amountField(
+      AppLocalizations? local, BuildContext context, bool isEnglish) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 25, right: 15, bottom: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '${local?.amount} ',
+            style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.6),
+                child: Flex(
+                  direction: Axis.horizontal,
+                  children: [
+                    Flexible(
+                      child: TextFormField(
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp('[0-9.,]+')),
+                        ],
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: '${local?.enterAmount}',
+                          errorStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        controller: amountController,
+                        textInputAction: TextInputAction.next,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return '${local?.plsEnterAmount}';
+                          }
+
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _isloadingOne || _isloadingPayroll
+                  ? Container()
+                  : loan == null
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 16, top: 8),
+                          child: Text(
+                            '${local?.canBorrowUpTo} ${user!.salary! * 7}',
+                            style: TextStyle(
+                                fontSize: isEnglish ? 12 : 14,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      : paymentList.isEmpty || paymentList[0].status == true
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 15, top: 8),
+                              child: Text(
+                                '${local?.canBorrowUpTo} \$${loan!.user!.salary! * 7 - doubleParse(loan!.remain)}',
+                                style: TextStyle(
+                                    fontSize: isEnglish ? 12 : 14,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.only(left: 15, top: 8),
+                              child: Text(
+                                '${local?.canBorrowUpTo} \$${loan!.user!.salary! * intParse(countDays) - doubleParse(loan!.remain)}',
+                                style: TextStyle(
+                                    fontSize: isEnglish ? 12 : 14,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+// date field for input loan date
+  Padding _dateField(
+      AppLocalizations? local, bool isEnglish, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 25, right: 15, bottom: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '${local?.payrollDate} ',
+            style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            width: isEnglish ? 36 : 29,
+          ),
+          Container(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.6),
+            child: Flex(
+              direction: Axis.horizontal,
+              children: [
+                Flexible(
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return '${local?.plsEnterDate}';
+                      }
+                      return null;
+                    },
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      hintText: '${local?.enterDate}',
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            _startDatePicker();
+                          },
+                          icon: const Icon(
+                            MdiIcons.calendar,
+                            color: Colors.white,
+                          )),
+                      errorStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    controller: dateController,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// dropdown menu for selecting employee name for new loan
+  Padding _selectName(AppLocalizations? local) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 30, top: 10, right: 17),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '${local?.username}',
+            style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            width: 235,
+            child: DropdownButtonFormField(
+              validator: (value) {
+                if (value == null) {
+                  return '${local?.plsSelectName}';
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                errorStyle: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              items: userList.map((item) {
+                return DropdownMenuItem(
+                  child: Text(item.name.toString()),
+                  value: item.id.toString(),
+                );
+              }).toList(),
+              hint: Text('${local?.select}'),
+              onChanged: (newVal) {
+                setState(() {
+                  _mySelection = newVal.toString();
+                  fetchOneUser(intParse(_mySelection));
+                  fetchOnePayment(intParse(_mySelection));
+                });
+              },
+              value: _mySelection,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// fetching and loading widget
+  Center _fetchingData(AppLocalizations? local) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('${local?.fetchData}'),
+          const CircularProgressIndicator(
+            color: kWhite,
+          ),
+        ],
+      ),
+    );
+  }
+
+// function to create new loan
   createLoan(String id, record.LoanRecord record) async {
     await _loanService.createOneRecord(id, record);
   }

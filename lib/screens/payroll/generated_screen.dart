@@ -65,199 +65,203 @@ class _GeneratedScreenState extends State<GeneratedScreen> {
         ),
       ),
       body: _isLoading
-          ? Container(
-              padding: const EdgeInsets.only(top: 320),
-              alignment: Alignment.center,
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('${local?.fetchData}'),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Image.asset(
-                      'assets/images/Gear-0.5s-200px.gif',
-                      width: 60,
-                    )
-                  ],
-                ),
-              ),
-            )
+          ? _fetchingData(local)
           : Column(
               children: [
                 SizedBox(
                   height: isEnglish ? 0 : 15,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 8,
-                    left: 18,
-                    right: 15,
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        '${local?.generatedPayment}',
-                        style: kHeadingThree,
-                      )
-                    ],
-                  ),
-                ),
+                _generatedText(local),
                 const SizedBox(
                   height: 15,
                 ),
-                Expanded(
-                    child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return ExpansionTile(
-                      collapsedBackgroundColor: const Color(0xff254973),
-                      backgroundColor: const Color(0xff254973),
-                      textColor: Colors.white,
-                      iconColor: Colors.white,
-                      initiallyExpanded: false,
-                      title: Row(
-                        children: [
-                          Text(
-                            userList[index].name!,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
+                _paymentAndEmployeeList(local)
+              ],
+            ),
+    );
+  }
+
+// expansionTile with payment and employee
+  Expanded _paymentAndEmployeeList(AppLocalizations? local) {
+    return Expanded(
+        child: ListView.builder(
+      itemBuilder: (context, index) {
+        return ExpansionTile(
+          collapsedBackgroundColor: const Color(0xff254973),
+          backgroundColor: const Color(0xff254973),
+          textColor: Colors.white,
+          iconColor: Colors.white,
+          initiallyExpanded: false,
+          title: Row(
+            children: [
+              Text(
+                userList[index].name!,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          children: [
+            Container(
+              color: Colors.black38,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  bottom: 18,
+                  top: 10,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          color: Colors.black38,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 20,
-                              right: 20,
-                              bottom: 18,
-                              top: 10,
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('${local?.id}'),
-                                    Text(widget.payment![index].id.toString()),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('${local?.userId}'),
-                                    Text(widget.payment![index].userId
-                                        .toString()),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('${local?.status}'),
-                                    Text(widget.payment![index].status!
-                                        ? '${local?.paid}'
-                                        : '${local?.pending}'),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('${local?.loan}'),
-                                    Text(
-                                      '\$${doubleParse(widget.payment![index].loan!)}',
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('${local?.from}'),
-                                    Text(
-                                      DateFormat('dd-MM-yyyy').format(widget
-                                          .payment![index]
-                                          .dateFrom as DateTime),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('${local?.to}'),
-                                    Text(
-                                      DateFormat('dd-MM-yyyy').format(widget
-                                          .payment![index].dateTo as DateTime),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    RaisedButton(
-                                      elevation: 10,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      color: kBlueBackground,
-                                      onPressed: () async {
-                                        await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                GeneratePaymentScreen(
-                                                    id: widget.payment![index]
-                                                        .userId!),
-                                          ),
-                                        );
-                                      },
-                                      child: Text(
-                                        '${local?.optionView}',
-                                        style: const TextStyle(
-                                          color: kBlack,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                        Text('${local?.id}'),
+                        Text(widget.payment![index].id.toString()),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${local?.userId}'),
+                        Text(widget.payment![index].userId.toString()),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${local?.status}'),
+                        Text(widget.payment![index].status!
+                            ? '${local?.paid}'
+                            : '${local?.pending}'),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${local?.loan}'),
+                        Text(
+                          '\$${doubleParse(widget.payment![index].loan!)}',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${local?.from}'),
+                        Text(
+                          DateFormat('dd-MM-yyyy').format(
+                              widget.payment![index].dateFrom as DateTime),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('${local?.to}'),
+                        Text(
+                          DateFormat('dd-MM-yyyy').format(
+                              widget.payment![index].dateTo as DateTime),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        RaisedButton(
+                          elevation: 10,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          color: kBlueBackground,
+                          onPressed: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => GeneratePaymentScreen(
+                                    id: widget.payment![index].userId!),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            '${local?.optionView}',
+                            style: const TextStyle(
+                              color: kBlack,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ],
-                    );
-                  },
-                  itemCount: widget.payment!.length,
-                ))
-              ],
+                    ),
+                  ],
+                ),
+              ),
             ),
+          ],
+        );
+      },
+      itemCount: widget.payment!.length,
+    ));
+  }
+
+// text "generated payment"
+  Padding _generatedText(AppLocalizations? local) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 8,
+        left: 18,
+        right: 15,
+      ),
+      child: Row(
+        children: [
+          Text(
+            '${local?.generatedPayment}',
+            style: kHeadingThree,
+          )
+        ],
+      ),
+    );
+  }
+
+// fetching and loading widget
+  Container _fetchingData(AppLocalizations? local) {
+    return Container(
+      padding: const EdgeInsets.only(top: 320),
+      alignment: Alignment.center,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('${local?.fetchData}'),
+            const SizedBox(
+              height: 10,
+            ),
+            Image.asset(
+              'assets/images/Gear-0.5s-200px.gif',
+              width: 60,
+            )
+          ],
+        ),
+      ),
     );
   }
 }

@@ -3,7 +3,6 @@ import 'package:ems/models/attendance_count.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/payroll/generate_screen.dart';
 import 'package:ems/screens/payroll/generated_screen.dart';
-import 'package:ems/screens/payroll/loan/loan_total_individual.dart';
 import 'package:ems/services/payroll.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -96,45 +95,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  content: SizedBox(
-                    height: 400,
-                    width: 400,
-                    child: SfDateRangePicker(
-                      todayHighlightColor: kBlueBackground,
-                      startRangeSelectionColor: Colors.green,
-                      endRangeSelectionColor: Colors.green,
-                      rangeSelectionColor: Colors.redAccent,
-                      view: DateRangePickerView.month,
-                      selectionMode:
-                          DateRangePickerSelectionMode.extendableRange,
-                      showActionButtons: true,
-                      controller: _datePickerController,
-                      onSubmit: (p0) async {
-                        setState(() {
-                          startDate =
-                              _datePickerController.selectedRange?.startDate;
-                          endDate =
-                              _datePickerController.selectedRange?.endDate;
-                        });
-                        Navigator.of(context).pop();
-                        if (startDate != null && endDate != null) {
-                          await createOne(
-                              startDate as DateTime, endDate as DateTime);
-                        }
-
-                        _datePickerController.selectedRange = null;
-                      },
-                      onCancel: () {
-                        Navigator.pop(context);
-                        _datePickerController.selectedRange = null;
-                      },
-                    ),
-                  ),
-                ),
-              );
+              _showDialogBtn(context);
             },
             icon: const Icon(Icons.add),
           ),
@@ -156,67 +117,122 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
               end: Alignment.bottomCenter,
             )),
         child: _isLoading
-            ? Container(
-                padding: const EdgeInsets.only(top: 320),
-                alignment: Alignment.center,
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('${local?.fetchData}'),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const CircularProgressIndicator(
-                        color: kWhite,
-                      ),
-                    ],
-                  ),
-                ),
-              )
+            ? _fetchingData(local)
             : userList.isEmpty
-                ? Column(
-                    children: [
-                      _searchBar(),
-                      Container(
-                        padding: const EdgeInsets.only(top: 150),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Employee not found!!',
-                              style: kHeadingTwo.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Image.asset(
-                              'assets/images/notfound.png',
-                              width: 220,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                : Column(
-                    children: [
-                      _searchBar(),
-                      Expanded(
-                        child: ListView.builder(
-                            itemCount: userList.length,
-                            itemBuilder: (context, index) {
-                              return _listItem(index);
-                            }),
-                      ),
-                    ],
-                  ),
+                ? _notFound()
+                : _employeeList(),
       ),
     );
   }
 
+// employee list
+  Column _employeeList() {
+    return Column(
+      children: [
+        _searchBar(),
+        Expanded(
+          child: ListView.builder(
+              itemCount: userList.length,
+              itemBuilder: (context, index) {
+                return _listItem(index);
+              }),
+        ),
+      ],
+    );
+  }
+
+// show not found msg when search wrong name
+  Column _notFound() {
+    return Column(
+      children: [
+        _searchBar(),
+        Container(
+          padding: const EdgeInsets.only(top: 150),
+          child: Column(
+            children: [
+              Text(
+                'Employee not found!!',
+                style: kHeadingTwo.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Image.asset(
+                'assets/images/notfound.png',
+                width: 220,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+// fetching and loading widget
+  Container _fetchingData(AppLocalizations? local) {
+    return Container(
+      padding: const EdgeInsets.only(top: 320),
+      alignment: Alignment.center,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('${local?.fetchData}'),
+            const SizedBox(
+              height: 10,
+            ),
+            const CircularProgressIndicator(
+              color: kWhite,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+// button to show calendar dialog to generate new payment
+  _showDialogBtn(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        content: SizedBox(
+          height: 400,
+          width: 400,
+          child: SfDateRangePicker(
+            todayHighlightColor: kBlueBackground,
+            startRangeSelectionColor: Colors.green,
+            endRangeSelectionColor: Colors.green,
+            rangeSelectionColor: Colors.redAccent,
+            view: DateRangePickerView.month,
+            selectionMode: DateRangePickerSelectionMode.extendableRange,
+            showActionButtons: true,
+            controller: _datePickerController,
+            onSubmit: (p0) async {
+              setState(() {
+                startDate = _datePickerController.selectedRange?.startDate;
+                endDate = _datePickerController.selectedRange?.endDate;
+              });
+              Navigator.of(context).pop();
+              if (startDate != null && endDate != null) {
+                await createMany(startDate as DateTime, endDate as DateTime);
+              }
+
+              _datePickerController.selectedRange = null;
+            },
+            onCancel: () {
+              Navigator.pop(context);
+              _datePickerController.selectedRange = null;
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+// search bar for searching employee name
   _searchBar() {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
@@ -323,6 +339,7 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
     );
   }
 
+// employee list
   _listItem(index) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
@@ -417,15 +434,6 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
                           ),
                         );
                       }
-                      if (selectedValue == 1) {
-                        int id = userList[index].id as int;
-                        await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => LoanTotalIndividual(
-                                      id: id,
-                                    )));
-                      }
                     },
                     itemBuilder: (_) => [
                       PopupMenuItem(
@@ -449,7 +457,8 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
     );
   }
 
-  createOne(DateTime dateFrom, DateTime dateTo) async {
+// create new many payment
+  createMany(DateTime dateFrom, DateTime dateTo) async {
     AppLocalizations? local = AppLocalizations.of(context);
     try {
       showDialog(
