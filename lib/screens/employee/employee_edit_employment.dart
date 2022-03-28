@@ -132,22 +132,88 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('${local?.editEmployee}'),
-          leading: IconButton(
+          leading: _backBtn(context, local),
+        ),
+        body: Form(
+          key: _form,
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  _salaryInput(local, context),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  _roleInput(local),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  _statusInput(local),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  _yesAndNoBtn(context, local)
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+// yes/no button for updating or not
+  Container _yesAndNoBtn(BuildContext context, AppLocalizations? local) {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(right: 10),
+            // ignore: deprecated_member_use
+            child: RaisedButton(
               onPressed: () {
                 showDialog(
                     context: context,
                     builder: (ctx) => AlertDialog(
                           title: Text('${local?.areYouSure}'),
-                          content: Text('${local?.changesWillLost}.'),
+                          content: Text('${local?.saveChanges}'),
                           actions: [
                             // ignore: deprecated_member_use
                             OutlineButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('${local?.yes}'),
                               borderSide: const BorderSide(color: Colors.green),
+                              child: Text('${local?.yes}'),
+                              onPressed: () async {
+                                if (!_form.currentState!.validate()) {
+                                  return Navigator.of(context).pop();
+                                }
+                                updateEmployment();
+                                Navigator.of(context).pop();
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: Text('${local?.editing}'),
+                                    content: Flex(
+                                      direction: Axis.horizontal,
+                                      children: const [
+                                        Flexible(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(left: 100),
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                             // ignore: deprecated_member_use
                             OutlineButton(
@@ -160,251 +226,198 @@ class _EmployeeEditEmploymentState extends State<EmployeeEditEmployment> {
                           ],
                         ));
               },
-              icon: const Icon(Icons.arrow_back)),
-        ),
-        body: Form(
-          key: _form,
-          child: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${local?.salary} ',
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.6),
-                        child: Flex(
-                          direction: Axis.horizontal,
-                          children: [
-                            Flexible(
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  prefixIcon: const Icon(
-                                    MdiIcons.currencyUsd,
-                                    color: kWhite,
-                                  ),
-                                  hintText: '${local?.enterSalary}',
-                                  errorStyle: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                controller: salaryController,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${local?.role} ',
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      SizedBox(
-                        width: 233,
-                        child: DropdownButtonFormField(
-                          icon: const Icon(Icons.expand_more),
-                          value: role,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              role = newValue!;
-                            });
-                          },
-                          items: <String>[
-                            '${local?.admin}',
-                            '${local?.employee}'
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                ));
-                          }).toList(),
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${local?.status} ',
-                        style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      SizedBox(
-                        width: 233,
-                        child: DropdownButtonFormField(
-                          icon: const Icon(Icons.expand_more),
-                          value: status,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              status = newValue!;
-                            });
-                          },
-                          items: <String>[
-                            '${local?.active}',
-                            '${local?.inactive}',
-                            '${local?.resigned}',
-                            '${local?.fired}'
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                ));
-                          }).toList(),
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(right: 10),
-                          // ignore: deprecated_member_use
-                          child: RaisedButton(
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                        title: Text('${local?.areYouSure}'),
-                                        content: Text('${local?.saveChanges}'),
-                                        actions: [
-                                          // ignore: deprecated_member_use
-                                          OutlineButton(
-                                            borderSide: const BorderSide(
-                                                color: Colors.green),
-                                            child: Text('${local?.yes}'),
-                                            onPressed: () async {
-                                              if (!_form.currentState!
-                                                  .validate()) {
-                                                return Navigator.of(context)
-                                                    .pop();
-                                              }
-                                              updateEmployment();
-                                              Navigator.of(context).pop();
-                                              showDialog(
-                                                context: context,
-                                                builder: (ctx) => AlertDialog(
-                                                  title:
-                                                      Text('${local?.editing}'),
-                                                  content: Flex(
-                                                    direction: Axis.horizontal,
-                                                    children: const [
-                                                      Flexible(
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 100),
-                                                          child:
-                                                              CircularProgressIndicator(
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                          // ignore: deprecated_member_use
-                                          OutlineButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text('${local?.no}'),
-                                            borderSide: const BorderSide(
-                                                color: Colors.red),
-                                          )
-                                        ],
-                                      ));
-                            },
-                            child: Text('${local?.save}'),
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        // ignore: deprecated_member_use
-                        RaisedButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                      title: Text('${local?.areYouSure}'),
-                                      content: const Text(
-                                          'Your changes will be lost.'),
-                                      actions: [
-                                        // ignore: deprecated_member_use
-                                        OutlineButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text('${local?.yes}'),
-                                          borderSide: const BorderSide(
-                                              color: Colors.green),
-                                        ),
-                                        // ignore: deprecated_member_use
-                                        OutlineButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text('${local?.no}'),
-                                          borderSide: const BorderSide(
-                                              color: Colors.red),
-                                        )
-                                      ],
-                                    ));
-                          },
-                          child: Text('${local?.cancel}'),
-                          color: Colors.red,
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+              child: Text('${local?.save}'),
+              color: Theme.of(context).primaryColor,
             ),
           ),
-        ),
+          // ignore: deprecated_member_use
+          RaisedButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                        title: Text('${local?.areYouSure}'),
+                        content: const Text('Your changes will be lost.'),
+                        actions: [
+                          // ignore: deprecated_member_use
+                          OutlineButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.pop(context);
+                            },
+                            child: Text('${local?.yes}'),
+                            borderSide: const BorderSide(color: Colors.green),
+                          ),
+                          // ignore: deprecated_member_use
+                          OutlineButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('${local?.no}'),
+                            borderSide: const BorderSide(color: Colors.red),
+                          )
+                        ],
+                      ));
+            },
+            child: Text('${local?.cancel}'),
+            color: Colors.red,
+          ),
+        ],
       ),
     );
   }
 
+// status input field for choosing employee's status
+  Row _statusInput(AppLocalizations? local) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '${local?.status} ',
+          style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        SizedBox(
+          width: 233,
+          child: DropdownButtonFormField(
+            icon: const Icon(Icons.expand_more),
+            value: status,
+            onChanged: (String? newValue) {
+              setState(() {
+                status = newValue!;
+              });
+            },
+            items: <String>[
+              '${local?.active}',
+              '${local?.inactive}',
+              '${local?.resigned}',
+              '${local?.fired}'
+            ].map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                  ));
+            }).toList(),
+          ),
+        )
+      ],
+    );
+  }
+
+// role input field for choosing employee's role
+  Row _roleInput(AppLocalizations? local) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '${local?.role} ',
+          style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        SizedBox(
+          width: 233,
+          child: DropdownButtonFormField(
+            icon: const Icon(Icons.expand_more),
+            value: role,
+            onChanged: (String? newValue) {
+              setState(() {
+                role = newValue!;
+              });
+            },
+            items: <String>['${local?.admin}', '${local?.employee}']
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                  ));
+            }).toList(),
+          ),
+        )
+      ],
+    );
+  }
+
+// role input field for employee's salary
+  Row _salaryInput(AppLocalizations? local, BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '${local?.salary} ',
+          style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Container(
+          constraints:
+              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.6),
+          child: Flex(
+            direction: Axis.horizontal,
+            children: [
+              Flexible(
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(
+                      MdiIcons.currencyUsd,
+                      color: kWhite,
+                    ),
+                    hintText: '${local?.enterSalary}',
+                    errorStyle: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  controller: salaryController,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+// button for pop back screen
+  IconButton _backBtn(BuildContext context, AppLocalizations? local) {
+    return IconButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                    title: Text('${local?.areYouSure}'),
+                    content: Text('${local?.changesWillLost}.'),
+                    actions: [
+                      // ignore: deprecated_member_use
+                      OutlineButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('${local?.yes}'),
+                        borderSide: const BorderSide(color: Colors.green),
+                      ),
+                      // ignore: deprecated_member_use
+                      OutlineButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('${local?.no}'),
+                        borderSide: const BorderSide(color: Colors.red),
+                      )
+                    ],
+                  ));
+        },
+        icon: const Icon(Icons.arrow_back));
+  }
+
+// function for updating employment information
   updateEmployment() async {
     AppLocalizations? local = AppLocalizations.of(context);
 

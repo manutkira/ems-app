@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:ems/constants.dart';
 import 'package:ems/screens/employee/employee_edit_screen.dart';
 import 'package:ems/screens/employee/employee_info_screen.dart';
-import 'package:ems/screens/employee/employee_work_rate.dart';
 import 'package:ems/screens/employee/new_employee_screen.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
@@ -154,67 +153,83 @@ class _EmployeeListState extends State<EmployeeList> {
               end: Alignment.bottomCenter,
             )),
         child: _isLoading
-            ? Container(
-                padding: const EdgeInsets.only(top: 320),
-                alignment: Alignment.center,
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('${local?.fetchData}'),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const CircularProgressIndicator(
-                        color: kWhite,
-                      ),
-                    ],
-                  ),
-                ),
-              )
+            ? _fetchingData(local)
             : userDisplay.isEmpty
-                ? Column(
-                    children: [
-                      _searchBar(),
-                      Container(
-                        padding: const EdgeInsets.only(top: 150),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Employee not found!!',
-                              style: kHeadingTwo.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Image.asset(
-                              'assets/images/notfound.png',
-                              width: 220,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                : Column(
-                    children: [
-                      _searchBar(),
-                      Expanded(
-                        child: ListView.builder(
-                            itemCount: userDisplay.length,
-                            itemBuilder: (context, index) {
-                              return _listItem(index);
-                            }),
-                      ),
-                    ],
-                  ),
+                ? _notFound()
+                : _employeeList(),
       ),
     );
   }
 
+// employee list
+  Column _employeeList() {
+    return Column(
+      children: [
+        _searchBar(),
+        Expanded(
+          child: ListView.builder(
+              itemCount: userDisplay.length,
+              itemBuilder: (context, index) {
+                return _listItem(index);
+              }),
+        ),
+      ],
+    );
+  }
+
+// show not found msg when search wrong name
+  Column _notFound() {
+    return Column(
+      children: [
+        _searchBar(),
+        Container(
+          padding: const EdgeInsets.only(top: 150),
+          child: Column(
+            children: [
+              Text(
+                'Employee not found!!',
+                style: kHeadingTwo.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Image.asset(
+                'assets/images/notfound.png',
+                width: 220,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+// fetching and loading widget
+  Container _fetchingData(AppLocalizations? local) {
+    return Container(
+      padding: const EdgeInsets.only(top: 320),
+      alignment: Alignment.center,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('${local?.fetchData}'),
+            const SizedBox(
+              height: 10,
+            ),
+            const CircularProgressIndicator(
+              color: kWhite,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+// search bar for searching name
   _searchBar() {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
@@ -321,6 +336,7 @@ class _EmployeeListState extends State<EmployeeList> {
     );
   }
 
+// list employee
   _listItem(index) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
@@ -466,11 +482,6 @@ class _EmployeeListState extends State<EmployeeList> {
                                 imageId)));
                         fetchData();
                       }
-                      if (selectedValue == 3) {
-                        await Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => const EmployeeWorkRate()));
-                        fetchData();
-                      }
                       if (selectedValue == 0) {
                         int id = userDisplay[index].id as int;
                         await Navigator.of(context).push(MaterialPageRoute(
@@ -521,15 +532,6 @@ class _EmployeeListState extends State<EmployeeList> {
                         ),
                         value: 0,
                       ),
-                      // PopupMenuItem(
-                      //   child: Text(
-                      //     '${local?.rate}',
-                      //     style: TextStyle(
-                      //       fontSize: isEnglish ? 15 : 16,
-                      //     ),
-                      //   ),
-                      //   value: 3,
-                      // ),
                       PopupMenuItem(
                         child: Text(
                           '${local?.edit}',

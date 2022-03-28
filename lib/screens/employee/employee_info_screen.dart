@@ -217,40 +217,13 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
       }
     }
 
-    // String checkRate() {
-    // if (userDisplay[0].rate == 'verygood') {
-    //   return '${local?.veryGood}';
-    // }
-    // if (userDisplay[0].rate == 'good') {
-    //   return '${local?.good}';
-    // }
-    // if (userDisplay[0].rate == 'medium') {
-    //   return '${local?.medium}';
-    // }
-    // if (userDisplay[0].rate == 'low') {
-    //   return '${local?.low}';
-    // } else {
-    //   return '';
-    // }
-    // }
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('${local?.employeeInfo}'),
       ),
       body: _isloading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('${local?.fetchData}'),
-                  const CircularProgressIndicator(
-                    color: kWhite,
-                  ),
-                ],
-              ),
-            )
+          ? _fetchingData(local)
           : SingleChildScrollView(
               child: Column(
                 children: [
@@ -265,288 +238,298 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                     ),
                     child: Row(
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                      content: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          userDisplay[0].image == null
-                                              ? Container(
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                    width: 1,
-                                                    color: Colors.white,
-                                                  )),
-                                                  child: Image.asset(
-                                                    'assets/images/profile-icon-png-910.png',
-                                                    height: 200,
-                                                  ),
-                                                )
-                                              : Container(
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                    width: 1,
-                                                    color: Colors.white,
-                                                  )),
-                                                  child: Image.network(
-                                                    userDisplay[0]
-                                                        .image
-                                                        .toString(),
-                                                    height: 200,
-                                                  ),
-                                                ),
-                                        ],
-                                      ),
-                                    ));
-                          },
-                          child: Container(
-                            width: 75,
-                            height: 75,
-                            decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(100)),
-                                border: Border.all(
-                                  width: 1,
-                                  color: Colors.white,
-                                )),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(150),
-                              child: userDisplay[0].image == null
-                                  ? Image.asset(
-                                      'assets/images/profile-icon-png-910.png',
-                                      width: 70,
-                                    )
-                                  : Image.network(
-                                      userDisplay[0].image.toString(),
-                                      height: 70,
-                                    ),
-                            ),
-                          ),
-                        ),
+                        _profileImg(context),
                         const SizedBox(
                           width: 20,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            BaselineRow(
-                              children: [
-                                Text(
-                                  '${local?.name} : ',
-                                  style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                SizedBox(
-                                  width: 130,
-                                  child: Text(userDisplay[0].name.toString()),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            BaselineRow(
-                              children: [
-                                Text(
-                                  '${local?.id} : ',
-                                  style: kParagraph.copyWith(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Text(userDisplay[0].id.toString()),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                InkWell(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                                content: Stack(
-                                                  alignment: Alignment.center,
-                                                  children: [
-                                                    userDisplay[0].imageId ==
-                                                            null
-                                                        ? Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                                    border:
-                                                                        Border
-                                                                            .all(
-                                                              width: 1,
-                                                              color:
-                                                                  Colors.white,
-                                                            )),
-                                                            child: const Text(
-                                                                'No Image'))
-                                                        : Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                                    border:
-                                                                        Border
-                                                                            .all(
-                                                              width: 1,
-                                                              color:
-                                                                  Colors.white,
-                                                            )),
-                                                            child:
-                                                                Image.network(
-                                                              userDisplay[0]
-                                                                  .imageId
-                                                                  .toString(),
-                                                              height: 200,
-                                                            ),
-                                                          ),
-                                                  ],
-                                                ),
-                                              ));
-                                    },
-                                    child: Text('${local?.optionView}')),
-                                IconButton(
-                                    onPressed: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                                content: Stack(
-                                                  alignment: Alignment.center,
-                                                  children: [
-                                                    userDisplay[0].imageId ==
-                                                            null
-                                                        ? Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                                    border:
-                                                                        Border
-                                                                            .all(
-                                                              width: 1,
-                                                              color:
-                                                                  Colors.white,
-                                                            )),
-                                                            child: const Text(
-                                                                'No Image'))
-                                                        : Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                                    border:
-                                                                        Border
-                                                                            .all(
-                                                              width: 1,
-                                                              color:
-                                                                  Colors.white,
-                                                            )),
-                                                            child:
-                                                                Image.network(
-                                                              userDisplay[0]
-                                                                  .imageId
-                                                                  .toString(),
-                                                              height: 200,
-                                                            ),
-                                                          ),
-                                                  ],
-                                                ),
-                                              ));
-                                    },
-                                    icon: const Icon(Icons.credit_card)),
-                              ],
-                            ),
-                          ],
-                        ),
+                        _nameAndID(local, context),
                       ],
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  DefaultTabController(
-                    length: 2,
-                    child: SizedBox(
-                      width: 350,
-                      child: TabBar(
-                        // ),
-                        controller: _tabController,
-                        tabs: [
-                          Tab(
-                            text: '${local?.personal}',
-                          ),
-                          Tab(
-                            text: '${local?.employment}',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                      height: 500,
-                      margin: const EdgeInsets.only(top: 0),
-                      width: double.infinity,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            ),
-                            gradient: LinearGradient(
-                              colors: [
-                                kDarkestBlue,
-                                color,
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            )),
-                        child: SizedBox(
-                          height: 100,
-                          child: TabBarView(
-                            physics: const NeverScrollableScrollPhysics(),
-                            controller: _tabController,
-                            children: [
-                              PersonalInfo(
-                                  contextt: context,
-                                  bankDisplay: bankDisplay,
-                                  fetchBankData: fetchBankData,
-                                  userDisplay: userDisplay,
-                                  user: user,
-                                  fetchUserById: () {
-                                    fetchUserById();
-                                  }),
-                              EmploymentInfo(
-                                  contextt: context,
-                                  fetchUserPosition: fetchUserPosition,
-                                  positionDisplay: positionDisplay,
-                                  fetchRateDate: fetchRateData,
-                                  rateDisplay: ratesDisplay,
-                                  userDisplay: userDisplay,
-                                  user: user,
-                                  rateList: rateList,
-                                  fetchUserById: fetchUserById,
-                                  checkRole: checkRole,
-                                  checkSatus: checkSatus,
-                                  // checkRate: checkRate,
-                                  checkRate: () {},
-                                  addRateList: createRate,
-                                  deleteRateItem: deleteRateItem,
-                                  rateNameController: rateNameController,
-                                  rateScoreController: rateScoreController,
-                                  idController: idController)
-                            ],
-                          ),
-                        ),
-                      ))
+                  _tabViewTitle(local),
+                  _tabView(color, context, checkRole, checkSatus)
                 ],
               ),
             ),
     );
   }
 
+// tabview widget with personal and employment information
+  Container _tabView(
+    Color color,
+    BuildContext context,
+    String checkRole(),
+    String checkSatus(),
+  ) {
+    return Container(
+        height: 500,
+        margin: const EdgeInsets.only(top: 0),
+        width: double.infinity,
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+              gradient: LinearGradient(
+                colors: [
+                  kDarkestBlue,
+                  color,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              )),
+          child: SizedBox(
+            height: 100,
+            child: TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                PersonalInfo(
+                    contextt: context,
+                    bankDisplay: bankDisplay,
+                    fetchBankData: fetchBankData,
+                    userDisplay: userDisplay,
+                    user: user,
+                    fetchUserById: () {
+                      fetchUserById();
+                    }),
+                EmploymentInfo(
+                    contextt: context,
+                    fetchUserPosition: fetchUserPosition,
+                    positionDisplay: positionDisplay,
+                    fetchRateDate: fetchRateData,
+                    rateDisplay: ratesDisplay,
+                    userDisplay: userDisplay,
+                    user: user,
+                    rateList: rateList,
+                    fetchUserById: fetchUserById,
+                    checkRole: checkRole,
+                    checkSatus: checkSatus,
+                    // checkRate: checkRate,
+                    checkRate: () {},
+                    addRateList: createRate,
+                    deleteRateItem: deleteRateItem,
+                    rateNameController: rateNameController,
+                    rateScoreController: rateScoreController,
+                    idController: idController)
+              ],
+            ),
+          ),
+        ));
+  }
+
+// tavbar view title/name
+  DefaultTabController _tabViewTitle(AppLocalizations? local) {
+    return DefaultTabController(
+      length: 2,
+      child: SizedBox(
+        width: 350,
+        child: TabBar(
+          // ),
+          controller: _tabController,
+          tabs: [
+            Tab(
+              text: '${local?.personal}',
+            ),
+            Tab(
+              text: '${local?.employment}',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+// name and id
+  Column _nameAndID(AppLocalizations? local, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BaselineRow(
+          children: [
+            Text(
+              '${local?.name} : ',
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+            SizedBox(
+              width: 130,
+              child: Text(userDisplay[0].name.toString()),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        BaselineRow(
+          children: [
+            Text(
+              '${local?.id} : ',
+              style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+            Text(userDisplay[0].id.toString()),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                            content: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                userDisplay[0].imageId == null
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                          width: 1,
+                                          color: Colors.white,
+                                        )),
+                                        child: const Text('No Image'))
+                                    : Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                          width: 1,
+                                          color: Colors.white,
+                                        )),
+                                        child: Image.network(
+                                          userDisplay[0].imageId.toString(),
+                                          height: 200,
+                                        ),
+                                      ),
+                              ],
+                            ),
+                          ));
+                },
+                child: Text('${local?.optionView}')),
+            IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                            content: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                userDisplay[0].imageId == null
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                          width: 1,
+                                          color: Colors.white,
+                                        )),
+                                        child: const Text('No Image'))
+                                    : Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                          width: 1,
+                                          color: Colors.white,
+                                        )),
+                                        child: Image.network(
+                                          userDisplay[0].imageId.toString(),
+                                          height: 200,
+                                        ),
+                                      ),
+                              ],
+                            ),
+                          ));
+                },
+                icon: const Icon(Icons.credit_card)),
+          ],
+        ),
+      ],
+    );
+  }
+
+// profile image
+  GestureDetector _profileImg(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+                  content: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      userDisplay[0].image == null
+                          ? Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                width: 1,
+                                color: Colors.white,
+                              )),
+                              child: Image.asset(
+                                'assets/images/profile-icon-png-910.png',
+                                height: 200,
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                width: 1,
+                                color: Colors.white,
+                              )),
+                              child: Image.network(
+                                userDisplay[0].image.toString(),
+                                height: 200,
+                              ),
+                            ),
+                    ],
+                  ),
+                ));
+      },
+      child: Container(
+        width: 75,
+        height: 75,
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(100)),
+            border: Border.all(
+              width: 1,
+              color: Colors.white,
+            )),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(150),
+          child: userDisplay[0].image == null
+              ? Image.asset(
+                  'assets/images/profile-icon-png-910.png',
+                  width: 70,
+                )
+              : Image.network(
+                  userDisplay[0].image.toString(),
+                  height: 70,
+                ),
+        ),
+      ),
+    );
+  }
+
+// fetching and loading widget
+  Center _fetchingData(AppLocalizations? local) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('${local?.fetchData}'),
+          const CircularProgressIndicator(
+            color: kWhite,
+          ),
+        ],
+      ),
+    );
+  }
+
+// function to create new rate
   createRate() async {
     Rating rate = Rating(
       skillName: rateNameController.text,

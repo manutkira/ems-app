@@ -169,35 +169,7 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('${local?.editEmployee}'),
-          leading: IconButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                          title: Text('${local?.areYouSure}'),
-                          content: Text('${local?.changesWillLost}.'),
-                          actions: [
-                            // ignore: deprecated_member_use
-                            OutlineButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('${local?.yes}'),
-                              borderSide: const BorderSide(color: Colors.green),
-                            ),
-                            // ignore: deprecated_member_use
-                            OutlineButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('${local?.no}'),
-                              borderSide: const BorderSide(color: Colors.red),
-                            )
-                          ],
-                        ));
-              },
-              icon: const Icon(Icons.arrow_back)),
+          leading: _backBtn(context, local),
         ),
         body: Form(
             key: _form,
@@ -217,6 +189,40 @@ class _EmployeeEditScreenState extends State<EmployeeEditScreen> {
     );
   }
 
+// button for pop back screen
+  IconButton _backBtn(BuildContext context, AppLocalizations? local) {
+    return IconButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                    title: Text('${local?.areYouSure}'),
+                    content: Text('${local?.changesWillLost}.'),
+                    actions: [
+                      // ignore: deprecated_member_use
+                      OutlineButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('${local?.yes}'),
+                        borderSide: const BorderSide(color: Colors.green),
+                      ),
+                      // ignore: deprecated_member_use
+                      OutlineButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('${local?.no}'),
+                        borderSide: const BorderSide(color: Colors.red),
+                      )
+                    ],
+                  ));
+        },
+        icon: const Icon(Icons.arrow_back));
+  }
+
+// function for update employee's personal information
   updatePersonal() async {
     AppLocalizations? local = AppLocalizations.of(context);
     try {
