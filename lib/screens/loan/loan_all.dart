@@ -1,6 +1,6 @@
 import 'package:ems/constants.dart';
-import 'package:ems/screens/payroll/loan/loan_record.dart';
-import 'package:ems/screens/payroll/loan/new_loan.dart';
+import 'package:ems/screens/loan/loan_record.dart';
+import 'package:ems/screens/loan/new_loan.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

@@ -3,7 +3,7 @@
 import 'package:ems/models/loan.dart';
 import 'package:ems/models/payment.dart';
 import 'package:ems/models/user.dart';
-import 'package:ems/screens/payroll/loan/loan_record.dart';
+import 'package:ems/screens/loan/loan_record.dart';
 import 'package:ems/services/loan.dart';
 import 'package:ems/services/payroll.dart';
 import 'package:ems/services/user.dart';

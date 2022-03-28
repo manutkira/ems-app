@@ -4,7 +4,7 @@ import 'package:ems/constants.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/payroll/generate_screen.dart';
-import 'package:ems/screens/payroll/loan/loan_record.dart';
+import 'package:ems/screens/loan/loan_record.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/appbar.dart';
