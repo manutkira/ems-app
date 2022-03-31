@@ -142,19 +142,36 @@ class AttendanceService extends BaseService {
 
   Future<void> createOneRecord({
     required int userId,
-    required DateTime date,
+    DateTime? date,
+    DateTime? from,
+    DateTime? to,
     String? note,
+    String? pnote,
+    String? fullday,
   }) async {
     try {
+      String startDate = "${convertDateTimeToString(from)}";
+      String endDate = "${convertDateTimeToString(to)}";
+
+      bool hasFullday = fullday!.isNotEmpty;
+      bool hasPnote = pnote!.isNotEmpty;
+      bool hasValidFilter = (startDate.isNotEmpty && startDate != "null") ||
+          (endDate.isNotEmpty && endDate != "null");
       var payload = {
         "user_id": userId,
-        "date": date.toIso8601String(),
+        "date": date?.toIso8601String(),
+        "from": from?.toIso8601String(),
+        "to": from?.toIso8601String()
       };
       if (note != null && note.isNotEmpty) {
         payload['note'] = note.toString();
       }
       await dio.post(
-        'attendances',
+        hasValidFilter
+            ? hasPnote
+                ? 'attendances?${hasFullday ? fullday : ''}&note=$pnote&from=$from&to=$to'
+                : 'attendances?${hasFullday ? fullday : ''}&from=$from&to=$to'
+            : 'attendances',
         data: payload,
         options: Options(validateStatus: (status) => status == 200),
       );

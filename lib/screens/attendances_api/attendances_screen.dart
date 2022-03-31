@@ -3,6 +3,7 @@ import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
 import 'package:ems/screens/attendances_api/attendance_info.dart';
 import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
+import 'package:ems/screens/attendances_api/create_attendance_screen.dart';
 import 'package:ems/services/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -356,11 +357,22 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                                     id: id,
                                   )));
                         }
+                        if (selectedValue == 1) {
+                          int id = userDisplay[index].id as int;
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => CreateAttendance(
+                                    id: id,
+                                  )));
+                        }
                       },
                       itemBuilder: (_) => [
                         PopupMenuItem(
                           child: Text('${local?.info}'),
                           value: 0,
+                        ),
+                        PopupMenuItem(
+                          child: Text('Create Att'),
+                          value: 1,
                         ),
                       ],
                       icon: const Icon(Icons.more_vert),
