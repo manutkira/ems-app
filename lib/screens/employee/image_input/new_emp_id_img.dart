@@ -1,24 +1,23 @@
-import 'dart:io';
+import 'package:ems/models/position.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
+import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import '../../constants.dart';
+import 'package:image_cropper/image_cropper.dart';
+import '../../../constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ImageInputPickerId extends StatefulWidget {
+class ImageInputId extends StatefulWidget {
   final Function onSelectImage;
-  String imageUrl;
 
-  ImageInputPickerId(this.onSelectImage, this.imageUrl);
+  ImageInputId(this.onSelectImage);
 
   @override
-  _ImageInputPickerIdState createState() => _ImageInputPickerIdState();
+  _ImageInputIdState createState() => _ImageInputIdState();
 }
 
-class _ImageInputPickerIdState extends State<ImageInputPickerId> {
+class _ImageInputIdState extends State<ImageInputId> {
   File? _pickedNationalId;
-
   Future getIdFromCamera() async {
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.camera,
@@ -90,34 +89,22 @@ class _ImageInputPickerIdState extends State<ImageInputPickerId> {
                           _pickedNationalId!,
                           fit: BoxFit.cover,
                           width: double.infinity,
-                          height: 120,
                         ),
                       )
-                    : widget.imageUrl.length == 4
-                        ? Text(
-                            '${local?.noIdImage}',
-                            textAlign: TextAlign.center,
-                          )
-                        : ClipRRect(
-                            child: Image.network(
-                              widget.imageUrl.toString(),
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: 120,
-                            ),
-                          ),
+                    : Text(
+                        '${local?.noIdImage}',
+                        textAlign: TextAlign.center,
+                      ),
                 alignment: Alignment.center,
               ),
             ),
             Visibility(
-              visible: _pickedNationalId != null || widget.imageUrl != 'null',
+              visible: _pickedNationalId != null,
               child: Positioned(
                 top: 0,
                 right: 0,
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 80,
-                  ),
+                  padding: const EdgeInsets.only(left: 100, bottom: 50),
                   child: Container(
                     height: 30,
                     width: 30,
@@ -129,7 +116,6 @@ class _ImageInputPickerIdState extends State<ImageInputPickerId> {
                       onPressed: () {
                         setState(() {
                           _pickedNationalId = null;
-                          widget.imageUrl = 'null';
                         });
                       },
                       icon: Icon(
@@ -192,7 +178,7 @@ class _ImageInputPickerIdState extends State<ImageInputPickerId> {
                                 getIdFromGallery();
                                 Navigator.of(context).pop();
                               },
-                              leading: Icon(Icons.folder),
+                              leading: Icon(Icons.photo),
                               title: Text('${local?.fromGallery}'),
                             ),
                           ],
@@ -202,6 +188,7 @@ class _ImageInputPickerIdState extends State<ImageInputPickerId> {
               },
               elevation: 10,
               color: kBlue,
+              // borderSide: BorderSide(color: Colors.black),
               icon: Icon(Icons.photo),
               label: Text('${local?.uploadImage}'),
             ),

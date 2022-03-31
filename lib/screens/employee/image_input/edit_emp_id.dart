@@ -1,57 +1,56 @@
+import 'dart:io';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../../constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import '../../constants.dart';
 
-class ImageInputPicker extends StatefulWidget {
+class ImageInputPickerId extends StatefulWidget {
   final Function onSelectImage;
+  String imageUrl;
 
-  ImageInputPicker(this.onSelectImage);
+  ImageInputPickerId(this.onSelectImage, this.imageUrl);
+
   @override
-  State<ImageInputPicker> createState() => _ImageInputPickerState();
+  _ImageInputPickerIdState createState() => _ImageInputPickerIdState();
 }
 
-class _ImageInputPickerState extends State<ImageInputPicker> {
-  File? _pickedImage;
+class _ImageInputPickerIdState extends State<ImageInputPickerId> {
+  File? _pickedNationalId;
 
-  Future getImage() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.gallery,
-      maxHeight: 450,
-      maxWidth: 450,
-      imageQuality: 1,
-    );
-    if (pickedFile == null) {
-      return;
-    }
-
-    cropImageProfile(pickedFile.path);
-  }
-
-  Future getImageCamera() async {
+  Future getIdFromCamera() async {
     PickedFile? pickedFile = await ImagePicker().getImage(
       source: ImageSource.camera,
       maxHeight: 450,
       maxWidth: 450,
       imageQuality: 1,
     );
-
     if (pickedFile == null) {
       return;
     }
-    cropImageProfile(pickedFile.path);
+    cropImage(pickedFile.path);
   }
 
-  Future cropImageProfile(filePath) async {
+  Future getIdFromGallery() async {
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: ImageSource.gallery,
+      maxHeight: 450,
+      maxWidth: 450,
+      imageQuality: 50,
+    );
+    if (pickedFile == null) {
+      return;
+    }
+    cropImage(pickedFile.path);
+  }
+
+  Future cropImage(filePath) async {
     File? cropped = await ImageCropper.cropImage(
         sourcePath: filePath,
         maxHeight: 500,
         maxWidth: 700,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        aspectRatio: CropAspectRatio(ratioX: 3.375, ratioY: 2.125),
         compressQuality: 100,
         compressFormat: ImageCompressFormat.jpg,
         androidUiSettings: AndroidUiSettings(
@@ -61,7 +60,7 @@ class _ImageInputPickerState extends State<ImageInputPicker> {
             backgroundColor: Colors.white));
     if (cropped != null) {
       setState(() {
-        _pickedImage = cropped;
+        _pickedNationalId = cropped;
       });
       widget.onSelectImage(cropped);
     }
@@ -75,59 +74,73 @@ class _ImageInputPickerState extends State<ImageInputPicker> {
       children: [
         Stack(
           children: [
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.white,
-                  )),
-              child: _pickedImage != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(150),
-                      child: Image.file(
-                        _pickedImage!,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      ),
-                    )
-                  : Text(
-                      '${local?.noProfile}',
-                      style: TextStyle(
-                        fontSize: isEnglish ? 15 : 16,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-              alignment: Alignment.center,
-            ),
-            _pickedImage == null
-                ? Container()
-                : Padding(
-                    padding: const EdgeInsets.only(
-                      left: 80,
-                    ),
-                    child: Container(
-                      height: 30,
-                      width: 30,
-                      decoration: BoxDecoration(
-                        color: kBlack,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _pickedImage = null;
-                          });
-                        },
-                        icon: Icon(
-                          Icons.close,
-                          size: 15,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 120,
+                height: 80,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                  width: 1,
+                  color: Colors.white,
+                )),
+                child: _pickedNationalId != null
+                    ? ClipRRect(
+                        child: Image.file(
+                          _pickedNationalId!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 120,
                         ),
+                      )
+                    : widget.imageUrl.length == 4
+                        ? Text(
+                            '${local?.noIdImage}',
+                            textAlign: TextAlign.center,
+                          )
+                        : ClipRRect(
+                            child: Image.network(
+                              widget.imageUrl.toString(),
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: 120,
+                            ),
+                          ),
+                alignment: Alignment.center,
+              ),
+            ),
+            Visibility(
+              visible: _pickedNationalId != null || widget.imageUrl != 'null',
+              child: Positioned(
+                top: 0,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 80,
+                  ),
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      color: kBlack,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _pickedNationalId = null;
+                          widget.imageUrl = 'null';
+                        });
+                      },
+                      icon: Icon(
+                        Icons.close,
+                        size: 15,
                       ),
                     ),
                   ),
+                ),
+              ),
+            ),
           ],
         ),
         SizedBox(
@@ -168,7 +181,7 @@ class _ImageInputPickerState extends State<ImageInputPicker> {
                           children: [
                             ListTile(
                               onTap: () {
-                                getImageCamera();
+                                getIdFromCamera();
                                 Navigator.of(context).pop();
                               },
                               leading: Icon(Icons.camera),
@@ -176,10 +189,10 @@ class _ImageInputPickerState extends State<ImageInputPicker> {
                             ),
                             ListTile(
                               onTap: () {
-                                getImage();
+                                getIdFromGallery();
                                 Navigator.of(context).pop();
                               },
-                              leading: Icon(Icons.photo),
+                              leading: Icon(Icons.folder),
                               title: Text('${local?.fromGallery}'),
                             ),
                           ],
@@ -190,12 +203,7 @@ class _ImageInputPickerState extends State<ImageInputPicker> {
               elevation: 10,
               color: kBlue,
               icon: Icon(Icons.photo),
-              label: Text(
-                '${local?.uploadImage}',
-                style: TextStyle(
-                  fontSize: isEnglish ? 15 : 16,
-                ),
-              ),
+              label: Text('${local?.uploadImage}'),
             ),
           ),
         )

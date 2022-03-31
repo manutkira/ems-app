@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../constants.dart';
+import '../../../constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImageInputProfileEdit extends StatefulWidget {

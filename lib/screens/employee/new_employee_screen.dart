@@ -2,8 +2,8 @@
 
 import 'dart:io';
 import 'package:ems/models/user.dart';
-import 'package:ems/widgets/image_input/new_emp_id_img.dart';
-import 'package:ems/widgets/image_input/new_emp_profile_img.dart';
+import 'package:ems/screens/employee/image_input/new_emp_id_img.dart';
+import 'package:ems/screens/employee/image_input/new_emp_profile_img.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';

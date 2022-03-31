@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:ems/widgets/image_input/edit_emp_id.dart';
-import 'package:ems/widgets/image_input/edit_emp_profile.dart';
+import 'package:ems/screens/employee/image_input/edit_emp_id.dart';
+import 'package:ems/screens/employee/image_input/edit_emp_profile.dart';
 
 import '../../../../constants.dart';
 
