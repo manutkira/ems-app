@@ -903,7 +903,8 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
             ),
           ),
           (isToday.isEmpty && now && isTodayNoon.isEmpty) ||
-                  (multiday && attendanceList.isEmpty)
+                  (multiday && attendanceList.isEmpty) ||
+                  (alltime && attendanceListAll.isEmpty)
               ? const AttendanceInfoNoData()
               : _isLoading && _isLoadingAll || _isLoadingById
                   ? Container(

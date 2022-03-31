@@ -25,8 +25,8 @@ class _CreateAttendanceState extends State<CreateAttendance> {
   // variables
   DateTime dateTo = DateTime.now();
   DateTime dateFrom = DateTime.now();
-  DateTime? pickStart;
-  DateTime? pickEnd;
+  DateTime? pickStart = DateTime.now();
+  DateTime? pickEnd = DateTime.now();
 
   String? _mySelection;
   String? _mySelectionType;
@@ -53,6 +53,27 @@ class _CreateAttendanceState extends State<CreateAttendance> {
     String? note,
     String? fullday,
   ) async {
+    AppLocalizations? local = AppLocalizations.of(context);
+
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text('${local?.adding}'),
+              content: Flex(
+                direction: Axis.horizontal,
+                children: const [
+                  Flexible(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 100),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ));
     await _attendanceService.createOneRecord(
       userId: id,
       from: from,
@@ -60,6 +81,7 @@ class _CreateAttendanceState extends State<CreateAttendance> {
       pnote: note,
       fullday: fullday,
     );
+    Navigator.pop(context);
   }
 
   // date picker for start date
@@ -278,12 +300,6 @@ class _CreateAttendanceState extends State<CreateAttendance> {
                       children: [
                         Flexible(
                           child: TextFormField(
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return '${local?.plsEnterDate}';
-                              }
-                              return null;
-                            },
                             readOnly: true,
                             decoration: InputDecoration(
                               hintText: local?.selectEndDate,
@@ -320,8 +336,12 @@ class _CreateAttendanceState extends State<CreateAttendance> {
                   RaisedButton(
                     onPressed: () async {
                       if (_key.currentState!.validate()) {
-                        await createOne(widget.id, pickStart!, pickEnd!,
-                            _mySelection, _mySelectionType);
+                        await createOne(
+                            widget.id,
+                            pickStart!,
+                            pickEnd == null ? pickStart! : pickEnd!,
+                            _mySelection,
+                            _mySelectionType);
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
