@@ -5,10 +5,10 @@ import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/screens/attendances_api/attendances_screen.dart';
 import 'package:ems/screens/employee/employee_list_screen.dart';
-import 'package:ems/screens/overtime/overtime_screen.dart';
-import 'package:ems/screens/payroll/generate_screen.dart';
 import 'package:ems/screens/loan/loan_all.dart';
 import 'package:ems/screens/loan/loan_record.dart';
+import 'package:ems/screens/overtime/overtime_screen.dart';
+import 'package:ems/screens/payroll/generate_screen.dart';
 import 'package:ems/screens/payroll/payroll_list_screen.dart';
 import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/qr_code_scan.dart';
@@ -321,7 +321,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                           onTap: () =>
                               _goToMyAttendance(currentUser?.id as int),
                           illustration: SvgPicture.asset(
-                            "assets/images/user.svg",
+                            "assets/images/my-attendances.svg",
                             width: MediaQuery.of(context).size.width * 0.17,
                           ),
                           label: "${local?.myAttendance}",
@@ -337,7 +337,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                         MenuItem(
                           onTap: () => _goToMyOvertime(currentUser),
                           illustration: SvgPicture.asset(
-                            "assets/images/user.svg",
+                            "assets/images/my-overtime.svg",
                             width: MediaQuery.of(context).size.width * 0.17,
                           ),
                           label: "${local?.myOvertime}",
@@ -354,7 +354,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                           onTap: () =>
                               _goToMyPayroll(intParse(currentUser?.id)),
                           illustration: SvgPicture.asset(
-                            "assets/images/user.svg",
+                            "assets/images/my-payroll.svg",
                             width: MediaQuery.of(context).size.width * 0.17,
                           ),
                           label: "${local?.myPayroll}",
@@ -370,7 +370,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
                         MenuItem(
                           onTap: () => _goToMyLoan(intParse(currentUser?.id)),
                           illustration: SvgPicture.asset(
-                            "assets/images/user.svg",
+                            "assets/images/my-loan.svg",
                             width: MediaQuery.of(context).size.width * 0.17,
                           ),
                           label: "${local?.myLoan}",
@@ -425,7 +425,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             //                 onTap: () =>
             //                     _goToMyAttendance(currentUser?.id as int),
             //                 illustration: SvgPicture.asset(
-            //                   "assets/images/user.svg",
+            //                   "assets/images/my_attendances.svg",
             //                   width: MediaQuery.of(context).size.width * 0.17,
             //                 ),
             //                 label: "${local?.myAttendance}",
@@ -472,7 +472,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             //             child: MenuItem(
             //               onTap: () => _goToMyOvertime(currentUser),
             //               illustration: SvgPicture.asset(
-            //                 "assets/images/user.svg",
+            //                 "assets/images/my_attendances.svg",
             //                 width: MediaQuery.of(context).size.width * 0.17,
             //               ),
             //               label: "${local?.myOvertime}",
@@ -520,7 +520,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             //                 onTap: () =>
             //                     _goToMyPayroll(intParse(currentUser?.id)),
             //                 illustration: SvgPicture.asset(
-            //                   "assets/images/user.svg",
+            //                   "assets/images/my_attendances.svg",
             //                   width: MediaQuery.of(context).size.width * 0.17,
             //                 ),
             //                 label: "${local?.myPayroll}",
@@ -566,7 +566,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             //               child: MenuItem(
             //                 onTap: () => _goToMyLoan(intParse(currentUser?.id)),
             //                 illustration: SvgPicture.asset(
-            //                   "assets/images/user.svg",
+            //                   "assets/images/my_attendances.svg",
             //                   width: MediaQuery.of(context).size.width * 0.17,
             //                 ),
             //                 label: "${local?.myLoan}",
