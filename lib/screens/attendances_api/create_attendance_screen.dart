@@ -36,14 +36,8 @@ class _CreateAttendanceState extends State<CreateAttendance> {
   TextEditingController endDateController = TextEditingController();
 
   // list
-  List type = [
-    {'type': 'Haft Day', 'value': ''},
-    {'type': 'Full Day', 'value': 'fullday'}
-  ];
-  List note = [
-    {'type': 'Absent', 'value': ''},
-    {'type': 'Permission', 'value': 'permission'}
-  ];
+  List type = [];
+  List note = [];
 
   // create one attendance
   createOne(
@@ -130,256 +124,296 @@ class _CreateAttendanceState extends State<CreateAttendance> {
   Widget build(BuildContext context) {
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
+    setState(() {
+      if (type.isEmpty) {
+        type = [
+          {'type': '${local?.haftDay}', 'value': ''},
+          {'type': '${local?.fullDay}', 'value': 'fullday'}
+        ];
+      }
+      if (note.isEmpty) {
+        note = [
+          {'type': '${local?.absent}', 'value': ''},
+          {'type': '${local?.permission}', 'value': 'permission'}
+        ];
+      }
+    });
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Attendance'),
+        title: Text('${local?.createAttendance}'),
       ),
       body: Form(
         key: _key,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Type'),
-                  SizedBox(
-                    width: 235,
-                    child: DropdownButtonFormField(
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Pls select type';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                        errorStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      items: type.map((e) {
-                        return DropdownMenuItem(
-                          child: Text(e['type']),
-                          value: e['value'],
-                        );
-                      }).toList(),
-                      hint: Text('Select type'),
-                      onChanged: (value) {
-                        setState(() {
-                          _mySelectionType = value.toString();
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Note'),
-                  SizedBox(
-                    width: 235,
-                    child: DropdownButtonFormField(
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Pls select Note';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                        errorStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      items: note.map((e) {
-                        return DropdownMenuItem(
-                          child: Text(e['type']),
-                          value: e['value'],
-                        );
-                      }).toList(),
-                      hint: Text('Select type'),
-                      onChanged: (value) {
-                        setState(() {
-                          _mySelection = value.toString();
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 15,
-                right: 15,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${local?.startDate} ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: isEnglish ? 36 : 29,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flex(
-                      direction: Axis.horizontal,
-                      children: [
-                        Flexible(
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return '${local?.plsEnterDate}';
-                              }
-                              return null;
-                            },
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              hintText: local?.selectEndDate,
-                              suffixIcon: IconButton(
-                                  onPressed: () {
-                                    _startDatePicker();
-                                  },
-                                  icon: const Icon(
-                                    MdiIcons.calendar,
-                                    color: Colors.white,
-                                  )),
-                              errorStyle: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            controller: startDateController,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 15,
-                right: 15,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${local?.endDate} ',
-                    style: kParagraph.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    width: isEnglish ? 45 : 45,
-                  ),
-                  Container(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.6),
-                    child: Flex(
-                      direction: Axis.horizontal,
-                      children: [
-                        Flexible(
-                          child: TextFormField(
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              hintText: local?.selectEndDate,
-                              suffixIcon: IconButton(
-                                  onPressed: () {
-                                    _endDatePicker();
-                                  },
-                                  icon: const Icon(
-                                    MdiIcons.calendar,
-                                    color: Colors.white,
-                                  )),
-                              errorStyle: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            controller: endDateController,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _selectType(local),
             const SizedBox(
               height: 20,
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  RaisedButton(
-                    onPressed: () async {
-                      if (_key.currentState!.validate()) {
-                        await createOne(
-                            widget.id,
-                            pickStart!,
-                            pickEnd == null ? pickStart! : pickEnd!,
-                            _mySelection,
-                            _mySelectionType);
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    AttendancesInfoScreen(id: widget.id)));
-                      }
-                      // addLoan(_mySelection!);
-                    },
-                    color: Theme.of(context).primaryColor,
-                    child: Text(
-                      '${local?.save}',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  RaisedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    color: Colors.red,
-                    child: Text(
-                      '${local?.cancel}',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            _selectNote(local),
+            const SizedBox(
+              height: 20,
             ),
+            _pickStart(local, isEnglish, context),
+            const SizedBox(
+              height: 20,
+            ),
+            _pickEnd(local, isEnglish, context),
+            const SizedBox(
+              height: 20,
+            ),
+            _yesAndNotBtn(context, local),
           ],
         ),
+      ),
+    );
+  }
+
+// yes/no button for saving attendance or not
+  Padding _yesAndNotBtn(BuildContext context, AppLocalizations? local) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          RaisedButton(
+            onPressed: () async {
+              if (_key.currentState!.validate()) {
+                await createOne(
+                    widget.id,
+                    pickStart!,
+                    pickEnd == null ? pickStart! : pickEnd!,
+                    _mySelection,
+                    _mySelectionType);
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => AttendancesInfoScreen(id: widget.id)));
+              }
+              // addLoan(_mySelection!);
+            },
+            color: Theme.of(context).primaryColor,
+            child: Text(
+              '${local?.save}',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 15,
+          ),
+          RaisedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            color: Colors.red,
+            child: Text(
+              '${local?.cancel}',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// input for picking end date
+  Padding _pickEnd(
+      AppLocalizations? local, bool isEnglish, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 15,
+        right: 15,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '${local?.endDate} ',
+            style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            width: isEnglish ? 45 : 45,
+          ),
+          Container(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.6),
+            child: Flex(
+              direction: Axis.horizontal,
+              children: [
+                Flexible(
+                  child: TextFormField(
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      hintText: local?.selectEndDate,
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            _endDatePicker();
+                          },
+                          icon: const Icon(
+                            MdiIcons.calendar,
+                            color: Colors.white,
+                          )),
+                      errorStyle: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    controller: endDateController,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// input for picking start date
+  Padding _pickStart(
+      AppLocalizations? local, bool isEnglish, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 15,
+        right: 15,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '${local?.startDate} ',
+            style: kParagraph.copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            width: isEnglish ? 36 : 29,
+          ),
+          Container(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.6),
+            child: Flex(
+              direction: Axis.horizontal,
+              children: [
+                Flexible(
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return '${local?.plsEnterDate}';
+                      }
+                      return null;
+                    },
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      hintText: local?.selectEndDate,
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            _startDatePicker();
+                          },
+                          icon: const Icon(
+                            MdiIcons.calendar,
+                            color: Colors.white,
+                          )),
+                      errorStyle: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    controller: startDateController,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// input for selecting attendance note
+  Padding _selectNote(AppLocalizations? local) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 15, right: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${local?.note}'),
+          SizedBox(
+            width: 235,
+            child: DropdownButtonFormField(
+              validator: (value) {
+                if (value == null) {
+                  return '${local?.plsSelectNote}';
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                errorStyle: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              items: note.map((e) {
+                return DropdownMenuItem(
+                  child: Text(e['type']),
+                  value: e['value'],
+                );
+              }).toList(),
+              hint: Text('${local?.selectNote}'),
+              onChanged: (value) {
+                setState(() {
+                  _mySelection = value.toString();
+                });
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// input for selecting attendance type
+  Padding _selectType(AppLocalizations? local) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 15, right: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${local?.type}'),
+          SizedBox(
+            width: 235,
+            child: DropdownButtonFormField(
+              validator: (value) {
+                if (value == null) {
+                  return '${local?.plsSelectType}';
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                errorStyle: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              items: type.map((e) {
+                return DropdownMenuItem(
+                  child: Text(e['type']),
+                  value: e['value'],
+                );
+              }).toList(),
+              hint: Text('${local?.selectType}'),
+              onChanged: (value) {
+                setState(() {
+                  _mySelectionType = value.toString();
+                });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

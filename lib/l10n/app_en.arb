@@ -1178,6 +1178,34 @@
   "@canBorrowUpTo": {
     "description": "take attendance"
   },
+  "createAttendance": "Create Attendance",
+  "@createAttendance": {
+    "description": "take attendance"
+  },
+  "fullDay": "Full Day",
+  "@fullDay": {
+    "description": "take attendance"
+  },
+  "haftDay": "Haft Day",
+  "@haftDay": {
+    "description": "take attendance"
+  },
+  "selectType": "Select Type",
+  "@selectType": {
+    "description": "take attendance"
+  },
+  "selectNote": "Select Note",
+  "@selectNote": {
+    "description": "take attendance"
+  },
+  "plsSelectType": "Please Select Type",
+  "@plsSelectType": {
+    "description": "take attendance"
+  },
+  "plsSelectNote": "Please Select Note",
+  "@plsSelectNote": {
+    "description": "take attendance"
+  },
   "payrollAndLoan": "Payroll and Loan",
   "@payrollAndLoan": {
     "description": "home screen"

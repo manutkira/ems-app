@@ -371,7 +371,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                           value: 0,
                         ),
                         PopupMenuItem(
-                          child: Text('Create Att'),
+                          child: Text('${local?.createAttendance}'),
                           value: 1,
                         ),
                       ],
