@@ -1213,5 +1213,9 @@
   "attendanceAndOvertime": "Attendance and Overtime",
   "@attendanceAndOvertime": {
     "description": "home screen"
+  },
+  "attendanceSummary": "Attendance Summary",
+  "@attendanceSummary": {
+    "description": "home screen"
   }
 }

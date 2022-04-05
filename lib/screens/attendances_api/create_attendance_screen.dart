@@ -3,9 +3,9 @@ import 'package:ems/screens/attendances_api/attendance_info.dart';
 import 'package:ems/services/attendance.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateAttendance extends StatefulWidget {
   int id;
@@ -68,12 +68,12 @@ class _CreateAttendanceState extends State<CreateAttendance> {
                 ],
               ),
             ));
-    await _attendanceService.createOneRecord(
+    await _attendanceService.createAttendanceRequest(
       userId: id,
       from: from,
       to: to,
-      pnote: note,
-      fullday: fullday,
+      note: note.toString(),
+      fullDay: fullday.toString().isNotEmpty,
     );
     Navigator.pop(context);
   }

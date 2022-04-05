@@ -296,5 +296,6 @@
   "plsSelectType": "សូមជ្រើសរើសប្រភេទ",
   "plsSelectNote": "សូមជ្រើសរើសកំណត់ចំណាំ",
   "myLoan": "ប្រាក់កម្ចីរបស់ខ្ញុំ",
-  "attendanceAndOvertime": "វត្តមាននិងការថែមម៉ោង"
+  "attendanceAndOvertime": "វត្តមាននិងការថែមម៉ោង",
+  "attendanceSummary": "ស្ថិតិសង្ខេបវត្តមាន"
 }

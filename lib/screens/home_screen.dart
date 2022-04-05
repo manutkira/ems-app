@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hive/hive.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import 'attendances_api/attendance_info.dart';
@@ -300,7 +299,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
 
             /// check in/out
             Container(
-              height: 100,
+              height: 120,
               padding: const EdgeInsets.symmetric(
                 // vertical: 12,
                 horizontal: 15,
@@ -347,31 +346,23 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
             ),
             _buildSpacerVertical(),
 
-            ValueListenableBuilder(
-                valueListenable:
-                    ref.watch(currentUserProvider).currentUserListenable,
-                builder: (_, Box<User> box, __) {
-                  final listFromBox = box.values.toList();
-                  final currentUser =
-                      listFromBox.isNotEmpty ? listFromBox[0] : null;
-                  return ListView(
-                    shrinkWrap: true,
-                    physics: const ClampingScrollPhysics(),
-                    children: [
-                      _buildTitle('${local?.attendanceAndOvertime}'),
-                      _buildSpacerVertical(value: 8.0),
-                      _buildMenuList(menuList['attendanceAndOvertime']!),
-                      _buildSpacerVertical(),
-                      _buildTitle('${local?.payrollAndLoan}'),
-                      _buildSpacerVertical(value: 8.0),
-                      _buildMenuList(menuList['payrollAndLoan']!),
-                      _buildSpacerVertical(),
-                      _buildTitle('${local?.employeeManager}'),
-                      _buildSpacerVertical(value: 8.0),
-                      _buildMenuList(menuList['employees']!)
-                    ],
-                  );
-                }),
+            ListView(
+              shrinkWrap: true,
+              physics: const ClampingScrollPhysics(),
+              children: [
+                _buildTitle('${local?.attendanceAndOvertime}'),
+                _buildSpacerVertical(value: 8.0),
+                _buildMenuList(menuList['attendanceAndOvertime']!),
+                _buildSpacerVertical(),
+                _buildTitle('${local?.payrollAndLoan}'),
+                _buildSpacerVertical(value: 8.0),
+                _buildMenuList(menuList['payrollAndLoan']!),
+                _buildSpacerVertical(),
+                _buildTitle('${local?.employeeManager}'),
+                _buildSpacerVertical(value: 8.0),
+                _buildMenuList(menuList['employees']!)
+              ],
+            ),
             _buildSpacerVertical(),
             // grid
             // ValueListenableBuilder(
@@ -713,6 +704,25 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
     );
   }
 
+  Widget _buildTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15,
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSpacerVertical({value = 16.0}) {
+    return SizedBox(height: value);
+  }
+
   Widget _buildMenuList(List<dynamic> menuItems) {
     bool isEnglish = isInEnglish(context);
     return SizedBox(
@@ -734,25 +744,6 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
         },
       ),
     );
-  }
-
-  Widget _buildTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 15,
-      ),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSpacerVertical({value = 16.0}) {
-    return SizedBox(height: value);
   }
 
   Widget _buildMenuCard(

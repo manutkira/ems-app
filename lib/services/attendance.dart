@@ -140,40 +140,51 @@ class AttendanceService extends BaseService {
     }
   }
 
+  Future<void> createAttendanceRequest({
+    required int userId,
+    required DateTime from,
+    required String note,
+    required bool fullDay,
+    required DateTime to,
+  }) async {
+    Map<String, dynamic> payload = {
+      "user_id": userId,
+      "note": note,
+      "from": from.toIso8601String(),
+      "to": to.toIso8601String(),
+    };
+
+    try {
+      await dio.post(
+        'attendances?${fullDay ? "fullday" : ''}',
+        data: payload,
+        options: Options(validateStatus: (status) => status == 200),
+      );
+    } catch (err) {
+      if (err is DioError) {
+        throw Exception(err.response?.data['message']);
+      }
+      throw Exception(err.toString());
+    }
+  }
+
   Future<void> createOneRecord({
     required int userId,
     DateTime? date,
-    DateTime? from,
-    DateTime? to,
     String? note,
-    String? pnote,
-    String? fullday,
   }) async {
     try {
-      String startDate = "${convertDateTimeToString(from)}";
-      String endDate = "${convertDateTimeToString(to)}";
-
-      bool hasFullday = fullday!.isNotEmpty;
-      bool hasPnote = pnote!.isNotEmpty;
-      bool hasValidFilter = (startDate.isNotEmpty && startDate != "null") ||
-          (endDate.isNotEmpty && endDate != "null");
       var payload = {
         "user_id": userId,
         "date": date?.toIso8601String(),
-        "from": from?.toIso8601String(),
-        "to": from?.toIso8601String()
       };
       if (note != null && note.isNotEmpty) {
         payload['note'] = note.toString();
       }
       await dio.post(
-        hasValidFilter
-            ? hasPnote
-                ? 'attendances?${hasFullday ? fullday : ''}&note=$pnote&from=$from&to=$to'
-                : 'attendances?${hasFullday ? fullday : ''}&from=$from&to=$to'
-            : 'attendances',
+        'attendances',
         data: payload,
-        options: Options(validateStatus: (status) => status == 200),
+        options: Options(validateStatus: (status) => status == 201),
       );
     } catch (err) {
       if (err is DioError) {
@@ -227,6 +238,7 @@ class AttendanceService extends BaseService {
         path,
         options: Options(validateStatus: (status) => status == 200),
       );
+      print(res.data['attendance_count']['total']);
       return AttendanceCount.fromJson(res.data);
     } catch (err) {
       if (err is DioError) {
@@ -235,4 +247,9 @@ class AttendanceService extends BaseService {
       throw Exception(err.toString());
     }
   }
+}
+
+class AttendanceRequest {
+  static String get permission => 'permission';
+  static String get absent => 'absent';
 }
