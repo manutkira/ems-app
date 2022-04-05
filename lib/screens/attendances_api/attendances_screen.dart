@@ -184,16 +184,6 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
               ),
               PopupMenuItem(
                 child: Text(
-                  '${local?.byAllTime}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                value: 1,
-              ),
-              PopupMenuItem(
-                child: Text(
                   '${local?.byMonth}',
                   style: const TextStyle(
                     color: Colors.white,
@@ -201,6 +191,16 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
                   ),
                 ),
                 value: 2,
+              ),
+              PopupMenuItem(
+                child: Text(
+                  '${local?.byAllTime}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 1,
               ),
             ]);
   }

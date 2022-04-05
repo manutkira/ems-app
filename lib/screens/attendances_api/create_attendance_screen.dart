@@ -93,7 +93,6 @@ class _CreateAttendanceState extends State<CreateAttendance> {
       setState(() {
         pickStart = picked;
         startDateController.text = DateFormat('dd-MM-yyyy').format(pickStart!);
-        // pick = true;
       });
     });
   }
@@ -112,6 +111,7 @@ class _CreateAttendanceState extends State<CreateAttendance> {
       }
       setState(() {
         pickEnd = picked;
+        print(pickEnd == null);
         endDateController.text = DateFormat('dd-MM-yyyy').format(pickEnd!);
         // pick = true;
       });
