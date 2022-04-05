@@ -111,7 +111,6 @@ class _CreateAttendanceState extends State<CreateAttendance> {
       }
       setState(() {
         pickEnd = picked;
-        print(pickEnd == null);
         endDateController.text = DateFormat('dd-MM-yyyy').format(pickEnd!);
         // pick = true;
       });
@@ -179,11 +178,7 @@ class _CreateAttendanceState extends State<CreateAttendance> {
           RaisedButton(
             onPressed: () async {
               if (_key.currentState!.validate()) {
-                await createOne(
-                    widget.id,
-                    pickStart!,
-                    pickEnd == null ? pickStart! : pickEnd!,
-                    _mySelection,
+                await createOne(widget.id, pickStart!, pickEnd!, _mySelection,
                     _mySelectionType);
                 Navigator.pushReplacement(
                     context,
