@@ -1,11 +1,12 @@
 import 'package:ems/constants.dart';
-import 'package:ems/models/attendance_count.dart';
 import 'package:ems/persistence/current_user.dart';
 import 'package:ems/services/attendance.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class AttendanceSummary extends ConsumerStatefulWidget {
   const AttendanceSummary({
@@ -18,21 +19,39 @@ class AttendanceSummary extends ConsumerStatefulWidget {
 
 class _AttendanceSummaryState extends ConsumerState<AttendanceSummary> {
   final AttendanceService attService = AttendanceService.instance;
-  late AttendanceCount attendanceCount;
+  double present = 0, late = 0, permission = 0, absent = 0;
+
+  bool isFetching = false;
 
   void fetchData() async {
+    bool isOnline = await InternetConnectionChecker().hasConnection;
+    if (!isOnline) return;
+    setState(() {
+      isFetching = true;
+    });
     var date = DateTime.now();
     int month = date.month;
     int year = date.year;
     int userId = intParse(ref.read(currentUserProvider).user.id);
-    var ac = await attService.countAttendance(
-      userId,
-      start: DateTime(year, month - 3, 1),
-      end: DateTime(year, month, 31),
-    );
-    setState(() {
-      attendanceCount = ac;
-    });
+    try {
+      var ac = await attService.countAttendance(
+        userId,
+        start: DateTime(year, month, 1),
+        end: DateTime(year, month, 31),
+      );
+      setState(() {
+        present = (ac.totalPresent ?? 0) / 2;
+        late = (ac.totalLate ?? 0) / 2;
+        permission = (ac.totalPermission ?? 0) / 2;
+        absent = (ac.totalAbsent ?? 0) / 2;
+      });
+    } catch (err) {
+      //
+    } finally {
+      setState(() {
+        isFetching = false;
+      });
+    }
   }
 
   @override
@@ -47,12 +66,18 @@ class _AttendanceSummaryState extends ConsumerState<AttendanceSummary> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '${local?.attendanceSummary}',
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '${local?.attendanceSummary}',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            _buildFetchingButton(),
+          ],
         ),
         const SizedBox(height: 8),
         GridView.count(
@@ -66,30 +91,51 @@ class _AttendanceSummaryState extends ConsumerState<AttendanceSummary> {
             _buildBox(
               backgroundColor: kGreenBackground,
               textColor: kGreenText,
-              count: (attendanceCount.totalPresent ?? 0) / 2,
+              count: present,
               label: '${local?.present}',
             ),
             _buildBox(
               backgroundColor: kYellowBackground,
               textColor: kYellowText,
-              count: (attendanceCount.totalLate ?? 0) / 2,
+              count: late,
               label: '${local?.late}',
             ),
             _buildBox(
               backgroundColor: kBlueBackground,
               textColor: kBlueText,
-              // count: (attendanceCount ?? 0) / 2,
+              count: permission,
               label: '${local?.permission}',
             ),
             _buildBox(
               backgroundColor: kRedBackground,
               textColor: kRedText,
+              count: absent,
               label: '${local?.absent}',
             ),
           ],
         ),
       ],
     );
+  }
+
+  Widget _buildFetchingButton() {
+    return isFetching
+        ? const SizedBox(
+            height: 10,
+            width: 10,
+            child: CircularProgressIndicator(
+              color: kWhite,
+              strokeWidth: 2,
+            ),
+          )
+        : GestureDetector(
+            onTap: fetchData,
+            child: const Icon(
+              MdiIcons.refresh,
+              color: kWhite,
+              size: 16,
+            ),
+          );
   }
 
   Widget _buildBox({
