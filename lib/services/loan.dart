@@ -107,11 +107,11 @@ class LoanService extends BaseService {
         'users/$userId/loan-employees',
         options: Options(validateStatus: (status) => status == 200),
       );
-      var data = res.data;
-      var loan = Loan.fromJson(data?[0]);
-      // if (loan == null) {
-      //   return null;
-      // }
+      List<dynamic> data = res.data;
+      if (data.isEmpty) {
+        throw Exception('user has no loan');
+      }
+      var loan = Loan.fromJson(data[0]);
       return loan;
     } catch (err) {
       if (err is DioError) {

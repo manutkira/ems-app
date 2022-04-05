@@ -134,7 +134,7 @@ class _HomeScreenEmployeeState extends ConsumerState<HomeScreenEmployee> {
         {
           "text": local?.myOvertime,
           "icon": 'assets/images/my-overtime.svg',
-          "goto": () => _goToMyOvertime(intParse(user.id)),
+          "goto": () => _goToMyOvertime(user),
         },
       ],
       "payrollAndLoan": [
