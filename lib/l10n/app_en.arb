@@ -1209,5 +1209,9 @@
   "payrollAndLoan": "Payroll and Loan",
   "@payrollAndLoan": {
     "description": "home screen"
+  },
+  "attendanceAndOvertime": "Attendance and Overtime",
+  "@attendanceAndOvertime": {
+    "description": "home screen"
   }
 }
