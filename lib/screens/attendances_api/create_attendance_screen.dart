@@ -3,9 +3,9 @@ import 'package:ems/screens/attendances_api/attendance_info.dart';
 import 'package:ems/services/attendance.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateAttendance extends StatefulWidget {
   int id;
@@ -29,7 +29,7 @@ class _CreateAttendanceState extends State<CreateAttendance> {
   DateTime? pickEnd = DateTime.now();
 
   String? _mySelection;
-  String? _mySelectionType;
+  bool? _mySelectionType;
 
   // text controller
   TextEditingController startDateController = TextEditingController();
@@ -44,8 +44,8 @@ class _CreateAttendanceState extends State<CreateAttendance> {
     int id,
     DateTime from,
     DateTime to,
-    String? note,
-    String? fullday,
+    String note,
+    bool fullday,
   ) async {
     AppLocalizations? local = AppLocalizations.of(context);
 
@@ -73,7 +73,7 @@ class _CreateAttendanceState extends State<CreateAttendance> {
       from: from,
       to: to,
       note: note.toString(),
-      fullDay: fullday.toString().isNotEmpty,
+      fullDay: fullday,
     );
     Navigator.pop(context);
   }
@@ -111,7 +111,6 @@ class _CreateAttendanceState extends State<CreateAttendance> {
       }
       setState(() {
         pickEnd = picked;
-        print(pickEnd == null);
         endDateController.text = DateFormat('dd-MM-yyyy').format(pickEnd!);
         // pick = true;
       });
@@ -127,13 +126,13 @@ class _CreateAttendanceState extends State<CreateAttendance> {
     setState(() {
       if (type.isEmpty) {
         type = [
-          {'type': '${local?.haftDay}', 'value': ''},
-          {'type': '${local?.fullDay}', 'value': 'fullday'}
+          {'type': '${local?.haftDay}', 'value': false},
+          {'type': '${local?.fullDay}', 'value': true}
         ];
       }
       if (note.isEmpty) {
         note = [
-          {'type': '${local?.absent}', 'value': ''},
+          {'type': '${local?.absent}', 'value': 'absent'},
           {'type': '${local?.permission}', 'value': 'permission'}
         ];
       }
@@ -179,12 +178,8 @@ class _CreateAttendanceState extends State<CreateAttendance> {
           RaisedButton(
             onPressed: () async {
               if (_key.currentState!.validate()) {
-                await createOne(
-                    widget.id,
-                    pickStart!,
-                    pickEnd == null ? pickStart! : pickEnd!,
-                    _mySelection,
-                    _mySelectionType);
+                await createOne(widget.id, pickStart!, pickEnd ?? pickStart!,
+                    _mySelection.toString(), _mySelectionType!);
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -408,7 +403,7 @@ class _CreateAttendanceState extends State<CreateAttendance> {
               hint: Text('${local?.selectType}'),
               onChanged: (value) {
                 setState(() {
-                  _mySelectionType = value.toString();
+                  _mySelectionType = (value as bool);
                 });
               },
             ),

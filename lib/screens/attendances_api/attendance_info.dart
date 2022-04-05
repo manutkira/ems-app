@@ -144,7 +144,6 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
       if (mounted) {
         setState(() {
           attendanceCount = attendanceCountDisplay;
-          // print(attendanceCount!.totalPermission);
           _isLoadingCount = false;
         });
       }

@@ -141,7 +141,10 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
         _isloadingOne = false;
       });
     } catch (err) {
-      rethrow;
+      setState(() {
+        loans = [];
+        _isloadingOne = false;
+      });
     }
   }
 
@@ -214,7 +217,14 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
       body: _isLoading || _loadingUser || _isloadingOne
           ? _fetchingData(local)
           : loanList.isEmpty
-              ? _noRecord(local, isEnglish)
+              ? Column(
+                  children: [
+                    const SizedBox(
+                      height: 190,
+                    ),
+                    _noRecord(local, isEnglish),
+                  ],
+                )
               : Column(
                   children: [
                     Column(
@@ -298,75 +308,88 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                         ],
                       ),
                     ),
-                    Expanded(
-                        child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        return ExpansionTile(
-                          collapsedBackgroundColor: const Color(0xff254973),
-                          backgroundColor: const Color(0xff254973),
-                          textColor: Colors.white,
-                          iconColor: Colors.white,
-                          initiallyExpanded: index == 0,
-                          title: Text(
-                            DateFormat('dd/MM/yyyy')
-                                .format(loans[index].datePaid!),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          children: [
-                            Container(
-                              color: Colors.black38,
-                              padding: const EdgeInsets.only(
-                                  top: 10, left: 15, right: 15, bottom: 15),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('Ref no'),
-                                      Text(
-                                        loans[index].refNo.toString(),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('Date Paid'),
-                                      Text(
-                                        DateFormat('dd/MM/yyyy')
-                                            .format(loans[index].datePaid!),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('Repaid Amount'),
-                                      Text(
-                                        '\$${loans[index].loan!}',
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                    loans.isEmpty
+                        ? Column(
+                            children: [
+                              const SizedBox(
+                                height: 100,
                               ),
-                            )
-                          ],
-                        );
-                      },
-                      itemCount: loans.length,
-                    ))
+                              _noRecord(local, isEnglish),
+                            ],
+                          )
+                        : Expanded(
+                            child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return ExpansionTile(
+                                collapsedBackgroundColor:
+                                    const Color(0xff254973),
+                                backgroundColor: const Color(0xff254973),
+                                textColor: Colors.white,
+                                iconColor: Colors.white,
+                                initiallyExpanded: index == 0,
+                                title: Text(
+                                  DateFormat('dd/MM/yyyy')
+                                      .format(loans[index].datePaid!),
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                children: [
+                                  Container(
+                                    color: Colors.black38,
+                                    padding: const EdgeInsets.only(
+                                        top: 10,
+                                        left: 15,
+                                        right: 15,
+                                        bottom: 15),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text('Ref no'),
+                                            Text(
+                                              loans[index].refNo.toString(),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text('Date Paid'),
+                                            Text(
+                                              DateFormat('dd/MM/yyyy').format(
+                                                  loans[index].datePaid!),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text('Repaid Amount'),
+                                            Text(
+                                              '\$${loans[index].loan!}',
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                            itemCount: loans.length,
+                          ))
                   ],
                 ),
               ],
@@ -539,9 +562,6 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
     return Center(
       child: Column(
         children: [
-          const SizedBox(
-            height: 190,
-          ),
           Text(
             '${local?.noLoanRecord}',
             style: isEnglish ? kHeadingThree : kHeadingFour,

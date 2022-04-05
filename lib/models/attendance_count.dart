@@ -39,7 +39,6 @@ class AttendanceCount {
     var morning = attendanceCount['morning'];
     var afternoon = attendanceCount['afternoon'];
     var total = attendanceCount['total'];
-    // print(total);
     return AttendanceCount(
       morningPresent: intParse(morning['present']),
       morningLate: intParse(morning['late']),
