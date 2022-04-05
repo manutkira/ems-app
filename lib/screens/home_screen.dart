@@ -14,6 +14,7 @@ import 'package:ems/screens/slide_menu.dart';
 import 'package:ems/screens/take_attendance/qr_code_scan.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/appbar.dart';
+import 'package:ems/widgets/attendance_summary.dart';
 import 'package:ems/widgets/check_status.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -206,6 +207,11 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
     return {
       "attendanceAndOvertime": [
         {
+          "text": local?.checkInOut,
+          "icon": "assets/images/qr-code.svg",
+          "goto": () => _goToCheckInScreen(),
+        },
+        {
           "text": local?.attendanceManager,
           "icon": 'assets/images/attendance.svg',
           "goto": () => _goToAttendanceScreen(),
@@ -275,67 +281,80 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
         child: ListView(
           children: [
             /// top
-            Stack(
-              children: [
-                SizedBox(
-                  height: 140,
-                  width: _size.width,
-                  child: SvgPicture.asset(
-                    'assets/images/graph.svg',
-                    semanticsLabel: "menu",
-                    fit: BoxFit.cover,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Stack(
+                children: [
+                  SizedBox(
+                    height: 140,
+                    width: _size.width,
+                    child: SvgPicture.asset(
+                      'assets/images/graph.svg',
+                      semanticsLabel: "menu",
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    SizedBox(height: 20),
-                    CheckStatus(),
-                  ],
-                ),
-              ],
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      CheckStatus(),
+                    ],
+                  ),
+                ],
+              ),
             ),
+            _buildSpacerVertical(),
+
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: AttendanceSummary(),
+            ),
+            _buildSpacerVertical(),
 
             /// check in/out
-            Container(
-              height: 120,
-              padding: const EdgeInsets.symmetric(
-                // vertical: 12,
-                horizontal: 15,
-              ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(kBorderRadius),
-                child: Material(
-                  color: kLightBlue,
-                  child: InkWell(
-                    highlightColor: kBlue.withOpacity(0.25),
-                    onTap: _goToCheckInScreen,
-                    child: SizedBox(
-                      width: _size.width,
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          width: double.infinity,
-                          padding: kPaddingAll,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                "assets/images/scan-qr-code-icon.svg",
-                                height: 100,
-                              ),
-                              Text(
-                                "${local?.checkInOut}",
-                                style: kSubtitle.copyWith(
-                                  color: kBlack,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 18,
+            Visibility(
+              visible: false,
+              child: Container(
+                height: 120,
+                padding: const EdgeInsets.symmetric(
+                  // vertical: 12,
+                  horizontal: 15,
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(kBorderRadius),
+                  child: Material(
+                    color: kLightBlue,
+                    child: InkWell(
+                      highlightColor: kBlue.withOpacity(0.25),
+                      onTap: _goToCheckInScreen,
+                      child: SizedBox(
+                        width: _size.width,
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: Container(
+                            width: double.infinity,
+                            padding: kPaddingAll,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/images/scan-qr-code-icon.svg",
+                                  height: 100,
                                 ),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
+                                Text(
+                                  "${local?.checkInOut}",
+                                  style: kSubtitle.copyWith(
+                                    color: kBlack,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),

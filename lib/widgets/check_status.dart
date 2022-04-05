@@ -100,8 +100,8 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
     bool isEnglish = isInEnglish(context);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 15),
-      height: 100,
+      // margin: const EdgeInsets.symmetric(horizontal: 15),
+      height: 113,
       decoration: BoxDecoration(
         color: kWhite,
         borderRadius: BorderRadius.circular(12),

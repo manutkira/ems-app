@@ -70,7 +70,7 @@ class _AttendanceSummaryState extends ConsumerState<AttendanceSummary> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '${local?.attendanceSummary}',
+              '${local?.attendanceSummary(DateTime.now().month)}',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
