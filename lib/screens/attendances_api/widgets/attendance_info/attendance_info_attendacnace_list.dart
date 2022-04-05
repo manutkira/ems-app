@@ -94,13 +94,15 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
                 }
 
                 return multiday
-                    ? _buildMultipleResult(multidayAttendance, context, isAdmin)
+                    ? _buildMultipleResult(
+                        multidayAttendance, context, isAdmin, index)
                     : isOneDay
-                        ? _buildOnedayResult(onedayAttendance, context, isAdmin)
+                        ? _buildOnedayResult(
+                            onedayAttendance, context, isAdmin, index)
                         : alltime
-                            ? _buildAllResult(all, context, isAdmin)
+                            ? _buildAllResult(all, context, isAdmin, index)
                             : _buildNowResult(
-                                todayAttendance, context, isAdmin);
+                                todayAttendance, context, isAdmin, index);
               },
             ),
           );
@@ -630,10 +632,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
 
 // show all attendance widget
   Widget _buildAllResult(
-    AttendancesByDate record,
-    BuildContext context,
-    bool isAdmin,
-  ) {
+      AttendancesByDate record, BuildContext context, bool isAdmin, index) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
@@ -641,7 +640,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
       backgroundColor: const Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
-      initiallyExpanded: true,
+      initiallyExpanded: index == 0,
       title: Text(
         getDateStringFromDateTime(DateTime.parse(record.date.toString())),
         style: const TextStyle(
@@ -824,17 +823,14 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
 
 // show today attendance widget
   Widget _buildNowResult(
-    AttendancesByDate record,
-    BuildContext context,
-    bool isAdmin,
-  ) {
+      AttendancesByDate record, BuildContext context, bool isAdmin, index) {
     AppLocalizations? local = AppLocalizations.of(context);
     return ExpansionTile(
       collapsedBackgroundColor: const Color(0xff254973),
       backgroundColor: const Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
-      initiallyExpanded: true,
+      initiallyExpanded: index == 0,
       title: Text(
         getDateStringFromDateTime(DateTime.parse(record.date.toString())),
         style: const TextStyle(
@@ -1017,17 +1013,14 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
 
 // show oneday attendance widget
   Widget _buildOnedayResult(
-    AttendancesByDate record,
-    BuildContext context,
-    bool isAdmin,
-  ) {
+      AttendancesByDate record, BuildContext context, bool isAdmin, index) {
     AppLocalizations? local = AppLocalizations.of(context);
     return ExpansionTile(
       collapsedBackgroundColor: const Color(0xff254973),
       backgroundColor: const Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
-      initiallyExpanded: true,
+      initiallyExpanded: index == 0,
       title: Text(
         getDateStringFromDateTime(DateTime.parse(record.date.toString())),
         style: const TextStyle(
@@ -1210,7 +1203,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
 
 // show multiday attendance widget
   Widget _buildMultipleResult(
-      AttendancesByDate record, BuildContext context, bool isAdmin) {
+      AttendancesByDate record, BuildContext context, bool isAdmin, index) {
     AppLocalizations? local = AppLocalizations.of(context);
 
     return ExpansionTile(
@@ -1218,7 +1211,7 @@ class AttendanceInfoAttendanceList extends ConsumerWidget {
       backgroundColor: const Color(0xff254973),
       textColor: Colors.white,
       iconColor: Colors.white,
-      initiallyExpanded: true,
+      initiallyExpanded: index == 0,
       title: Text(
         getDateStringFromDateTime(DateTime.parse(record.date.toString())),
         style: const TextStyle(

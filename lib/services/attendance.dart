@@ -238,7 +238,6 @@ class AttendanceService extends BaseService {
         path,
         options: Options(validateStatus: (status) => status == 200),
       );
-      print(res.data['attendance_count']['total']);
       return AttendanceCount.fromJson(res.data);
     } catch (err) {
       if (err is DioError) {
