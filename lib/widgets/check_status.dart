@@ -39,6 +39,7 @@ class _CheckStatusState extends ConsumerState<CheckStatus> {
 
     AttendanceService attService = AttendanceService.instance;
     int userId = ref.read(currentUserProvider).user.id as int;
+
     List<AttendancesByDate> listOfAttendance =
         await attService.findManyByUserId(
       userId,
