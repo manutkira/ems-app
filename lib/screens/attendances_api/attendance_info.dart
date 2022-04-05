@@ -144,6 +144,7 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
       if (mounted) {
         setState(() {
           attendanceCount = attendanceCountDisplay;
+          // print(attendanceCount!.totalPermission);
           _isLoadingCount = false;
         });
       }
@@ -1004,19 +1005,17 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
                 todayAfternoon: todayPermissionNoon.toString(),
                 isLoading: _isLoading,
                 isOneday: isOneDay,
-                onedayMorning: onedayPermission.toString(),
-                onedayAfternoon: onedayPermissionNoon.toString(),
-                presentAll: permissionAll.toString(),
+                onedayMorning: attendanceCount!.morningPermission.toString(),
+                onedayAfternoon:
+                    attendanceCount!.afternoonPermission.toString(),
+                presentAll: attendanceCountAll!.totalPermission.toString(),
                 alltime: alltime,
                 text: '${local?.permission} ',
                 afternoon: afternoon,
                 multipleDay: multiday,
-                presentAfternoon: permissionAfternoon == null
-                    ? '♽'
-                    : permissionAfternoon.toString(),
-                presentMorning: permissionMorning == null
-                    ? '♽'
-                    : permissionMorning.toString(),
+                presentAfternoon:
+                    attendanceCount!.afternoonPermission.toString(),
+                presentMorning: attendanceCount!.morningPermission.toString(),
               ),
               AttendanceInfoPresent(
                 total: total,
@@ -1050,17 +1049,15 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
                 todayAfternoon: todayAbsentNoon.toString(),
                 isLoading: _isLoading,
                 isOneday: isOneDay,
-                onedayMorning: onedayAbsent.toString(),
-                onedayAfternoon: onedayAbsentNoon.toString(),
-                presentAll: absentAll.toString(),
+                onedayMorning: attendanceCount!.morningAbsent.toString(),
+                onedayAfternoon: attendanceCount!.afternoonAbsent.toString(),
+                presentAll: attendanceCountAll!.totalAbsent.toString(),
                 alltime: alltime,
                 text: '${local?.absent} ',
                 afternoon: afternoon,
                 multipleDay: multiday,
-                presentAfternoon:
-                    absentAfternoon == null ? '♽' : absentAfternoon.toString(),
-                presentMorning:
-                    absentMorning == null ? '♽' : absentMorning.toString(),
+                presentAfternoon: attendanceCount!.afternoonAbsent.toString(),
+                presentMorning: attendanceCount!.morningAbsent.toString(),
               )
             ],
           ),
