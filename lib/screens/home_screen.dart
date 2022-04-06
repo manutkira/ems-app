@@ -137,7 +137,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
   void _goToCheckInScreen() {
     Navigator.of(context).push(
       CupertinoPageRoute(
-        builder: (context) => TakeAttendanceScreen(isOnline: isOnline),
+        builder: (context) => const TakeAttendanceScreen(),
       ),
     );
   }
@@ -275,7 +275,7 @@ class _HomeScreenAdminState extends ConsumerState<HomeScreenAdmin> {
       appBar: EMSAppBar(
         openDrawer: () => _scaffoldKey.currentState?.openDrawer(),
       ),
-      drawer: MenuDrawer(),
+      drawer: const MenuDrawer(),
       body: SafeArea(
         bottom: false,
         child: ListView(

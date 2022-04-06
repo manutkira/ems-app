@@ -11,12 +11,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRCodeScanner extends ConsumerStatefulWidget {
-  QRCodeScanner({Key? key, required this.isOnline}) : super(key: key);
-  bool isOnline;
+  const QRCodeScanner({Key? key}) : super(key: key);
 
   @override
   ConsumerState createState() => _QRCodeScannerState();
@@ -74,7 +74,8 @@ class _QRCodeScannerState extends ConsumerState<QRCodeScanner> {
 
     // registering record
     try {
-      if (widget.isOnline) {
+      bool isOnline = await InternetConnectionChecker().hasConnection;
+      if (isOnline) {
         // if online
         await _attService.createOneRecord(
           userId: attendance?.userId as int,

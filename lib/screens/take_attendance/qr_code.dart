@@ -48,8 +48,6 @@ class _QRCodeState extends ConsumerState<QRCode> {
         : 250.0;
 
     AppLocalizations? local = AppLocalizations.of(context);
-    // String type =
-    //     "${widget.type == AttendanceType.typeCheckIn ? local?.checkin : local?.checkout}";
 
     return Scaffold(
       appBar: AppBar(
@@ -87,11 +85,6 @@ class _QRCodeState extends ConsumerState<QRCode> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          // Text(
-                          //   '${user?.position ?? local?.employee}',
-                          //   style: const TextStyle(fontSize: 16),
-                          // ),
-                          // const SizedBox(height: 16),
                           Text(
                             'ID: ${user?.id}',
                             style: const TextStyle(fontSize: 16),
@@ -117,10 +110,6 @@ class _QRCodeState extends ConsumerState<QRCode> {
                 size: size,
               ),
             ),
-
-            // const SizedBox(height: 20),
-            // Text("${local?.scanToType(type)}"),
-            // const SizedBox(height: 20),
           ],
         ),
       ),

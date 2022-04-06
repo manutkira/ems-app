@@ -20,7 +20,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../constants.dart';
 
 class MenuDrawer extends ConsumerStatefulWidget {
-  MenuDrawer({Key? key}) : super(key: key);
+  const MenuDrawer({Key? key}) : super(key: key);
 
   @override
   ConsumerState createState() => _MenuDrawerState();

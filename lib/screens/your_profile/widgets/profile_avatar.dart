@@ -37,7 +37,7 @@ class ProfileAvatar extends ConsumerWidget {
               fit: BoxFit.cover,
               errorBuilder: (BuildContext _, Object __, StackTrace? ___) {
                 return Image.asset(
-                  "assets/images/bigprofile.png",
+                  "assets/images/profile-sample.png",
                   fit: BoxFit.cover,
                 );
               },

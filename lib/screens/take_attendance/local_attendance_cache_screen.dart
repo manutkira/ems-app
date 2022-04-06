@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class LocalAttendanceCacheScreen extends ConsumerStatefulWidget {
@@ -26,8 +27,9 @@ class _LocalAttendanceCacheScreenState
   Future<void> massUpload() async {
     AppLocalizations? local = AppLocalizations.of(context);
     var cache = await ref.read(localAttendanceCacheProvider).get();
+    bool isOnline = await InternetConnectionChecker().hasConnection;
 
-    if (cache.isEmpty) return;
+    if (cache.isEmpty || !isOnline) return;
 
     setState(() {
       isUploading = true;
