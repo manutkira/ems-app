@@ -16,7 +16,7 @@ class CustomCircleAvatar extends StatelessWidget {
           imageUrl.toString(),
           fit: BoxFit.cover,
           errorBuilder: (context, err, stk) {
-            return Image.asset('assets/images/bigprofile.png');
+            return Image.asset('assets/images/profile-sample.png');
           },
           // loadingBuilder: (context, err, stk) {
           //   return const Center(

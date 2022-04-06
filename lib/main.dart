@@ -78,14 +78,14 @@ class _MyAppState extends ConsumerState<MyApp> {
             locale: L10n.all[index],
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
+            title: 'Employee Portal',
             theme: themeData(context),
             home: ValueListenableBuilder(
               valueListenable:
                   ref.watch(currentUserProvider).currentUserListenable,
               builder: (BuildContext context, Box<User> box, Widget? child) {
                 final currentUserData = box.values.toList();
-                if (box.isEmpty || currentUserData[0].isEmpty) {
+                if (box.isEmpty || currentUserData.first.isEmpty) {
                   return const LoginScreen();
                 }
                 if (ref.read(currentUserProvider).isAdmin) {

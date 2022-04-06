@@ -9,11 +9,7 @@ import 'package:hive/hive.dart';
 import 'local_attendance_cache_screen.dart';
 
 class TakeAttendanceScreen extends ConsumerStatefulWidget {
-  TakeAttendanceScreen({
-    Key? key,
-    required this.isOnline,
-  }) : super(key: key);
-  bool isOnline;
+  const TakeAttendanceScreen({Key? key}) : super(key: key);
 
   @override
   ConsumerState createState() => _TakeAttendanceScreenState();
@@ -74,7 +70,7 @@ class _TakeAttendanceScreenState extends ConsumerState<TakeAttendanceScreen> {
         ],
       ),
       // body: const TestScanner(),
-      body: QRCodeScanner(isOnline: widget.isOnline),
+      body: const QRCodeScanner(),
     );
   }
 }
