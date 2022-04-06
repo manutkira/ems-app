@@ -29,19 +29,6 @@ class YourProfileViewScreen extends ConsumerWidget {
         title: Text(
           "${local?.myProfile}",
         ),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {
-        //       Navigator.push(
-        //         context,
-        //         CupertinoPageRoute(
-        //           builder: (context) => const YourProfileEditScreen(),
-        //         ),
-        //       );
-        //     },
-        //     icon: const Icon(Icons.edit_outlined),
-        //   ),
-        // ],
       ),
       body: ValueListenableBuilder(
         valueListenable: ref.watch(currentUserProvider).currentUserListenable,
@@ -98,12 +85,14 @@ class YourProfileViewScreen extends ConsumerWidget {
                   const SizedBox(
                     height: 40,
                   ),
+
                   // basic info heading
                   Text(
                     "${local?.basicInfo}",
                     style: _sectionTitleStyle,
                   ),
                   _buildSpacer(context),
+
                   // name
                   BaselineRow(
                     children: [
@@ -122,6 +111,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
+
                   // phone number
                   BaselineRow(
                     children: [
@@ -140,6 +130,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
+
                   // email
                   BaselineRow(
                     children: [
@@ -163,6 +154,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
+
                   // address
                   BaselineRow(
                     children: [
@@ -181,6 +173,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
+
                   // account type (role)
                   BaselineRow(
                     children: [
@@ -199,6 +192,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
+
                   // national id
                   Text(
                     "${local?.nationalId}",
@@ -226,6 +220,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     style: _sectionTitleStyle,
                   ),
                   _buildSpacer(context),
+
                   // salary
                   BaselineRow(
                     children: [
@@ -245,6 +240,7 @@ class YourProfileViewScreen extends ConsumerWidget {
                     ],
                   ),
                   _buildSpacer(context),
+
                   // work background
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

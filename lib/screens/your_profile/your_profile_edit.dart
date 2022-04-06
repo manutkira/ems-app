@@ -19,7 +19,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class UserImageType {
   static String get id => "image_id";
-
   static String get profile => "image";
 }
 
@@ -52,7 +51,7 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
     });
   }
 
-  /// confirm password using authservice
+  /// confirm password using auth service
   /// returns boolean
   Future<bool> confirmPassword() async {
     if (oldPassword.isEmpty) {
@@ -67,10 +66,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
         _user.id as int,
         oldPassword,
       );
-      // bool isVerified = await _authService.verify(
-      //   _user.id as int,
-      //   oldPassword,
-      // );
       return isVerified;
     } catch (err) {
       setState(() {
@@ -670,7 +665,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              // insetPadding: const EdgeInsets.all(10),
               title: Text("${local?.confirmation}"),
               content: SizedBox(
                 width: _size.width * 0.8,
@@ -707,7 +701,6 @@ class _YourProfileEditScreenState extends ConsumerState<YourProfileEditScreen> {
                   ],
                 ),
               ),
-
               actions: [
                 Visibility(
                   visible: loading,
