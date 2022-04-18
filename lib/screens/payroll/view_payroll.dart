@@ -106,6 +106,10 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                     const SizedBox(
                       height: 10,
                     ),
+                    _subtotal(local),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     _netSalary(local),
                     isAdmin ? _payBtn(context, local) : Container()
                   ],
@@ -136,7 +140,7 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
                         actions: [
                           OutlineButton(
                             onPressed: () async {
-                              await updateStatus(payroll!.loan.toString());
+                              await updateStatus(payroll!.repay.toString());
                               Navigator.of(context).pop();
                               fetchPayrollById();
                             },
@@ -188,6 +192,31 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
     );
   }
 
+// subtotal of an employee
+  Padding _subtotal(AppLocalizations? local) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 18, right: 25, top: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '${local?.subtotal}',
+            style: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            '\$${payroll?.subtotal}',
+            style: const TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 // loan that employee has to pay back
   Padding _loan(AppLocalizations? local) {
     return Padding(
@@ -196,14 +225,14 @@ class _ViewPayrollScreenState extends ConsumerState<ViewPayrollScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${local?.loan}',
+            '${local?.repay}(\$${payroll?.loanTotal})',
             style: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w600,
             ),
           ),
           // payroll!.status!
-          Text('\$${payroll!.loan.toString()}')
+          Text('\$${payroll!.repay.toString()}')
           //  AnimatedContainer(
           //     duration: const Duration(milliseconds: 400),
           //     width: _isfolded ? 76 : 120,

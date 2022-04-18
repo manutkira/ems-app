@@ -1070,6 +1070,10 @@
   "@netSalary": {
     "description": "payment"
   },
+  "subtotal": "subtotal",
+  "@subtotal": {
+    "description": "home screen"
+  },
   "input": "Input",
   "@input": {
     "description": "payment"
@@ -1214,13 +1218,9 @@
   "@attendanceAndOvertime": {
     "description": "home screen"
   },
-  "attendanceSummary": "Attendance Statistics Month: {monthNumber}",
+  
+  "attendanceSummary": "Attendance Summary",
   "@attendanceSummary": {
-    "description": "home screen",
-    "placeholders": {
-      "monthNumber": {
-        "monthNumber": "Int"
-      }
-    }
+    "description": "home screen"
   }
 }

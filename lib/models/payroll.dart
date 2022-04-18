@@ -10,7 +10,9 @@ class Payroll {
   double? dayOfWork;
   Duration? overtime;
   double? salary;
-  double? loan;
+  double? subtotal;
+  double? repay;
+  double? loanTotal;
   double? netSalary;
 
   Payroll({
@@ -23,7 +25,9 @@ class Payroll {
     this.dayOfWork,
     this.overtime,
     this.salary,
-    this.loan,
+    this.subtotal,
+    this.repay,
+    this.loanTotal,
     this.netSalary,
   });
 
@@ -37,7 +41,9 @@ class Payroll {
     double? dayOfWork,
     Duration? overtime,
     double? salary,
-    double? loan,
+    double? subtotal,
+    double? repay,
+    double? loanTotal,
     double? netSalary,
   }) =>
       Payroll(
@@ -50,7 +56,9 @@ class Payroll {
         dayOfWork: dayOfWork ?? this.dayOfWork,
         overtime: overtime ?? this.overtime,
         salary: salary ?? this.salary,
-        loan: loan ?? this.loan,
+        subtotal: subtotal ?? this.subtotal,
+        repay: repay ?? this.repay,
+        loanTotal: loanTotal ?? this.loanTotal,
         netSalary: netSalary ?? this.netSalary,
       );
 
@@ -64,7 +72,9 @@ class Payroll {
         dayOfWork: doubleParse(json?['day_of_work']),
         overtime: convertStringToDuration(json?['overtime']),
         salary: doubleParse(json?['salary']),
-        loan: doubleParse(json?['loan']),
+        subtotal: doubleParse(json?['subtotal']),
+        repay: doubleParse(json?['repay']),
+        loanTotal: doubleParse(json?['loan_total']),
         netSalary: doubleParse(json?['netsalary']),
       );
 
@@ -79,7 +89,9 @@ class Payroll {
       "day_of_work": dayOfWork,
       "overtime": convertDurationToString(overtime),
       "salary": salary,
-      "loan": loan,
+      "subtotal": subtotal,
+      "repay": repay,
+      "loan_total": loanTotal,
       "netsalary": netSalary,
     };
   }
