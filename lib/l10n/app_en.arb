@@ -1218,9 +1218,13 @@
   "@attendanceAndOvertime": {
     "description": "home screen"
   },
-  
-  "attendanceSummary": "Attendance Summary",
+  "attendanceSummary": "Attendance Statistics Month: {monthNumber}",
   "@attendanceSummary": {
-    "description": "home screen"
+    "description": "home screen",
+    "placeholders": {
+      "monthNumber": {
+        "monthNumber": "Int"
+      }
+    }
   }
 }
