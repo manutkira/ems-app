@@ -230,7 +230,7 @@ class _EmployeeInfoScreenState extends State<EmployeeInfoScreen>
                   Container(
                     margin: const EdgeInsets.only(top: 10),
                     padding: const EdgeInsets.only(
-                        top: 10, bottom: 10, right: 16, left: 30),
+                        top: 10, bottom: 10, right: 9, left: 30),
                     width: MediaQuery.of(context).size.width * 0.9,
                     decoration: BoxDecoration(
                       color: kDarkestBlue,

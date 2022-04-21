@@ -377,79 +377,76 @@ class _PayrollListScreenState extends State<PayrollListScreen> {
             const SizedBox(
               width: 10,
             ),
-            SizedBox(
-              width: 255,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BaselineRow(
-                        children: [
-                          Text(
-                            '${local?.name}: ',
-                            style: TextStyle(
-                              fontSize: isEnglish ? 15 : 15,
-                            ),
-                          ),
-                          SizedBox(
-                            width: isEnglish ? 2 : 4,
-                          ),
-                          SizedBox(
-                            width: 140,
-                            child: Text(
-                              userList[index].name.toString(),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: isEnglish ? 10 : 0,
-                      ),
-                      BaselineRow(
-                        children: [
-                          Text('${local?.id}: ',
-                              style: TextStyle(
-                                fontSize: isEnglish ? 15 : 15,
-                              )),
-                          const SizedBox(
-                            width: 1,
-                          ),
-                          Text(userList[index].id.toString()),
-                        ],
-                      )
-                    ],
-                  ),
-                  PopupMenuButton(
-                    color: kDarkestBlue,
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    onSelected: (int selectedValue) async {
-                      if (selectedValue == 0) {
-                        int id = userList[index].id as int;
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => GeneratePaymentScreen(id: id),
-                          ),
-                        );
-                      }
-                    },
-                    itemBuilder: (_) => [
-                      PopupMenuItem(
-                        child: Text(
-                          '${local?.optionView}',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BaselineRow(
+                      children: [
+                        Text(
+                          '${local?.name}: ',
                           style: TextStyle(
-                            fontSize: isEnglish ? 15 : 16,
+                            fontSize: isEnglish ? 15 : 15,
                           ),
                         ),
-                        value: 0,
+                        SizedBox(
+                          width: isEnglish ? 2 : 4,
+                        ),
+                        SizedBox(
+                          width: 140,
+                          child: Text(
+                            userList[index].name.toString(),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: isEnglish ? 10 : 0,
+                    ),
+                    BaselineRow(
+                      children: [
+                        Text('${local?.id}: ',
+                            style: TextStyle(
+                              fontSize: isEnglish ? 15 : 15,
+                            )),
+                        const SizedBox(
+                          width: 1,
+                        ),
+                        Text(userList[index].id.toString()),
+                      ],
+                    )
+                  ],
+                ),
+                PopupMenuButton(
+                  color: kDarkestBlue,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  onSelected: (int selectedValue) async {
+                    if (selectedValue == 0) {
+                      int id = userList[index].id as int;
+                      await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => GeneratePaymentScreen(id: id),
+                        ),
+                      );
+                    }
+                  },
+                  itemBuilder: (_) => [
+                    PopupMenuItem(
+                      child: Text(
+                        '${local?.optionView}',
+                        style: TextStyle(
+                          fontSize: isEnglish ? 15 : 16,
+                        ),
                       ),
-                    ],
-                    icon: const Icon(Icons.more_vert),
-                  )
-                ],
-              ),
+                      value: 0,
+                    ),
+                  ],
+                  icon: const Icon(Icons.more_vert),
+                )
+              ],
             ),
           ],
         ),

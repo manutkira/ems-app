@@ -386,175 +386,171 @@ class _EmployeeListState extends State<EmployeeList> {
             const SizedBox(
               width: 10,
             ),
-            SizedBox(
-              width: 245,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => EmployeeInfoScreen(
-                                  id: userDisplay[index].id as int)));
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => EmployeeInfoScreen(
+                                id: userDisplay[index].id as int)));
+                    userDisplay = [];
+                    user = [];
+                    fetchData();
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BaselineRow(
+                        children: [
+                          Text(
+                            '${local?.name}: ',
+                            style: TextStyle(
+                              fontSize: isEnglish ? 15 : 15,
+                            ),
+                          ),
+                          SizedBox(
+                            width: isEnglish ? 2 : 4,
+                          ),
+                          SizedBox(
+                            width: 140,
+                            child: Text(
+                              userDisplay[index].name.toString(),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: isEnglish ? 10 : 0,
+                      ),
+                      BaselineRow(
+                        children: [
+                          Text('${local?.id}: ',
+                              style: TextStyle(
+                                fontSize: isEnglish ? 15 : 15,
+                              )),
+                          const SizedBox(
+                            width: 1,
+                          ),
+                          Text(userDisplay[index].id.toString()),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                PopupMenuButton(
+                  color: kDarkestBlue,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  onSelected: (int selectedValue) async {
+                    if (selectedValue == 1) {
+                      int id = userDisplay[index].id as int;
+                      String name = userDisplay[index].name.toString();
+                      String phone = userDisplay[index].phone.toString();
+                      String email = userDisplay[index].email.toString();
+                      String address = userDisplay[index].address.toString();
+                      // String position =
+                      //     userDisplay[index].position.toString();
+                      // String skill = userDisplay[index].skill.toString();
+                      String salary = userDisplay[index].salary.toString();
+                      String role = userDisplay[index].role.toString();
+                      String status = userDisplay[index].status.toString();
+                      // String rate = userDisplay[index].rate.toString();
+                      String background =
+                          userDisplay[index].background.toString();
+                      String image = userDisplay[index].image.toString();
+                      String imageId = userDisplay[index].imageId.toString();
+                      await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => EmployeeEditScreen(
+                              id,
+                              name,
+                              phone,
+                              email,
+                              address,
+                              "position",
+                              "skill",
+                              salary,
+                              role,
+                              status,
+                              "rate",
+                              background,
+                              image,
+                              imageId)));
+                      fetchData();
+                    }
+                    if (selectedValue == 0) {
+                      int id = userDisplay[index].id as int;
+                      await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => EmployeeInfoScreen(id: id),
+                      ));
                       userDisplay = [];
                       user = [];
                       fetchData();
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        BaselineRow(
-                          children: [
-                            Text(
-                              '${local?.name}: ',
-                              style: TextStyle(
-                                fontSize: isEnglish ? 15 : 15,
-                              ),
+                    }
+                    if (selectedValue == 2) {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: Text('${local?.areYouSure}'),
+                          content: Text('${local?.cannotUndone}'),
+                          actions: [
+                            // ignore: deprecated_member_use
+                            OutlineButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                deleteData(userDisplay[index].id as int);
+                                // showInSnackBar('Deleting');
+                              },
+                              child: Text('${local?.yes}'),
+                              borderSide: const BorderSide(color: Colors.green),
                             ),
-                            SizedBox(
-                              width: isEnglish ? 2 : 4,
-                            ),
-                            SizedBox(
-                              width: 140,
-                              child: Text(
-                                userDisplay[index].name.toString(),
-                              ),
-                            ),
+                            // ignore: deprecated_member_use
+                            OutlineButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              borderSide: const BorderSide(color: Colors.red),
+                              child: Text('${local?.no}'),
+                            )
                           ],
                         ),
-                        SizedBox(
-                          height: isEnglish ? 10 : 0,
+                      );
+                    }
+                  },
+                  itemBuilder: (_) => [
+                    PopupMenuItem(
+                      child: Text(
+                        '${local?.info}',
+                        style: TextStyle(
+                          fontSize: isEnglish ? 15 : 16,
                         ),
-                        BaselineRow(
-                          children: [
-                            Text('${local?.id}: ',
-                                style: TextStyle(
-                                  fontSize: isEnglish ? 15 : 15,
-                                )),
-                            const SizedBox(
-                              width: 1,
-                            ),
-                            Text(userDisplay[index].id.toString()),
-                          ],
-                        )
-                      ],
+                      ),
+                      value: 0,
                     ),
-                  ),
-                  PopupMenuButton(
-                    color: kDarkestBlue,
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                    onSelected: (int selectedValue) async {
-                      if (selectedValue == 1) {
-                        int id = userDisplay[index].id as int;
-                        String name = userDisplay[index].name.toString();
-                        String phone = userDisplay[index].phone.toString();
-                        String email = userDisplay[index].email.toString();
-                        String address = userDisplay[index].address.toString();
-                        // String position =
-                        //     userDisplay[index].position.toString();
-                        // String skill = userDisplay[index].skill.toString();
-                        String salary = userDisplay[index].salary.toString();
-                        String role = userDisplay[index].role.toString();
-                        String status = userDisplay[index].status.toString();
-                        // String rate = userDisplay[index].rate.toString();
-                        String background =
-                            userDisplay[index].background.toString();
-                        String image = userDisplay[index].image.toString();
-                        String imageId = userDisplay[index].imageId.toString();
-                        await Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => EmployeeEditScreen(
-                                id,
-                                name,
-                                phone,
-                                email,
-                                address,
-                                "position",
-                                "skill",
-                                salary,
-                                role,
-                                status,
-                                "rate",
-                                background,
-                                image,
-                                imageId)));
-                        fetchData();
-                      }
-                      if (selectedValue == 0) {
-                        int id = userDisplay[index].id as int;
-                        await Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => EmployeeInfoScreen(id: id),
-                        ));
-                        userDisplay = [];
-                        user = [];
-                        fetchData();
-                      }
-                      if (selectedValue == 2) {
-                        showDialog(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: Text('${local?.areYouSure}'),
-                            content: Text('${local?.cannotUndone}'),
-                            actions: [
-                              // ignore: deprecated_member_use
-                              OutlineButton(
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                  deleteData(userDisplay[index].id as int);
-                                  // showInSnackBar('Deleting');
-                                },
-                                child: Text('${local?.yes}'),
-                                borderSide:
-                                    const BorderSide(color: Colors.green),
-                              ),
-                              // ignore: deprecated_member_use
-                              OutlineButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                borderSide: const BorderSide(color: Colors.red),
-                                child: Text('${local?.no}'),
-                              )
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                    itemBuilder: (_) => [
-                      PopupMenuItem(
-                        child: Text(
-                          '${local?.info}',
-                          style: TextStyle(
-                            fontSize: isEnglish ? 15 : 16,
-                          ),
+                    PopupMenuItem(
+                      child: Text(
+                        '${local?.edit}',
+                        style: TextStyle(
+                          fontSize: isEnglish ? 15 : 16,
                         ),
-                        value: 0,
                       ),
-                      PopupMenuItem(
-                        child: Text(
-                          '${local?.edit}',
-                          style: TextStyle(
-                            fontSize: isEnglish ? 15 : 16,
-                          ),
+                      value: 1,
+                    ),
+                    PopupMenuItem(
+                      child: Text(
+                        '${local?.delete}',
+                        style: TextStyle(
+                          fontSize: isEnglish ? 15 : 16,
                         ),
-                        value: 1,
                       ),
-                      PopupMenuItem(
-                        child: Text(
-                          '${local?.delete}',
-                          style: TextStyle(
-                            fontSize: isEnglish ? 15 : 16,
-                          ),
-                        ),
-                        value: 2,
-                      ),
-                    ],
-                    icon: const Icon(Icons.more_vert),
-                  )
-                ],
-              ),
+                      value: 2,
+                    ),
+                  ],
+                  icon: const Icon(Icons.more_vert),
+                )
+              ],
             ),
           ],
         ),

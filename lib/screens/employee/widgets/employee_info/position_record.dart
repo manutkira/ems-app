@@ -716,71 +716,70 @@ class _TestPositionState extends State<TestPosition> {
   ) {
     return Padding(
       padding: const EdgeInsets.only(left: 130.0),
-      child: Card(
+      child: Container(
+        padding: const EdgeInsets.all(5),
         margin: const EdgeInsets.all(20.0),
-        child: Container(
-          width: 200,
-          height: 110.0,
-          decoration: BoxDecoration(
-            color: kDarkestBlue,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  positionsDisplay[index].name.toString(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+        width: 200,
+        height: 125.0,
+        decoration: BoxDecoration(
+          color: kDarkestBlue,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                positionsDisplay[index].name.toString(),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${local.from}:',
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${local.from}:',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Text(
+                        DateFormat('dd-MM-yyyy').format(startDate!),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Text(
-                          DateFormat('dd-MM-yyyy').format(startDate!),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: isEnglish ? 8 : 0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${local.to}:',
+              ),
+              SizedBox(
+                height: isEnglish ? 8 : 0,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${local.to}:',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Text(
+                        endDate == null
+                            ? local.now
+                            : DateFormat('dd-MM-yyyy')
+                                .format(endDate as DateTime),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Text(
-                          endDate == null
-                              ? local.now
-                              : DateFormat('dd-MM-yyyy')
-                                  .format(endDate as DateTime),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -1185,7 +1184,7 @@ class _TestPositionState extends State<TestPosition> {
 // profile image with name and id
   Padding _profileImgAndNameID(BuildContext context, AppLocalizations local) {
     return Padding(
-      padding: const EdgeInsets.only(left: 19, right: 20, bottom: 20),
+      padding: const EdgeInsets.only(left: 19, right: 12, bottom: 20),
       child: Container(
         margin: const EdgeInsets.only(top: 0),
         padding:

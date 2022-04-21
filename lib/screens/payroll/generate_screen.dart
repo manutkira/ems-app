@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:math';
+
 import 'package:ems/models/payroll.dart';
 import 'package:ems/models/user.dart';
 import 'package:ems/persistence/current_user.dart';
@@ -182,143 +184,146 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
   }
 
 // tabview and has payment info
-  Container _tabviewAndPaymentInfo(
+  Expanded _tabviewAndPaymentInfo(
       AppLocalizations? local, bool isEnglish, bool isAdmin) {
-    return Container(
-      height: 530,
-      margin: const EdgeInsets.only(top: 0),
-      width: double.infinity,
+    return Expanded(
       child: Container(
-        decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            gradient: LinearGradient(
-              colors: [
-                kDarkestBlue,
-                color,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            )),
-        child: SizedBox(
-          height: 100,
-          child: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _tabController,
-            children: [
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: Text(
-                          '${local?.pendingList}',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  payrollPending.isEmpty
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 90,
-                                ),
-                                Text(
-                                  '${local?.noPayment}',
-                                  style:
-                                      isEnglish ? kHeadingThree : kHeadingFour,
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  '🤷🏼',
-                                  style: kHeadingTwo.copyWith(
-                                    fontSize: 50,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                      : Expanded(
-                          child: ListView.builder(
-                          physics: const ClampingScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            new_model.Payment record = payrollPending[index];
-                            return _buildPayment(
-                                context, record, isAdmin, index);
-                          },
-                          itemCount: payrollPending.length,
-                        )),
-                ],
+        margin: const EdgeInsets.only(top: 0),
+        width: double.infinity,
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
               ),
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Row(
+              gradient: LinearGradient(
+                colors: [
+                  kDarkestBlue,
+                  color,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              )),
+          child: SizedBox(
+            height: 100,
+            child: TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                Column(
+                  children: [
+                    Row(
                       children: [
-                        Text(
-                          '${local?.paidList}',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
+                        Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Text(
+                            '${local?.pendingList}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  payrollPaid.isEmpty
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 90,
-                                ),
-                                Text(
-                                  '${local?.noPaidPayment}',
-                                  style:
-                                      isEnglish ? kHeadingThree : kHeadingFour,
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  '🤷🏼',
-                                  style: kHeadingTwo.copyWith(fontSize: 50),
-                                )
-                              ],
+                    payrollPending.isEmpty
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
+                                  Text(
+                                    '${local?.noPayment}',
+                                    style: isEnglish
+                                        ? kHeadingThree
+                                        : kHeadingFour,
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    '🤷🏼',
+                                    style: kHeadingTwo.copyWith(
+                                      fontSize: 50,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        : Expanded(
+                            child: ListView.builder(
+                            physics: const ClampingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              new_model.Payment record = payrollPending[index];
+                              return _buildPayment(
+                                  context, record, isAdmin, index);
+                            },
+                            itemCount: payrollPending.length,
+                          )),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            '${local?.paidList}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
-                        )
-                      : Expanded(
-                          child: ListView.builder(
-                          physics: const ClampingScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            new_model.Payment record = payrollPaid[index];
-                            return _buildPayment(
-                                context, record, isAdmin, index);
-                          },
-                          itemCount: payrollPaid.length,
-                        )),
-                ],
-              ),
-            ],
+                        ],
+                      ),
+                    ),
+                    payrollPaid.isEmpty
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 90,
+                                  ),
+                                  Text(
+                                    '${local?.noPaidPayment}',
+                                    style: isEnglish
+                                        ? kHeadingThree
+                                        : kHeadingFour,
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    '🤷🏼',
+                                    style: kHeadingTwo.copyWith(fontSize: 50),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        : Expanded(
+                            child: ListView.builder(
+                            physics: const ClampingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              new_model.Payment record = payrollPaid[index];
+                              return _buildPayment(
+                                  context, record, isAdmin, index);
+                            },
+                            itemCount: payrollPaid.length,
+                          )),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -665,7 +670,7 @@ class _GeneratePaymentScreenState extends ConsumerState<GeneratePaymentScreen>
           dateFrom: dateFrom, dateTo: dateTo);
       Navigator.pop(context);
     } catch (err) {
-      rethrow;
+      Navigator.pop(context);
     }
   }
 }

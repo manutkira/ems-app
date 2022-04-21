@@ -241,10 +241,11 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
   }
 
 // tabview with loan information
-  Container _tabviewAndLoanInfo(AppLocalizations? local, bool isEnglish,
+  Expanded _tabviewAndLoanInfo(AppLocalizations? local, bool isEnglish,
       BuildContext context, bool isAdmin) {
-    return Container(
-        height: !isFilterExpanded ? 513 : 353,
+    return Expanded(
+      child: Container(
+        // height: !isFilterExpanded ? 513 : 353,
         margin: const EdgeInsets.only(top: 0),
         width: double.infinity,
         child: Container(
@@ -319,83 +320,86 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                           )
                         : Expanded(
                             child: ListView.builder(
-                            itemBuilder: (context, index) {
-                              return ExpansionTile(
-                                collapsedBackgroundColor:
-                                    const Color(0xff254973),
-                                backgroundColor: const Color(0xff254973),
-                                textColor: Colors.white,
-                                iconColor: Colors.white,
-                                initiallyExpanded: index == 0,
-                                title: Text(
-                                  DateFormat('dd/MM/yyyy')
-                                      .format(loans[index].datePaid!),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                children: [
-                                  Container(
-                                    color: Colors.black38,
-                                    padding: const EdgeInsets.only(
-                                        top: 10,
-                                        left: 15,
-                                        right: 15,
-                                        bottom: 15),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text('Ref no'),
-                                            Text(
-                                              loans[index].refNo.toString(),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text('Date Paid'),
-                                            Text(
-                                              DateFormat('dd/MM/yyyy').format(
-                                                  loans[index].datePaid!),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text('Repaid Amount'),
-                                            Text(
-                                              '\$${loans[index].loan!}',
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                              itemBuilder: (context, index) {
+                                return ExpansionTile(
+                                  collapsedBackgroundColor:
+                                      const Color(0xff254973),
+                                  backgroundColor: const Color(0xff254973),
+                                  textColor: Colors.white,
+                                  iconColor: Colors.white,
+                                  initiallyExpanded: index == 0,
+                                  title: Text(
+                                    DateFormat('dd/MM/yyyy')
+                                        .format(loans[index].datePaid!),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
                                     ),
-                                  )
-                                ],
-                              );
-                            },
-                            itemCount: loans.length,
-                          ))
+                                  ),
+                                  children: [
+                                    Container(
+                                      color: Colors.black38,
+                                      padding: const EdgeInsets.only(
+                                          top: 10,
+                                          left: 15,
+                                          right: 15,
+                                          bottom: 15),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text('Ref no'),
+                                              Text(
+                                                loans[index].refNo.toString(),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text('Date Paid'),
+                                              Text(
+                                                DateFormat('dd/MM/yyyy').format(
+                                                    loans[index].datePaid!),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text('Repaid Amount'),
+                                              Text(
+                                                '\$${loans[index].loan!}',
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                );
+                              },
+                              itemCount: loans.length,
+                            ),
+                          ),
                   ],
                 ),
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
 // tabview title/name
@@ -714,7 +718,7 @@ class _LoanRecordState extends ConsumerState<LoanRecord>
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
-                          left: 25, right: 15, bottom: 15),
+                          left: 15, right: 15, bottom: 15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
