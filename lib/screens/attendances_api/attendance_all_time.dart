@@ -361,288 +361,285 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
       child: SizedBox(
         width: double.infinity,
         child: Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(100)),
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.white,
-                  )),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(150),
-                child: userDisplay[index].image == null
-                    ? Image.asset(
-                        'assets/images/profile-icon-png-910.png',
-                        width: 60,
-                      )
-                    : Image.network(
-                        userDisplay[index].image.toString(),
-                        fit: BoxFit.cover,
-                        width: 60,
-                        height: 70,
-                      ),
-              ),
+            Row(
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(100)),
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.white,
+                      )),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(150),
+                    child: userDisplay[index].image == null
+                        ? Image.asset(
+                            'assets/images/profile-icon-png-910.png',
+                            width: 60,
+                          )
+                        : Image.network(
+                            userDisplay[index].image.toString(),
+                            fit: BoxFit.cover,
+                            width: 60,
+                            height: 70,
+                          ),
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BaselineRow(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                          child: Text('${local?.name}: '),
+                        ),
+                        Text(
+                          userDisplay[index].name.length >= 13
+                              ? '${userDisplay[index].name.substring(0, 8).toString()}...'
+                              : userDisplay[index]
+                                  .name
+                                  // .substring(
+                                  //     userDisplay[index].name.length - 7)
+                                  .toString(),
+                        ),
+                      ],
+                    ),
+                    BaselineRow(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                          child: Text('${local?.id}: '),
+                        ),
+                        Text(userDisplay[index].id.toString()),
+                      ],
+                    )
+                  ],
+                ),
+              ],
             ),
             const SizedBox(
               width: 10,
             ),
-            SizedBox(
-              width: 270,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BaselineRow(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
-                            child: Text('${local?.name}: '),
-                          ),
-                          Text(
-                            userDisplay[index].name.length >= 13
-                                ? '${userDisplay[index].name.substring(0, 8).toString()}...'
-                                : userDisplay[index]
-                                    .name
-                                    // .substring(
-                                    //     userDisplay[index].name.length - 7)
-                                    .toString(),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      BaselineRow(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
-                            child: Text('${local?.id}: '),
-                          ),
-                          Text(userDisplay[index].id.toString()),
-                        ],
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Column(
-                        children: [
-                          BaselineRow(
-                            children: [
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
-                                child: Text('${local?.shortPresent}: '),
-                              ),
-                              total
-                                  ? Text((attsList
-                                              .where(
-                                                (element) =>
-                                                    element.userId ==
-                                                        userDisplay[index].id &&
-                                                    element.t3 != null &&
-                                                    checkPresengetT2(
-                                                        element.t3),
-                                              )
-                                              .length +
-                                          attsList
-                                              .where(
-                                                (element) =>
-                                                    element.userId ==
-                                                        userDisplay[index].id &&
-                                                    element.t1 != null &&
-                                                    checkPresent(element.t1),
-                                              )
-                                              .length)
-                                      .toString())
-                                  : afternoon
-                                      ? Text(attsList
-                                          .where(
-                                            (element) =>
-                                                element.userId ==
-                                                    userDisplay[index].id &&
-                                                element.t3 != null &&
-                                                checkPresengetT2(element.t3),
-                                          )
-                                          .length
-                                          .toString())
-                                      : Text(attsList
-                                          .where(
-                                            (element) =>
-                                                element.userId ==
-                                                    userDisplay[index].id &&
-                                                element.t1 != null &&
-                                                checkPresent(element.t1),
-                                          )
-                                          .length
-                                          .toString()),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          BaselineRow(
-                            children: [
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
-                                child: Text('${local?.shortAbsent}: '),
-                              ),
-                              total
-                                  ? Text((attsList
-                                              .where((element) =>
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Column(
+                      children: [
+                        BaselineRow(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                              child: Text('${local?.shortPresent}: '),
+                            ),
+                            total
+                                ? Text((attsList
+                                            .where(
+                                              (element) =>
                                                   element.userId ==
                                                       userDisplay[index].id &&
                                                   element.t3 != null &&
-                                                  checkAbsengetT2(element.t3))
-                                              .length +
-                                          attsList
-                                              .where((element) =>
+                                                  checkPresengetT2(element.t3),
+                                            )
+                                            .length +
+                                        attsList
+                                            .where(
+                                              (element) =>
                                                   element.userId ==
                                                       userDisplay[index].id &&
                                                   element.t1 != null &&
-                                                  checkAbsengetT1(element.t1))
-                                              .length)
-                                      .toString())
-                                  : afternoon
-                                      ? Text(
-                                          attsList
-                                              .where((element) =>
-                                                  element.userId ==
-                                                      userDisplay[index].id &&
-                                                  element.t3 != null &&
-                                                  checkAbsengetT2(element.t3))
-                                              .length
-                                              .toString(),
-                                        )
-                                      : Text(
-                                          attsList
-                                              .where((element) =>
-                                                  element.userId ==
-                                                      userDisplay[index].id &&
-                                                  element.t1 != null &&
-                                                  checkAbsengetT1(element.t1))
-                                              .length
-                                              .toString(),
-                                        ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          BaselineRow(
-                            children: [
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
-                                child: Text('${local?.shortLate}: '),
-                              ),
-                              total
-                                  ? Text((attsList
-                                              .where((element) =>
-                                                  element.userId ==
-                                                      userDisplay[index].id &&
-                                                  element.t3 != null &&
-                                                  checkLate2(element.t3))
-                                              .length +
-                                          attsList
-                                              .where((element) =>
-                                                  element.userId ==
-                                                      userDisplay[index].id &&
-                                                  element.t1 != null &&
-                                                  checkLate1(element.t1))
-                                              .length)
-                                      .toString())
-                                  : afternoon
-                                      ? Text(attsList
-                                          .where((element) =>
+                                                  checkPresent(element.t1),
+                                            )
+                                            .length)
+                                    .toString())
+                                : afternoon
+                                    ? Text(attsList
+                                        .where(
+                                          (element) =>
                                               element.userId ==
                                                   userDisplay[index].id &&
                                               element.t3 != null &&
-                                              checkLate2(element.t3))
-                                          .length
-                                          .toString())
-                                      : Text(
-                                          attsList
-                                              .where((element) =>
-                                                  element.userId ==
-                                                      userDisplay[index].id &&
-                                                  element.t1 != null &&
-                                                  checkLate1(element.t1))
-                                              .length
-                                              .toString(),
-                                        ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          BaselineRow(
-                            children: [
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(top: isEnglish ? 0 : 3),
-                                child: Text('${local?.shortPermission}: '),
-                              ),
-                              total
-                                  ? Text((attsList
-                                              .where((element) =>
-                                                  element.userId ==
-                                                      userDisplay[index].id &&
-                                                  element.t3 != null &&
-                                                  checkPermissiongetT2(
-                                                      element.t3))
-                                              .length +
-                                          attsList
-                                              .where((element) =>
+                                              checkPresengetT2(element.t3),
+                                        )
+                                        .length
+                                        .toString())
+                                    : Text(attsList
+                                        .where(
+                                          (element) =>
+                                              element.userId ==
+                                                  userDisplay[index].id &&
+                                              element.t1 != null &&
+                                              checkPresent(element.t1),
+                                        )
+                                        .length
+                                        .toString()),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        BaselineRow(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                              child: Text('${local?.shortAbsent}: '),
+                            ),
+                            total
+                                ? Text((attsList
+                                            .where((element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                element.t3 != null &&
+                                                checkAbsengetT2(element.t3))
+                                            .length +
+                                        attsList
+                                            .where((element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                element.t1 != null &&
+                                                checkAbsengetT1(element.t1))
+                                            .length)
+                                    .toString())
+                                : afternoon
+                                    ? Text(
+                                        attsList
+                                            .where((element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                element.t3 != null &&
+                                                checkAbsengetT2(element.t3))
+                                            .length
+                                            .toString(),
+                                      )
+                                    : Text(
+                                        attsList
+                                            .where((element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                element.t1 != null &&
+                                                checkAbsengetT1(element.t1))
+                                            .length
+                                            .toString(),
+                                      ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BaselineRow(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                              child: Text('${local?.shortLate}: '),
+                            ),
+                            total
+                                ? Text((attsList
+                                            .where((element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                element.t3 != null &&
+                                                checkLate2(element.t3))
+                                            .length +
+                                        attsList
+                                            .where((element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                element.t1 != null &&
+                                                checkLate1(element.t1))
+                                            .length)
+                                    .toString())
+                                : afternoon
+                                    ? Text(attsList
+                                        .where((element) =>
+                                            element.userId ==
+                                                userDisplay[index].id &&
+                                            element.t3 != null &&
+                                            checkLate2(element.t3))
+                                        .length
+                                        .toString())
+                                    : Text(
+                                        attsList
+                                            .where((element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                element.t1 != null &&
+                                                checkLate1(element.t1))
+                                            .length
+                                            .toString(),
+                                      ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        BaselineRow(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: isEnglish ? 0 : 3),
+                              child: Text('${local?.shortPermission}: '),
+                            ),
+                            total
+                                ? Text((attsList
+                                            .where((element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                element.t3 != null &&
+                                                checkPermissiongetT2(
+                                                    element.t3))
+                                            .length +
+                                        attsList
+                                            .where((element) =>
+                                                element.userId ==
+                                                    userDisplay[index].id &&
+                                                element.t1 != null &&
+                                                checkPermissiongetT1(
+                                                    element.t1))
+                                            .length)
+                                    .toString())
+                                : afternoon
+                                    ? Text(attsList
+                                        .where((element) =>
+                                            element.userId ==
+                                                userDisplay[index].id &&
+                                            element.t3 != null &&
+                                            checkPermissiongetT2(element.t3))
+                                        .length
+                                        .toString())
+                                    : Text(
+                                        attsList
+                                            .where(
+                                              (element) =>
                                                   element.userId ==
                                                       userDisplay[index].id &&
                                                   element.t1 != null &&
                                                   checkPermissiongetT1(
-                                                      element.t1))
-                                              .length)
-                                      .toString())
-                                  : afternoon
-                                      ? Text(attsList
-                                          .where((element) =>
-                                              element.userId ==
-                                                  userDisplay[index].id &&
-                                              element.t3 != null &&
-                                              checkPermissiongetT2(element.t3))
-                                          .length
-                                          .toString())
-                                      : Text(
-                                          attsList
-                                              .where(
-                                                (element) =>
-                                                    element.userId ==
-                                                        userDisplay[index].id &&
-                                                    element.t1 != null &&
-                                                    checkPermissiongetT1(
-                                                        element.t1),
-                                              )
-                                              .length
-                                              .toString(),
-                                        ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                                                      element.t1),
+                                            )
+                                            .length
+                                            .toString(),
+                                      ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              ],
             ),
           ],
         ),

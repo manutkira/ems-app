@@ -364,7 +364,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
               children: [
                 _searchBar(),
                 Container(
-                  padding: const EdgeInsets.only(top: 150),
+                  padding: const EdgeInsets.only(top: 50),
                   child: Column(
                     children: [
                       Text(
@@ -391,7 +391,7 @@ class _AttendanceByDayScreenState extends State<AttendanceByDayScreen> {
                   children: [
                     _searchBar(),
                     Container(
-                      padding: const EdgeInsets.only(top: 150),
+                      padding: const EdgeInsets.only(top: 50),
                       child: Column(
                         children: [
                           Text(

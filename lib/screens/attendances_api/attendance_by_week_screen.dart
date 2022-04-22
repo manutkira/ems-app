@@ -1,10 +1,12 @@
 import 'package:ems/models/attendance.dart';
 import 'package:ems/models/user.dart';
+import 'package:ems/screens/attendances_api/widgets/event.dart';
 import 'package:ems/services/attendance.dart';
 import 'package:ems/services/user.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_date_pickers/flutter_date_pickers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -12,7 +14,9 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../constants.dart';
 
 class AttendanceByWeekScreen extends StatefulWidget {
-  const AttendanceByWeekScreen({Key? key}) : super(key: key);
+  /// Custom events.
+  final List<Event> events;
+  AttendanceByWeekScreen({Key? key, this.events = const []}) : super(key: key);
 
   @override
   State<AttendanceByWeekScreen> createState() => _AttendanceByWeekScreenState();
@@ -64,7 +68,6 @@ class _AttendanceByWeekScreenState extends State<AttendanceByWeekScreen> {
           await _attendanceService.findMany(start: dateStart, end: dateEnd);
       setState(() {
         attendanceList = attendanceDisplay.toList();
-        print(attendanceList);
         _isLoading = false;
       });
     } catch (err) {
@@ -215,10 +218,45 @@ class _AttendanceByWeekScreenState extends State<AttendanceByWeekScreen> {
     }
   }
 
+  DateTime _selectedDate = DateTime.now();
+  DateTime _firstDate = DateTime(1990);
+  DateTime _lastDate = DateTime.now().add(Duration(days: 45));
+  DatePeriod? _selectedPeriod;
+
+  Color selectedPeriodStartColor = Colors.red;
+  Color selectedPeriodLastColor = Colors.yellow;
+  Color selectedPeriodMiddleColor = Colors.orange;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // defaults for styles
+    selectedPeriodLastColor = Colors.red;
+    selectedPeriodMiddleColor = Colors.orange;
+    selectedPeriodStartColor = Colors.red;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // add selected colors to default settings
+    DatePickerRangeStyles styles = DatePickerRangeStyles(
+      selectedPeriodLastDecoration: BoxDecoration(
+          color: selectedPeriodLastColor,
+          borderRadius: BorderRadiusDirectional.only(
+              topEnd: Radius.circular(10.0), bottomEnd: Radius.circular(10.0))),
+      selectedPeriodStartDecoration: BoxDecoration(
+        color: selectedPeriodStartColor,
+        borderRadius: BorderRadiusDirectional.only(
+            topStart: Radius.circular(10.0),
+            bottomStart: Radius.circular(10.0)),
+      ),
+      selectedPeriodMiddleDecoration: BoxDecoration(
+          color: selectedPeriodMiddleColor, shape: BoxShape.rectangle),
+    );
     AppLocalizations? local = AppLocalizations.of(context);
     bool isEnglish = isInEnglish(context);
+    String text = 'test';
     return Scaffold(
       appBar: AppBar(
         title: Text('Attendance'),
@@ -243,42 +281,47 @@ class _AttendanceByWeekScreenState extends State<AttendanceByWeekScreen> {
                       onPressed: () {
                         showDialog(
                           context: context,
-                          builder: (_) => AlertDialog(
-                            content: SizedBox(
-                              height: 400,
-                              width: 400,
-                              child: SfDateRangePicker(
-                                todayHighlightColor: kBlueBackground,
-                                startRangeSelectionColor: Colors.green,
-                                endRangeSelectionColor: Colors.green,
-                                rangeSelectionColor: Colors.redAccent,
-                                view: DateRangePickerView.month,
-                                selectionMode: DateRangePickerSelectionMode
-                                    .extendableRange,
-                                showActionButtons: true,
-                                controller: _datePickerController,
-                                onSubmit: (p0) async {
-                                  setState(() {
-                                    startDate = _datePickerController
-                                        .selectedRange?.startDate;
-                                    endDate = _datePickerController
-                                        .selectedRange?.endDate;
-                                  });
-                                  Navigator.of(context).pop();
-                                  if (startDate != null && endDate != null) {
-                                    await fetchAttendances(startDate, endDate);
-                                    countAttendance();
-                                  }
-
-                                  _datePickerController.selectedRange = null;
-                                },
-                                onCancel: () {
-                                  Navigator.pop(context);
-                                  _datePickerController.selectedRange = null;
-                                },
-                              ),
-                            ),
-                          ),
+                          builder: (context) {
+                            return StatefulBuilder(
+                              builder: (context, setState) {
+                                return AlertDialog(
+                                  content: SizedBox(
+                                    height: 300,
+                                    width: 300,
+                                    child: WeekPicker(
+                                      selectedDate: _selectedDate,
+                                      onChanged: (date) {
+                                        _onSelectedDateChanged(date);
+                                        setState(() {});
+                                      },
+                                      firstDate: _firstDate,
+                                      lastDate: _lastDate,
+                                      datePickerStyles: styles,
+                                      onSelectionError: _onSelectionError,
+                                      eventDecorationBuilder:
+                                          _eventDecorationBuilder,
+                                    ),
+                                  ),
+                                  actions: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 20, bottom: 20),
+                                      child: TextButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context);
+                                          await fetchAttendances(
+                                              _selectedPeriod?.start,
+                                              _selectedPeriod?.end);
+                                          countAttendance();
+                                        },
+                                        child: Text('OK'),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
                         );
                       },
                       child: Text('Pick Date'),
@@ -317,9 +360,10 @@ class _AttendanceByWeekScreenState extends State<AttendanceByWeekScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: Text(
-                          startDate == null && endDate == null
+                          _selectedPeriod?.start == null &&
+                                  _selectedPeriod?.end == null
                               ? 'Date: ____'
-                              : 'Date: ${DateFormat('dd/MM/yyyy').format(startDate!)} - ${DateFormat('dd/MM/yyyy').format(endDate!)}',
+                              : 'Date: ${DateFormat('dd/MM/yyyy').format(_selectedPeriod!.start)} - ${DateFormat('dd/MM/yyyy').format(_selectedPeriod!.end)}',
                           style: kParagraph.copyWith(fontSize: 14),
                         ),
                       ),
@@ -330,43 +374,47 @@ class _AttendanceByWeekScreenState extends State<AttendanceByWeekScreen> {
                         onPressed: () {
                           showDialog(
                             context: context,
-                            builder: (_) => AlertDialog(
-                              content: SizedBox(
-                                height: 400,
-                                width: 400,
-                                child: SfDateRangePicker(
-                                  todayHighlightColor: kBlueBackground,
-                                  startRangeSelectionColor: Colors.green,
-                                  endRangeSelectionColor: Colors.green,
-                                  rangeSelectionColor: Colors.redAccent,
-                                  view: DateRangePickerView.month,
-                                  selectionMode: DateRangePickerSelectionMode
-                                      .extendableRange,
-                                  showActionButtons: true,
-                                  controller: _datePickerController,
-                                  onSubmit: (p0) async {
-                                    setState(() {
-                                      startDate = _datePickerController
-                                          .selectedRange?.startDate;
-                                      endDate = _datePickerController
-                                          .selectedRange?.endDate;
-                                    });
-                                    Navigator.of(context).pop();
-                                    if (startDate != null && endDate != null) {
-                                      await fetchAttendances(
-                                          startDate, endDate);
-                                      countAttendance();
-                                    }
-
-                                    _datePickerController.selectedRange = null;
-                                  },
-                                  onCancel: () {
-                                    Navigator.pop(context);
-                                    _datePickerController.selectedRange = null;
-                                  },
-                                ),
-                              ),
-                            ),
+                            builder: (context) {
+                              return StatefulBuilder(
+                                builder: (context, setState) {
+                                  return AlertDialog(
+                                    content: SizedBox(
+                                      height: 300,
+                                      width: 300,
+                                      child: WeekPicker(
+                                        selectedDate: _selectedDate,
+                                        onChanged: (date) {
+                                          _onSelectedDateChanged(date);
+                                          setState(() {});
+                                        },
+                                        firstDate: _firstDate,
+                                        lastDate: _lastDate,
+                                        datePickerStyles: styles,
+                                        onSelectionError: _onSelectionError,
+                                        eventDecorationBuilder:
+                                            _eventDecorationBuilder,
+                                      ),
+                                    ),
+                                    actions: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 20, bottom: 20),
+                                        child: TextButton(
+                                          onPressed: () async {
+                                            Navigator.pop(context);
+                                            await fetchAttendances(
+                                                _selectedPeriod?.start,
+                                                _selectedPeriod?.end);
+                                            countAttendance();
+                                          },
+                                          child: Text('OK'),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
                           );
                         },
                         child: Text('Pick Date'),
@@ -375,24 +423,44 @@ class _AttendanceByWeekScreenState extends State<AttendanceByWeekScreen> {
                   ),
                 ),
                 Expanded(
+                  flex: 3,
                   child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
-                        gradient: LinearGradient(
-                          colors: [
-                            color1,
-                            color,
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        )),
-                    child: !_isLoading
-                        ? Expanded(
-                            child: ListView.builder(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                          gradient: LinearGradient(
+                            colors: [
+                              color1,
+                              color,
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          )),
+                      child: _isLoading || _isLoadingUser
+                          ? Container(
+                              padding: const EdgeInsets.only(top: 320),
+                              alignment: Alignment.center,
+                              child: Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text('${local?.fetchData}'),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    const CircularProgressIndicator(
+                                      color: kWhite,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return Container(
                                   padding: const EdgeInsets.only(bottom: 20),
@@ -633,13 +701,45 @@ class _AttendanceByWeekScreenState extends State<AttendanceByWeekScreen> {
                                 );
                               },
                               itemCount: userList.length,
-                            ),
-                          )
-                        : Container(),
-                  ),
+                            )),
                 ),
               ],
             ),
     );
+  }
+
+  void _onSelectedDateChanged(DatePeriod newPeriod) {
+    setState(() {
+      _selectedDate = newPeriod.start;
+      _selectedPeriod = newPeriod;
+    });
+  }
+
+  void _onSelectionError(Object e) {
+    if (e is UnselectablePeriodException) print("catch error: $e");
+  }
+
+  EventDecoration? _eventDecorationBuilder(DateTime date) {
+    List<DateTime> eventsDates =
+        widget.events.map<DateTime>((e) => e.date).toList();
+
+    bool isEventDate = eventsDates.any((d) =>
+        date.year == d.year && date.month == d.month && d.day == date.day);
+
+    if (!isEventDate) return null;
+
+    BoxDecoration roundedBorder = BoxDecoration(
+        color: Colors.blue,
+        border: Border.all(
+          color: Colors.blue,
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(3.0)));
+
+    TextStyle? whiteText =
+        Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white);
+
+    return isEventDate
+        ? EventDecoration(boxDecoration: roundedBorder, textStyle: whiteText)
+        : null;
   }
 }
