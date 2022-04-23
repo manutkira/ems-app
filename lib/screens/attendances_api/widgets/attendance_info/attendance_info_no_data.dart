@@ -17,19 +17,13 @@ class AttendanceInfoNoData extends StatelessWidget {
         children: [
           Text(
             '${local?.noAttendance}',
-            style: kHeadingThree.copyWith(
+            style: kHeadingFour.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
           SizedBox(
             height: isEnglish ? 30 : 0,
-          ),
-          const Text(
-            '🤷🏼',
-            style: TextStyle(
-              fontSize: 60,
-            ),
           ),
         ],
       ),

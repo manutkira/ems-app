@@ -298,5 +298,6 @@
   "plsSelectNote": "សូមជ្រើសរើសកំណត់ចំណាំ",
   "myLoan": "ប្រាក់កម្ចីរបស់ខ្ញុំ",
   "attendanceAndOvertime": "វត្តមាននិងការថែមម៉ោង",
+  "byWeek": "ប្រចាំសប្ដាហ៍",
   "attendanceSummary": "ស្ថិតិវត្តមានខែ: {monthNumber}"
 }

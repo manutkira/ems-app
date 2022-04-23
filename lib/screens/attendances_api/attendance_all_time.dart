@@ -1,5 +1,6 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
+import 'package:ems/screens/attendances_api/attendance_by_week_screen.dart';
 import 'package:ems/screens/attendances_api/attendances_bymonth.dart';
 import 'package:ems/services/user.dart';
 import 'package:ems/utils/utils.dart';
@@ -334,6 +335,16 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
                   ),
                 ),
                 value: 1,
+              ),
+              PopupMenuItem(
+                child: Text(
+                  '${local?.byWeek}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 2,
               ),
               PopupMenuItem(
                 child: Text(
@@ -769,6 +780,13 @@ class _AttendanceAllTimeScreenState extends State<AttendanceAllTimeScreen> {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => AttendanceByDayScreen(),
+          ),
+        );
+        break;
+      case 2:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => AttendanceByWeekScreen(),
           ),
         );
         break;

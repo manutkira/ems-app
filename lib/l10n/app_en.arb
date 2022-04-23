@@ -1218,6 +1218,10 @@
   "@attendanceAndOvertime": {
     "description": "home screen"
   },
+  "byWeek": "By week",
+  "@byWeek": {
+    "description": "home screen"
+  },
   "attendanceSummary": "Attendance Statistics Month: {monthNumber}",
   "@attendanceSummary": {
     "description": "home screen",

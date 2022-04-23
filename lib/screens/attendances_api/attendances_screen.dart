@@ -185,7 +185,7 @@ class _AttendancesScreenState extends State<AttendancesScreen> {
               ),
               PopupMenuItem(
                 child: Text(
-                  'ប្រចាំសប្ដាហ៍',
+                  '${local?.byWeek}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

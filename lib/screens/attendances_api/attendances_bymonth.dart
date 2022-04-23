@@ -1,6 +1,7 @@
 import 'package:ems/models/user.dart';
 import 'package:ems/screens/attendances_api/attendance_all_time.dart';
 import 'package:ems/screens/attendances_api/attendance_by_day_screen.dart';
+import 'package:ems/screens/attendances_api/attendance_by_week_screen.dart';
 import 'package:ems/utils/utils.dart';
 import 'package:ems/widgets/baseline_row.dart';
 import 'package:flutter/material.dart';
@@ -45,12 +46,13 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
   fetchAttendances() async {
     List<AttendancesByDate> atts = [];
     atts = await _attendanceService.findMany();
-
-    setState(() {
-      attendanceDisplay = atts.toList();
-      // attendanceDisplay.sort(
-      //     (a, b) => a.attendances![0].id!.compareTo(b.attendances![0].id!));
-    });
+    if (mounted) {
+      setState(() {
+        attendanceDisplay = atts.toList();
+        // attendanceDisplay.sort(
+        //     (a, b) => a.attendances![0].id!.compareTo(b.attendances![0].id!));
+      });
+    }
   }
 
   // text controller
@@ -942,6 +944,16 @@ class _AttendancesByMonthScreenState extends State<AttendancesByMonthScreen> {
               ),
               PopupMenuItem(
                 child: Text(
+                  '${local?.byWeek}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: 2,
+              ),
+              PopupMenuItem(
+                child: Text(
                   '${local?.byAllTime}',
                   style: const TextStyle(
                     color: Colors.white,
@@ -1076,6 +1088,13 @@ void onSelected(BuildContext context, int item) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => AttendanceAllTimeScreen(),
+        ),
+      );
+      break;
+    case 2:
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => AttendanceByWeekScreen(),
         ),
       );
       break;

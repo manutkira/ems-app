@@ -953,7 +953,7 @@ class _AttendancesInfoScreenState extends ConsumerState<AttendancesInfoScreen> {
 // name id and image widget
   Container _nameWidget(BuildContext context, AppLocalizations? local) {
     return Container(
-      margin: const EdgeInsets.only(top: 25),
+      margin: const EdgeInsets.only(top: 15),
       padding: const EdgeInsets.all(15),
       width: MediaQuery.of(context).size.width * 0.9,
       decoration: BoxDecoration(
